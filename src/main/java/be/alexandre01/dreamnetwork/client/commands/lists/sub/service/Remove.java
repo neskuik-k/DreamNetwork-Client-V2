@@ -1,18 +1,17 @@
-package be.alexandre01.dreamnetwork.client.commands.lists;
+package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 
 import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.commands.CommandsExecutor;
+import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.util.logging.Level;
 
-public class Remove implements CommandsExecutor {
+public class Remove implements SubCommandExecutor {
     @Override
-    public boolean onCommand(String[] args) {
+    public boolean onSubCommand(String[] args) {
         if(args[0].equalsIgnoreCase("remove")){
             if(args.length >= 2){
                 if(args[1].equalsIgnoreCase("server")||args[1].equalsIgnoreCase("proxy")){

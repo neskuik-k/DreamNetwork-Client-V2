@@ -4,28 +4,25 @@ package be.alexandre01.dreamnetwork.client.commands;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.commands.lists.Add;
-import be.alexandre01.dreamnetwork.client.commands.lists.Help;
+import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
+import be.alexandre01.dreamnetwork.client.commands.lists.ServiceCommand;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class CommandReader{
-    Commands commands;
+    CommandsManager commands;
     Console console;
     private boolean stop = false;
 
     public CommandReader(Console console){
         this.console = console;
-        commands = new Commands();
-        commands.addCommands(new Help());
-        commands.addCommands(new Add());
+        commands = new CommandsManager();
+        commands.addCommands(new ServiceCommand("service"));
+        commands.addCommands(new HelpCommand("help"));
         run();
     }
 

@@ -303,13 +303,13 @@ public class JVMStartupConfig {
         return null;
     }
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String startup){
-        be.alexandre01.dreamnetwork.client.console.Console.print("PN>"+pathName, Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("FN>"+finalName,Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("MODS>"+type.name(),Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("XMS>"+Xms,Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("XMX>"+Xmx,Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("PORT>"+port,Level.FINE);
-        be.alexandre01.dreamnetwork.client.console.Console.print("PROXY>"+proxy,Level.FINE);
+        Console.print("PN>"+pathName, Level.FINE);
+        Console.print("FN>"+finalName,Level.FINE);
+        Console.print("MODS>"+type.name(),Level.FINE);
+        Console.print("XMS>"+Xms,Level.FINE);
+        Console.print("XMX>"+Xmx,Level.FINE);
+        Console.print("PORT>"+port,Level.FINE);
+        Console.print("PROXY>"+proxy,Level.FINE);
         Console.print("STARTUP>"+startup,Level.FINE);
         // Client.getLogger().
         Config.createFile((System.getProperty("user.dir")+"/template/"+pathName+"/"+finalName+"/network.yml"));

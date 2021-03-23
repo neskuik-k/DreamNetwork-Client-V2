@@ -1,10 +1,10 @@
-package be.alexandre01.dreamnetwork.client.commands.lists;
+package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.commands.CommandsExecutor;
+import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -15,9 +15,9 @@ import java.io.BufferedWriter;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-public class Add implements CommandsExecutor {
+public class Add implements SubCommandExecutor {
     @Override
-    public boolean onCommand(String[] args) {
+    public boolean onSubCommand(String[] args) {
 
         BufferedWriter processInput = null;
         if(args[0].equalsIgnoreCase("add")){
@@ -93,16 +93,16 @@ public class Add implements CommandsExecutor {
                                      }
                                  }
                              }else {
-                                 Console.print(Colors.ANSI_RED()+"[!] add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
-                                 Console.print(Colors.ANSI_RED()+"[!] add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                                 Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                                 Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
                              }
                          }
 
 
                      }
                  }else {
-                     Console.print(Colors.ANSI_RED()+"[!] add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
-                     Console.print(Colors.ANSI_RED()+"[!] add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                     Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                     Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
                  }
                 return true;
             }

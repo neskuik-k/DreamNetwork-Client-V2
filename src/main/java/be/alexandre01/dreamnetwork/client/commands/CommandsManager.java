@@ -7,25 +7,28 @@ import com.github.tomaslanger.chalk.Chalk;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Scanner;
 import java.util.logging.Level;
 
-public class Commands {
+public class CommandsManager {
 
-    public ArrayList<CommandsExecutor> executorList;
-   public Commands(){
-       this.executorList = new ArrayList<>();
+    public HashMap<String, Command> executorList;
+   public CommandsManager(){
+       this.executorList = new HashMap<>();
 
    }
 
-   public void addCommands(CommandsExecutor executor){
-    this.executorList.add(executor);
+   public void addCommands(Command cmd){
+    this.executorList.put(cmd.getName(),cmd);
    }
 
    public void check(String[] args){
         boolean hasFound = false;
-       for(CommandsExecutor executors : executorList){
-               if(executors.onCommand(args)){
+        if(args[0] == null)
+            return;
+        if(executorList.containsKey(args[0])){
+               if(executorList.get(args[0]).onCommand(args)){
                    hasFound = true;
                }
 
