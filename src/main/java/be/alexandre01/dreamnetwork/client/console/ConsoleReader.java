@@ -1,11 +1,12 @@
 package be.alexandre01.dreamnetwork.client.console;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class ConsoleReader {
     public BufferedReader reader;
+    public BufferedWriter writer;
     public ConsoleReader(){
         reader = new BufferedReader(new InputStreamReader(System.in));
+
     }
 }

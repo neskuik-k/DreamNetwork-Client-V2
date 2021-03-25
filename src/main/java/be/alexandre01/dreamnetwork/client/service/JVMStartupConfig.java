@@ -22,6 +22,7 @@ public class JVMStartupConfig {
     @Getter long confSize = 0;
     @Getter boolean proxy = false;
     @Getter boolean fixedData = false;
+    @Getter File fileRootDir;
 
 
 
@@ -65,6 +66,7 @@ public class JVMStartupConfig {
 
                 }
             }
+            fileRootDir = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/");
             isConfig = true;
         }catch (IOException e){
             e.printStackTrace();

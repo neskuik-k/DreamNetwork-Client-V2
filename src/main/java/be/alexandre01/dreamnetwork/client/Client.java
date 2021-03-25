@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.client.commands.CommandReader;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
+import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
@@ -25,7 +26,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
-    @Getter boolean debug = true;
+    @Getter boolean debug = false;
     private InputStream in;
     public Formatter formatter;
     @Getter @Setter
@@ -34,12 +35,13 @@ public class Client {
     public static Client instance;
     @Getter
     private JVMContainer jvmContainer;
+    @Getter
+    private SpigetConsole spigetConsole;
 
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-
-
+     
         //UTF8
         System.setProperty("file.encoding","UTF-8");
         Field charset = Charset.class.getDeclaredField("defaultCharset");
@@ -60,9 +62,8 @@ public class Client {
 
 
 
-        Console.setDefaultConsole("m:default");
-        Console.load("m:default");
-        Console.setActualConsole("m:default");
+        Console.load("m:default").isRunning = true;
+
 
         instance = new Client();
 
@@ -94,10 +95,13 @@ public class Client {
 
 
 
-        Console.setDefaultConsole("m:default");
+       Console.defaultConsole = "m:default";
+        Console.actualConsole =  "m:default";
 
-        Console.setActualConsole("m:default");
+      //  Console.setActualConsole("m:default");
 
+       Console.load("m:spiget");
+       spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
                 /*
         JVM CONTAINER TO STORE JVMExecutors
          */

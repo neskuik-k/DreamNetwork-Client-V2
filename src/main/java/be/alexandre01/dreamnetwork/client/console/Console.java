@@ -1,15 +1,22 @@
 package be.alexandre01.dreamnetwork.client.console;
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.Config;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import com.github.tomaslanger.chalk.Chalk;
+import com.google.common.collect.Ordering;
+import lombok.SneakyThrows;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.logging.Level;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Console extends Thread{
     public interface IConsole{
@@ -17,11 +24,13 @@ public class Console extends Thread{
     }
     IConsole iConsole;
     private static final HashMap<String, Console> instances = new HashMap<>();
-    private ConsoleReader consoleReader = new ConsoleReader();
+    private static ConsoleReader consoleReader = new ConsoleReader();
     public String name;
     private final ArrayList<ConsoleMessage> history;
     public static String defaultConsole;
     public static String actualConsole;
+    public boolean isRunning = false;
+    public String writing = "> ";
 
     public static Console load(String name){
         Console c = new Console(name);
@@ -32,13 +41,19 @@ public class Console extends Thread{
     public static void setActualConsole(String name){
         if(actualConsole != null){
             Console oldConsole = instances.get(actualConsole);
-             oldConsole.stop();
+            oldConsole.isRunning = false;
+            oldConsole.stop();
+            oldConsole.interrupt();
+
         }
 
         Console console = instances.get(name);
         Console.actualConsole = name;
+        console.isRunning = true;
         if(!console.history.isEmpty()){
-            for (ConsoleMessage s : console.history){
+            List<ConsoleMessage> h = new ArrayList<>(console.history);
+            Collections.reverse(h);
+            for (ConsoleMessage s : h){
                 console.forcePrint(s.content,s.level);
             }
         }
@@ -46,7 +61,9 @@ public class Console extends Thread{
             new Thread(console).start();
         }
 
-
+        clearConsole();
+        Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console.").bgWhite().black());
+        console.write(console.writing);
 
     }
 
@@ -66,7 +83,7 @@ public class Console extends Thread{
     public static void print(String s, Level level,String name){
         instances.get(name).fPrint(s + Colors.ANSI_RESET(),level);
     }
-    private void forcePrint(String s,Level level){
+    public void forcePrint(String s, Level level){
         if(Console.actualConsole.equals(name))
             Client.getLogger().info(s+Colors.ANSI_RESET());
     }
@@ -86,7 +103,9 @@ public class Console extends Thread{
         Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
     }
     public static void clearConsole(){
-        try
+        Client.getInstance().formatter.getDefaultStream().print("\033[H\033[2J");
+        Client.getInstance().formatter.getDefaultStream().flush();
+        /*try
         {
             final String os = System.getProperty("os.name");
 
@@ -102,7 +121,7 @@ public class Console extends Thread{
         catch (final Exception ignored)
         {
 
-        }
+        }*/
     }
     
     public void setConsoleAction(IConsole iConsole){
@@ -112,32 +131,67 @@ public class Console extends Thread{
         this.history = new ArrayList<>();
         this.name = name;
     }
+
     @Override
     public void run() {
+
+        boolean isWindows = Config.isWindows();
         try {
-            while (true){
-                if(actualConsole == null || !instances.containsKey(actualConsole))
-                    actualConsole = defaultConsole;
+            String data;
+
+            if(actualConsole == null || !instances.containsKey(actualConsole)){
+                actualConsole = defaultConsole;
+            }
+
+            while (isRunning && (data =consoleReader.reader.readLine()) != null){
 
                 if(Console.actualConsole.equals(name)){
 
-                String[] args = new String[0];
-                try {
-                    args = consoleReader.reader.readLine().split(" ");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                    iConsole.listener(args);
-                //debugPrint("test >");
-                   write("> ");
+                    String[] args = new String[0];
 
+                        args = data.split(" ");
+
+                    iConsole.listener(args);
+
+                    if(!Config.isWindows()){
+                        write(writing);
+                    }
                 }
+
             }
+
+
         }catch (Exception e){
 
         }
     }
+    public String readLine() throws IOException {
+        StringBuilder sb = new StringBuilder();
+        int readByte = consoleReader.reader.read();
+        while (readByte>-1 && readByte!= '\n')
+        {
+            sb.append((char) readByte);
+            readByte = consoleReader.reader.read();
+        }
+        return sb.length()==0?null:sb.toString();
+    }
+    private String interruptibleReadLine(BufferedReader reader)
+            throws InterruptedException, IOException {
+        Pattern line = Pattern.compile("^(.*)\\R");
+        Matcher matcher;
+        boolean interrupted = false;
 
+        StringBuilder result = new StringBuilder();
+        int chr = -1;
+        do {
+            if (reader.ready()) chr = reader.read();
+            if (chr > -1) result.append((char) chr);
+            matcher = line.matcher(result.toString());
+            interrupted = Thread.interrupted(); // resets flag, call only once
+        } while (!interrupted && !matcher.matches());
+        if (interrupted) throw new InterruptedException();
+        return (matcher.matches() ? matcher.group(1) : "");
+    }
     public ArrayList<ConsoleMessage> getHistory() {
         return history;
     }
@@ -148,7 +202,19 @@ public class Console extends Thread{
         //debugPrint("history >> "+data);
         history.add(new ConsoleMessage(data,lvl));
     }
+    public String readLineTimeout(BufferedReader reader, long timeout) throws TimeoutException, IOException {
+        long start = System.currentTimeMillis();
 
+        while (!reader.ready()) {
+            if (System.currentTimeMillis() - start >= timeout)
+                throw new TimeoutException();
+
+            // optional delay between polling
+            try { Thread.sleep(50); } catch (Exception ignore) {}
+        }
+
+        return reader.readLine(); // won't block since reader is ready
+    }
     public void destroy(){
         history.clear();
         instances.remove(name);
@@ -161,8 +227,11 @@ public class Console extends Thread{
             @Override
             public void run() {
                 try {
-                    Client.getInstance().formatter.getDefaultStream().write(stringToBytesASCII(str));
-                    scheduler.shutdown();
+                    if(isRunning){
+                        Client.getInstance().formatter.getDefaultStream().write(stringToBytesASCII(str));
+                        scheduler.shutdown();
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

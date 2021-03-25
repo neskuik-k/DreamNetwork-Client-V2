@@ -26,11 +26,11 @@ public class Remove implements SubCommandExecutor {
 
 
                 }else {
-                    Console.print(Chalk.on("[!] remove server [name] => remove a server ").red(), Level.INFO);
-                    Console.print(Chalk.on("[!] remove proxy [name] => remove a server ").red(), Level.INFO);
+                    Console.print(Chalk.on("[!] service remove server [name] => remove a server ").red(), Level.INFO);
+                    Console.print(Chalk.on("[!] service remove proxy [name] => remove a server ").red(), Level.INFO);
                 }
             }else {
-                Console.print(Chalk.on("[!] remove server [name] => remove a server").red(), Level.INFO);
+                Console.print(Chalk.on("[!] service remove server [name] => remove a server").red(), Level.INFO);
             }
             return true;
         }

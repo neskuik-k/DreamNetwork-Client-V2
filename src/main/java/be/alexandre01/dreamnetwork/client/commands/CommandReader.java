@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Config;
 import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
 import be.alexandre01.dreamnetwork.client.commands.lists.ServiceCommand;
+import be.alexandre01.dreamnetwork.client.commands.lists.SpigetCommand;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
 import java.io.IOException;
@@ -23,6 +24,7 @@ public class CommandReader{
         commands = new CommandsManager();
         commands.addCommands(new ServiceCommand("service"));
         commands.addCommands(new HelpCommand("help"));
+        commands.addCommands(new SpigetCommand("spiget"));
         run();
     }
 
@@ -39,9 +41,8 @@ public class CommandReader{
                 }
             });
 
-        if(!Config.isWindows()){
-            write("> ");
-        }
+
+
 
 
     }

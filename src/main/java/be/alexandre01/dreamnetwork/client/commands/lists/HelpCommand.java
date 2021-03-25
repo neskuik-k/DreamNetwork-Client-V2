@@ -21,7 +21,7 @@ public class HelpCommand extends Command {
             public boolean execute(String[] args) {
                 Console.print(Chalk.on("Lists of commands for help:").green().bold().underline());
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
-                Console.print(Chalk.on("How to mangage a service ").underline());
+                Console.print(Chalk.on("How to manage a service ").underline());
                 Console.print("service", Level.INFO);
                 Console.print("add proxy [name] | add a proxy ", Level.INFO);
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());

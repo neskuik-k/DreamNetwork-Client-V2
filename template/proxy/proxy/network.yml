@@ -1,5 +1,5 @@
 # proxy's configuration of the startup -|- DreamNetwork™ 2021
 type: DYNAMIC
 xms: 1G
-xmx: 5GF
+xmx: 5G
 proxy: true
