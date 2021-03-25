@@ -37,7 +37,7 @@ public class TemplateLoading {
             for(File dir : directory){
                 //TRY TO LOAD COMPONENT
                 String name = dir.getName();
-                JVMExecutor jvmExecutor = JVMExecutor.initIfPossible(pathName,name,true);
+                JVMExecutor jvmExecutor = JVMExecutor.initIfPossible(pathName,name,false);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;

@@ -1,8 +1,14 @@
 package be.alexandre01.dreamnetwork.utils;
 
 
+import com.gargoylesoftware.htmlunit.BrowserVersion;
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import io.netty.handler.codec.http.cookie.Cookie;
+
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 public class ImpatientInputStream extends InputStream {
 

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
@@ -18,7 +19,7 @@ public class Start implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service start server [name]").red());
                 return true;
             }
-            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[1]);
+            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[1], JVMContainer.JVMType.SERVER);
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
                 return true;

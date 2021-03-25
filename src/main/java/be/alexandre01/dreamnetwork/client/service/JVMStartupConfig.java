@@ -42,7 +42,7 @@ public class JVMStartupConfig {
         }
 
         if(updateFile){
-            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null);
+            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null);
         }
         try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")){
@@ -63,7 +63,7 @@ public class JVMStartupConfig {
                     while (exec.charAt(0) == ' '){
                         exec = exec.substring(1);
                     }
-
+                    System.out.println(exec);
                 }
             }
             fileRootDir = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/");
@@ -304,7 +304,7 @@ public class JVMStartupConfig {
         }
         return null;
     }
-    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String startup){
+    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup){
         Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
         Console.print("MODS>"+type.name(),Level.FINE);
@@ -334,6 +334,9 @@ public class JVMStartupConfig {
             if(port != 0){
                 writer.println("port: "+port);
             }
+            if(exec != null){
+                writer.println("executable: "+exec);
+            }
             if(startup != null){
                 writer.println("startup: "+startup);
             }
@@ -350,7 +353,7 @@ public class JVMStartupConfig {
         return  Config.createFile((System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")).length();
     }
     public boolean hasExecutable(){
-        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/"+exec))){
+        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name+"/"+exec))){
             return true;
         }
         return false;

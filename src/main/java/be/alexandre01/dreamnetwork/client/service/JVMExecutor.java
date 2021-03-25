@@ -62,12 +62,14 @@ public class JVMExecutor extends JVMStartupConfig{
 
     public JVMExecutor(String pathName,String name, Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile) {
         super(pathName,name,type,xms,xmx,port,proxy,updateFile);
-        Client.getInstance().getJvmContainer().addExecutor(this);
+        JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        Client.getInstance().getJvmContainer().addExecutor(this,jvmType);
     }
 
     public JVMExecutor(String pathName,String name){
         super(pathName,name);
-        Client.getInstance().getJvmContainer().addExecutor(this);
+        JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        Client.getInstance().getJvmContainer().addExecutor(this,jvmType);
     }
 
     public void setPort(int port){

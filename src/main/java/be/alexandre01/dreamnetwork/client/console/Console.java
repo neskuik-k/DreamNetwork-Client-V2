@@ -103,9 +103,8 @@ public class Console extends Thread{
         Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
     }
     public static void clearConsole(){
-        Client.getInstance().formatter.getDefaultStream().print("\033[H\033[2J");
-        Client.getInstance().formatter.getDefaultStream().flush();
-        /*try
+
+        try
         {
             final String os = System.getProperty("os.name");
 
@@ -115,13 +114,14 @@ public class Console extends Thread{
             }
             else
             {
-                Runtime.getRuntime().exec("clear");
+                Client.getInstance().formatter.getDefaultStream().print("\033[H\033[2J");
+                Client.getInstance().formatter.getDefaultStream().flush();
             }
         }
         catch (final Exception ignored)
         {
 
-        }*/
+        }
     }
     
     public void setConsoleAction(IConsole iConsole){
@@ -144,18 +144,32 @@ public class Console extends Thread{
             }
 
             while (isRunning && (data =consoleReader.reader.readLine()) != null){
-
                 if(Console.actualConsole.equals(name)){
-
+                try {
                     String[] args = new String[0];
 
-                        args = data.split(" ");
+                    args = data.split(" ");
 
                     iConsole.listener(args);
 
                     if(!Config.isWindows()){
                         write(writing);
                     }
+                }catch (Exception e){
+                    fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
+                    for(StackTraceElement s : e.getStackTrace()){
+                        Client.getInstance().formatter.getDefaultStream().println("----->");
+                        fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
+                    }
+                    if(Client.getInstance().isDebug()){
+                        e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
+                    }else {
+                        Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
+                    }
+                }
+
+
+
                 }
 
             }
