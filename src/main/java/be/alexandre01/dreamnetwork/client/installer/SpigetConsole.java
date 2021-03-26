@@ -218,10 +218,11 @@ public class SpigetConsole {
                                     if(!isAccepted){
                                        continue;
                                     }
-
+                                    String[] formatFiles = ressource.getFileName().split("\\.");
+                                    String formatFile = formatFiles[formatFiles.length-1];
                                     console.fPrint("DWNLINK>>"+ressource.getDwnLink(),Level.FINE);
                                     ressourcesFind.add(ressource);
-                                    console.fPrint("["+i+"] - "+ Colors.CYAN+ressource.getName()+Colors.RESET,Level.INFO);
+                                    console.fPrint("["+i+"] - "+ Colors.CYAN+ressource.getName()+"   "+ Colors.YELLOW+"["+Colors.WHITE+formatFile.toUpperCase()+" FORMAT"+Colors.YELLOW+"] "+Colors.RESET,Level.INFO);
                                     console.fPrint(""+ressource.getTag(),Level.INFO);
                                     i++;
                                 }

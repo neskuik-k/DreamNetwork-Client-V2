@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.installer.Installer;
+import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
@@ -37,6 +38,14 @@ public class Install implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
                 return true;
             }
+            InstallationLinks installationLinks;
+            try {
+                installationLinks = InstallationLinks.getInstallationLinks(args[3]);
+            }catch (Exception e){
+                System.out.println("[!] The version is incorrect...");
+                return true;
+            }
+
 
             Installer.launchDependInstall(args[3], jvmExecutor.getFileRootDir(), new Installer.IInstall() {
                 @Override
@@ -54,7 +63,7 @@ public class Install implements SubCommandExecutor {
                             jvmExecutor.getXmx(),
                             jvmExecutor.getPort(),
                             jvmExecutor.isProxy(),
-                            args[3],
+                            installationLinks.name().toLowerCase(),
                             jvmExecutor.getStartup());
                 }
             });
