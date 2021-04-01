@@ -96,7 +96,17 @@ public class Config {
             copyFile(sourceLocation, targetLocation);
         }
     }
-
+    public static void write(InputStream in, File targetLocation) throws IOException {
+        try (
+                OutputStream out = new FileOutputStream(targetLocation)
+        ) {
+            byte[] buf = new byte[1024];
+            int length;
+            while ((length = in.read(buf)) > 0) {
+                out.write(buf, 0, length);
+            }
+        }
+    }
     private static void copyDirectory(File source, File target) throws IOException {
         if (!target.exists()) {
             target.mkdir();

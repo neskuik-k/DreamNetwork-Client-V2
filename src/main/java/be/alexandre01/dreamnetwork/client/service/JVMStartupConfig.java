@@ -3,12 +3,13 @@ package be.alexandre01.dreamnetwork.client.service;
 import be.alexandre01.dreamnetwork.client.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import lombok.Data;
 import lombok.Getter;
 
 import java.io.*;
 import java.util.Date;
 import java.util.logging.Level;
-
+@Data
 public class JVMStartupConfig {
     @Getter boolean isConfig;
     @Getter String name;
@@ -138,7 +139,7 @@ public class JVMStartupConfig {
             checker = "server-port=";
         }else {
             proxy = true;
-            fileName = "config.yml";
+            fileName = "files/bungeecord/config.yml";
             checker = "host: 0.0.0.0:";
         }
         File properties;
@@ -191,6 +192,7 @@ public class JVMStartupConfig {
     }
 
     public Integer getCurrentPort(String pathName, String finalname, JVMExecutor.Mods type){
+
         String fileName;
         String checker;
         boolean proxy = false;
@@ -199,7 +201,7 @@ public class JVMStartupConfig {
             checker = "server-port=";
         }else {
             proxy = true;
-            fileName = "config.yml";
+            fileName = "files/bungeecord/config.yml";
             checker = "host: 0.0.0.0:";
         }
         String name = finalname.split("-")[0];
@@ -265,6 +267,7 @@ public class JVMStartupConfig {
 
         } catch (Exception e) {
             System.out.println("Problem reading file.");
+            e.printStackTrace();
         }
         return null;
     }
@@ -304,6 +307,29 @@ public class JVMStartupConfig {
         }
         return null;
     }
+    public void addConfigsFiles(){
+        if(proxy){
+            InputStream is = getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml");
+            try {
+                assert is != null;
+                Config.write(is,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/config.yml")));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
+        InputStream ies = getClass().getClassLoader().getResourceAsStream("files/spigot/eula.txt");
+        InputStream iss = getClass().getClassLoader().getResourceAsStream("files/spigot/server.properties");
+        try {
+            assert ies != null;
+            Config.write(ies,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/eula.txt")));
+            assert iss != null;
+            Config.write(iss,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/server.properties")));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+    }
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup){
         Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
@@ -340,7 +366,9 @@ public class JVMStartupConfig {
             if(startup != null){
                 writer.println("startup: "+startup);
             }
-
+            if(exec != null){
+                writer.println("executable: "+exec);
+            }
             writer.println("proxy: "+proxy);
             writer.close();
 

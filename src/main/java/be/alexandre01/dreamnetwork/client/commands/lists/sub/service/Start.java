@@ -17,9 +17,20 @@ public class Start implements SubCommandExecutor {
         if(args[0].equalsIgnoreCase("start")){
             if(args.length < 2){
                 System.out.println(Chalk.on("[!] service start server [name]").red());
+                System.out.println(Chalk.on("[!] service start proxy [name]").red());
                 return true;
             }
-            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[1], JVMContainer.JVMType.SERVER);
+            JVMContainer.JVMType type;
+            try {
+                type = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
+            }catch (Exception e){
+                System.out.println(Chalk.on("[!] The type choosed is invalid... choose SERVER or PROXY").red());
+                return true;
+            }
+
+
+            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], type);
+
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
                 return true;
