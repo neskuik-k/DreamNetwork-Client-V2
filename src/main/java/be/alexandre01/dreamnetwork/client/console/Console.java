@@ -10,10 +10,7 @@ import lombok.SneakyThrows;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,6 +18,7 @@ import java.util.regex.Pattern;
 public class Console extends Thread{
     public interface IConsole{
         public void listener(String[] args);
+        public void consoleChange();
     }
     IConsole iConsole;
     private static final HashMap<String, Console> instances = new HashMap<>();
@@ -63,7 +61,15 @@ public class Console extends Thread{
 
         clearConsole();
         Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console.").bgWhite().black());
-        console.write(console.writing);
+        ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
+
+        timer.scheduleAtFixedRate(() -> {
+            console.write(console.writing);
+            timer.shutdown();
+        },250,1,TimeUnit.MILLISECONDS);
+
+        console.iConsole.consoleChange();
+
 
     }
 

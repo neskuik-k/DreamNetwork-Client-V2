@@ -39,6 +39,11 @@ public class CommandReader{
                         }
                     }
                 }
+
+                @Override
+                public void consoleChange() {
+
+                }
             });
 
 

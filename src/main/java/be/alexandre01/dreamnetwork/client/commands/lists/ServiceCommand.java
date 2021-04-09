@@ -1,10 +1,7 @@
 package be.alexandre01.dreamnetwork.client.commands.lists;
 
 import be.alexandre01.dreamnetwork.client.commands.Command;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.Install;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.Start;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.Add;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.Remove;
+import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.*;
 
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
@@ -14,10 +11,19 @@ public class ServiceCommand extends Command {
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());
         addSubCommand("install",new Install());
+        addSubCommand("list",new List());
 
-        getHelpBuilder().setTitleUsage("How to configurate server");
-        getHelpBuilder().setCmdUsage("add a server","add","server","[name]");
-
+        getHelpBuilder().setTitleUsage("How to configurate a service");
+        getHelpBuilder().setCmdUsage("add a server","add","server/proxy","[name]");
+        getHelpBuilder().setCmdUsage("install a server","install","server/proxy","[name]", "[Ver.]");
+        getHelpBuilder().setTitleUsage("How to run a server");
+        getHelpBuilder().setCmdUsage("start a server","start","server/proxy","[name]");
+        getHelpBuilder().setTitleUsage("How to stop server");
+        getHelpBuilder().setCmdUsage("stop a server","stop","server/proxy","[name]");
+        getHelpBuilder().setTitleUsage("How to remove/delete a server");
+        getHelpBuilder().setCmdUsage("remove a server","remove","server/proxy","[name]");
+        getHelpBuilder().setTitleUsage("List all your servers");
+        getHelpBuilder().setCmdUsage("list your servers","list");
     }
 
 }

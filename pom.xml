@@ -38,10 +38,10 @@
             <name>jcenter-bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
-        <repository>
-            <id>bungeecord-repo</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </repository>
+            <repository>
+                <id>bungeecord-repo</id>
+                <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            </repository>
     </repositories>
 
     <dependencies><!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
@@ -60,13 +60,14 @@
             <artifactId>chalk</artifactId>
             <version>1.0.2</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/net.md-5/bungeecord-api -->
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
-            <type>jar</type>
+            <version>1.16-R0.4</version>
             <scope>provided</scope>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
         <dependency>
             <groupId>com.diogonunes</groupId>
@@ -109,13 +110,6 @@
             <groupId>io.netty</groupId>
             <artifactId>netty</artifactId>
             <version>3.10.6.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.16-R0.4-SNAPSHOT</version>
-            <type>javadoc</type>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->

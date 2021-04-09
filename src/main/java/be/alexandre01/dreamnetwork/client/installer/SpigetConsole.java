@@ -44,11 +44,14 @@ public class SpigetConsole {
         ressourcesSelected = new ArrayList<>();
         serverSelected = new ArrayList<>();
         console.writing = "- ";
-        sendHelp();
+
+
         run();
     }
 
     public void run(){
+
+
         console.setConsoleAction(new Console.IConsole() {
             @Override
             public void listener(String[] args) {
@@ -380,6 +383,11 @@ public class SpigetConsole {
                     }
 
 
+            }
+
+            @Override
+            public void consoleChange() {
+                    sendHelp();
             }
         });
 
