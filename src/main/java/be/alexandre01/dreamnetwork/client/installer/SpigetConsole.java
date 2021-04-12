@@ -170,13 +170,28 @@ public class SpigetConsole {
                                     con.connect();
 
                                     boolean isAccepted = true;
-                                    String fieldValue = con.getHeaderField("Content-Disposition");
-                                    if (fieldValue == null || ! fieldValue.contains("filename=\"")) {
+
+
+
+                                    String fieldValue = con.getHeaderField("x-bz-file-name");
+                                    if(fieldValue == null){
+                                        isAccepted = false;
+                                    }else {
+                                        String[] splitted = fieldValue.split("\\.");
+
+                                        String filename = ressource.getName()+"."+ splitted[splitted.length-1];
+                                        ressource.setFileName(Normalizer.normalize(filename, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ",""));
+                                    }
+
+                                    //ANCIEN A GARDER
+                                   /* String fieldValue = con.getHeaderField("Content-Disposition");
+                                    if (fieldValue == null || !fieldValue.contains("filename=\"")){
                                         isAccepted = false;
                                     }else {
                                         String filename = fieldValue.substring(fieldValue.indexOf("filename=\"") + 10, fieldValue.length() - 1);
                                         ressource.setFileName(Normalizer.normalize(filename, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ",""));
-                                    }
+                                    }*/
+                                    Client.getInstance().formatter.getDefaultStream().println(con.getResponseCode());
                                     console.fPrint(con.getResponseCode(),Level.FINE);
                                     if(con.getResponseCode() != 200){
                                         isAccepted = false;
@@ -201,11 +216,13 @@ public class SpigetConsole {
                                                             tCon.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
                                                             tCon.connect();
 
-                                                            String tFieldValue = tCon.getHeaderField("Content-Disposition");
-                                                            if (tFieldValue == null || ! tFieldValue.contains("filename=\"")) {
+                                                            String tFieldValue = con.getHeaderField("x-bz-file-name");
+                                                            if(tFieldValue == null){
                                                                 isAccepted = false;
                                                             }else {
-                                                                String filename = tFieldValue.substring(tFieldValue.indexOf("filename=\"") + 10, tFieldValue.length() - 1);
+                                                                String[] splitted = tFieldValue.split("\\.");
+
+                                                                String filename = ressource.getName()+"."+ splitted[splitted.length-1];
                                                                 ressource.setFileName(Normalizer.normalize(filename, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "").replaceAll(" ",""));
                                                             }
 

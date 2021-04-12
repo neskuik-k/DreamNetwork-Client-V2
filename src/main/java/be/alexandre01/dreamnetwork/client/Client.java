@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
+import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
@@ -157,7 +158,7 @@ public class Client {
         System.out.println(Chalk.on("Le Network a été démarré avec succès / Faites help pour avoir les commandes").green());
         Console console = Console.getConsole("m:default");
         CommandReader commandReader = new CommandReader(console);
-
+        ScreenManager.load();
 
         //MANAGER
 

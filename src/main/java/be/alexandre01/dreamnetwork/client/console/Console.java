@@ -52,15 +52,15 @@ public class Console extends Thread{
             List<ConsoleMessage> h = new ArrayList<>(console.history);
             Collections.reverse(h);
             for (ConsoleMessage s : h){
-                console.forcePrint(s.content,s.level);
+                //console.forcePrint(s.content,s.level);
             }
         }
         if(!console.isAlive()){
             new Thread(console).start();
         }
 
-        clearConsole();
-        Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console.").bgWhite().black());
+        //clearConsole();
+        Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
         timer.scheduleAtFixedRate(() -> {

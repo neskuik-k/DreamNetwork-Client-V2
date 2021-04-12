@@ -192,7 +192,9 @@ public class JVMStartupConfig {
     }
 
     public Integer getCurrentPort(String pathName, String finalname, JVMExecutor.Mods type){
-
+        System.out.println(pathName);
+        System.out.println(finalname);
+        System.out.println(type);
         String fileName;
         String checker;
         boolean proxy = false;
@@ -201,7 +203,7 @@ public class JVMStartupConfig {
             checker = "server-port=";
         }else {
             proxy = true;
-            fileName = "files/bungeecord/config.yml";
+            fileName = "config.yml";
             checker = "host: 0.0.0.0:";
         }
         String name = finalname.split("-")[0];

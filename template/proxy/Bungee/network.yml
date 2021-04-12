@@ -1,5 +1,0 @@
-# Bungee's configuration of the startup -|- DreamNetwork™ 2021
-type: DYNAMIC
-xms: 1G
-xmx: 6G
-proxy: true

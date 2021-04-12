@@ -23,7 +23,7 @@ public class JVMReader extends Thread{
         String line;
 
         while ((line = br.readLine()) != null){
-            System.out.println(line);
+            System.out.println("HMMM 3"+line);
         }
 
         try {

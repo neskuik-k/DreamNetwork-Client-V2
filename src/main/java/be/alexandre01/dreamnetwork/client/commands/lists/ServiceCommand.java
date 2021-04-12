@@ -11,6 +11,7 @@ public class ServiceCommand extends Command {
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());
         addSubCommand("install",new Install());
+        addSubCommand("screen",new Screen());
         addSubCommand("list",new List());
 
         getHelpBuilder().setTitleUsage("How to configurate a service");
