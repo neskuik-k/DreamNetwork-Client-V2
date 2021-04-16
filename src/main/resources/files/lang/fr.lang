@@ -1,0 +1,6 @@
+@ <- Annotation
+@ For colors use: %red% or %r% (ANSI Red); %blue% or %b% (ANSI blue); %cyan% or %c% (ANSI cyan); %green% or %g% (ANSI green); %purple% or %p% (ANSI purple); %black% or %bl% (ANSI black);
+@ Others: %underline% or %u%; %bold% or %bo%;
+@ Text-Background: add back or b -> Example:  %bcyan%;%backcyan%;%bc%
+
+main.debug-mode:

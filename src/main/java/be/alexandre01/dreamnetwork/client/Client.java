@@ -12,14 +12,19 @@ import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.AnsiConsole;
 import lombok.Getter;
 import lombok.Setter;
+
 
 
 import javax.crypto.KeyGenerator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
@@ -29,10 +34,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
-    @Getter boolean debug = false;
+    @Getter
+    boolean debug = false;
     private InputStream in;
     public Formatter formatter;
-    @Getter @Setter
+    @Getter
+    @Setter
     public static Logger logger = Logger.getLogger(Client.class.getName());
     @Getter
     public static Client instance;
@@ -40,17 +47,35 @@ public class Client {
     private JVMContainer jvmContainer;
     @Getter
     private SpigetConsole spigetConsole;
+    @Getter
+    private static String username;
 
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-     
+
+
         //UTF8
-        System.setProperty("file.encoding","UTF-8");
-        Field charset = Charset.class.getDeclaredField("defaultCharset");
-        charset.setAccessible(true);
-        charset.set(null,null);
         Chalk.setColorEnabled(true);
+
+
+            System.setProperty("file.encoding","UTF-8");
+
+            Field charset = Charset.class.getDeclaredField("defaultCharset");
+            charset.setAccessible(true);
+            charset.set(null,null);
+
+        if(Config.isWindows()){
+            username = System.getProperty("user.name");
+            System.out.println(username);
+        }else {
+            try {
+                username = InetAddress.getLocalHost().getHostName();
+            } catch (UnknownHostException e) {
+                username = System.getProperty("user.name");
+            }
+        }
+
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 try {
@@ -92,9 +117,6 @@ public class Client {
                     e.printStackTrace(instance.formatter.getDefaultStream());
                 }
 
-
-
-
             }
         });
 
@@ -115,11 +137,13 @@ public class Client {
     }
 
     public Client(){
+
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
             System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
             debug = true;
+
         }
 
         FileHandler fh = null;
@@ -130,6 +154,7 @@ public class Client {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
 
 
 

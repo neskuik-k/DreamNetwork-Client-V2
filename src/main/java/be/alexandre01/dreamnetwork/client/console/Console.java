@@ -3,6 +3,9 @@ package be.alexandre01.dreamnetwork.client.console;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Config;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+
+
+import com.github.tomaslanger.chalk.Ansi;
 import com.github.tomaslanger.chalk.Chalk;
 import com.google.common.collect.Ordering;
 import lombok.SneakyThrows;
@@ -28,7 +31,7 @@ public class Console extends Thread{
     public static String defaultConsole;
     public static String actualConsole;
     public boolean isRunning = false;
-    public String writing = "> ";
+    public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
 
     public static Console load(String name){
         Console c = new Console(name);
@@ -44,6 +47,7 @@ public class Console extends Thread{
             oldConsole.interrupt();
 
         }
+
 
         Console console = instances.get(name);
         Console.actualConsole = name;
@@ -63,10 +67,10 @@ public class Console extends Thread{
         Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
-        timer.scheduleAtFixedRate(() -> {
+    /*    timer.scheduleAtFixedRate(() -> {
             console.write(console.writing);
             timer.shutdown();
-        },250,1,TimeUnit.MILLISECONDS);
+        },250,1,TimeUnit.MILLISECONDS);*/
 
         console.iConsole.consoleChange();
 
@@ -149,7 +153,7 @@ public class Console extends Thread{
                 actualConsole = defaultConsole;
             }
 
-            while (isRunning && (data =consoleReader.reader.readLine()) != null){
+            while (isRunning && (data =consoleReader.reader.readLine(this.writing)) != null){
                 if(Console.actualConsole.equals(name)){
                 try {
                     String[] args = new String[0];
@@ -159,7 +163,7 @@ public class Console extends Thread{
                     iConsole.listener(args);
 
                     if(!Config.isWindows()){
-                        write(writing);
+                       // write(writing);
                     }
                 }catch (Exception e){
                     fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
@@ -187,13 +191,13 @@ public class Console extends Thread{
     }
     public String readLine() throws IOException {
         StringBuilder sb = new StringBuilder();
-        int readByte = consoleReader.reader.read();
-        while (readByte>-1 && readByte!= '\n')
+
+      /*  while (readByte>-1 && readByte!= '\n')
         {
             sb.append((char) readByte);
             readByte = consoleReader.reader.read();
-        }
-        return sb.length()==0?null:sb.toString();
+        }*/
+        return consoleReader.reader.readLine();
     }
     private String interruptibleReadLine(BufferedReader reader)
             throws InterruptedException, IOException {
