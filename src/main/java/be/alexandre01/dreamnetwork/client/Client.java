@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client;
 
 
 import be.alexandre01.dreamnetwork.client.commands.CommandReader;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
@@ -12,25 +13,17 @@ import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
 import lombok.Getter;
 import lombok.Setter;
 
 
-
-import javax.crypto.KeyGenerator;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.security.Key;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.logging.FileHandler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {

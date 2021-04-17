@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.client.installer;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.config.Config;
+import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import lombok.SneakyThrows;
@@ -75,7 +75,17 @@ public class Installer {
                 public void complete() {
                     for (int i = 1; i < files.size(); i++) {
                         try {
-                            Config.copy(files.get(0),files.get(i));
+                            Config.asyncCopy(files.get(0), files.get(i), new EstablishedAction() {
+                                @Override
+                                public void completed() {
+
+                                }
+
+                                @Override
+                                public void cancelled() {
+
+                                }
+                            });
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

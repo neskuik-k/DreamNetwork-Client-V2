@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service;
 
-import be.alexandre01.dreamnetwork.client.Config;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import lombok.Data;

@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.client.commands;
 
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Config;
 import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
 import be.alexandre01.dreamnetwork.client.commands.lists.ServiceCommand;
 import be.alexandre01.dreamnetwork.client.commands.lists.SpigetCommand;

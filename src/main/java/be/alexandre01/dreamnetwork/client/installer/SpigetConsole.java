@@ -1,28 +1,18 @@
 package be.alexandre01.dreamnetwork.client.installer;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.commands.CommandsManager;
-import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
-import be.alexandre01.dreamnetwork.client.commands.lists.ServiceCommand;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
-import be.alexandre01.dreamnetwork.utils.spiget.exceptions.SearchRessourceException;
-import com.gargoylesoftware.htmlunit.BrowserVersion;
-import com.gargoylesoftware.htmlunit.Page;
-import com.gargoylesoftware.htmlunit.WebClient;
 import com.github.tomaslanger.chalk.Chalk;
-import org.apache.commons.httpclient.Header;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.List;

@@ -1,14 +1,11 @@
 package be.alexandre01.dreamnetwork.client.console;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Config;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 
-import com.github.tomaslanger.chalk.Ansi;
 import com.github.tomaslanger.chalk.Chalk;
-import com.google.common.collect.Ordering;
-import lombok.SneakyThrows;
 
 import java.io.BufferedReader;
 import java.io.IOException;

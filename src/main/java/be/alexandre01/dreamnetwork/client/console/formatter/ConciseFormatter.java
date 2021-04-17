@@ -1,12 +1,8 @@
 package be.alexandre01.dreamnetwork.client.console.formatter;
 
 
-import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Config;
-import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import com.github.tomaslanger.chalk.Chalk;
-import com.google.common.base.CharMatcher;
-import net.md_5.bungee.api.ChatColor;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;

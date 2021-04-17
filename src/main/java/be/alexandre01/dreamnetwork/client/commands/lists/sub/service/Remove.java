@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 
-import be.alexandre01.dreamnetwork.client.Config;
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
