@@ -42,6 +42,7 @@ public class Add implements SubCommandExecutor {
                                      JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
+                                         jvmExecutor.addConfigsFiles();
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                          return true;
                                      }
@@ -57,6 +58,7 @@ public class Add implements SubCommandExecutor {
                                      JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
+                                         jvmExecutor.addConfigsFiles();
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                          return true;
                                      }
@@ -76,6 +78,7 @@ public class Add implements SubCommandExecutor {
                                          JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                          if(jvmExecutor == null){
                                              jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
+                                             jvmExecutor.addConfigsFiles();
                                              Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                              return true;
                                          }
@@ -91,6 +94,7 @@ public class Add implements SubCommandExecutor {
                                          JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                          if(jvmExecutor == null){
                                              jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,true);
+                                             jvmExecutor.addConfigsFiles();
                                              Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                              return true;
                                          }

@@ -27,13 +27,18 @@ public class Console extends Thread{
     private final ArrayList<ConsoleMessage> history;
     public static String defaultConsole;
     public static String actualConsole;
+    private Thread thread;
     public boolean isRunning = false;
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
 
     public static Console load(String name){
         Console c = new Console(name);
         instances.put(name,c);
-        new Thread(c).start();
+        if(c.iConsole != null){
+            c.thread = new Thread(c);
+            c.thread.start();
+        }
+
         return c;
     }
     public static void setActualConsole(String name){
@@ -133,6 +138,11 @@ public class Console extends Thread{
     
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;
+        if(thread == null){
+            thread = new Thread(this);
+            thread.start();
+        }
+
     }
     public Console(String name){
         this.history = new ArrayList<>();

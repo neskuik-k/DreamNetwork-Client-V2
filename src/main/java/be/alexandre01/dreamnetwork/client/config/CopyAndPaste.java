@@ -184,8 +184,9 @@ public class CopyAndPaste {
 
 
                 try {
-                    Files.deleteIfExists(target);
-                    Files.createFile(target);
+                    if (!Files.exists(target)){
+                        Files.createFile(target);
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -247,6 +248,8 @@ public class CopyAndPaste {
                             System.out.println("HMM 2");
                             System.out.println("Parts SIZE >> "+ parts.size());
                             if(!parts.isEmpty()){
+                                System.out.println("Paths SIZE >> "+ paths.size());
+                                System.out.println("Paths  >> "+ paths.toArray().toString());
                             if(paths.size() == 0){
                                 if(cancelled){
                                     establishedAction.cancelled();

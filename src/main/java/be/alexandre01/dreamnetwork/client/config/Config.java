@@ -111,6 +111,8 @@ public class Config {
         }
     }
     public static void write(InputStream in, File targetLocation) throws IOException {
+        if(!targetLocation.exists())
+            targetLocation.createNewFile();
         try (
                 OutputStream out = new FileOutputStream(targetLocation)
         ) {

@@ -35,7 +35,7 @@ public class DNAPI {
         System.out.println(args);
         DNAPI dnapi = new DNAPI();
         try {
-            dnapi.createUser("altata01@hotmail.com","alexandre01dev","1234");
+            dnapi.createUser("alexandre.taillet@gmail.com","alexandre","1234");
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -49,13 +49,7 @@ public class DNAPI {
 
 
     public void createUser(String email,String username, String pinCode) throws InterruptedException, IOException, ExecutionException, TimeoutException {
-        System.out.println("help");
 
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("email", email);
-        jsonObject.addProperty("username", username);
-        jsonObject.addProperty("pinCode", pinCode);
-        System.out.println(jsonObject.toString());
         String param = "email="+email+"&username="+username+"&pinCode="+pinCode;
         AsyncHttpClient client = Dsl.asyncHttpClient();
 

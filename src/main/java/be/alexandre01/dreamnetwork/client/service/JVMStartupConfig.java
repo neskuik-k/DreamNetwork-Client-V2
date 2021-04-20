@@ -310,11 +310,15 @@ public class JVMStartupConfig {
         return null;
     }
     public void addConfigsFiles(){
+        System.out.println("PROCESS ADD CONFIG");
         if(proxy){
+            System.out.println("PROXY ADD CONFIG");
             InputStream is = getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml");
             try {
                 assert is != null;
-                Config.write(is,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/config.yml")));
+                File file = new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/config.yml"));
+                Config.write(is,file);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -324,6 +328,7 @@ public class JVMStartupConfig {
         InputStream iss = getClass().getClassLoader().getResourceAsStream("files/spigot/server.properties");
         try {
             assert ies != null;
+            System.out.println("EULA>> "+System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/eula.txt");
             Config.write(ies,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/eula.txt")));
             assert iss != null;
             Config.write(iss,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/server.properties")));
@@ -367,9 +372,6 @@ public class JVMStartupConfig {
             }
             if(startup != null){
                 writer.println("startup: "+startup);
-            }
-            if(exec != null){
-                writer.println("executable: "+exec);
             }
             writer.println("proxy: "+proxy);
             writer.close();

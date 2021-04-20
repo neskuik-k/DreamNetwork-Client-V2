@@ -66,6 +66,7 @@ public class Install implements SubCommandExecutor {
                             installationLinks.name().toLowerCase(),
                             jvmExecutor.getStartup());
                     jvmExecutor.setExec(installationLinks.name().toLowerCase()+".jar");
+                    System.gc();
                 }
             });
             return true;

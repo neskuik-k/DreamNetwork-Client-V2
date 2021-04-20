@@ -36,6 +36,7 @@ public class Start implements SubCommandExecutor {
                 return true;
             }
             jvmExecutor.startServer();
+            return true;
         }
 
 

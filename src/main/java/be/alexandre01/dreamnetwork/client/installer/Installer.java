@@ -221,6 +221,7 @@ public class Installer {
                             queueisAvailable = true;
                             Client.getInstance().formatter.getDefaultStream().println("QUEUE true");
                             try {
+
                                 client.close();
                             } catch (IOException e) {
                                 e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
