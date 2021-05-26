@@ -12,5 +12,6 @@ public class DockerContainer {
         DockerClient dockerClient = DockerClientImpl
                 .getInstance(config);
 
+
     }
 }

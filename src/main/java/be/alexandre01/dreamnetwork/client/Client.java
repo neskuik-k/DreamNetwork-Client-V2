@@ -51,7 +51,6 @@ public class Client {
         //UTF8
         Chalk.setColorEnabled(true);
 
-
             System.setProperty("file.encoding","UTF-8");
 
             Field charset = Charset.class.getDeclaredField("defaultCharset");
