@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.client.commands.lists;
 
 import be.alexandre01.dreamnetwork.client.commands.Command;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.*;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
 
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
@@ -25,6 +27,8 @@ public class ServiceCommand extends Command {
         getHelpBuilder().setCmdUsage("remove a server","remove","server/proxy","[name]");
         getHelpBuilder().setTitleUsage("List all your servers");
         getHelpBuilder().setCmdUsage("list your servers","list");
+
+        setAutoCompletions();
     }
 
 }

@@ -6,9 +6,11 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 
 import com.github.tomaslanger.chalk.Chalk;
+import jline.console.CursorBuffer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
@@ -90,7 +92,16 @@ public class Console extends Thread{
     }
 
     public static void print(Object s, Level level){
+        jline.console.ConsoleReader consoleReader = ConsoleReader.sReader;
+
+        if(consoleReader.getHistory() == null || consoleReader.getHistory().size() == 0){
+            return;
+        }
+
+
+
         instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
+
     }
     public static void print(String s, Level level,String name){
         instances.get(name).fPrint(s + Colors.ANSI_RESET(),level);
@@ -100,10 +111,11 @@ public class Console extends Thread{
             Client.getLogger().info(s+Colors.ANSI_RESET());
     }
     public void fPrint(Object s,Level level){
+    //    stashLine();
         if(Console.actualConsole.equals(name)){
             Client.getLogger().log(level,s+Colors.ANSI_RESET());
         }
-
+    //    unstashLine();
 
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
@@ -112,8 +124,12 @@ public class Console extends Thread{
     }
 
     public static void debugPrint(Object s){
+        //stashLine();
         Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
+       // unstashLine();
     }
+
+
     public static void clearConsole(){
 
         try
@@ -159,10 +175,19 @@ public class Console extends Thread{
             if(actualConsole == null || !instances.containsKey(actualConsole)){
                 actualConsole = defaultConsole;
             }
+            consoleReader.reader.setPrompt(  this.writing);
+            PrintWriter out = new PrintWriter(consoleReader.reader.getOutput());
+            while (isRunning && (data =consoleReader.reader.readLine()) != null){
 
-            while (isRunning && (data =consoleReader.reader.readLine(this.writing)) != null){
                 if(Console.actualConsole.equals(name)){
                 try {
+                    consoleReader.reader.resetPromptLine("",
+                          "", 0);
+                    consoleReader.reader.setPrompt(this.writing);
+                    out.println("=> "+ data);
+                    out.flush();
+
+                    //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
                     String[] args = new String[0];
 
                     args = data.split(" ");
@@ -277,5 +302,29 @@ public class Console extends Thread{
             b[i] = (byte) buffer[i];
         }
         return b;
+    }
+
+
+    private static CursorBuffer stashed;
+
+    public static void stashLine() {
+        jline.console.ConsoleReader console = ConsoleReader.sReader;
+        stashed = console.getCursorBuffer().copy();
+        try {
+            console.getOutput().write("\u001b[1G\u001b[K");
+            console.flush();
+        } catch (IOException e) {
+            // ignore
+        }
+    }
+
+    public static void unstashLine() {
+        try {
+            jline.console.ConsoleReader console = ConsoleReader.sReader;
+            console.resetPromptLine(console.getPrompt(),
+                    stashed.toString(), stashed.cursor);
+        } catch (IOException e) {
+            // ignore
+        }
     }
 }

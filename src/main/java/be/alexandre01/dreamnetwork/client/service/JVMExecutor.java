@@ -361,8 +361,8 @@ public class JVMExecutor extends JVMStartupConfig{
         //   connect.setServer(this);
 
         //SCREEN SYSTEM
-        Thread readData = new Thread(new Screen(jvmService));
-        readData.start();
+        new Screen(jvmService);
+       
 
         return true;
     }

@@ -5,6 +5,8 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
+import be.alexandre01.dreamnetwork.client.service.screen.Screen;
+import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 
 import java.io.*;
@@ -20,12 +22,15 @@ public class ScreenInReader extends Thread {
     InputStream in;
     JVMService server;
     public BufferedReader reader;
+    private Screen screen;
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
-    public ScreenInReader(Console console, JVMService server,BufferedReader reader) {
+    public ScreenInReader(Console console, JVMService server,BufferedReader reader,Screen screen) {
         this.console = console;
         this.server = server;
         this.reader = reader;
+
+        this.screen = screen;
     }
 
     @Override
@@ -43,6 +48,11 @@ public class ScreenInReader extends Thread {
                     return;
                 }
 
+                if(!process.isAlive()){
+                    screen.destroy();
+                }
+
+
                 String data = new String(datas.toString());
 
                 PrintStream p = Client.getInstance().formatter.getDefaultStream();
@@ -57,13 +67,10 @@ public class ScreenInReader extends Thread {
 
             String data = null;
             int i = 0;
-            while (reader.read(buffer) != -1 && this.isRunning) {
+            while (reader.read(buffer) != -1 && this.isRunning ) {
                 buffer.flip();
                 datas.append(buffer);
                 buffer.clear();
-
-                //datas.append(i).append(" ").append(data).append("\n");
-              //  Client.getInstance().formatter.getDefaultStream().print("HMMM2 "+data+"\n");
             }
 
         } catch (Exception exception) {
@@ -72,14 +79,5 @@ public class ScreenInReader extends Thread {
         }
     }
 
-
-
-    public void sleep(){
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
     }
 

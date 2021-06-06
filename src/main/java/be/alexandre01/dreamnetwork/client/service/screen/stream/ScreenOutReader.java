@@ -58,6 +58,10 @@ public class ScreenOutReader extends Thread{
                         //Console.debugPrint(Arrays.toString(args));
                         if (!commands.check(args)) {
                             try {
+                                if(!screen.getService().getProcess().isAlive()){
+                                    screen.destroy();
+                                    return;
+                                }
                                 //   Console.debugPrint("start");
 
                                 //  Console.debugPrint("writer");

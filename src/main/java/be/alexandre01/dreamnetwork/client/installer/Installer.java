@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.installer;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
+import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import lombok.SneakyThrows;
@@ -180,14 +181,15 @@ public class Installer {
                                 directionRight = true;
                             }
                         }
-                        Client.getInstance().formatter.getDefaultStream().print("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]\r");
+                        ConsoleReader.sReader.print("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]\r");
                         return State.CONTINUE;
                     }
 
                     @Override
                     public FileOutputStream onCompleted(Response response) {
                         try {
-                            Client.getInstance().formatter.getDefaultStream().print("\n");
+
+                            ConsoleReader.sReader.print("\n");
                             Client.getInstance().formatter.getDefaultStream().println("\nCOMPLETE... "+ stream.getChannel().size()/1024 +"kb in total");
                             Client.getInstance().formatter.getDefaultStream().println("HELLO");
 

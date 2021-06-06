@@ -5,6 +5,8 @@ import be.alexandre01.dreamnetwork.client.commands.Command;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
+import jline.console.completer.Completer;
+import jline.console.completer.StringsCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ public class SpigetCommand extends Command {
 
     public SpigetCommand(String name) {
         super(name);
+        setCompletions(new StringsCompleter("spiget"));
+
         commandExecutor = new CommandExecutor() {
             @Override
             public boolean execute(String[] args) {

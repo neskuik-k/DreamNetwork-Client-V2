@@ -1,16 +1,22 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.installer.Installer;
 import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
-import org.slf4j.impl.StaticLoggerBinder;
 
-public class Install implements SubCommandExecutor {
+public class Install extends SubCommandCompletor implements SubCommandExecutor {
+    public Install(){
+        for(InstallationLinks s : InstallationLinks.values()){
+            addCompletor("service","install","server","",s.getVer());
+            addCompletor("service","install","proxy","",s.getVer());
+        }
+    }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(args.length < 1){

@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.commands;
+package be.alexandre01.dreamnetwork.client.commands.sub;
 
 
 import lombok.NonNull;
@@ -6,4 +6,5 @@ import lombok.NonNull;
 public interface SubCommandExecutor {
 
     boolean onSubCommand(@NonNull String[] args);
+
 }

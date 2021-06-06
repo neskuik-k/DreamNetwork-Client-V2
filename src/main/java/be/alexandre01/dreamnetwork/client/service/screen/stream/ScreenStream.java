@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import java.io.*;
 
 public class ScreenStream {
+    public Screen screen;
     public PrintStream oldOut = System.out;
     public InputStream oldIn = System.in;
     public BufferedReader reader;
@@ -22,7 +23,7 @@ public class ScreenStream {
 
     }
     public void init(String name, Screen screen){
-        System.out.println("fck");
+        this.screen = screen;
         System.out.println(screen.getService().getProcess().getInputStream());
         if(reader == null)
             reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
@@ -33,7 +34,7 @@ public class ScreenStream {
         console = Console.getConsole("s:"+name);
 
         this.console = console;
-        screenInReader = new ScreenInReader(console,screen.getService(),reader);
+        screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
         this.screenOutReader = new ScreenOutReader(screen,console,writer);

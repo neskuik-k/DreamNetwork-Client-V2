@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.client;
 import be.alexandre01.dreamnetwork.client.commands.CommandReader;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
@@ -175,6 +176,8 @@ public class Client {
 
         System.out.println(Chalk.on("Le Network a été démarré avec succès / Faites help pour avoir les commandes").green());
         Console console = Console.getConsole("m:default");
+
+
         CommandReader commandReader = new CommandReader(console);
         ScreenManager.load();
 

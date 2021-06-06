@@ -2,12 +2,19 @@ package be.alexandre01.dreamnetwork.client.commands;
 
 
 import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import jline.console.completer.*;
 import lombok.Getter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
+import java.util.logging.Level;
 
 
 public class Command{
@@ -37,6 +44,35 @@ public class Command{
             }
         }
     };
+    public void setAutoCompletions(){
+        jline.console.ConsoleReader reader = ConsoleReader.sReader;
+        c.forEach((s, subCommandExecutor) -> {
+            if(subCommandExecutor instanceof SubCommandCompletor){
+                SubCommandCompletor completor = (SubCommandCompletor) subCommandExecutor;
+
+                for(String[] subs: completor.sub){
+                    Console.print(Arrays.toString(subs), Level.FINE);
+                    List<Completer> completors = new ArrayList<>();
+                    boolean nullComp = false;
+                    for(String sub : subs){
+                        completors.add(new StringsCompleter(sub));
+                    }
+
+
+
+                    //AggregateCompleter aggregateCompleter = new AggregateCompleter(completors);
+                    ArgumentCompleter argumentCompleter = new ArgumentCompleter(completors);
+
+
+                        argumentCompleter.setStrict(true);
+                    reader.addCompleter(argumentCompleter);
+                }
+            }
+        });
+    }
+    public void setCompletions(Completer completer){
+        ConsoleReader.sReader.addCompleter(completer);
+    }
     public void sendHelp(){
         if(helpBuilder.getSize() <= 1){
             Console.print(Colors.ANSI_RED()+" Invalid arguments.");
@@ -66,5 +102,7 @@ public class Command{
     public interface CommandExecutor{
         boolean execute(String[] args);
     }
+
+
 }
 

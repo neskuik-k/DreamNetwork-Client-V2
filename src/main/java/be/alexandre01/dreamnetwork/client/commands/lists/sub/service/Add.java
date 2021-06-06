@@ -3,8 +3,9 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.config.Config;
-import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -17,7 +18,13 @@ import java.io.BufferedWriter;
 import java.util.Arrays;
 import java.util.logging.Level;
 
-public class Add implements SubCommandExecutor {
+public class Add extends SubCommandCompletor implements SubCommandExecutor {
+    public Add(){
+        addCompletor("service","add","server","","STATIC","1G","2G");
+        addCompletor("service","add","server","","DYNAMIC","1G","2G");
+        addCompletor("service","add","proxy","","STATIC","1G","2G");
+        addCompletor("service","add","proxy","","DYNAMIC","1G","2G");
+    }
     @Override
     public boolean onSubCommand(String[] args) {
 

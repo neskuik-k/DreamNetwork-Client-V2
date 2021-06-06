@@ -1,12 +1,15 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMContainer;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import lombok.NonNull;
 
-public class List implements SubCommandExecutor {
+public class List extends SubCommandCompletor implements SubCommandExecutor {
+    public List(){
+        addCompletor("service","screen");
+    }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(args[0].equalsIgnoreCase("list")){

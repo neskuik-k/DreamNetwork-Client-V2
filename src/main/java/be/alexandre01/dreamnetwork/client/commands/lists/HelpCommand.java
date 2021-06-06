@@ -2,11 +2,10 @@ package be.alexandre01.dreamnetwork.client.commands.lists;
 
 
 import be.alexandre01.dreamnetwork.client.commands.Command;
-import be.alexandre01.dreamnetwork.client.commands.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
-import lombok.Builder;
+import jline.console.completer.StringsCompleter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +15,9 @@ public class HelpCommand extends Command {
 
     public HelpCommand(String name) {
         super(name);
+
+        setCompletions(new StringsCompleter("help"));
+
         commandExecutor = new CommandExecutor() {
             @Override
             public boolean execute(String[] args) {

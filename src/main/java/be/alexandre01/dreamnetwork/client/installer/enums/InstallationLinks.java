@@ -35,6 +35,9 @@ public enum InstallationLinks {
     public String getUrl() {
         return url;
     }
+    public String getVer() {
+        return ver;
+    }
 
     public static InstallationLinks getInstallationLinks(String ver){
         return links.get(ver);
