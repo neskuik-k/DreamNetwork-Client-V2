@@ -3,12 +3,8 @@ package be.alexandre01.dreamnetwork.client.commands;
 
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
-import be.alexandre01.dreamnetwork.client.commands.lists.ServiceCommand;
-import be.alexandre01.dreamnetwork.client.commands.lists.SpigetCommand;
+import be.alexandre01.dreamnetwork.client.commands.lists.*;
 import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
-import jline.console.completer.ArgumentCompleter;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -26,6 +22,8 @@ public class CommandReader{
         commands.addCommands(new ServiceCommand("service"));
         commands.addCommands(new HelpCommand("help"));
         commands.addCommands(new SpigetCommand("spiget"));
+        commands.addCommands(new ClearCommand("clear"));
+        commands.addCommands(new QuitCommand("quit"));
         run();
     }
 
