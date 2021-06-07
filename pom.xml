@@ -52,13 +52,7 @@
             <version>2.6</version>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/net.md-5/bungeecord-api -->
-        <dependency>
-            <groupId>net.md-5</groupId>
-            <artifactId>bungeecord-api</artifactId>
-            <version>1.16-R0.4</version>
-            <scope>provided</scope>
-        </dependency>
+
 
         <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
         <dependency>
