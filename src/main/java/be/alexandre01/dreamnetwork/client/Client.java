@@ -3,8 +3,13 @@ package be.alexandre01.dreamnetwork.client;
 
 import be.alexandre01.dreamnetwork.client.commands.CommandReader;
 import be.alexandre01.dreamnetwork.client.config.Config;
+import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
@@ -25,6 +30,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.util.logging.FileHandler;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Client {
@@ -43,6 +49,10 @@ public class Client {
     private SpigetConsole spigetConsole;
     @Getter
     private static String username;
+    @Getter @Setter
+    private CoreHandler coreHandler;
+    @Getter
+    private ClientManager clientManager;
 
 
 
@@ -166,21 +176,42 @@ public class Client {
     }
 
     public void init(){
-
         formatter = new Formatter();
         formatter.format();
+
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
 
 
-        System.out.println(Chalk.on("Le Network a été démarré avec succès / Faites help pour avoir les commandes").green());
-        Console console = Console.getConsole("m:default");
 
+        Console console = Console.getConsole("m:default");
+        try {
+            console.fPrint("Ça démarre tkt",Level.INFO);
+            Thread thread = new Thread(new CoreServer(8080));
+            thread.start();
+            console.fPrint("C'est démarré frr",Level.INFO);
+        } catch (Exception e) {
+            console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
+            for(StackTraceElement s : e.getStackTrace()){
+                Client.getInstance().formatter.getDefaultStream().println("----->");
+                console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
+            }
+            if(Client.getInstance().isDebug()){
+                e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
+            }else {
+                Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
+            }
+
+        }
+        console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"Le Network a été démarré avec succès / Faites help pour avoir les commandes", Level.INFO);
 
         CommandReader commandReader = new CommandReader(console);
         ScreenManager.load();
 
+
+
         //MANAGER
+        this.clientManager = new ClientManager(this);
 
 
 

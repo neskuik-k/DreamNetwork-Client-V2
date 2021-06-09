@@ -6,6 +6,7 @@ import lombok.Data;
 @Data @Builder
 public class JVMService implements IService {
     private int id;
+    private int port;
     private JVMExecutor jvmExecutor;
     private Process process;
 

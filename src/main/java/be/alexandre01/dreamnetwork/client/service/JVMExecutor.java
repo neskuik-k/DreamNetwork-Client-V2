@@ -3,10 +3,12 @@ package be.alexandre01.dreamnetwork.client.service;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.utils.timers.DateBuilderTimer;
+import jdk.jfr.internal.JVM;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -34,6 +36,7 @@ public class JVMExecutor extends JVMStartupConfig{
     @Getter @Setter  public static ArrayList<Integer> serversPortList = new ArrayList<>();
     @Getter @Setter  public static ArrayList<Integer> portsBlackList = new ArrayList<>();
     @Getter @Setter   public static HashMap<String,Integer> serversPort = new HashMap<>();
+    @Getter @Setter   public static HashMap<Integer, JVMService> servicePort = new HashMap<>();
     @Getter @Setter  public static Integer cache = 0;
     public HashMap<Integer,JVMService> jvmServices = new HashMap<>();
 
@@ -340,9 +343,11 @@ public class JVMExecutor extends JVMStartupConfig{
                 process(proc)
                 .jvmExecutor(this)
                 .id(servers)
+                .port(port)
                 .build();
 
         jvmServices.put(servers,jvmService);
+        servicePort.put(port,jvmService);
 
         // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
@@ -374,8 +379,9 @@ public class JVMExecutor extends JVMStartupConfig{
             Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+name+"/"+finalName));
         }
         jvmServices.remove(i);
-
+        servicePort.remove(jvmService.getPort());
         if(serversPort.containsKey(name)){
+
             int port = serversPort.get(name);
             serversPort.put("cache-"+cache,port);
             System.out.println(serversPort.get("cache-"+cache));
@@ -467,6 +473,7 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
     }
+
     public enum Mods {
         STATIC("/template/"),DYNAMIC("/temp/");
 
@@ -481,6 +488,7 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
     }
+
 
 }
 
