@@ -5,7 +5,10 @@ import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.nio.charset.StandardCharsets;
 
 public class AuthentificationResponse extends CoreResponse{
     @Override
@@ -13,6 +16,16 @@ public class AuthentificationResponse extends CoreResponse{
         System.out.println("Requete entrente->");
         System.out.println(message);
         if(message.hasRequest()){
+            Message msgTest = new Message();
+            msgTest.set("Hello","OKi");
+
+
+            byte[] entry = msgTest.toString().getBytes(StandardCharsets.UTF_8);
+            final ByteBuf buf = ctx.alloc().buffer(entry.length); // (2)
+            buf.writeBytes(entry);
+
+            ctx.writeAndFlush(buf);
+
             RequestType requestType = RequestType.getByID(message.getRequest());
             Console.print("REQUETE : "+ requestType);
             switch (requestType){
@@ -32,7 +45,8 @@ public class AuthentificationResponse extends CoreResponse{
                             .coreHandler(Client.getInstance().getCoreHandler())
                             .info(info)
                             .port(port)
-                            .channel(ctx.channel())
+                            .jvmType(null)
+                            .ctx(ctx)
                             .build());
 
                     if (client.getJvmType().equals(JVMContainer.JVMType.PROXY)) {

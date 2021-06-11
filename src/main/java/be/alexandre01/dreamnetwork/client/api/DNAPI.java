@@ -7,8 +7,7 @@ import com.google.gson.JsonParser;
 import io.netty.util.CharsetUtil;
 import org.asynchttpclient.*;
 import org.asynchttpclient.util.HttpConstants;
-import org.eclipse.jetty.websocket.client.ClientUpgradeRequest;
-import org.eclipse.jetty.websocket.client.WebSocketClient;
+
 
 import java.io.IOException;
 import java.io.OutputStream;

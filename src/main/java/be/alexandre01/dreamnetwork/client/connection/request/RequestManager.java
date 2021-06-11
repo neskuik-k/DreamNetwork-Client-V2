@@ -4,11 +4,16 @@ package be.alexandre01.dreamnetwork.client.connection.request;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.request.exception.RequestNotFoundException;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import lombok.Getter;
+
+import java.util.logging.Level;
 
 public class RequestManager {
+    @Getter
     RequestBuilder requestBuilder;
     private ClientManager.Client client;
 
@@ -29,12 +34,15 @@ public class RequestManager {
 
          RequestBuilder.RequestData requestData = requestBuilder.requestData.get(requestType);
          message.setHeader("RequestType");
+        message.setRequestType(requestType);
 
          client.writeAndFlush(requestData.write(message,args),listener);
     }
 
     public void sendRequest(RequestType requestType, String... args){
-        this.sendRequest(requestType,new Message(),null,args);
+        this.sendRequest(requestType,new Message(),future -> {
+            Console.print("Request "+ requestType.name()+" sended with success!", Level.FINE);
+        },args);
     }
 
     public void sendRequest(RequestType requestType,Message message, String... args){

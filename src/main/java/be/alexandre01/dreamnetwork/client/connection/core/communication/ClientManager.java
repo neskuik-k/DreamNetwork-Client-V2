@@ -3,11 +3,13 @@ package be.alexandre01.dreamnetwork.client.connection.core.communication;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
+import be.alexandre01.dreamnetwork.client.connection.request.generated.spigot.DefaultSpigotRequest;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import jdk.jfr.internal.JVM;
@@ -15,6 +17,7 @@ import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class ClientManager {
@@ -27,6 +30,8 @@ public class ClientManager {
     }
     public Client registerClient(Client client){
         clientByPort.put(client.port,client);
+        System.out.println("PORT >> "+ client.getPort());
+        System.out.println("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()));
         JVMService jvmService = JVMExecutor.servicePort.get(client.getPort());
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
         client.jvmService = jvmService;
@@ -39,26 +44,30 @@ public class ClientManager {
     @Data
     public static class Client{
         private int port;
-        private JVMContainer.JVMType jvmType;
+        private JVMContainer.JVMType jvmType = null;
         private String info;
-        private Channel channel;
+        private ChannelHandlerContext channelHandlerContext;
         private final RequestManager requestManager;
         private CoreHandler coreHandler;
         private JVMService jvmService;
 
         @Builder
-        public Client(int port, String info, CoreHandler coreHandler,Channel channel){
+        public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType){
             this.port = port;
             this.info = info;
             this.coreHandler = coreHandler;
+            this.channelHandlerContext = ctx;
+            this.jvmType = jvmType;
             requestManager = new RequestManager(this);
             if(jvmType == null){
+                System.out.println(info.split("-")[0]);
                 switch (info.split("-")[0]){
                     case "SPIGOT":
-                        jvmType = JVMContainer.JVMType.SERVER;
+                        this.jvmType = JVMContainer.JVMType.SERVER;
+                        requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
                         break;
                     case "BUNGEECORD":
-                        jvmType = JVMContainer.JVMType.PROXY;
+                        this.jvmType = JVMContainer.JVMType.PROXY;
                         break;
                 }
             }

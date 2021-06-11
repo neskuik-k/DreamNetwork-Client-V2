@@ -13,14 +13,5 @@ public class BaseResponse extends CoreResponse {
         if(message.contains("Bonjour")){
             System.out.println("Message reçu du client => "+ message.getString("Bonjour"));
         }
-        if(message.contains("ms")){
-            System.out.println(message);
-
-            long l = message.getLong("ms");
-            long ms = new Date().getTime()-l;
-
-            System.out.println(ms+" ms");
-        }
-
     }
 }

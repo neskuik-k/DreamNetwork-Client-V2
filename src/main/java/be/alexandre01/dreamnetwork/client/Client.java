@@ -6,13 +6,12 @@ import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
+import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -21,6 +20,7 @@ import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.log4j.PropertyConfigurator;
 
 
 import java.io.IOException;
@@ -29,6 +29,7 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -47,7 +48,7 @@ public class Client {
     private JVMContainer jvmContainer;
     @Getter
     private SpigetConsole spigetConsole;
-    @Getter
+    @Getter @Setter
     private static String username;
     @Getter @Setter
     private CoreHandler coreHandler;
@@ -57,14 +58,26 @@ public class Client {
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-
-
+        new LoadLibraries().init();
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         //UTF8
         Chalk.setColorEnabled(true);
 
             System.setProperty("file.encoding","UTF-8");
+        Logger.getLogger("io.netty").setLevel(Level.OFF);
+        Logger.getLogger("io.netty.util.internal.logging.InternalLoggerFactory").setLevel(Level.OFF);
+            String pathSlf4J = Client.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
+        ConsoleHandler ch = new ConsoleHandler();
+        ch.setLevel(Level.FINE);
+        Logger.getLogger("").addHandler(ch);
+        Logger.getLogger("").setLevel(Level.FINE);
 
-            Field charset = Charset.class.getDeclaredField("defaultCharset");
+
+        Field charset = Charset.class.getDeclaredField("defaultCharset");
             charset.setAccessible(true);
             charset.set(null,null);
 
@@ -140,7 +153,8 @@ public class Client {
     }
 
     public Client(){
-
+        System.out.println(getClass().getClassLoader().getResourceAsStream("log4j.properties"));
+        PropertyConfigurator.configure(getClass().getClassLoader().getResourceAsStream("log4j.properties"));
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
