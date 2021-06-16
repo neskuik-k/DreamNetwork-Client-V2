@@ -200,10 +200,9 @@ public class Client {
 
         Console console = Console.getConsole("m:default");
         try {
-            console.fPrint("Ça démarre tkt",Level.INFO);
-            Thread thread = new Thread(new CoreServer(8080));
+            Thread thread = new Thread(new CoreServer(14520));
             thread.start();
-            console.fPrint("C'est démarré frr",Level.INFO);
+            console.fPrint("The Netty CoreServer System has been started on the port 14520.",Level.INFO);
         } catch (Exception e) {
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
             for(StackTraceElement s : e.getStackTrace()){

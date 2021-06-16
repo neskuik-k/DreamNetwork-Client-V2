@@ -7,14 +7,14 @@ import java.util.List;
 
 public class ConsoleReader {
     public static jline.console.ConsoleReader sReader;
-    public jline.console.ConsoleReader reader;
-    public BufferedWriter writer;
-    public ConsoleReader(){
+
+    static {
         try {
-            sReader = reader = new jline.console.ConsoleReader();
+            sReader = new jline.console.ConsoleReader();
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
+
+    public BufferedWriter writer;
 }

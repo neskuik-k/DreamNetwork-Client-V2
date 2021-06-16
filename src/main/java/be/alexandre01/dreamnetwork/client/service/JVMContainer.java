@@ -17,14 +17,11 @@ public class JVMContainer {
         return null;
     }
     public synchronized void addExecutor(JVMExecutor jvmExecutor,JVMType jvmType){
-        System.out.println("ADD EXECUTOR");
         switch (jvmType){
             case SERVER:
-                System.out.println("ADD SERVER");
                 jvmExecutorsServers.put(jvmExecutor.name,jvmExecutor);
                 break;
             case PROXY:
-                System.out.println("ADD PROXY");
                 jvmExecutorsProxy.put(jvmExecutor.name,jvmExecutor);
                 break;
         }

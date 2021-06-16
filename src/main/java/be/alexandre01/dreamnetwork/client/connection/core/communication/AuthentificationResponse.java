@@ -26,7 +26,7 @@ public class AuthentificationResponse extends CoreResponse{
 
             ctx.writeAndFlush(buf);
 
-            RequestType requestType = RequestType.getByID(message.getRequest());
+            RequestType requestType = message.getRequest();
             Console.print("REQUETE : "+ requestType);
             switch (requestType){
                 case CORE_HANDSHAKE:
@@ -54,6 +54,13 @@ public class AuthentificationResponse extends CoreResponse{
                     }
                     if (client.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         client.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
+                        ClientManager.Client proxy = Client.getInstance().getClientManager().getProxy();
+                        String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
+
+                        proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId(),
+                                remoteAdress[0].replaceAll("/",""),
+                                String.valueOf(client.getPort()));
                     }
                     break;
             }

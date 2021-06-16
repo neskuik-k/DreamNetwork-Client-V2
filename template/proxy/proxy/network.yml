@@ -1,5 +1,6 @@
 # proxy's configuration of the startup -|- DreamNetwork™ 2021
-type: DYNAMIC
+type: STATIC
 xms: 1G
-xmx: 5G
+xmx: 2G
+executable: bungeecord
 proxy: true

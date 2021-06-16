@@ -67,7 +67,7 @@ public class Console extends Thread{
             new Thread(console).start();
         }
 
-        //clearConsole();
+        clearConsole();
         Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
@@ -175,15 +175,17 @@ public class Console extends Thread{
             if(actualConsole == null || !instances.containsKey(actualConsole)){
                 actualConsole = defaultConsole;
             }
-            consoleReader.reader.setPrompt(  this.writing);
-            PrintWriter out = new PrintWriter(consoleReader.reader.getOutput());
-            while (isRunning && (data =consoleReader.reader.readLine()) != null){
+            jline.console.ConsoleReader reader =  ConsoleReader.sReader;
 
+            reader.setPrompt(  this.writing);
+            PrintWriter out = new PrintWriter(reader.getOutput());
+            while (isRunning && ){
+                Console.debugPrint("ActualConsole >> "+Console.actualConsole);
                 if(Console.actualConsole.equals(name)){
                 try {
-                    consoleReader.reader.resetPromptLine("",
+                    reader.resetPromptLine("",
                           "", 0);
-                    consoleReader.reader.setPrompt(this.writing);
+                  reader.setPrompt(this.writing);
                     out.println("=> "+ data);
                     out.flush();
 
@@ -194,9 +196,6 @@ public class Console extends Thread{
 
                     iConsole.listener(args);
 
-                    if(!Config.isWindows()){
-                       // write(writing);
-                    }
                 }catch (Exception e){
                     fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
                     for(StackTraceElement s : e.getStackTrace()){
@@ -208,10 +207,7 @@ public class Console extends Thread{
                     }else {
                         Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
                     }
-                }
-
-
-
+                    }
                 }
 
             }
@@ -229,7 +225,7 @@ public class Console extends Thread{
             sb.append((char) readByte);
             readByte = consoleReader.reader.read();
         }*/
-        return consoleReader.reader.readLine();
+        return ConsoleReader.sReader.readLine();
     }
     private String interruptibleReadLine(BufferedReader reader)
             throws InterruptedException, IOException {

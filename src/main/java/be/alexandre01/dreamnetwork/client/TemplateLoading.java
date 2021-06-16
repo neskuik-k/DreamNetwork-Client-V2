@@ -6,10 +6,15 @@ import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.logging.Level;
 
 public class TemplateLoading {
+
     File[] serverDirectories = new File(Config.getPath("template/server/")).listFiles(File::isDirectory);
     File[] proxyDirectories = new File(Config.getPath("template/proxy/")).listFiles(File::isDirectory);
     public TemplateLoading(){
@@ -32,12 +37,34 @@ public class TemplateLoading {
         System.out.println("\n");
         Client.getInstance().init();
     }
+    private void replaceFile(InputStream in,String path,String fileName){
 
+        try {
+            assert in != null;
+            Config.createDir(path);
+            Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
+            Console.print("Updating the Plugin JAR", Level.FINE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void loadTemplate(File[] directory, String pathName){
         if(directory != null){
             for(File dir : directory){
-                //TRY TO LOAD COMPONENT
                 String name = dir.getName();
+                //TRY TO LOAD COMPONENT
+                if(Config.contains(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins")){
+                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+
+                        InputStream is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+                        file.delete();
+                        replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+
+
+
+                }
+
+
                 JVMExecutor jvmExecutor = JVMExecutor.initIfPossible(pathName,name,false);
                 if(jvmExecutor == null){
                     notConfigured(dir);

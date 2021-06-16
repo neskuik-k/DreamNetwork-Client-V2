@@ -58,9 +58,10 @@ public class Message extends LinkedHashMap<String, Object> {
         return this;
     }
 
-    public int getRequest(){
-        return (int) Integer.parseInt((String) get("requestType"));
+    public RequestType getRequest(){
+        return (RequestType) RequestType.getByID((int)Integer.parseInt((String) get("requestType")));
     }
+
 
     public boolean hasRequest(){
         return containsKey("requestType");

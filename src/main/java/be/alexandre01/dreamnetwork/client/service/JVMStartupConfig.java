@@ -64,7 +64,6 @@ public class JVMStartupConfig {
                     while (exec.charAt(0) == ' '){
                         exec = exec.substring(1);
                     }
-                    System.out.println(exec);
                 }
             }
             fileRootDir = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/");
@@ -311,31 +310,33 @@ public class JVMStartupConfig {
     }
     public void addConfigsFiles(){
         System.out.println("PROCESS ADD CONFIG");
-        if(proxy){
-            System.out.println("PROXY ADD CONFIG");
-            InputStream is = getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml");
-            try {
-                assert is != null;
-                File file = new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/config.yml"));
-                Config.write(is,file);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return;
-        }
-        InputStream ies = getClass().getClassLoader().getResourceAsStream("files/spigot/eula.txt");
-        InputStream iss = getClass().getClassLoader().getResourceAsStream("files/spigot/server.properties");
+        InputStream isp = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
         try {
-            assert ies != null;
-            System.out.println("EULA>> "+System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/eula.txt");
-            Config.write(ies,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/eula.txt")));
-            assert iss != null;
-            Config.write(iss,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/server.properties")));
+            assert isp != null;
+            Config.createDir(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/"+"plugins"));
+            Config.write(isp,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin-1.0-SNAPSHOT.jar")));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+        if(proxy){
+            updateFile("config.yml",getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml"));
+            updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/bungeecord/server-icon.png"));
+            return;
+        }
+        updateFile("eula.txt",getClass().getClassLoader().getResourceAsStream("files/spigot/eula.txt"));
+        updateFile("server.properties",getClass().getClassLoader().getResourceAsStream("files/spigot/server.properties"));
+        updateFile("bukkit.yml",getClass().getClassLoader().getResourceAsStream("files/spigot/bukkit.yml"));
+        updateFile("spigot.yml",getClass().getClassLoader().getResourceAsStream("files/spigot/spigot.yml"));
+    }
+
+    private void updateFile(String fileName, InputStream in){
+        assert in != null;
+        try {
+            Config.write(in,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/"+fileName)));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup){
         Console.print("PN>"+pathName, Level.FINE);

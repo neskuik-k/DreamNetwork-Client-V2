@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.connection.core.communication;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
+import be.alexandre01.dreamnetwork.client.connection.request.generated.proxy.DefaultBungeeRequest;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.spigot.DefaultSpigotRequest;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -16,6 +17,8 @@ import jdk.jfr.internal.JVM;
 import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -24,7 +27,7 @@ public class ClientManager {
     private final HashMap<Integer,Client> clientByPort = new HashMap<>();
     private final HashMap<String,Client> clients = new HashMap<>();
     private be.alexandre01.dreamnetwork.client.Client main;
-
+    @Getter private Client proxy;
     public ClientManager(be.alexandre01.dreamnetwork.client.Client client){
         this.main = client;
     }
@@ -35,6 +38,7 @@ public class ClientManager {
         JVMService jvmService = JVMExecutor.servicePort.get(client.getPort());
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
         client.jvmService = jvmService;
+        client.clientManager = this;
         return client;
     }
 
@@ -50,7 +54,7 @@ public class ClientManager {
         private final RequestManager requestManager;
         private CoreHandler coreHandler;
         private JVMService jvmService;
-
+        private ClientManager clientManager;
         @Builder
         public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType){
             this.port = port;
@@ -66,8 +70,10 @@ public class ClientManager {
                         this.jvmType = JVMContainer.JVMType.SERVER;
                         requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
                         break;
-                    case "BUNGEECORD":
+                    case "BUNGEE":
                         this.jvmType = JVMContainer.JVMType.PROXY;
+                        be.alexandre01.dreamnetwork.client.Client.getInstance().getClientManager().proxy = this;
+                        requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
                         break;
                 }
             }
