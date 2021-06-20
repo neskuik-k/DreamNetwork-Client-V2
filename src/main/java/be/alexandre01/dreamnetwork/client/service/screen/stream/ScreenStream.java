@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
+import jline.console.ConsoleReader;
 
 import java.io.*;
 
@@ -27,19 +28,25 @@ public class ScreenStream {
         System.out.println(screen.getService().getProcess().getInputStream());
         if(reader == null)
             reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
-        if(writer == null)
-            writer = new BufferedWriter(new OutputStreamWriter(screen.getService().getProcess().getOutputStream()));
         System.out.println("init");
         Console.load("s:"+name);
         console = Console.getConsole("s:"+name);
 
         this.console = console;
+        ConsoleReader c = null;
+        try {
+           c = new ConsoleReader(screen.getService().getProcess().getInputStream(),screen.getService().getProcess().getOutputStream());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
-        this.screenOutReader = new ScreenOutReader(screen,console,writer);
-        Thread screenORT = new Thread(screenOutReader);
-        screenORT.start();
+
+        this.screenOutReader = new ScreenOutReader(screen,console,c);
+        screenOutReader.run();
+        /*Thread screenORT = new Thread(screenOutReader);
+        screenORT.start();*/
 
         Console.setActualConsole("s:"+name);
     /*    ByteArrayOutputStream screenOutput = new ByteArrayOutputStream( );
@@ -66,8 +73,8 @@ public class ScreenStream {
 
         screenOutReader.stop = true;
 
-        screenOutReader.stop();
-        screenOutReader.interrupt();
+        //screenOutReader.stop();
+        //screenOutReader.interrupt();
         screenInReader.isRunning = false;
 
         screenInReader.stop();

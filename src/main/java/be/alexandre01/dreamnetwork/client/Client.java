@@ -140,7 +140,8 @@ public class Client {
 
 
         Console.load("m:default").isRunning = true;
-
+        Thread t = new Thread(Console.getConsole("m:default"));
+        t.start();
 
         instance = new Client();
 

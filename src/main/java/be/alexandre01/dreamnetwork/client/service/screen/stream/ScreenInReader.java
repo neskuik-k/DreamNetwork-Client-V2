@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
+
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
@@ -23,9 +24,10 @@ public class ScreenInReader extends Thread {
     JVMService server;
     public BufferedReader reader;
     private Screen screen;
+
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
-    public ScreenInReader(Console console, JVMService server,BufferedReader reader,Screen screen) {
+    public ScreenInReader(Console console, JVMService server, BufferedReader reader, Screen screen) {
         this.console = console;
         this.server = server;
         this.reader = reader;
@@ -54,12 +56,15 @@ public class ScreenInReader extends Thread {
 
 
                 String data = new String(datas.toString());
-
+                Console.stashLine();
                 PrintStream p = Client.getInstance().formatter.getDefaultStream();
                 if(datas.length() != 0){
                     p.print(data);
                 }
                 datas.setLength(0);
+              Console.unstashLine();
+
+
             }
         },250,250,TimeUnit.MILLISECONDS);
         try {

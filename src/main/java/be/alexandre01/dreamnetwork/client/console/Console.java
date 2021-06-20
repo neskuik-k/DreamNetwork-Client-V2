@@ -37,18 +37,18 @@ public class Console extends Thread{
         Console c = new Console(name);
         instances.put(name,c);
         if(c.iConsole != null){
-            c.thread = new Thread(c);
-            c.thread.start();
+            //c.thread = new Thread(c);
+            //c.thread.start();
         }
 
         return c;
     }
     public static void setActualConsole(String name){
         if(actualConsole != null){
-            Console oldConsole = instances.get(actualConsole);
+          /*  Console oldConsole = instances.get(actualConsole);
             oldConsole.isRunning = false;
             oldConsole.stop();
-            oldConsole.interrupt();
+            oldConsole.interrupt();*/
 
         }
 
@@ -64,7 +64,7 @@ public class Console extends Thread{
             }
         }
         if(!console.isAlive()){
-            new Thread(console).start();
+            //new Thread(console).start();
         }
 
         clearConsole();
@@ -80,7 +80,6 @@ public class Console extends Thread{
 
 
     }
-
     public static void setDefaultConsole(String defaultConsole) {
         if(Console.defaultConsole != null)
             instances.get(defaultConsole).stop();
@@ -111,12 +110,12 @@ public class Console extends Thread{
             Client.getLogger().info(s+Colors.ANSI_RESET());
     }
     public void fPrint(Object s,Level level){
-    //    stashLine();
+
         if(Console.actualConsole.equals(name)){
             Client.getLogger().log(level,s+Colors.ANSI_RESET());
         }
     //    unstashLine();
-
+        ConsoleReader.sReader.setPrompt(writing);
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
     public static void print(Object s){
@@ -124,9 +123,9 @@ public class Console extends Thread{
     }
 
     public static void debugPrint(Object s){
-        //stashLine();
+       // stashLine();
         Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
-       // unstashLine();
+        //unstashLine();
     }
 
 
@@ -156,7 +155,7 @@ public class Console extends Thread{
         this.iConsole = iConsole;
         if(thread == null){
             thread = new Thread(this);
-            thread.start();
+           // thread.start();
         }
 
     }
@@ -175,17 +174,16 @@ public class Console extends Thread{
             if(actualConsole == null || !instances.containsKey(actualConsole)){
                 actualConsole = defaultConsole;
             }
+
             jline.console.ConsoleReader reader =  ConsoleReader.sReader;
 
             reader.setPrompt(  this.writing);
             PrintWriter out = new PrintWriter(reader.getOutput());
-            while (isRunning && ){
+            while (isRunning && (data = reader.readLine()) != null){
                 Console.debugPrint("ActualConsole >> "+Console.actualConsole);
-                if(Console.actualConsole.equals(name)){
                 try {
                     reader.resetPromptLine("",
                           "", 0);
-                  reader.setPrompt(this.writing);
                     out.println("=> "+ data);
                     out.flush();
 
@@ -194,7 +192,7 @@ public class Console extends Thread{
 
                     args = data.split(" ");
 
-                    iConsole.listener(args);
+                    Console.getConsole(actualConsole).iConsole.listener(args);
 
                 }catch (Exception e){
                     fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
@@ -210,7 +208,6 @@ public class Console extends Thread{
                     }
                 }
 
-            }
 
 
         }catch (Exception e){

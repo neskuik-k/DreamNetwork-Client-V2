@@ -44,7 +44,7 @@ public class CommandReader{
 
                 }
             });
-
+            new Thread(console).start();
 
 
 

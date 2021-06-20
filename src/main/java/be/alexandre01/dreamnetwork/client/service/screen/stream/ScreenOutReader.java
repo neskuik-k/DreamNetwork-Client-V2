@@ -3,32 +3,39 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
+
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.commands.ScreenCommands;
 import be.alexandre01.dreamnetwork.client.service.screen.commands.ScreenExit;
 import com.github.tomaslanger.chalk.Chalk;
+import jline.console.ConsoleReader;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
-public class ScreenOutReader extends Thread{
+public class ScreenOutReader {
     ScreenCommands commands;
     BufferedWriter writer;
     private String[] args;
     private final Screen screen;
     private final Console console;
     public boolean stop = false;
-    public ScreenOutReader(Screen screen, Console console,BufferedWriter writer){
+    private ConsoleReader consoleReader;
+
+    public ScreenOutReader(Screen screen, Console console, ConsoleReader consoleReader){
+        this.consoleReader = consoleReader;
         console.fPrint("AHH",Level.INFO);
         Console.debugPrint("IFG0E0I");
-        this.writer = writer;
+        Console.debugPrint(consoleReader.getCompleters());
+
         this.console = console;
         this.screen = screen;
         commands = new ScreenCommands(screen);
@@ -44,7 +51,7 @@ public class ScreenOutReader extends Thread{
 
 
     }
-    @Override
+
     public void run() {
         console.setConsoleAction(new Console.IConsole() {
             @Override
@@ -57,6 +64,7 @@ public class ScreenOutReader extends Thread{
                     if (!args[0].equalsIgnoreCase(" ")) {
                         //Console.debugPrint(Arrays.toString(args));
                         if (!commands.check(args)) {
+                            System.out.println("Oki " + Arrays.toString(args));
                             try {
                                 if(!screen.getService().getProcess().isAlive()){
                                     screen.destroy();
@@ -81,10 +89,10 @@ public class ScreenOutReader extends Thread{
                                 if (screen.getScreenStream().screenInReader.in != null) {
                                 }
 
-                                writer.write(sb.toString());
-                                writer.newLine();
+                                consoleReader.getOutput().write(sb.toString()+"\n");
+
                                 //  Console.debugPrint("write");
-                                writer.flush();
+                                consoleReader.getOutput().flush();
                                 // Console.debugPrint("flush");
                             } catch (IOException e) {
                                 e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
