@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
+import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 
 
@@ -19,8 +21,8 @@ public class RequestBuilder {
     }
 
 
-    public interface RequestData{
-        public Message write(Message message, String... args);
+    public interface RequestData {
+        public Message write(Message message, ClientManager.Client client, String... args);
     }
 
 }

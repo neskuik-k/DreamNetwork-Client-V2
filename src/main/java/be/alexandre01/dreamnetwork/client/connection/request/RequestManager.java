@@ -9,13 +9,16 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
+import org.bouncycastle.cert.ocsp.Req;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 
 public class RequestManager {
     @Getter
     RequestBuilder requestBuilder;
     private ClientManager.Client client;
+    private HashMap<Integer, Request> requests = new HashMap<>();
 
     public RequestManager(ClientManager.Client client){
         this.client = client;
@@ -23,7 +26,14 @@ public class RequestManager {
         requestBuilder.addRequestBuilder();
     }
 
-    public void sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, String... args){
+    public Request sendRequest(Request request){
+        request.setClient(client);
+        request.getClient().writeAndFlush(request.getMessage(),request.getListener());
+        requests.put(request.getRID(),request);
+        return request;
+    }
+
+    public Request sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, String... args){
          if(!requestBuilder.requestData.containsKey(requestType)){
              try {
                  throw new RequestNotFoundException();
@@ -35,37 +45,44 @@ public class RequestManager {
          RequestBuilder.RequestData requestData = requestBuilder.requestData.get(requestType);
          message.setHeader("RequestType");
         message.setRequestType(requestType);
-
-         client.writeAndFlush(requestData.write(message,args),listener);
+        Request request = new Request(requestType,requestData.write(message,client,args),listener);
+        request.setClient(client);
+        request.getClient().writeAndFlush(request.getMessage(),listener);
+        requests.put(request.getRID(),request);
+        return request;
+         //client.writeAndFlush(requestData.write(message,client,args),listener);
     }
 
-    public void sendRequest(RequestType requestType, String... args){
-        this.sendRequest(requestType,new Message(),future -> {
+    public Request sendRequest(RequestType requestType, String... args){
+       return this.sendRequest(requestType,new Message(),future -> {
             Console.print("Request "+ requestType.name()+" sended with success!", Level.FINE);
         },args);
     }
 
-    public void sendRequest(RequestType requestType,Message message, String... args){
-        this.sendRequest(requestType,message,null,args);
+    public Request sendRequest(RequestType requestType,Message message, String... args){
+        return this.sendRequest(requestType,message,null,args);
     }
 
-    public void sendRequest(RequestType requestType,boolean notifiedWhenSent, String... args){
+    public Request sendRequest(RequestType requestType,boolean notifiedWhenSent, String... args){
         if(notifiedWhenSent){
-            this.sendRequest(requestType,new Message(),future -> {
+          return this.sendRequest(requestType,new Message(),future -> {
                 System.out.println("Request"+ requestType.name()+" sended with success!");
             },args);
-            return;
+
         }
-        this.sendRequest(requestType,new Message(),null,args);
+       return this.sendRequest(requestType,new Message(),null,args);
     }
 
-    public void sendRequest(RequestType requestType,Message message,boolean notifiedWhenSent, String... args){
+    public Request sendRequest(RequestType requestType,Message message,boolean notifiedWhenSent, String... args){
         if(notifiedWhenSent){
-            this.sendRequest(requestType,message,future -> {
+            return this.sendRequest(requestType,message,future -> {
                 System.out.println("Request"+ requestType.name()+" sended with success!");
             },args);
-            return;
+
         }
-        this.sendRequest(requestType,message,null,args);
+        return this.sendRequest(requestType,message,null,args);
+    }
+    public Request getRequest(int RID){
+        return requests.get(RID);
     }
 }

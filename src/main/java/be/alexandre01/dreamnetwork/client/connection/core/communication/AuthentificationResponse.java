@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.connection.request.Request;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -12,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public class AuthentificationResponse extends CoreResponse{
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
         System.out.println("Requete entrente->");
         System.out.println(message);
         if(message.hasRequest()){
@@ -28,6 +29,7 @@ public class AuthentificationResponse extends CoreResponse{
 
             RequestType requestType = message.getRequest();
             Console.print("REQUETE : "+ requestType);
+
             switch (requestType){
                 case CORE_HANDSHAKE:
                     Console.print("HANDSHAKE");
@@ -41,7 +43,7 @@ public class AuthentificationResponse extends CoreResponse{
                     String password = message.getString("PASSWORD");
 
                     Console.print("CREATE CLIENT");
-                    ClientManager.Client client = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()
+                    ClientManager.Client newClient = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()
                             .coreHandler(Client.getInstance().getCoreHandler())
                             .info(info)
                             .port(port)
@@ -49,18 +51,18 @@ public class AuthentificationResponse extends CoreResponse{
                             .ctx(ctx)
                             .build());
 
-                    if (client.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
-                        client.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
+                    if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
+                        newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
                     }
-                    if (client.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
-                        client.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
+                    if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
+                        newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
                         ClientManager.Client proxy = Client.getInstance().getClientManager().getProxy();
                         String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
                         proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId(),
+                                newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
                                 remoteAdress[0].replaceAll("/",""),
-                                String.valueOf(client.getPort()));
+                                String.valueOf(newClient.getPort()));
                     }
                     break;
             }

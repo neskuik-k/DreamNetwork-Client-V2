@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.commands;
 
 
 
+import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
 
@@ -27,12 +28,11 @@ public class CommandsManager {
         boolean hasFound = false;
         if(args[0] == null)
             return;
+
         if(executorList.containsKey(args[0])){
                if(executorList.get(args[0]).onCommand(args)){
                    hasFound = true;
                }
-
-
        }
        if(!hasFound){
            Console.print(Chalk.on("Commande introuvable.  | Tapez 'help' pour avoir de l'aide.").underline().red(), Level.WARNING);

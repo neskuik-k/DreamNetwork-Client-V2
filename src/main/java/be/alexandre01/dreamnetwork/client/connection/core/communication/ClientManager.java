@@ -26,6 +26,7 @@ import java.util.HashMap;
 public class ClientManager {
     private final HashMap<Integer,Client> clientByPort = new HashMap<>();
     private final HashMap<String,Client> clients = new HashMap<>();
+    private final HashMap<ChannelHandlerContext,Client> clientsByConnection = new HashMap<>();
     private be.alexandre01.dreamnetwork.client.Client main;
     @Getter private Client proxy;
     public ClientManager(be.alexandre01.dreamnetwork.client.Client client){
@@ -37,6 +38,7 @@ public class ClientManager {
         System.out.println("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()));
         JVMService jvmService = JVMExecutor.servicePort.get(client.getPort());
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
+        clientsByConnection.put(client.getChannelHandlerContext(),client);
         client.jvmService = jvmService;
         client.clientManager = this;
         return client;
@@ -44,6 +46,9 @@ public class ClientManager {
 
     public Client getClient(String processName){
         return clients.get(processName);
+    }
+    public Client getClient(ChannelHandlerContext ctx){
+        return clientsByConnection.get(ctx);
     }
     @Data
     public static class Client{

@@ -24,6 +24,10 @@ public class Message extends LinkedHashMap<String, Object> {
         put("DN-"+id,value.toString());
         return this;
     }
+
+    public Message setInRoot(String id,Object value){
+        return null;
+    }
     public boolean contains(String key){
         return containsKey("DN-"+key);
     }
@@ -48,7 +52,16 @@ public class Message extends LinkedHashMap<String, Object> {
         put("header",header);
         return this;
     }
+    public void setProvider(String provider){
+        put("provider",provider);
+    }
 
+    public String getProvider(){
+        return (String) get("provider");
+    }
+    public boolean hasProvider(){
+        return containsKey("provider");
+    }
     public String getHeader(){
         return (String) get("header");
     }
@@ -61,7 +74,6 @@ public class Message extends LinkedHashMap<String, Object> {
     public RequestType getRequest(){
         return (RequestType) RequestType.getByID((int)Integer.parseInt((String) get("requestType")));
     }
-
 
     public boolean hasRequest(){
         return containsKey("requestType");

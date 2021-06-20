@@ -200,6 +200,7 @@ public class Client {
 
 
         Console console = Console.getConsole("m:default");
+        CommandReader commandReader = new CommandReader(console);
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
@@ -219,7 +220,7 @@ public class Client {
         }
         console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"Le Network a été démarré avec succès / Faites help pour avoir les commandes", Level.INFO);
 
-        CommandReader commandReader = new CommandReader(console);
+
         ScreenManager.load();
 
 

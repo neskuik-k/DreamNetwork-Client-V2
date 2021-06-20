@@ -28,9 +28,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     private ArrayList<CoreResponse> responses = new ArrayList<>();
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
-
+    private Client client;
     public CoreHandler(){
-        Client.getInstance().setCoreHandler(this);
+        this.client = Client.getInstance();
+        this.client.setCoreHandler(this);
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -100,7 +101,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             Message message = Message.createFromJsonString(s_to_decode);
             for(CoreResponse iBasicClientResponse : responses){
                 try {
-                    iBasicClientResponse.onResponse(message,ctx);
+                    iBasicClientResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

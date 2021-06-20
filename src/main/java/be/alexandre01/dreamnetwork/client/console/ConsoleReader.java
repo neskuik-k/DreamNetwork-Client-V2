@@ -11,6 +11,7 @@ public class ConsoleReader {
     static {
         try {
             sReader = new jline.console.ConsoleReader();
+
         } catch (IOException e) {
             e.printStackTrace();
         }

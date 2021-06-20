@@ -22,6 +22,8 @@ public class Console extends Thread{
         public void listener(String[] args);
         public void consoleChange();
     }
+
+    private StringBuilder datas = new StringBuilder();
     IConsole iConsole;
     private static final HashMap<String, Console> instances = new HashMap<>();
     private static ConsoleReader consoleReader = new ConsoleReader();
@@ -32,7 +34,7 @@ public class Console extends Thread{
     private Thread thread;
     public boolean isRunning = false;
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
-
+    ScheduledExecutorService scheduler = null;
     public static Console load(String name){
         Console c = new Console(name);
         instances.put(name,c);
@@ -110,11 +112,15 @@ public class Console extends Thread{
             Client.getLogger().info(s+Colors.ANSI_RESET());
     }
     public void fPrint(Object s,Level level){
-
+        stashLine();
         if(Console.actualConsole.equals(name)){
             Client.getLogger().log(level,s+Colors.ANSI_RESET());
         }
-    //    unstashLine();
+        if(scheduler == null){
+            taskUnstash();
+        }
+
+
         ConsoleReader.sReader.setPrompt(writing);
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
@@ -180,20 +186,14 @@ public class Console extends Thread{
             reader.setPrompt(  this.writing);
             PrintWriter out = new PrintWriter(reader.getOutput());
             while (isRunning && (data = reader.readLine()) != null){
-                Console.debugPrint("ActualConsole >> "+Console.actualConsole);
                 try {
-                    reader.resetPromptLine("",
-                          "", 0);
                     out.println("=> "+ data);
                     out.flush();
 
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
                     String[] args = new String[0];
-
                     args = data.split(" ");
-
                     Console.getConsole(actualConsole).iConsole.listener(args);
-
                 }catch (Exception e){
                     fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
                     for(StackTraceElement s : e.getStackTrace()){
@@ -319,5 +319,18 @@ public class Console extends Thread{
         } catch (IOException e) {
             // ignore
         }
+    }
+    public void taskUnstash(){
+        scheduler = Executors.newScheduledThreadPool(1);
+
+        scheduler.scheduleAtFixedRate(new Runnable() {
+            @Override
+            public void run() {
+                unstashLine();
+                scheduler.shutdown();
+                scheduler = null;
+            }
+        },50,50, TimeUnit.MILLISECONDS);
+
     }
 }

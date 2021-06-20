@@ -5,11 +5,12 @@ import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 
 public class DefaultBungeeRequest extends RequestBuilder {
     public DefaultBungeeRequest() {
-        requestData.put(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS,(message, args) -> {
+        requestData.put(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS,(message, client, args) -> {
             message.set("STATUS","SUCCESS");
+            message.set("PROCESSNAME", client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId());
             return message;
         });
-        requestData.put(RequestType.BUNGEECORD_REGISTER_SERVER,(message, args) -> {
+        requestData.put(RequestType.BUNGEECORD_REGISTER_SERVER,(message,client, args) -> {
             System.out.println("REQUEST REGISTER SERVER");
             System.out.println(args[0]);
             System.out.println(args[1]);
