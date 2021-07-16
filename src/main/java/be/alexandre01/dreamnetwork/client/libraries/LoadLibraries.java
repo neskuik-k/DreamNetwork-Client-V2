@@ -18,6 +18,8 @@ public class LoadLibraries{
 
 
                 dir = new File("libs");
+                if(!dir.exists())
+                    return;
                 for(File file : Objects.requireNonNull(dir.listFiles())){
                     if(file.isDirectory())
                         continue;
