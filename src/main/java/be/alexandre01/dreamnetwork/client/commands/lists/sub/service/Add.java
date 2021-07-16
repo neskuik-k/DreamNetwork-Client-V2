@@ -57,6 +57,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null);
                                      Console.print("Vous venez de configurer le serveur avec succès !");
                                  }catch (Exception e){
+                                     e.printStackTrace();
                                      Console.print(Colors.ANSI_RED()+"Une erreur c'est produite, certainement car vous avez mal noté le port", Level.SEVERE);
                                  }
                              }else {
@@ -73,6 +74,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,null,null);
                                      Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
                                  } catch (Exception e) {
+                                     e.printStackTrace();
                                      Console.print(Colors.ANSI_RED()+"Une erreur c'est produite lors de l'update du fichier.", Level.SEVERE);
                                  }
                              }
@@ -93,6 +95,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                          jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null);
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                      }catch (Exception e){
+                                         e.printStackTrace();
                                          Console.print(Colors.ANSI_RED()+"Une erreur c'est produite, certainement car vous avez mal noté le port", Level.SEVERE);
                                      }
 
@@ -110,6 +113,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
 
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
                                      }catch (Exception e){
+                                         e.printStackTrace();
                                          Console.print(Colors.ANSI_RED()+"Une erreur c'est produite lors de l'update du fichier.", Level.SEVERE);
                                      }
                                  }

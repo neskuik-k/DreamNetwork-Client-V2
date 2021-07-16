@@ -20,5 +20,11 @@ public class DefaultBungeeRequest extends RequestBuilder {
             message.set("PORT",args[2]);
             return message;
         });
+        requestData.put(RequestType.BUNGEECORD_UNREGISTER_SERVER,(message,client, args) -> {
+            System.out.println("REQUEST UNREGISTER SERVER");
+            System.out.println(args[0]);
+            message.set("PROCESSNAME",args[0]);
+            return message;
+        });
     }
 }

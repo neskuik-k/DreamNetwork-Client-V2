@@ -31,4 +31,9 @@ public class JVMService implements IService {
         process.destroyForcibly();
         System.out.println("DESTROY");
     }
+
+    @Override
+    public void removeService() {
+        jvmExecutor.removeService(id);
+    }
 }

@@ -44,8 +44,8 @@ forge_support: false
 disabled_commands:
 - disabledcommandhere
 servers:
-  lobby:
-    motd: '&1LOBBY'
-    address: localhost:25566
+  core:
+    motd: "&1Don't Touch at me"
+    address: localhost:1111
     restricted: false
 

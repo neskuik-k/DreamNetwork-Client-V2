@@ -40,7 +40,9 @@ public class Main {
 
         System.setProperty("file.encoding","UTF-8");
         Logger.getLogger("io.netty").setLevel(Level.OFF);
+        Logger.getLogger("jdk.event.security").setLevel(Level.OFF);
         Logger.getLogger("io.netty.util.internal.logging.InternalLoggerFactory").setLevel(Level.OFF);
+        Logger.getLogger("jdk.internal.event.EventHelper").setLevel(Level.OFF);
         String pathSlf4J = Client.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
         ConsoleHandler ch = new ConsoleHandler();
         ch.setLevel(Level.FINE);

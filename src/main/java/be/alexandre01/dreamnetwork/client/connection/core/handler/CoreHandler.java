@@ -9,10 +9,7 @@ import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
+import io.netty.channel.*;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -28,7 +25,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     private ArrayList<CoreResponse> responses = new ArrayList<>();
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
-    private Client client;
+    private final Client client;
     public CoreHandler(){
         this.client = Client.getInstance();
         this.client.setCoreHandler(this);
@@ -94,6 +91,15 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         ctx.writeAndFlush(buf);
         Console.print("Channel READ " + msgTest);
 
+        ChannelFuture closeFuture = ctx.channel().closeFuture();
+
+        closeFuture.addListener(new ChannelFutureListener() {
+            @Override
+            public void operationComplete(ChannelFuture future) throws Exception {
+                System.out.println("Closed connection");
+            }
+        });
+
         if(!Message.isJSONValid(s_to_decode))
             return;
 
@@ -113,10 +119,23 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Déconnexion d'un serveur");
         if(executorService != null){
             System.out.println("WOW");
             executorService.shutdown();
         }
+        System.out.println(ctx.channel().remoteAddress());
+        ClientManager.Client client = Client.getInstance().getClientManager().getClient(ctx);
+        if(client != null){
+            client.getJvmService().getJvmExecutor().removeService(client.getJvmService().getId());
+        }
+    }
+
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Déconnexion d'un serveur");
+        super.channelInactive(ctx);
     }
 
     @Override
