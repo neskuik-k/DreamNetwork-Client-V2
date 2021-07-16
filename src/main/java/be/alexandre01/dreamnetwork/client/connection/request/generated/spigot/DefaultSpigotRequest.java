@@ -10,5 +10,10 @@ public class DefaultSpigotRequest extends RequestBuilder {
             message.set("PROCESSNAME", client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId());
             return message;
         });
+        requestData.put(RequestType.SPIGOT_EXECUTE_COMMAND,(message,client, args) -> {
+            message.set("CMD", args[0]);
+            return message;
+        });
+
     }
 }

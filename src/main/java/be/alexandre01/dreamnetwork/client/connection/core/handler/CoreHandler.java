@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.AuthentificationResponse;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.BaseResponse;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
@@ -135,12 +136,17 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         System.out.println("Déconnexion d'un serveur");
+        ctx.close();
         super.channelInactive(ctx);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
+        System.out.println("Yes");
+        if(!Main.isDisabling()){
+            cause.printStackTrace();
+        }
+
         ctx.close();
     }
 

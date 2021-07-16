@@ -27,6 +27,8 @@ public class Main {
     private SpigetConsole spigetConsole;
     @Getter
     private static String username;
+    @Getter
+    private static boolean disabling = false;
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         new LoadLibraries().init();
@@ -69,6 +71,7 @@ public class Main {
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
                 try {
+                    disabling = true;
                     if(instance != null){
                         boolean isReady = false;
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){

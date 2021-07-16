@@ -38,6 +38,7 @@ public class CopyAndPaste {
     private EstablishedAction establishedAction;
     private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private long xmx;
+    public boolean hasReached = false;
 
     public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction){
         this.defaultLocation = sourceLocation;
@@ -250,7 +251,12 @@ public class CopyAndPaste {
                             if(!parts.isEmpty()){
                                 System.out.println("Paths SIZE >> "+ paths.size());
                                 System.out.println("Paths  >> "+ paths.toArray().toString());
+                            }
                             if(paths.size() == 0){
+                                if(hasReached)
+                                    return;
+
+                                hasReached = true;
                                 if(cancelled){
                                     establishedAction.cancelled();
                                     return;
@@ -259,7 +265,7 @@ public class CopyAndPaste {
                                 establishedAction.completed();
                                 return;
                             }
-                            }
+
 
 
 

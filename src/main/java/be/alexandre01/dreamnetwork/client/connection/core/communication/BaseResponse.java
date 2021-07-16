@@ -1,7 +1,11 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.request.Request;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.service.JVMContainer;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -21,6 +25,23 @@ public class BaseResponse extends CoreResponse {
                     if(request != null)
                         request.getRequestFutureResponse().onReceived(message);
                 }
+            }
+            switch (message.getRequest()){
+                case CORE_START_SERVER:
+                    JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(message.getString("SERVERNAME"), JVMContainer.JVMType.SERVER);
+                    if(jvmExecutor == null){
+                        System.out.println("Oh no");
+                        return;
+                    }
+                    jvmExecutor.startServer();
+                    break;
+                case SPIGOT_EXECUTE_COMMAND:
+                    System.out.println("EXECUTE COMMAND");
+                    ClientManager.Client cmdClient = Client.getInstance().getClientManager().getClient(message.getString("SERVERNAME"));
+                    if(cmdClient != null){
+                        cmdClient.getRequestManager().sendRequest(RequestType.SPIGOT_EXECUTE_COMMAND,message.getString("CMD"));
+                    }
+                    break;
             }
         }
     }
