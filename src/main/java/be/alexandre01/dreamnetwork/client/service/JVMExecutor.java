@@ -277,8 +277,8 @@ public class JVMExecutor extends JVMStartupConfig{
                 if(startup != null){
                    // exec = new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec;
                  //   proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                    exec = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
-                    startup = startup.replaceAll("%jar%",exec);
+                    String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
+                    startup = startup.replaceAll("%jar%",jarPath);
                     System.out.println(startup);
                     proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
                 }else {
@@ -292,8 +292,8 @@ public class JVMExecutor extends JVMStartupConfig{
             }else {
                 if(type.equals(Mods.STATIC)){
                     if(startup != null){
-                        exec = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
-                        startup = startup.replaceAll("%jar%",exec);
+                        String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
+                        startup = startup.replaceAll("%jar%",jarPath);
                         System.out.println(startup);
                         proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     }else {
@@ -314,8 +314,8 @@ public class JVMExecutor extends JVMStartupConfig{
         }else {
             if(type.equals(Mods.DYNAMIC)){
                 if(startup != null){
-                    exec = new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec;
-                    startup = startup.replaceAll("%jar%",exec);
+                    String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec;
+                    startup = startup.replaceAll("%jar%",jarPath);
                     System.out.println(startup);
                     proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
                 }else {
@@ -328,8 +328,8 @@ public class JVMExecutor extends JVMStartupConfig{
             }else {
                 if(type.equals(Mods.STATIC)){
                     if(startup != null){
-                        exec = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
-                        startup = startup.replaceAll("%jar%",exec);
+                        String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
+                        startup = startup.replaceAll("%jar%",jarPath);
                         System.out.println(startup);
                         proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                         System.out.println(startup);
