@@ -7,7 +7,7 @@ import java.util.Map;
 
 public enum RequestType {
     /**
-     * CORE REQUEST
+     * CORE REQUESTS
      */
 
     CORE_HANDSHAKE(1),
@@ -27,7 +27,7 @@ public enum RequestType {
 
 
     /**
-     * SPIGOT REQUEST
+     * SPIGOT REQUESTS
      */
 
     SPIGOT_AUTH(31),
@@ -38,8 +38,9 @@ public enum RequestType {
     SPIGOT_LOG_MESSAGE(36),
     SPIGOT_WARNING_MESSAGE(37),
     SPIGOT_ERROR_MESSAGE(38),
+
     /**
-     * SPIGOT REQUEST
+     * BUNGEECORD REQUESTS
      */
 
     BUNGEECORD_AUTH(61),
@@ -71,4 +72,6 @@ public enum RequestType {
     public static RequestType getByID(int id){
         return byId.get(id);
     }
+
+
 }

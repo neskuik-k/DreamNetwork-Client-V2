@@ -30,6 +30,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     public CoreHandler(){
         this.client = Client.getInstance();
         this.client.setCoreHandler(this);
+        responses.add(new BaseResponse());
+        responses.add(new AuthentificationResponse());
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -38,14 +40,19 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         System.out.println("Wow une nouvelle connection");
         System.out.println("Local ADRESS " + ctx.channel().localAddress());
         System.out.println("Remote ADRESS " + ctx.channel().remoteAddress());
-        responses.add(new BaseResponse());
-        responses.add(new AuthentificationResponse());
+        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
+
+        String remote = ctx.channel().remoteAddress().toString().split(":")[0];
+        if(!remote.replaceAll("/","").equalsIgnoreCase("127.0.0.1")){
+            ctx.close();
+        }
     }
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) { // (1)
         System.out.println("CHANNEL ACTIVE");
         System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
+
 
         if(!queue.isEmpty()){
             taskQueue();

@@ -77,7 +77,7 @@ public class Main {
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
                                 for(JVMService service : jvmExecutor.getServices()){
-                                    service.kill();
+                                    //service.kill();
                                 }
                             }
 
@@ -86,7 +86,7 @@ public class Main {
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
                                 for(JVMService service : jvmExecutor.getServices()){
-                                    service.kill();
+                                    //service.kill();
                                 }
                             }
                         }

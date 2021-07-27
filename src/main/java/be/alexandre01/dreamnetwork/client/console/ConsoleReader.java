@@ -10,7 +10,10 @@ public class ConsoleReader {
 
     static {
         try {
+
             sReader = new jline.console.ConsoleReader();
+
+            sReader.setHandleUserInterrupt(false);
 
         } catch (IOException e) {
             e.printStackTrace();

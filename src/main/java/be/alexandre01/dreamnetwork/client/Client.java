@@ -92,53 +92,10 @@ public class Client {
             }
         }
 
-        Runtime.getRuntime().addShutdownHook(new Thread() {
-            public void run() {
-                try {
-                    if(instance != null){
-                        boolean isReady = false;
-                        for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
-                            if(!jvmExecutor.jvmServices.isEmpty()){
-                                for(JVMService service : jvmExecutor.getServices()){
-                                    service.kill();
-                                }
-                            }
-
-                        }
-
-                        for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
-                            if(!jvmExecutor.jvmServices.isEmpty()){
-                                for(JVMService service : jvmExecutor.getServices()){
-                                    service.kill();
-                                }
-                            }
-                        }
-                        isReady = true;
-                        Console.debugPrint("\n"+Chalk.on("DreamNetwork process shutdown, please wait...").bgMagenta().bold().underline().white());
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }else {
-                        Console.debugPrint("\n"+Chalk.on("DreamNetwork process shutdown, please wait...").bgMagenta().bold().underline().white());
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }catch (Exception e){
-                    Console.debugPrint(e.getMessage());
-                    e.printStackTrace(instance.formatter.getDefaultStream());
-                }
-
-            }
-        });
 
 
 
-
+        
         Console.load("m:default").isRunning = true;
         Thread t = new Thread(Console.getConsole("m:default"));
         t.start();

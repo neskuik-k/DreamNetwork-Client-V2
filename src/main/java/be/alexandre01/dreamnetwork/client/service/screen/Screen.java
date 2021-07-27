@@ -23,7 +23,7 @@ public class  Screen extends Thread {
     ScreenStream screenStream;
     Integer screenId;
     String screenName;
-    ScheduledExecutorService executors;
+
     public Screen(JVMService service){
         this.service = service;
         this.history = new ArrayList<>();
@@ -32,8 +32,6 @@ public class  Screen extends Thread {
         screenId = screenManager.getId(service.getJvmExecutor().getName());
         screenName = service.getJvmExecutor().getName()+"-"+screenId;
         ScreenManager.instance.addScreen(this);
-        executors = Executors.newScheduledThreadPool(16);
-
     }
 
     @Override

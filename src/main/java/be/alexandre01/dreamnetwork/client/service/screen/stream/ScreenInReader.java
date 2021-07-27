@@ -33,6 +33,14 @@ public class ScreenInReader extends Thread {
         this.reader = reader;
 
         this.screen = screen;
+        try {
+            int i = reader.read();
+            if((i > 500)){
+               reader.skip(i-500);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -56,13 +64,15 @@ public class ScreenInReader extends Thread {
 
 
                 String data = new String(datas.toString());
-                Console.stashLine();
+
                 PrintStream p = Client.getInstance().formatter.getDefaultStream();
                 if(datas.length() != 0){
+                    Console.stashLine();
                     p.print(data);
+                    Console.unstashLine();
                 }
                 datas.setLength(0);
-              Console.unstashLine();
+
 
 
             }
@@ -72,9 +82,11 @@ public class ScreenInReader extends Thread {
 
             String data = null;
             int i = 0;
+            reader.lines();
             while (reader.read(buffer) != -1 && this.isRunning ) {
                 buffer.flip();
-                datas.append(buffer);
+                if(buffer.length() != 0)
+                    datas.append(buffer);
                 buffer.clear();
             }
 
