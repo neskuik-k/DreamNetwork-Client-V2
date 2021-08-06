@@ -74,6 +74,10 @@ public class ClientManager {
                         this.jvmType = JVMContainer.JVMType.SERVER;
                         requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
                         break;
+                    case "SPONGE":
+                        this.jvmType = JVMContainer.JVMType.SERVER;
+                        requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
+                        break;
                     case "BUNGEE":
                         this.jvmType = JVMContainer.JVMType.PROXY;
                         be.alexandre01.dreamnetwork.client.Client.getInstance().getClientManager().proxy = this;

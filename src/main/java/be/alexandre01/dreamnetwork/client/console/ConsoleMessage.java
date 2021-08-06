@@ -10,4 +10,8 @@ public class ConsoleMessage {
         this.content = content;
         this.level = level;
     }
+    public ConsoleMessage(String content) {
+        this.content = content;
+        this.level = null;
+    }
 }

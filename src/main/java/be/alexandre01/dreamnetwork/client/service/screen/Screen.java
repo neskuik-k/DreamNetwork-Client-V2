@@ -27,11 +27,11 @@ public class  Screen extends Thread {
     public Screen(JVMService service){
         this.service = service;
         this.history = new ArrayList<>();
-        this.screenStream = new ScreenStream();
         ScreenManager screenManager = ScreenManager.instance;
         screenId = screenManager.getId(service.getJvmExecutor().getName());
         screenName = service.getJvmExecutor().getName()+"-"+screenId;
-        ScreenManager.instance.addScreen(this);
+        this.screenStream = new ScreenStream(screenName,this);
+        screenManager.addScreen(this);
     }
 
     @Override

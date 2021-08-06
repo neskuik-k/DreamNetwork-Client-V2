@@ -83,7 +83,7 @@ public class Client {
 
         if(Config.isWindows()){
             username = System.getProperty("user.name");
-            System.out.println(username);
+
         }else {
             try {
                 username = InetAddress.getLocalHost().getHostName();
@@ -111,7 +111,7 @@ public class Client {
     }
 
     public Client(){
-        System.out.println(getClass().getClassLoader().getResourceAsStream("log4j.properties"));
+
         PropertyConfigurator.configure(getClass().getClassLoader().getResourceAsStream("log4j.properties"));
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
@@ -124,6 +124,7 @@ public class Client {
         FileHandler fh = null;
         try {
             fh = new FileHandler("latest.log");
+            fh.setLevel(Level.ALL);
             fh.setFormatter(new ConciseFormatter(false));
             logger.addHandler(fh);
         } catch (IOException e) {
@@ -157,11 +158,12 @@ public class Client {
 
 
         Console console = Console.getConsole("m:default");
+        console.defaultPrint = formatter.getDefaultStream();
         CommandReader commandReader = new CommandReader(console);
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
-            console.fPrint("The Netty CoreServer System has been started on the port 14520.",Level.INFO);
+            console.fPrint("The Netty CoreServer System has been started on  the port 14520.",Level.INFO);
         } catch (Exception e) {
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
             for(StackTraceElement s : e.getStackTrace()){

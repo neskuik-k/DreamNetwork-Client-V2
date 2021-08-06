@@ -7,12 +7,13 @@ import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import jline.console.ConsoleReader;
 
 import java.io.*;
+import java.util.stream.Collectors;
 
 public class ScreenStream {
     public Screen screen;
     public PrintStream oldOut = System.out;
     public InputStream oldIn = System.in;
-    public BufferedReader reader;
+    public InputStream reader;
     public BufferedWriter writer;
     public ScreenInput in;
     public PrintStream out;
@@ -20,65 +21,45 @@ public class ScreenStream {
     Console console;
     ScreenInReader screenInReader;
     ScreenOutReader screenOutReader;
-    public ScreenStream(){
-
-    }
-    public void init(String name, Screen screen){
-        this.screen = screen;
-        System.out.println(screen.getService().getProcess().getInputStream());
-        if(reader == null)
-            reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
-        System.out.println("init");
+    public ScreenStream(String name,Screen screen){
         Console.load("s:"+name);
-        console = Console.getConsole("s:"+name);
-
-        this.console = console;
-        ConsoleReader c = null;
-        try {
-           c = new ConsoleReader(screen.getService().getProcess().getInputStream(),screen.getService().getProcess().getOutputStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.console = Console.getConsole("s:"+name);
+        this.screen = screen;
+        reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
+    }
+    public void init(String name, Screen screen){
+        this.screen = screen;
+     //   reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
 
-        this.screenOutReader = new ScreenOutReader(screen,console,c);
-        screenOutReader.run();
-        /*Thread screenORT = new Thread(screenOutReader);
-        screenORT.start();*/
+        //reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
+        System.out.println(screen.getService().getProcess().getInputStream());
 
-        Console.setActualConsole("s:"+name);
-    /*    ByteArrayOutputStream screenOutput = new ByteArrayOutputStream( );
-        byte[] bytes = screenOutput.toByteArray();
-        in = new ScreenInput(bytes);
-        out = new PrintStream(screenOutput);
-        System.setIn(in.inputStream);
-        System.out.println("in sysout");
-        Console.print("in console print");
-        try {
-            screenOutput.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+        ConsoleReader c = null;
+        if(console.getConsoleAction() == null){
+            try {
+                c = new ConsoleReader(screen.getService().getProcess().getInputStream(),screen.getService().getProcess().getOutputStream());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            this.screenOutReader = new ScreenOutReader(screen,console,c);
         }
-        out.println("out open test");
-       Main.getInstance().formatter.getDefaultStream().println("lol");
-        System.out.println("out sysout");
-        Console.print("out console print");
-        isInit = true;*/
+        screenOutReader.run();
+        Console.setActualConsole("s:"+name);
     }
 
     public void exit(){
-        console.destroy();
-
-        screenOutReader.stop = true;
+     //   console.destroy();
 
         //screenOutReader.stop();
         //screenOutReader.interrupt();
-        screenInReader.isRunning = false;
+      /*  screenInReader.isRunning = false;
 
         screenInReader.stop();
-        screenInReader.interrupt();
+        screenInReader.interrupt();*/
 
   /*      isInit = false;
         Console.clearConsole();

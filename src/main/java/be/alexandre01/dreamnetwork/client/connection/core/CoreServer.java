@@ -24,7 +24,6 @@ public class CoreServer extends Thread{
     @Override
     public void run() {
         Console console = Console.getConsole("m:default");
-        console.fPrint("Je commence à me run",Level.INFO);
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {

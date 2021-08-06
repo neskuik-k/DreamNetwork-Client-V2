@@ -10,6 +10,7 @@ import jline.console.CursorBuffer;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.*;
@@ -29,14 +30,19 @@ public class Console extends Thread{
     private static ConsoleReader consoleReader = new ConsoleReader();
     public String name;
     private final ArrayList<ConsoleMessage> history;
+    private int historySize;
     public static String defaultConsole;
     public static String actualConsole;
     private Thread thread;
     public boolean isRunning = false;
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     ScheduledExecutorService scheduler = null;
+    public PrintStream defaultPrint;
     public static Console load(String name){
         Console c = new Console(name);
+        if(Client.getInstance() != null){
+            c.defaultPrint = Client.getInstance().formatter.getDefaultStream();
+        }
         instances.put(name,c);
         if(c.iConsole != null){
             //c.thread = new Thread(c);
@@ -54,23 +60,28 @@ public class Console extends Thread{
 
         }
 
-
         Console console = instances.get(name);
         Console.actualConsole = name;
         console.isRunning = true;
+        clearConsole();
+        console.defaultPrint.println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
-            Collections.reverse(h);
+            stashLine();
             for (ConsoleMessage s : h){
-                //console.forcePrint(s.content,s.level);
+                if(s.level == null){
+                    console.defaultPrint.print(s.content);
+                }else{
+                    console.forcePrint(s.content,s.level);
+                }
             }
+            unstashLine();
         }
         if(!console.isAlive()){
             //new Thread(console).start();
         }
 
-        clearConsole();
-        Client.getInstance().formatter.getDefaultStream().println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
+
         ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
 
     /*    timer.scheduleAtFixedRate(() -> {
@@ -111,17 +122,35 @@ public class Console extends Thread{
         if(Console.actualConsole.equals(name))
             Client.getLogger().info(s+Colors.ANSI_RESET());
     }
+    /*
+    Print without log
+     */
+    public void printNL(Object s){
+        if(Console.actualConsole.equals(name)){
+            stashLine();
+            defaultPrint.print(s);
+
+            ConsoleReader.sReader.setPrompt(writing);
+            unstashLine();
+        }
+        refreshHistory(s + "");
+    }
+
+    /*
+    Basic Print in console
+     */
     public void fPrint(Object s,Level level){
         stashLine();
         if(Console.actualConsole.equals(name)){
             Client.getLogger().log(level,s+Colors.ANSI_RESET());
+            ConsoleReader.sReader.setPrompt(writing);
         }
         if(scheduler == null){
             taskUnstash();
         }
 
 
-        ConsoleReader.sReader.setPrompt(writing);
+
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
     public static void print(Object s){
@@ -164,6 +193,9 @@ public class Console extends Thread{
            // thread.start();
         }
 
+    }
+    public IConsole getConsoleAction(){
+        return iConsole;
     }
     public Console(String name){
         this.history = new ArrayList<>();
@@ -245,11 +277,22 @@ public class Console extends Thread{
         return history;
     }
     public void refreshHistory(String data,Level lvl){
-        if(history.size() >= 25){
+        if(historySize >= 1000){
             history.remove(0);
+            historySize--;
         }
         //debugPrint("history >> "+data);
         history.add(new ConsoleMessage(data,lvl));
+        historySize += data.length();
+    }
+    public void refreshHistory(String data){
+        if(historySize >= 1000){
+            history.remove(0);
+            historySize--;
+        }
+        //debugPrint("history >> "+data);
+        history.add(new ConsoleMessage(data));
+        historySize += data.length();
     }
     public String readLineTimeout(BufferedReader reader, long timeout) throws TimeoutException, IOException {
         long start = System.currentTimeMillis();

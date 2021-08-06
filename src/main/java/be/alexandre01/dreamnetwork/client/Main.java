@@ -58,7 +58,6 @@ public class Main {
 
         if(Config.isWindows()){
             Client.setUsername(username = System.getProperty("user.name"));
-            System.out.println(username);
         }else {
             try {
                 Client.setUsername( username = InetAddress.getLocalHost().getHostName());

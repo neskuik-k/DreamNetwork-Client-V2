@@ -5,14 +5,20 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
+import be.alexandre01.dreamnetwork.client.console.ConsoleMessage;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 
 import java.io.*;
+import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
+import java.nio.channels.Channels;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -22,25 +28,25 @@ public class ScreenInReader extends Thread {
     Console console;
     InputStream in;
     JVMService server;
-    public BufferedReader reader;
+    public InputStream reader;
     private Screen screen;
 
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
-    public ScreenInReader(Console console, JVMService server, BufferedReader reader, Screen screen) {
+    public ScreenInReader(Console console, JVMService server, InputStream reader, Screen screen) {
         this.console = console;
         this.server = server;
         this.reader = reader;
 
         this.screen = screen;
-        try {
+       /* try {
             int i = reader.read();
             if((i > 500)){
                reader.skip(i-500);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     @Override
@@ -54,6 +60,12 @@ public class ScreenInReader extends Thread {
             @Override
             public void run() {
                 if(!isRunning){
+                    try {
+                        reader.mark(0);
+                        reader.reset();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     service.shutdown();
                     return;
                 }
@@ -64,29 +76,28 @@ public class ScreenInReader extends Thread {
 
 
                 String data = new String(datas.toString());
+                
 
-                PrintStream p = Client.getInstance().formatter.getDefaultStream();
                 if(datas.length() != 0){
-                    Console.stashLine();
-                    p.print(data);
-                    Console.unstashLine();
+                    console.printNL(data);
+                    datas.setLength(0);
                 }
-                datas.setLength(0);
+
 
 
 
             }
         },250,250,TimeUnit.MILLISECONDS);
         try {
-            CharBuffer buffer = CharBuffer.allocate(1024);
-
+            ByteBuffer buffer = ByteBuffer.allocate(1024);
+            ReadableByteChannel channel = Channels.newChannel(reader);
             String data = null;
+
             int i = 0;
-            reader.lines();
-            while (reader.read(buffer) != -1 && this.isRunning ) {
+            while (channel.read(buffer) != -1 && this.isRunning ) {
                 buffer.flip();
-                if(buffer.length() != 0)
-                    datas.append(buffer);
+                if(buffer.remaining() != 0)
+                    datas.append(StandardCharsets.UTF_8.decode(buffer));
                 buffer.clear();
             }
 

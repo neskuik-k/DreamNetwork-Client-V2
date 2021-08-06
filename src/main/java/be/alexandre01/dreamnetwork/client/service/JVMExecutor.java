@@ -354,7 +354,7 @@ public class JVMExecutor extends JVMStartupConfig{
         jvmServices.put(servers,jvmService);
         servicePort.put(port,jvmService);
 
-        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
+       // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
         Console.print(Colors.ANSI_GREEN()+"Le serveur viens de démarrer le processus",Level.INFO);
 

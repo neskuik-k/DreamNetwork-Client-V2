@@ -27,13 +27,10 @@ public class ScreenOutReader {
     private String[] args;
     private final Screen screen;
     private final Console console;
-    public boolean stop = false;
-    private ConsoleReader consoleReader;
+    private final ConsoleReader consoleReader;
 
-    public ScreenOutReader(Screen screen, Console console, ConsoleReader consoleReader){
+    public ScreenOutReader(Screen screen, Console console,ConsoleReader consoleReader){
         this.consoleReader = consoleReader;
-        console.fPrint("AHH",Level.INFO);
-        Console.debugPrint("IFG0E0I");
         Console.debugPrint(consoleReader.getCompleters());
 
         this.console = console;
@@ -53,10 +50,10 @@ public class ScreenOutReader {
     }
 
     public void run() {
+        Console.debugPrint("run");
         console.setConsoleAction(new Console.IConsole() {
             @Override
             public void listener(String[] args) {
-
                 //   Console.debugPrint(String.valueOf(args.length));
                 if (args.length != 0) {
                     //Console.debugPrint("capte");
@@ -64,7 +61,6 @@ public class ScreenOutReader {
                     if (!args[0].equalsIgnoreCase(" ")) {
                         //Console.debugPrint(Arrays.toString(args));
                         if (!commands.check(args)) {
-                            System.out.println("Oki " + Arrays.toString(args));
                             try {
                                 if(!screen.getService().getProcess().isAlive()){
                                     screen.destroy();
@@ -86,8 +82,7 @@ public class ScreenOutReader {
 
                                 }
                                 //   Console.debugPrint(sb.toString());
-                                if (screen.getScreenStream().screenInReader.in != null) {
-                                }
+
 
                                 consoleReader.getOutput().write(sb.toString()+"\n");
 
