@@ -37,7 +37,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
-        System.out.println("Wow une nouvelle connection");
         System.out.println("Local ADRESS " + ctx.channel().localAddress());
         System.out.println("Remote ADRESS " + ctx.channel().remoteAddress());
         System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);

@@ -310,11 +310,11 @@ public class JVMStartupConfig {
     }
     public void addConfigsFiles(){
         System.out.println("PROCESS ADD CONFIG");
-        InputStream isp = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+        InputStream isp = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
         try {
             assert isp != null;
             Config.createDir(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/"+"plugins"));
-            Config.write(isp,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin-1.0-SNAPSHOT.jar")));
+            Config.write(isp,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar")));
         } catch (IOException e) {
             e.printStackTrace();
         }

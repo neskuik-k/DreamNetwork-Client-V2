@@ -54,11 +54,11 @@ public class TemplateLoading {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
                 if(Config.contains(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins")){
-                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar");
 
-                        InputStream is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+                        InputStream is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
                         file.delete();
-                        replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin-1.0-SNAPSHOT.jar");
+                        replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
 
 
 
