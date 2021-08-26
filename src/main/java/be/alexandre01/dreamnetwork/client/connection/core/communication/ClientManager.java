@@ -71,9 +71,6 @@ public class ClientManager {
                 System.out.println(info.split("-")[0]);
                 switch (info.split("-")[0]){
                     case "SPIGOT":
-                        this.jvmType = JVMContainer.JVMType.SERVER;
-                        requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
-                        break;
                     case "SPONGE":
                         this.jvmType = JVMContainer.JVMType.SERVER;
                         requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
