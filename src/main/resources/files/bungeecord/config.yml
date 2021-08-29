@@ -7,7 +7,7 @@ listeners:
     pvp.md-5.net: pvp
   ping_passthrough: false
   priorities:
-  - lobby
+  - core
   bind_local_address: true
   host: 0.0.0.0:25565
   max_players: 100
