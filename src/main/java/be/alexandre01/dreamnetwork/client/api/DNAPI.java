@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.api;
 
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -66,9 +67,21 @@ public class DNAPI {
                 .field("uuid", uuid)
                 .field("secret", secret)
                 .asString();
+
         if(response.getStatus() == 201 || response.getStatus() == 200){
             return true;
         }else {
+            if(response.getStatus() == 521){
+                System.out.println(Colors.RED+ "The API is DOWN -> please retry later.");
+                System.exit(1);
+                return false;
+            }
+            if(response.getBody().isEmpty()){
+                System.out.println(Colors.RED+ "The BODY response is EMPTY -> please retry.");
+                System.exit(1);
+                return false;
+            }
+
             JSONObject jsonObject = new JSONObject(response.getBody());
             StringBuilder sb = new StringBuilder();
             sb.append(response.getStatusText() +" -> ");

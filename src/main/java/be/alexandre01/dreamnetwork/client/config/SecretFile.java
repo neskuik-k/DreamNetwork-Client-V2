@@ -33,10 +33,12 @@ public class SecretFile {
             System.out.println(Colors.RED+"Can't find the secret file.");
             jline.console.ConsoleReader reader =  ConsoleReader.sReader;
 
-            reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET+Colors.BLACK+Colors.WHITE_BACKGROUND);
+            Character mask = Config.isWindows() ? (char)'*' : (char) '•';
+
+            reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
             PrintWriter out = new PrintWriter(reader.getOutput());
             String data;
-            while ((data = reader.readLine()) != null){
+            while ((data = reader.readLine(mask)) != null){
                 if(data.length() > 0){
                     file= createSecretFile(data);
                     break;
