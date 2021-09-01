@@ -1,27 +1,23 @@
 package be.alexandre01.dreamnetwork.client.api;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import io.netty.util.CharsetUtil;
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
 import org.asynchttpclient.*;
 import org.asynchttpclient.util.HttpConstants;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 
 import java.io.IOException;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import static org.asynchttpclient.Dsl.post;
 
 public class DNAPI {
     public String url = "https://api.dreamnetwork.cloud/";
@@ -34,6 +30,11 @@ public class DNAPI {
         System.out.println(args);
         DNAPI dnapi = new DNAPI();
         try {
+            dnapi.hasValidLicense("","");
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+       /* try {
             dnapi.createUser("alexandre.taillet@gmail.com","alexandre","1234");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -43,9 +44,54 @@ public class DNAPI {
             e.printStackTrace();
         } catch (TimeoutException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
+    public void testReq(){
+        Unirest.setTimeouts(0, 0);
+        try {
+            HttpResponse<String> response = Unirest.get("http://e14d-2a01-cb10-8700-cd00-5022-f6d7-ceeb-2cdb.ngrok.io/")
+                    .asString();
+            System.out.println(response.getStatus());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
+        } catch (UnirestException e) {
+            e.printStackTrace();
+        }
+    }
+    public boolean hasValidLicense(String uuid, String secret) throws UnirestException {
+        Unirest.setTimeouts(0, 0);
+        HttpResponse<String> response = Unirest.post("https://api.dreamnetwork.cloud/licenses/validate")
+                .header("Content-Type", "application/x-www-form-urlencoded")
+                .field("uuid", uuid)
+                .field("secret", secret)
+                .asString();
+        if(response.getStatus() == 201 || response.getStatus() == 200){
+            return true;
+        }else {
+            JSONObject jsonObject = new JSONObject(response.getBody());
+            StringBuilder sb = new StringBuilder();
+            sb.append(response.getStatusText() +" -> ");
+
+            Object s = jsonObject.get("message");
+            if(s instanceof JSONArray){
+                JSONArray jsonArray = (JSONArray) s;
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    sb.append(jsonArray.get(i));
+                    if(i != jsonArray.length()-1){
+                        sb.append(", ");
+                    }
+                }
+            }
+            if(s instanceof String){
+                sb.append(s);
+            }
+
+            System.out.println("There is an error with your license: "+sb.toString());
+        }
+
+        return false;
+    }
 
     public void createUser(String email,String username, String pinCode) throws InterruptedException, IOException, ExecutionException, TimeoutException {
 

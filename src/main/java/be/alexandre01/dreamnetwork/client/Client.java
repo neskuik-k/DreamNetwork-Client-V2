@@ -20,7 +20,7 @@ import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.log4j.PropertyConfigurator;
+
 
 
 import java.io.IOException;
@@ -57,68 +57,13 @@ public class Client {
 
 
 
-    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-        new LoadLibraries().init();
-        try {
-            Thread.sleep(500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        //UTF8
-        Chalk.setColorEnabled(true);
-
-            System.setProperty("file.encoding","UTF-8");
-        Logger.getLogger("io.netty").setLevel(Level.OFF);
-        Logger.getLogger("io.netty.util.internal.logging.InternalLoggerFactory").setLevel(Level.OFF);
-            String pathSlf4J = Client.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
-        ConsoleHandler ch = new ConsoleHandler();
-        ch.setLevel(Level.FINE);
-        Logger.getLogger("").addHandler(ch);
-        Logger.getLogger("").setLevel(Level.FINE);
-
-
-        Field charset = Charset.class.getDeclaredField("defaultCharset");
-            charset.setAccessible(true);
-            charset.set(null,null);
-
-        if(Config.isWindows()){
-            username = System.getProperty("user.name");
-
-        }else {
-            try {
-                username = InetAddress.getLocalHost().getHostName();
-            } catch (UnknownHostException e) {
-                username = System.getProperty("user.name");
-            }
-        }
-
-
-
-
-        
-        Console.load("m:default").isRunning = true;
-        Thread t = new Thread(Console.getConsole("m:default"));
-        t.start();
-
-        instance = new Client();
-
-        new TemplateLoading();
-
-    }
-
-    public static void start(){
-        instance = new Client();
-    }
-
     public Client(){
 
-        PropertyConfigurator.configure(getClass().getClassLoader().getResourceAsStream("log4j.properties"));
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
             System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
             debug = true;
-
         }
 
         FileHandler fh = null;
@@ -186,13 +131,5 @@ public class Client {
 
         //MANAGER
         this.clientManager = new ClientManager(this);
-
-
-
     }
-
-
-
-
-
 }

@@ -60,8 +60,8 @@ public class Command{
 
 
 
-                    //AggregateCompleter aggregateCompleter = new AggregateCompleter(completors);
-                    ArgumentCompleter argumentCompleter = new ArgumentCompleter(completors);
+                   // AggregateCompleter aggregateCompleter = new AggregateCompleter(completors);
+                    CustomArgumentCompleter argumentCompleter = new CustomArgumentCompleter(completors);
 
 
                         argumentCompleter.setStrict(true);

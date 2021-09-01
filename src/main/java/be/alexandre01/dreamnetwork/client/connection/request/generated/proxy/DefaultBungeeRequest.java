@@ -26,5 +26,8 @@ public class DefaultBungeeRequest extends RequestBuilder {
             message.set("PROCESSNAME",args[0]);
             return message;
         });
+        requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
+          return message;
+        }));
     }
 }

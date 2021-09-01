@@ -38,33 +38,22 @@ public class Console extends Thread{
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     ScheduledExecutorService scheduler = null;
     public PrintStream defaultPrint;
+
     public static Console load(String name){
         Console c = new Console(name);
         if(Client.getInstance() != null){
             c.defaultPrint = Client.getInstance().formatter.getDefaultStream();
         }
         instances.put(name,c);
-        if(c.iConsole != null){
-            //c.thread = new Thread(c);
-            //c.thread.start();
-        }
-
         return c;
     }
     public static void setActualConsole(String name){
-        if(actualConsole != null){
-          /*  Console oldConsole = instances.get(actualConsole);
-            oldConsole.isRunning = false;
-            oldConsole.stop();
-            oldConsole.interrupt();*/
-
-        }
-
         Console console = instances.get(name);
         Console.actualConsole = name;
         console.isRunning = true;
         clearConsole();
-        console.defaultPrint.println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
+        if(console.defaultPrint != null)
+            console.defaultPrint.println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
             stashLine();

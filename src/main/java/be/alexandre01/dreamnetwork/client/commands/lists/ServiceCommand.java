@@ -15,6 +15,8 @@ public class ServiceCommand extends Command {
         addSubCommand("install",new Install());
         addSubCommand("screen",new Screen());
         addSubCommand("list",new List());
+        addSubCommand("stop",new Stop());
+        addSubCommand("kill",new Kill());
 
         getHelpBuilder().setTitleUsage("How to configurate a service");
         getHelpBuilder().setCmdUsage("add a server","add","server/proxy","[name]");

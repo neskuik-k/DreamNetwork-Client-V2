@@ -39,6 +39,7 @@ public class ClientManager {
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
         client.jvmService = jvmService;
+        jvmService.setClient(client);
         client.clientManager = this;
         return client;
     }

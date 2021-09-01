@@ -6,9 +6,25 @@
 
     <groupId>be.alexandre01.dreamnetwork</groupId>
     <artifactId>DreamNetworkV2</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.4.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-
+    <profiles>
+        <profile>
+            <id>Prod</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <outputPath>${project.basedir}/target/</outputPath>
+            </properties>
+        </profile>
+        <profile>
+            <id>Custom-1</id>
+            <properties>
+                <outputPath>\\wsl.localhost\Ubuntu\home\alexandre\DreamNetwork</outputPath>
+            </properties>
+        </profile>
+    </profiles>
     <build>
         <plugins>
             <plugin>
@@ -35,7 +51,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <outputFile>${project.basedir}/target/${project.artifactId}-${project.version}-withShadedDependencies.jar</outputFile>
+                            <outputFile>${outputPath}/${project.artifactId}-${project.version}-withShadedDependencies.jar</outputFile>
                             <minimizeJar>true</minimizeJar>
                             <filters>
                                 <filter>
@@ -85,6 +101,8 @@
         </plugins>
     </build>
 
+
+
     <repositories>
         <repository>
             <id>jcenter</id>
@@ -99,7 +117,12 @@
             <artifactId>commons-io</artifactId>
             <version>2.6</version>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+        <dependency>
+            <groupId>com.mashape.unirest</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>1.4.9</version>
+        </dependency>
 
 
         <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
@@ -121,26 +144,11 @@
         </dependency>
 
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.30</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>2.0.0-alpha1</version>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>1.7.30</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.5</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-        <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
-            <version>1.2.17</version>
-        </dependency>
 
         <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
         <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->

@@ -42,8 +42,7 @@ public class ConciseFormatter extends Formatter {
             formatted.append( Chalk.on("] ").blue());
             ByteBuffer b = StandardCharsets.UTF_8.encode(formatMessage(record));
             new String(formatMessage( record ).getBytes(), StandardCharsets.UTF_8);
-            String s = new String(b.array(), StandardCharsets.UTF_8);
-            if(Config.isWindows())
+            String s = new String(b.array(), StandardCharsets.UTF_8);if(Config.isWindows())
                 s =   Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
             formatted.append(s);
             formatted.append( '\n' );

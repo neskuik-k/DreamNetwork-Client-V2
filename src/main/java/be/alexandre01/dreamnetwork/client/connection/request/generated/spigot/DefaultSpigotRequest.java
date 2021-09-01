@@ -14,6 +14,8 @@ public class DefaultSpigotRequest extends RequestBuilder {
             message.set("CMD", args[0]);
             return message;
         });
-
+        requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
+            return message;
+        }));
     }
 }
