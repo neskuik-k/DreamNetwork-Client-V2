@@ -7,9 +7,9 @@ import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
-import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
+import be.alexandre01.dreamnetwork.client.service.*;
+import be.alexandre01.dreamnetwork.client.service.jdk.win.JavaFinder;
+import be.alexandre01.dreamnetwork.client.service.jdk.win.JavaInfo;
 import com.github.tomaslanger.chalk.Chalk;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.Getter;
@@ -21,6 +21,7 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,6 +46,12 @@ public class Main {
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         Console.clearConsole();
+        if(Config.isWindows()){
+            List<JavaInfo> javas = JavaFinder.findJavas();
+            for (int i = 0; i < javas.size(); i++) {
+                System.out.println("\n" + javas.get(i));
+            }
+        }
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -141,6 +148,7 @@ public class Main {
             }
         });
 
+            
         try {
             if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");
