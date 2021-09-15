@@ -21,6 +21,7 @@ public class BaseResponse extends CoreResponse {
         if(message.hasRequest()){
             if(message.hasProvider()){
                 if(message.getProvider().equals("core")){
+
                     Request request = client.getRequestManager().getRequest(Integer.parseInt((String) message.get("RID")));
                     if(request != null)
                         request.getRequestFutureResponse().onReceived(message);
@@ -45,4 +46,6 @@ public class BaseResponse extends CoreResponse {
             }
         }
     }
+    
+    
 }

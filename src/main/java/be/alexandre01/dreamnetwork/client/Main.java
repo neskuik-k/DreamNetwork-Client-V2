@@ -1,5 +1,23 @@
 package be.alexandre01.dreamnetwork.client;
 
+import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.util.List;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import com.github.tomaslanger.chalk.Chalk;
+import com.mashape.unirest.http.exceptions.UnirestException;
+
+import org.slf4j.LoggerFactory;
+
 import be.alexandre01.dreamnetwork.client.api.DNAPI;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.SecretFile;
@@ -10,22 +28,7 @@ import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
-import com.github.tomaslanger.chalk.Chalk;
-import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.Getter;
-import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.io.PrintStream;
-import java.lang.reflect.Field;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.text.NumberFormat;
-import java.text.ParseException;
-import java.util.logging.ConsoleHandler;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 public class Main {
@@ -50,7 +53,7 @@ public class Main {
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
-
+        
         new LoadLibraries().init();
         //UTF8
         Chalk.setColorEnabled(true);
