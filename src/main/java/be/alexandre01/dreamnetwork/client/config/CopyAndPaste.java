@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.client.config;
 
 import com.google.common.base.Preconditions;
-import sun.misc.Cleaner;
 
 import java.io.File;
 import java.io.IOException;

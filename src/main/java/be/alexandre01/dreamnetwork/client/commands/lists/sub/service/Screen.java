@@ -1,10 +1,10 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
-import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 

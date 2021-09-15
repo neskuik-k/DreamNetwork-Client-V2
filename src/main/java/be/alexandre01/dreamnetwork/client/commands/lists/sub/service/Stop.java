@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -14,7 +13,6 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
     public Stop(){
         addCompletor("service","stop","server");
         addCompletor("service","stop","proxy");
-
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {

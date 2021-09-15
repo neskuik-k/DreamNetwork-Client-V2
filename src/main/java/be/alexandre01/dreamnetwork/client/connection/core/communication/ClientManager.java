@@ -13,7 +13,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
-import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;

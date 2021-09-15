@@ -98,6 +98,11 @@
                     </descriptorRefs>
                 </configuration>
             </plugin>
+            <!-- Configures Proguard obfuscation tool to generate an
+     obfuscated version of the JAR file that replaces the
+     default unobfuscated JAR.
+-->
+    
         </plugins>
     </build>
 
@@ -115,7 +120,7 @@
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
-            <version>2.6</version>
+            <version>2.11.0</version>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
         <dependency>
@@ -162,7 +167,7 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.18</version>
+            <version>1.18.20</version>
         </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
 
 

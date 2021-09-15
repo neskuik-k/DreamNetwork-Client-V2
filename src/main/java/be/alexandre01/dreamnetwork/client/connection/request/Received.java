@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
+@SuppressWarnings("unused")
 public class Received {
     private static int currentId;
 

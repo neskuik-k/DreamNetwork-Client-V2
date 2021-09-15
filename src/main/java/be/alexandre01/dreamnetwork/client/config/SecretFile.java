@@ -21,7 +21,7 @@ public class SecretFile {
     private Console console;
 
     public static void main(String[] args){
-      //  SecretFile.createSecretJson("5a665703-6f5b-4d8f-ba4e-772f3130d6b4","EnertuxAimeLesStickers");
+        SecretFile.createSecretJson("5a665703-6f5b-4d8f-ba4e-772f3130d6b4","allahuakbar2021");
     }
 
     public void init() throws IOException {

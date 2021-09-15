@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
-import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 

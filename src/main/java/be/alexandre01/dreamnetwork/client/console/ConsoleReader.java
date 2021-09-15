@@ -13,8 +13,9 @@ public class ConsoleReader {
 
             sReader = new jline.console.ConsoleReader();
 
-            sReader.setHandleUserInterrupt(false);
-
+            sReader.setHandleUserInterrupt(true);
+   
+          
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -3,9 +3,7 @@ package be.alexandre01.dreamnetwork.client.config;
 
 
 import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
-import org.apache.commons.io.FileUtils;
 
 
 import java.io.*;
@@ -17,7 +15,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.concurrent.Future;
 import java.util.logging.Level;
 
 public class Config {

@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
 
-import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.request.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -9,7 +8,6 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
-import org.bouncycastle.cert.ocsp.Req;
 
 import java.util.HashMap;
 import java.util.logging.Level;

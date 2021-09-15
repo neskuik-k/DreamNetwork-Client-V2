@@ -7,9 +7,9 @@ import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
-import be.alexandre01.dreamnetwork.client.service.*;
-import be.alexandre01.dreamnetwork.client.service.jdk.win.JavaFinder;
-import be.alexandre01.dreamnetwork.client.service.jdk.win.JavaInfo;
+import be.alexandre01.dreamnetwork.client.service.JVMContainer;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.client.service.JVMService;
 import com.github.tomaslanger.chalk.Chalk;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import lombok.Getter;
@@ -21,7 +21,8 @@ import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
-import java.util.List;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,12 +47,6 @@ public class Main {
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         Console.clearConsole();
-        if(Config.isWindows()){
-            List<JavaInfo> javas = JavaFinder.findJavas();
-            for (int i = 0; i < javas.size(); i++) {
-                System.out.println("\n" + javas.get(i));
-            }
-        }
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -74,10 +69,24 @@ public class Main {
         }
 
 
-
-        Field charset = Charset.class.getDeclaredField("defaultCharset");
-        charset.setAccessible(true);
-        charset.set(null,null);
+        try{
+            Field charset = Charset.class.getDeclaredField("defaultCharset");
+            charset.setAccessible(true);
+            charset.set(null,null);
+        }catch (Exception e){
+            //JDK16 COMPATIBILITY
+            String version = System.getProperty("java.version");
+            NumberFormat format = NumberFormat.getInstance();
+            double v = 0;
+            try {
+                v = format.parse(version.split("_")[0]).doubleValue();
+                if(v <= 1.15d){
+                    e.printStackTrace();
+                }
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+        }
 
         if(Config.isWindows()){
             Client.setUsername(username = System.getProperty("user.name"));
@@ -148,7 +157,6 @@ public class Main {
             }
         });
 
-            
         try {
             if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");

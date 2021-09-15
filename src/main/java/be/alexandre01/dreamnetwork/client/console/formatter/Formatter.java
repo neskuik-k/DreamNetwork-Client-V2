@@ -12,10 +12,13 @@ import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.StreamHandler;
 
+@SuppressWarnings("unused")
 public class Formatter {
     PrintStream defaultStream;
     @Getter ConciseFormatter conciseFormatter;
@@ -28,7 +31,18 @@ public class Formatter {
             charset.setAccessible(true);
             charset.set(null,null);
         }catch (Exception e){
-            e.printStackTrace();
+            String version = System.getProperty("java.version");
+            NumberFormat format = NumberFormat.getInstance();
+            double v = 0;
+            try {
+                v = format.parse(version.split("_")[0]).doubleValue();
+                if(v <= 1.15d){
+                    e.printStackTrace();
+                }
+            } catch (ParseException ex) {
+                ex.printStackTrace();
+            }
+
         }
 
         defaultStream = System.out;

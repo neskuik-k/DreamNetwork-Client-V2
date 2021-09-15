@@ -12,7 +12,6 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 
-import java.io.BufferedWriter;
 
 
 import java.util.Arrays;
@@ -27,8 +26,6 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
     }
     @Override
     public boolean onSubCommand(String[] args) {
-
-        BufferedWriter processInput = null;
         if(args[0].equalsIgnoreCase("add")){
             if(args.length >= 5){
 

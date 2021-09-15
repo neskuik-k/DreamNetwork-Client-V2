@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 import com.github.tomaslanger.chalk.Chalk;
 import jline.console.CursorBuffer;
+import jline.console.UserInterruptException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -207,6 +208,7 @@ public class Console extends Thread{
             reader.setPrompt(  this.writing);
             PrintWriter out = new PrintWriter(reader.getOutput());
             while (isRunning && (data = reader.readLine()) != null){
+
                 try {
                     out.println("=> "+ data);
                     out.flush();
@@ -234,6 +236,7 @@ public class Console extends Thread{
         }catch (Exception e){
 
         }
+
     }
     public String readLine() throws IOException {
         StringBuilder sb = new StringBuilder();

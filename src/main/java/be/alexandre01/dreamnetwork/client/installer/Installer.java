@@ -148,7 +148,7 @@ public class Installer {
                     boolean directionRight = true;
                     StringBuilder sb = new StringBuilder();
                     @Override
-                    public State onBodyPartReceived(HttpResponseBodyPart bodyPart)
+                    public AsyncHandler.State onBodyPartReceived(HttpResponseBodyPart bodyPart)
                             throws Exception {
                         stream.getChannel().write(bodyPart.getBodyByteBuffer());
 
