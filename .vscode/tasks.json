@@ -1,0 +1,29 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile windows",
+            "type": "shell",
+            "command": "mvn -B clean install",
+            "group": "build"
+        },
+        {
+            "label": "compile ubuntu",
+            "type": "shell",
+            "command": "mvn -B clean install -P Custom-1",
+            "group": "build"
+        },
+        {
+            "label": "compile and run windows",
+            "type": "shell",
+            "command": "mvn -B clean install ; java -jar .\\target\\DreamNetworkV2-1.4.0-SNAPSHOT-withShadedDependencies.jar",
+            "group": "build"
+        },
+        {
+            "label": "compile and run ubuntu",
+            "type": "shell",
+            "command": "mvn -B clean install -P Custom-1 ; wsl.exe -d Ubuntu --cd /home/alexandre/DreamNetwork --exec java -jar DreamNetworkV2-1.4.0-SNAPSHOT-withShadedDependencies.jar",
+            "group": "build"
+        }
+    ]
+}
