@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 import com.github.tomaslanger.chalk.Chalk;
 import org.jline.reader.Buffer;
+import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.UserInterruptException;
 import org.jline.utils.AttributedString;
@@ -259,18 +260,22 @@ public class Console extends Thread{
         String data;
         try {
             while ((data = reader.readLine( Colors.PURPLE+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
-                if(data.length() > 0){
+
                     if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                         System.exit(0);
                     }else {
+                        Console.debugPrint("Cancelled.");
                         run();
                     }
 
 
                     break;
-                }
+
             }
         }catch (UserInterruptException e){
+            SIG_ING();
+        }
+        catch (EndOfFileException e){
             SIG_ING();
         }
 
