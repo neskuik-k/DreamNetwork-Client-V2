@@ -15,6 +15,8 @@ import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
+import be.alexandre01.dreamnetwork.client.service.jdk.JavaIndex;
+import be.alexandre01.dreamnetwork.client.service.jdk.JavaReader;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
@@ -26,9 +28,11 @@ import lombok.Setter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -39,6 +43,7 @@ public class Client {
     boolean debug = false;
     private InputStream in;
     public Formatter formatter;
+    @Getter private FileHandler fileHandler;
     @Getter
     @Setter
     public static Logger logger = Logger.getLogger(Client.class.getName());
@@ -54,11 +59,12 @@ public class Client {
     private CoreHandler coreHandler;
     @Getter
     private ClientManager clientManager;
-
+    @Getter
+    private JavaIndex javaIndex;
 
 
     public Client(){
-
+        
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
@@ -66,12 +72,12 @@ public class Client {
             debug = true;
         }
 
-        FileHandler fh = null;
+         fileHandler = null;
         try {
-            fh = new FileHandler("latest.log");
-            fh.setLevel(Level.ALL);
-            fh.setFormatter(new ConciseFormatter(false));
-            logger.addHandler(fh);
+            fileHandler = new FileHandler("latest.log");
+            fileHandler.setLevel(Level.ALL);
+            fileHandler.setFormatter(new ConciseFormatter(false));
+            logger.addHandler(fileHandler);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -100,11 +106,11 @@ public class Client {
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
 
-
-
+   
         Console console = Console.getConsole("m:default");
         console.defaultPrint = formatter.getDefaultStream();
-        CommandReader commandReader = new CommandReader(console);
+
+        Main.getCommandReader().run(console);
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
@@ -127,9 +133,13 @@ public class Client {
 
         ScreenManager.load();
 
+        JavaReader javaReader = new JavaReader();
+        javaIndex = javaReader.getJavaIndex();
+        
 
 
         //MANAGER
         this.clientManager = new ClientManager(this);
     }
+
 }

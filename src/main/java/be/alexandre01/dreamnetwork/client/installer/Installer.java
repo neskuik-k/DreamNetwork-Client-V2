@@ -181,7 +181,7 @@ public class Installer {
                                 directionRight = true;
                             }
                         }
-                        ConsoleReader.sReader.print("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]\r");
+                        ConsoleReader.sReader.printAbove("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]\r");
                         return State.CONTINUE;
                     }
 
@@ -189,7 +189,7 @@ public class Installer {
                     public FileOutputStream onCompleted(Response response) {
                         try {
 
-                            ConsoleReader.sReader.print("\n");
+                            ConsoleReader.sReader.printAbove("\n");
                             Client.getInstance().formatter.getDefaultStream().println("\nCOMPLETE... "+ stream.getChannel().size()/1024 +"kb in total");
                             Client.getInstance().formatter.getDefaultStream().println("HELLO");
 

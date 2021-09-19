@@ -11,8 +11,12 @@ import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public Screen(){
+        setCompletion(node("service",
+                node("screen")));
             addCompletor("service","screen");
     }
     @Override

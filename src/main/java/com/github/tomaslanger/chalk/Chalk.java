@@ -2,6 +2,8 @@ package com.github.tomaslanger.chalk;
 
 import org.fusesource.jansi.AnsiConsole;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Chalk allows you to color output going to console.
  * To start, use {@link #on(String)} and then chain modification.
@@ -24,7 +26,20 @@ public class Chalk {
 
     static {
         try {
-            AnsiConsole.systemInstall();
+            try {
+                try {
+                    Class.forName("org.fusesource.jansi.AnsiConsole",true,Thread.currentThread().getContextClassLoader()).getMethod("systemInstall").invoke(null);
+                    Thread.currentThread().getContextClassLoader();
+                } catch (ClassNotFoundException e) {
+                    e.printStackTrace();
+                }
+            } catch (NoSuchMethodException e) {
+                e.printStackTrace();
+            } catch (InvocationTargetException e) {
+                e.printStackTrace();
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
             colorEnabled = true;
             commandEnabled = true;
         } catch (UnsatisfiedLinkError e) {

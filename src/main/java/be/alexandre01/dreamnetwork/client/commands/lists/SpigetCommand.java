@@ -5,18 +5,20 @@ import be.alexandre01.dreamnetwork.client.commands.Command;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
-import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
+
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 public class SpigetCommand extends Command {
 
     public SpigetCommand(String name) {
         super(name);
-        setCompletions(new StringsCompleter("spiget"));
+        setCompletion(node("spiget"));
+        //setCompletions(new StringsCompleter("spiget"));
 
         commandExecutor = new CommandExecutor() {
             @Override

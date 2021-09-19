@@ -191,6 +191,10 @@ public class JVMExecutor extends JVMStartupConfig{
     }
 
     private boolean proceedStarting(String finalname,int servers) throws IOException {
+        if(!proxy && Client.getInstance().getClientManager().getProxy() == null){
+            Console.print(Colors.RED+"Vous devez d'abord allumer le proxy avant de démarrer un serveur.");
+            return false;
+        }
         if(port == 0){
             System.out.println("option0");
             if(!serversPortList.isEmpty()){
@@ -272,6 +276,7 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
         Process proc = null;
+
         if(System.getProperty("os.name").startsWith("Windows")){
             if(type.equals(Mods.DYNAMIC)){
                 if(startup != null){
@@ -402,7 +407,6 @@ public class JVMExecutor extends JVMStartupConfig{
 
             System.out.println(getStartServerList());
 
-            System.out.println("Hello Bande de sauvage");
 
             jvmServices.remove(i);
 

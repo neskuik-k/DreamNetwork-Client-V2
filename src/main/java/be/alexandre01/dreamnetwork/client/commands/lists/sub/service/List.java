@@ -6,8 +6,12 @@ import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import lombok.NonNull;
 
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 public class List extends SubCommandCompletor implements SubCommandExecutor {
     public List(){
+        setCompletion(node("service",
+                node("list")));
         addCompletor("service","screen");
     }
     @Override

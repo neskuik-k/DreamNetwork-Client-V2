@@ -9,10 +9,18 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
+import org.jline.reader.impl.completer.NullCompleter;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Install extends SubCommandCompletor implements SubCommandExecutor {
     public Install(){
         for(InstallationLinks s : InstallationLinks.values()){
+            setCompletion(node("service",
+                    node("add",
+                            node("server", "proxy",
+                                    node(NullCompleter.INSTANCE,
+                                            node(s.getVer()))))));
             addCompletor("service","install","server","",s.getVer());
             addCompletor("service","install","proxy","",s.getVer());
         }

@@ -1,15 +1,12 @@
 package be.alexandre01.dreamnetwork.client.console.jline.completors;
 
-import jline.console.completer.ArgumentCompleter;
-import jline.console.completer.Completer;
-import jline.internal.Log;
-import jline.internal.Preconditions;
+import org.jline.reader.impl.completer.ArgumentCompleter;
 
 import java.util.LinkedList;
 import java.util.List;
 
 public class CustomArgsCompletor extends ArgumentCompleter {
-    public int complete(String buffer, int cursor, List<CharSequence> candidates) {
+   /* public int complete(String buffer, int cursor, List<CharSequence> candidates) {
         Preconditions.checkNotNull(candidates);
         ArgumentCompleter.ArgumentDelimiter delim = this.getDelimiter();
         ArgumentCompleter.ArgumentList list = delim.delimit(buffer, cursor);
@@ -60,6 +57,6 @@ public class CustomArgsCompletor extends ArgumentCompleter {
                 return pos;
             }
         }
-    }
+    }*/
 
 }

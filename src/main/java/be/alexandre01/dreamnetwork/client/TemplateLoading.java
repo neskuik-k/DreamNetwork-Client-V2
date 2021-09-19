@@ -71,7 +71,7 @@ public class TemplateLoading {
                     continue;
                 }
                 if(jvmExecutor.isConfig() && jvmExecutor.hasExecutable()){
-                    Console.print(Chalk.on("[O] Template "+ dir.getName()+" loaded !").green());
+                    Console.debugPrint(Chalk.on("[O] Template "+ dir.getName()+" loaded !").green());
                     //Utils.templates.add(dir.getName()); <- add after
                     try {
                         Thread.sleep(250);

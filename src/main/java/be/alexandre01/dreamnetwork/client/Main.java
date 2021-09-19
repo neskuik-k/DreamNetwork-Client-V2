@@ -8,15 +8,12 @@ import java.net.UnknownHostException;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.List;
-import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.alexandre01.dreamnetwork.client.commands.CommandReader;
+import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import com.github.tomaslanger.chalk.Chalk;
-import com.mashape.unirest.http.exceptions.UnirestException;
-
-import org.slf4j.LoggerFactory;
 
 import be.alexandre01.dreamnetwork.client.api.DNAPI;
 import be.alexandre01.dreamnetwork.client.config.Config;
@@ -24,6 +21,7 @@ import be.alexandre01.dreamnetwork.client.config.SecretFile;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
+import be.alexandre01.dreamnetwork.client.libraries.DownloadLibraries;
 import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -44,17 +42,26 @@ public class Main {
     private static boolean disabling = false;
     @Getter
     private static boolean license;
+    @Getter
+    private static CommandReader commandReader;
 
 
-    private static final org.slf4j.Logger logger = LoggerFactory.getLogger(Main.class);
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-        Console.clearConsole();
+
+        System.setProperty("illegal-access", "permit");
+
+        commandReader = new be.alexandre01.dreamnetwork.client.commands.CommandReader();
+        ConsoleReader.init();
+
+         Console.clearConsole();
+        Config.createDir("data");
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
-        
-        new LoadLibraries().init();
+
+       
+
         //UTF8
         Chalk.setColorEnabled(true);
         System.out.println(Colors.RESET);
@@ -64,12 +71,12 @@ public class Main {
         Logger.getLogger("io.netty.util.internal.logging.InternalLoggerFactory").setLevel(Level.OFF);
         Logger.getLogger("jdk.internal.event.EventHelper").setLevel(Level.OFF);
         String pathSlf4J = Client.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
-        if(!Config.isWindows()){
+     /*   if(!Config.isWindows()){
             ConsoleHandler ch = new ConsoleHandler();
             ch.setLevel(Level.FINE);
             Logger.getLogger("").addHandler(ch);
             Logger.getLogger("").setLevel(Level.FINE);
-        }
+        }*/
 
 
         try{
@@ -107,8 +114,6 @@ public class Main {
             try {
                 secretFile = new SecretFile();
                 secretFile.init();
-
-
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -160,7 +165,6 @@ public class Main {
             }
         });
 
-        try {
             if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");
                 secretFile.deleteSecretFile();
@@ -175,9 +179,6 @@ public class Main {
             }
             loadClient();
 
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void loadClient(){
@@ -187,7 +188,7 @@ public class Main {
         instance = new Client();
         Client.instance = instance;
 
-
+       
         new TemplateLoading();
     }
 }

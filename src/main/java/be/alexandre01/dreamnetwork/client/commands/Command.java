@@ -7,8 +7,12 @@ import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
-import jline.console.completer.*;
+
 import lombok.Getter;
+import org.jline.builtins.Completers;
+import org.jline.reader.Completer;
+import org.jline.reader.LineReader;
+import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -44,8 +48,12 @@ public class Command{
             }
         }
     };
+
+    public void setCompletion(Completers.TreeCompleter.Node node){
+        ConsoleReader.nodes.add(node);
+    }
     public void setAutoCompletions(){
-        jline.console.ConsoleReader reader = ConsoleReader.sReader;
+      LineReader reader = ConsoleReader.sReader;
         c.forEach((s, subCommandExecutor) -> {
             if(subCommandExecutor instanceof SubCommandCompletor){
                 SubCommandCompletor completor = (SubCommandCompletor) subCommandExecutor;
@@ -61,17 +69,17 @@ public class Command{
 
 
                    // AggregateCompleter aggregateCompleter = new AggregateCompleter(completors);
-                    CustomArgumentCompleter argumentCompleter = new CustomArgumentCompleter(completors);
+                   // CustomArgumentCompleter argumentCompleter = new CustomArgumentCompleter(completors);
 
 
-                        argumentCompleter.setStrict(true);
-                    reader.addCompleter(argumentCompleter);
+                     //   argumentCompleter.setStrict(true);
+                    //reader.addCompleter(argumentCompleter);
                 }
             }
         });
     }
-    public void setCompletions(Completer completer){
-        ConsoleReader.sReader.addCompleter(completer);
+    public void setCompletionsTest(Completer completer){
+        //ConsoleReader.sReader.addCompleter(completer);
     }
     public void sendHelp(){
         if(helpBuilder.getSize() <= 1){

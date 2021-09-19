@@ -2,20 +2,20 @@ package be.alexandre01.dreamnetwork.client.commands.lists;
 
 import be.alexandre01.dreamnetwork.client.commands.Command;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.*;
-import jline.console.completer.Completer;
-import jline.console.completer.StringsCompleter;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
         super(name);
-
         addSubCommand("add",new Add());
+        addSubCommand("stop",new Stop());
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());
         addSubCommand("install",new Install());
         addSubCommand("screen",new Screen());
         addSubCommand("list",new List());
-        addSubCommand("stop",new Stop());
         addSubCommand("kill",new Kill());
 
         getHelpBuilder().setTitleUsage("How to configurate a service");
@@ -30,7 +30,6 @@ public class ServiceCommand extends Command {
         getHelpBuilder().setTitleUsage("List all your servers");
         getHelpBuilder().setCmdUsage("list your servers","list");
 
-        setAutoCompletions();
     }
 
 }

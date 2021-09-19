@@ -28,11 +28,9 @@ public class DNAPI {
 
         System.out.println(args);
         DNAPI dnapi = new DNAPI();
-        try {
+
             dnapi.hasValidLicense("","");
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
+
        /* try {
             dnapi.createUser("alexandre.taillet@gmail.com","alexandre","1234");
         } catch (InterruptedException e) {
@@ -58,14 +56,22 @@ public class DNAPI {
             e.printStackTrace();
         }
     }
-    public boolean hasValidLicense(String uuid, String secret) throws UnirestException {
+    public boolean hasValidLicense(String uuid, String secret) {
         Unirest.setTimeouts(0, 0);
-        HttpResponse<String> response = Unirest.post("https://api.dreamnetwork.cloud/licenses/validate")
-                .header("Content-Type", "application/x-www-form-urlencoded")
-                .field("uuid", uuid)
-                .field("secret", secret)
-                .asString();
+        HttpResponse<String> response = null;
+        try {
+            response = Unirest.post("https://api.dreamnetwork.cloud/licenses/validate")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .field("uuid", uuid)
+                    .field("secret", secret)
+                    .asString();
+        }catch (UnirestException e){
 
+        }
+
+        if(response == null){
+            return false;
+        }
         if(response.getStatus() == 201 || response.getStatus() == 200){
             return true;
         }else {

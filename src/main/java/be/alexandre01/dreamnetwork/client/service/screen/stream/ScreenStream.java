@@ -4,7 +4,9 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
-import jline.console.ConsoleReader;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+
 
 import java.io.*;
 import java.util.stream.Collectors;
@@ -37,15 +39,21 @@ public class ScreenStream {
         //reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
         System.out.println(screen.getService().getProcess().getInputStream());
 
-        ConsoleReader c = null;
-        if(console.getConsoleAction() == null){
-            try {
-                c = new ConsoleReader(screen.getService().getProcess().getInputStream(),screen.getService().getProcess().getOutputStream());
+        LineReader c = null;
+       if(console.getConsoleAction() == null){
+           /*  try {
+                c = LineReaderBuilder.builder()
+                        .terminal(terminal)
+                        :completer(new MyCompleter())
+                        .highlighter(new MyHighlighter())
+                        .parser(new MyParser())
+                        .build();
+                c = new LineReaderBuilder.builder().terminal()(screen.getService().getProcess().getInputStream(), screen.getService().getProcess().getOutputStream());
             } catch (IOException e) {
                 e.printStackTrace();
-            }
+            }*/
 
-            this.screenOutReader = new ScreenOutReader(screen,console,c);
+            this.screenOutReader = new ScreenOutReader(screen,console);
         }
         screenOutReader.run();
         Console.setActualConsole("s:"+name);

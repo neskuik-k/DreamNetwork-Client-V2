@@ -8,9 +8,15 @@ import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
+import org.jline.reader.impl.completer.NullCompleter;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Stop extends SubCommandCompletor implements SubCommandExecutor {
     public Stop(){
+        setCompletion(node("service",
+                node("stop",
+                        node("server", "proxy"))));
         addCompletor("service","stop","server");
         addCompletor("service","stop","proxy");
     }

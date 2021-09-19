@@ -7,9 +7,15 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
+import org.jline.reader.impl.completer.NullCompleter;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Start extends SubCommandCompletor implements SubCommandExecutor {
     public Start(){
+        setCompletion(node("service",
+                node("start",
+                        node("server", "proxy"))));
         addCompletor("service","start","server");
         addCompletor("service","start","proxy");
 

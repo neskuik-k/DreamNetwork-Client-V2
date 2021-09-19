@@ -9,12 +9,9 @@ import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.commands.ScreenCommands;
 import be.alexandre01.dreamnetwork.client.service.screen.commands.ScreenExit;
 import com.github.tomaslanger.chalk.Chalk;
-import jline.console.ConsoleReader;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+
+import java.io.*;
 import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -27,11 +24,11 @@ public class ScreenOutReader {
     private String[] args;
     private final Screen screen;
     private final Console console;
-    private final ConsoleReader consoleReader;
+    //private final ConsoleReader consoleReader;
 
-    public ScreenOutReader(Screen screen, Console console,ConsoleReader consoleReader){
-        this.consoleReader = consoleReader;
-        Console.debugPrint(consoleReader.getCompleters());
+    public ScreenOutReader(Screen screen, Console console){
+      //  this.consoleReader = consoleReader;
+        //Console.debugPrint(consoleReader.getCompleters());
 
         this.console = console;
         this.screen = screen;
@@ -83,11 +80,11 @@ public class ScreenOutReader {
                                 }
                                 //   Console.debugPrint(sb.toString());
 
-
-                                consoleReader.getOutput().write(sb.toString()+"\n");
+                                Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
+                                writer.write(sb.toString()+"\n");
 
                                 //  Console.debugPrint("write");
-                                consoleReader.getOutput().flush();
+                                writer.flush();
                                 // Console.debugPrint("flush");
                             } catch (IOException e) {
                                 e.printStackTrace(Client.getInstance().formatter.getDefaultStream());

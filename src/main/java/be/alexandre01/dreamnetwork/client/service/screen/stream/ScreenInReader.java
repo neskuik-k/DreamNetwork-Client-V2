@@ -12,6 +12,7 @@ import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.channels.Channels;
@@ -72,6 +73,7 @@ public class ScreenInReader extends Thread {
 
                 if(!process.isAlive()){
                     screen.destroy();
+                    isRunning = false;
                 }
 
 
@@ -95,10 +97,10 @@ public class ScreenInReader extends Thread {
 
             int i = 0;
             while (channel.read(buffer) != -1 && this.isRunning ) {
-                buffer.flip();
+                ((Buffer)buffer).flip();
                 if(buffer.remaining() != 0)
                     datas.append(StandardCharsets.UTF_8.decode(buffer));
-                buffer.clear();
+                ((Buffer)buffer).clear();
             }
 
         } catch (Exception exception) {

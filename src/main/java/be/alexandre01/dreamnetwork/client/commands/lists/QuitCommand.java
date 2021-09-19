@@ -2,12 +2,15 @@ package be.alexandre01.dreamnetwork.client.commands.lists;
 
 import be.alexandre01.dreamnetwork.client.commands.Command;
 import be.alexandre01.dreamnetwork.client.console.Console;
-import jline.console.completer.StringsCompleter;
+
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 
 public class QuitCommand extends Command {
     public QuitCommand(String quit) {
         super(quit);
-        setCompletions(new StringsCompleter("quit"));
+        setCompletion(node("quit"));
+        //setCompletions(new StringsCompleter("quit"));
 
         commandExecutor = new CommandExecutor() {
             @Override

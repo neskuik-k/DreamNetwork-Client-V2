@@ -16,24 +16,25 @@ public class CommandReader{
     Console console;
     private boolean stop = false;
 
-    public CommandReader(Console console){
-        this.console = console;
+    public CommandReader(){
         commands = new CommandsManager();
         commands.addCommands(new ServiceCommand("service"));
         commands.addCommands(new HelpCommand("help"));
         commands.addCommands(new SpigetCommand("spiget"));
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
-        run();
+
     }
 
 
-    public void run(){
+    public void run(Console console){
+        this.console = console;
+
             console.setConsoleAction(new Console.IConsole() {
                 @Override
                 public void listener(String[] args) {
                     if(args.length != 0){
-                        if(!args[0].equalsIgnoreCase(" ")){
+                        if(args[0].length() != 0){
                             commands.check(args);
                         }
                     }

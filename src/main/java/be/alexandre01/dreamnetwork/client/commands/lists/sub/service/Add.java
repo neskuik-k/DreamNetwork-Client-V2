@@ -11,14 +11,22 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
-
+import org.jline.reader.impl.completer.NullCompleter;
 
 
 import java.util.Arrays;
 import java.util.logging.Level;
 
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 public class Add extends SubCommandCompletor implements SubCommandExecutor {
     public Add(){
+        setCompletion(node("service",
+                node("add",
+                        node("server", "proxy",
+                        node(NullCompleter.INSTANCE,
+                        node("STATIC","DYNAMIC",
+                        node("1G","2G")))))));
         addCompletor("service","add","server","","STATIC","1G","2G");
         addCompletor("service","add","server","","DYNAMIC","1G","2G");
         addCompletor("service","add","proxy","","STATIC","1G","2G");

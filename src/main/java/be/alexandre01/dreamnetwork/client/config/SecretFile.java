@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.config;
 
+import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
@@ -7,7 +8,11 @@ import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import lombok.Data;
+import org.jline.reader.LineReader;
+import org.jline.reader.LineReaderBuilder;
+import org.jline.reader.UserInterruptException;
 import org.json.JSONObject;
+import sun.security.util.Debug;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -26,30 +31,40 @@ public class SecretFile {
 
     public void init() throws IOException {
         BufferedReader file = null;
-
+        
         try {
-            file = new BufferedReader( new FileReader(System.getProperty("user.dir")+"/.dkeys"));
+            file = new BufferedReader( new FileReader(System.getProperty("user.dir")+"/data/.dkeys"));
         } catch (FileNotFoundException e) {
             System.out.println(Colors.RED+"Can't find the secret file.");
-            jline.console.ConsoleReader reader =  ConsoleReader.sReader;
+            LineReader reader = LineReaderBuilder.builder()
+                    .terminal(ConsoleReader.terminal)
+                    .build();
 
             Character mask = Config.isWindows() ? (char)'*' : (char) '•';
 
-            reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
-            PrintWriter out = new PrintWriter(reader.getOutput());
+          //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
+            PrintWriter out = new PrintWriter(reader.getTerminal().writer());
             String data;
-            while ((data = reader.readLine(mask)) != null){
-                if(data.length() > 0){
-                    file= createSecretFile(data);
-                    break;
+            try {
+                while ((data = reader.readLine( Colors.YELLOW+"enter the secret-code > "+Colors.RESET,mask)) != null){
+                    if(data.length() > 0){
+                        file= createSecretFile(data);
+                        break;
+                    }
                 }
+            }catch (UserInterruptException ex){
+                Console.debugPrint(Colors.RED+"exiting...");
+                Console.debugPrint(Colors.BLACK+Colors.WHITE_BACKGROUND+"Come back when you have the code on the website "+Colors.ANSI_CYAN+"https://dreamnetwork.cloud/"+Colors.BLACK+Colors.WHITE_BACKGROUND+" and See you later! "+Colors.RESET);
+                System.exit(0);
             }
+
         }
         String line;
 
         while ((line = file.readLine()) != null) {
             try {
                 String decoded = new String(Base64.getDecoder().decode(line));
+                
                 JSONObject json = new JSONObject(decoded);
                 secret = json.getString("secret");
                 uuid = json.getString("uuid");
@@ -64,8 +79,8 @@ public class SecretFile {
     }
 
     public BufferedReader createSecretFile(String encoded) throws IOException {
-        File file = new File(System.getProperty("user.dir")+"/.dkeys");
-
+        File file = new File(System.getProperty("user.dir")+"/data/.dkeys");
+        
         if(!file.exists()){
             file.createNewFile();
         }
@@ -74,10 +89,10 @@ public class SecretFile {
         bufferedWriter.write(encoded);
         bufferedWriter.flush();
         bufferedWriter.close();
-        return new BufferedReader( new FileReader(System.getProperty("user.dir")+"/.dkeys"));
+        return new BufferedReader( new FileReader(System.getProperty("user.dir")+"/data/.dkeys"));
     }
     public void deleteSecretFile(){
-        File file = new File(System.getProperty("user.dir")+"/.dkeys");
+        File file = new File(System.getProperty("user.dir")+"/data/.dkeys");
         if(file.delete())
         {
             System.out.println("File deleted successfully");

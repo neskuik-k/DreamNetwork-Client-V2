@@ -22,6 +22,7 @@ import java.util.logging.StreamHandler;
 public class Formatter {
     PrintStream defaultStream;
     @Getter ConciseFormatter conciseFormatter;
+    @Getter ConciseFormatter defaultFormatter;
     public  PrintStream prStr;
     public void format(){
         Ansi.setEnabled(true);
@@ -55,14 +56,14 @@ public class Formatter {
         final PrintStream err = System.err;
         Client.getLogger().setUseParentHandlers(false);
         try {
-            ConciseFormatter c = new ConciseFormatter(true);
+            defaultFormatter = new ConciseFormatter(true);
             ConsoleHandler handler = new ConsoleHandler();
             try {
                 handler.setEncoding("UTF-8");
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            handler.setFormatter(c);
+            handler.setFormatter(defaultFormatter);
             handler.setLevel(Level.ALL);
             handler.flush();
             Client.getLogger().addHandler( handler);

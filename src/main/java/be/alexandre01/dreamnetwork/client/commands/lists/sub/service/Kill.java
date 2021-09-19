@@ -9,8 +9,13 @@ import be.alexandre01.dreamnetwork.client.service.JVMService;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
 public class Kill extends SubCommandCompletor implements SubCommandExecutor {
     public Kill(){
+        setCompletion(node("service",
+                node("kill",
+                        node("server", "proxy"))));
         addCompletor("service","kill","server");
         addCompletor("service","kill","proxy");
 

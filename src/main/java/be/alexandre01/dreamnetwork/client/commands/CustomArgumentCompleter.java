@@ -1,17 +1,13 @@
 package be.alexandre01.dreamnetwork.client.commands;
 
-import jline.console.CursorBuffer;
-import jline.console.completer.AggregateCompleter;
-import jline.console.completer.ArgumentCompleter;
-import jline.console.completer.Completer;
-import jline.internal.Log;
-import jline.internal.Preconditions;
+
+import org.jline.reader.impl.completer.ArgumentCompleter;
 
 import java.util.*;
 
 public class CustomArgumentCompleter extends ArgumentCompleter {
 
-    public CustomArgumentCompleter(List<Completer> completors) {
+   /* public CustomArgumentCompleter(List<Completer> completors) {
         super(completors);
     }
 
@@ -68,5 +64,5 @@ public class CustomArgumentCompleter extends ArgumentCompleter {
                 return pos;
             }
         }
-    }
+    }*/
 }

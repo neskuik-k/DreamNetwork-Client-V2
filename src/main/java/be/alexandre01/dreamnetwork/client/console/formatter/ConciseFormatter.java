@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.console.formatter;
 
 
 import be.alexandre01.dreamnetwork.client.config.Config;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.io.PrintWriter;
@@ -31,7 +32,6 @@ public class ConciseFormatter extends Formatter {
 
             if(coloured){
             StringBuilder formatted = new StringBuilder();
-
             formatted.append(Chalk.on(date.format( record.getMillis() )).white().bgCyan() );
             formatted.append(Chalk.on(" [").blue());
 
@@ -42,8 +42,9 @@ public class ConciseFormatter extends Formatter {
             formatted.append( Chalk.on("] ").blue());
             ByteBuffer b = StandardCharsets.UTF_8.encode(formatMessage(record));
             new String(formatMessage( record ).getBytes(), StandardCharsets.UTF_8);
-            String s = new String(b.array(), StandardCharsets.UTF_8);if(Config.isWindows())
-                s =   Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");
+            String s = new String(b.array(), StandardCharsets.UTF_8);
+            /*if(Config.isWindows())
+                s =   Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^\\p{ASCII}]", "");*/
             formatted.append(s);
             formatted.append( '\n' );
 
@@ -57,7 +58,6 @@ public class ConciseFormatter extends Formatter {
             return formatted.toString();
             }
                 StringBuilder formatted = new StringBuilder();
-
                 formatted.append(date.format( record.getMillis() ));
                 formatted.append(" [");
 

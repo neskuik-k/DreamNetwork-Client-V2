@@ -6,8 +6,10 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 
 import com.github.tomaslanger.chalk.Chalk;
-import jline.console.CursorBuffer;
-import jline.console.UserInterruptException;
+import org.jline.reader.Buffer;
+import org.jline.reader.LineReader;
+import org.jline.reader.UserInterruptException;
+import org.jline.utils.AttributedString;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,6 +18,7 @@ import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.*;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,15 +60,15 @@ public class Console extends Thread{
             console.defaultPrint.println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
-            stashLine();
-            for (ConsoleMessage s : h){
+          //  stashLine();
+          for (ConsoleMessage s : h){
                 if(s.level == null){
                     console.defaultPrint.print(s.content);
                 }else{
                     console.forcePrint(s.content,s.level);
                 }
             }
-            unstashLine();
+            //unstashLine();
         }
         if(!console.isAlive()){
             //new Thread(console).start();
@@ -94,7 +97,7 @@ public class Console extends Thread{
     }
 
     public static void print(Object s, Level level){
-        jline.console.ConsoleReader consoleReader = ConsoleReader.sReader;
+        LineReader consoleReader  = ConsoleReader.sReader;
 
         if(consoleReader.getHistory() == null || consoleReader.getHistory().size() == 0){
             return;
@@ -110,18 +113,19 @@ public class Console extends Thread{
     }
     public void forcePrint(String s, Level level){
         if(Console.actualConsole.equals(name))
-            Client.getLogger().info(s+Colors.ANSI_RESET());
+            ConsoleReader.sReader.printAbove(Client.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, s.toString()+Colors.RESET)));
     }
     /*
     Print without log
      */
     public void printNL(Object s){
         if(Console.actualConsole.equals(name)){
-            stashLine();
-            defaultPrint.print(s);
+          //  stashLine();
+            ConsoleReader.sReader.printAbove(s.toString());
+           // defaultPrint.print(s);
 
-            ConsoleReader.sReader.setPrompt(writing);
-            unstashLine();
+          //  ConsoleReader.sReader.setPrompt(writing);
+           // unstashLine();
         }
         refreshHistory(s + "");
     }
@@ -130,13 +134,15 @@ public class Console extends Thread{
     Basic Print in console
      */
     public void fPrint(Object s,Level level){
-        stashLine();
+        //stashLine();
         if(Console.actualConsole.equals(name)){
-            Client.getLogger().log(level,s+Colors.ANSI_RESET());
-            ConsoleReader.sReader.setPrompt(writing);
+
+            //Client.getLogger().log(level,s+Colors.ANSI_RESET());
+            ConsoleReader.sReader.printAbove(Client.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s)));
+           // ConsoleReader.sReader.setPrompt(writing);
         }
         if(scheduler == null){
-            taskUnstash();
+            //taskUnstash();
         }
 
 
@@ -144,12 +150,13 @@ public class Console extends Thread{
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
     public static void print(Object s){
-       System.out.println(s+Colors.ANSI_RESET());
+        ConsoleReader.sReader.printAbove(Client.getInstance().formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET())));
     }
 
     public static void debugPrint(Object s){
        // stashLine();
-        Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
+        ConsoleReader.sReader.printAbove(s.toString());
+       // Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
         //unstashLine();
     }
 
@@ -203,14 +210,16 @@ public class Console extends Thread{
                 actualConsole = defaultConsole;
             }
 
-            jline.console.ConsoleReader reader =  ConsoleReader.sReader;
+            LineReader reader =  ConsoleReader.sReader;
 
-            reader.setPrompt(  this.writing);
-            PrintWriter out = new PrintWriter(reader.getOutput());
-            while (isRunning && (data = reader.readLine()) != null){
+            //reader.setPrompt(  this.writing);
+            PrintWriter out = new PrintWriter(reader.getTerminal().writer());
+
+            while (isRunning && (data = reader.readLine(this.writing)) != null){
 
                 try {
-                    out.println("=> "+ data);
+                    if(data.length() != 0)
+                        out.println("=> "+ data);
                     out.flush();
 
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
@@ -234,7 +243,35 @@ public class Console extends Thread{
 
 
         }catch (Exception e){
+            SIG_ING();
+        }
 
+
+
+    }
+    public void SIG_ING(){
+        LineReader reader =  ConsoleReader.sReader;
+
+
+
+        //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
+        PrintWriter out = new PrintWriter(reader.getTerminal().writer());
+        String data;
+        try {
+            while ((data = reader.readLine( Colors.PURPLE+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+                if(data.length() > 0){
+                    if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
+                        System.exit(0);
+                    }else {
+                        run();
+                    }
+
+
+                    break;
+                }
+            }
+        }catch (UserInterruptException e){
+            SIG_ING();
         }
 
     }
@@ -333,11 +370,11 @@ public class Console extends Thread{
     }
 
 
-    private static CursorBuffer stashed;
+    private static Buffer stashed;
 
-    public static void stashLine() {
-        jline.console.ConsoleReader console = ConsoleReader.sReader;
-        stashed = console.getCursorBuffer().copy();
+    /*  public static void stashLine() {
+        LineReader console = ConsoleReader.sReader;
+        stashed = console.getBuffer().copy();
         try {
             console.getOutput().write("\u001b[1G\u001b[K");
             console.flush();
@@ -348,7 +385,7 @@ public class Console extends Thread{
 
     public static void unstashLine() {
         try {
-            jline.console.ConsoleReader console = ConsoleReader.sReader;
+           LineReader console = ConsoleReader.sReader;
             console.resetPromptLine(console.getPrompt(),
                     stashed.toString(), stashed.cursor);
         } catch (IOException e) {
@@ -367,5 +404,5 @@ public class Console extends Thread{
             }
         },50,50, TimeUnit.MILLISECONDS);
 
-    }
+    }*/
 }

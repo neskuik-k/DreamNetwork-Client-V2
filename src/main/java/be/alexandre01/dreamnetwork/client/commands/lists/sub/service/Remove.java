@@ -2,14 +2,23 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 
+import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
+import org.jline.reader.impl.completer.NullCompleter;
 
 import java.util.logging.Level;
 
-public class Remove implements SubCommandExecutor {
+import static org.jline.builtins.Completers.TreeCompleter.node;
+
+public class Remove extends SubCommandCompletor implements SubCommandExecutor {
+    public Remove(){
+        setCompletion(node("service",
+                node("remove",
+                        node("server", "proxy"))));
+    }
     @Override
     public boolean onSubCommand(String[] args) {
         if(args[0].equalsIgnoreCase("remove")){
