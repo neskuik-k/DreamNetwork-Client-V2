@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.BaseResp
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import io.netty.buffer.ByteBuf;
@@ -20,6 +21,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Level;
 
 public class CoreHandler extends ChannelInboundHandlerAdapter{
 
@@ -37,9 +39,9 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
-        System.out.println("Local ADRESS " + ctx.channel().localAddress());
-        System.out.println("Remote ADRESS " + ctx.channel().remoteAddress());
-        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
+       Console.print("Local ADRESS " + ctx.channel().localAddress(),Level.FINE);
+        Console.print("Remote ADRESS " + ctx.channel().remoteAddress(),Level.FINE);
+
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
         if(!remote.replaceAll("/","").equalsIgnoreCase("127.0.0.1")){
@@ -49,8 +51,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) { // (1)
-        System.out.println("CHANNEL ACTIVE");
-        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
+       Console.print("CHANNEL ACTIVE",Level.FINE);
+        Console.print(ctx.channel().remoteAddress().toString().split(":")[0],Level.FINE);
 
 
         if(!queue.isEmpty()){
@@ -90,23 +92,14 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         ByteBuf m = (ByteBuf) msg; // (1)
         String s_to_decode = m.toString(StandardCharsets.UTF_8);
         //TO DECODE STRING IF ENCODED AS AES
-        Message msgTest = new Message();
-        msgTest.set("Hello","AIE AIE");
-        byte[] entry = msgTest.toString().getBytes(StandardCharsets.UTF_8);
-        final ByteBuf buf = ctx.alloc().buffer(entry.length);
-        buf.writeBytes(entry);
-        ctx.writeAndFlush(buf);
-        Console.print("Channel READ " + msgTest);
 
         ChannelFuture closeFuture = ctx.channel().closeFuture();
-
         closeFuture.addListener(new ChannelFutureListener() {
             @Override
             public void operationComplete(ChannelFuture future) throws Exception {
                 System.out.println("Closed connection");
             }
         });
-
         if(!Message.isJSONValid(s_to_decode))
             return;
 
@@ -117,6 +110,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
                     iBasicClientResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
+
                 }
             }
         } finally {
@@ -126,12 +120,11 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Déconnexion d'un serveur");
+        Console.print("Déconnexion d'un serveur");
         if(executorService != null){
-            System.out.println("WOW");
             executorService.shutdown();
         }
-        System.out.println(ctx.channel().remoteAddress());
+        Console.print(ctx.channel().remoteAddress(),Level.FINE);
         ClientManager.Client client = Client.getInstance().getClientManager().getClient(ctx);
         if(client != null){
             client.getJvmService().getJvmExecutor().removeService(client.getJvmService().getId());
@@ -148,7 +141,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        System.out.println("Yes");
         if(!Main.isDisabling()){
             cause.printStackTrace();
         }
@@ -161,9 +153,9 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     }
 
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, ClientManager.Client client){
-        System.out.println("write and flush>> "+ msg);
+        Console.print(Colors.YELLOW+"write and flush>> "+Colors.WHITE+ msg, Level.FINE);
         ChannelHandlerContext ctx = client.getChannelHandlerContext();
-        System.out.println(ctx);
+        Console.print(ctx, Level.FINE);
         if(ctx == null || !ctx.channel().isActive() || !queue.isEmpty()){
             assert ctx != null;
             queue.put(msg,new Tuple<>(ctx.channel(),listener));

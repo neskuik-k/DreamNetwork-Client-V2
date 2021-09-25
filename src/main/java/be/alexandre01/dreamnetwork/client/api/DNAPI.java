@@ -85,26 +85,30 @@ public class DNAPI {
                 System.exit(1);
                 return false;
             }
+            try {
+                JSONObject jsonObject = new JSONObject(response.getBody());
+                StringBuilder sb = new StringBuilder();
+                sb.append(response.getStatusText() +" -> ");
 
-            JSONObject jsonObject = new JSONObject(response.getBody());
-            StringBuilder sb = new StringBuilder();
-            sb.append(response.getStatusText() +" -> ");
-
-            Object s = jsonObject.get("message");
-            if(s instanceof JSONArray){
-                JSONArray jsonArray = (JSONArray) s;
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    sb.append(jsonArray.get(i));
-                    if(i != jsonArray.length()-1){
-                        sb.append(", ");
+                Object s = jsonObject.get("message");
+                if(s instanceof JSONArray){
+                    JSONArray jsonArray = (JSONArray) s;
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        sb.append(jsonArray.get(i));
+                        if(i != jsonArray.length()-1){
+                            sb.append(", ");
+                        }
                     }
                 }
-            }
-            if(s instanceof String){
-                sb.append(s);
+                if(s instanceof String){
+                    sb.append(s);
+                }
+
+                System.out.println("There is an error with your license: "+sb.toString());
+            }catch (Exception e){
+                System.out.println("The API Return an untranscribable body");
             }
 
-            System.out.println("There is an error with your license: "+sb.toString());
         }
 
         return false;

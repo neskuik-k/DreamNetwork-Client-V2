@@ -136,7 +136,7 @@ public class JVMExecutor extends JVMStartupConfig{
             }
         }
 
-        Console.print("");
+
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
             String finalname =  name+"-"+servers;
@@ -149,7 +149,6 @@ public class JVMExecutor extends JVMStartupConfig{
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
-                System.out.println("Ok!!!!");
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 int finalServers = servers;
                 service.scheduleAtFixedRate(() -> {
@@ -172,7 +171,7 @@ public class JVMExecutor extends JVMStartupConfig{
                                 dateBuilderTimer.loadComplexDate();
                                 System.out.println("Cannot CopiedAsync: actions effectued in "+dateBuilderTimer.getLongBuild());
                             }
-                        });
+                        },exec);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -191,14 +190,14 @@ public class JVMExecutor extends JVMStartupConfig{
     }
 
     private boolean proceedStarting(String finalname,int servers) throws IOException {
+        int port = 0;
         if(!proxy && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"Vous devez d'abord allumer le proxy avant de démarrer un serveur.");
             return false;
         }
-        if(port == 0){
-            System.out.println("option0");
+        if(this.port == 0){
+
             if(!serversPortList.isEmpty()){
-                System.out.println("option0.5");
                 for (Integer string : serversPort.values()){
                     //System.out.println(string);
                 }
@@ -217,7 +216,6 @@ public class JVMExecutor extends JVMStartupConfig{
                 }
 
                 // System.out.println(port);
-                System.out.println(type.getPath());
                 changePort(type.getPath()+pathName,finalname,port,type);
 
                 port = getCurrentPort(type.getPath()+pathName,finalname,type);
@@ -241,9 +239,7 @@ public class JVMExecutor extends JVMStartupConfig{
                 }
             }
         }else {
-            System.out.println("option2");
             if(!serversPortList.contains(port)){
-                System.out.println("option3");
                 for(Map.Entry<String,Integer> s : serversPort.entrySet()){
                     if(s.getKey().startsWith("cache-")){
 
@@ -269,64 +265,24 @@ public class JVMExecutor extends JVMStartupConfig{
             }
         }
         String resourcePath = null;
-        System.out.println("ICI LE CODE EST ACTIVE");
         if(startup != null){
             startup = startup.replaceAll("%exec%",exec).replaceAll("%xmx%",xmx).replaceAll("%xms%",xms);;
-            System.out.println(startup);
         }
 
         Process proc = null;
 
-        if(System.getProperty("os.name").startsWith("Windows")){
+
             if(type.equals(Mods.DYNAMIC)){
                 if(startup != null){
-                   // exec = new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec;
-                 //   proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                    String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
+                    String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
                     startup = startup.replaceAll("%jar%",jarPath);
-                    System.out.println(startup);
-                    proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
+                    Console.print(startup,Level.FINE);
+                    proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname))).start();
+                  //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
                 }else {
-                    //proc = Runtime.getRuntime().exec("cmd /c start java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                    // System.out.println(startup);
-                    //System.out.println(exec);
-                    //startup = startup.replaceAll("%jar%",exec);
-                    proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/spigot.jar nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                }
-
-            }else {
-                if(type.equals(Mods.STATIC)){
-                    if(startup != null){
-                        String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
-                        startup = startup.replaceAll("%jar%",jarPath);
-                        System.out.println(startup);
-                        proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                    }else {
-                      //  proc = Runtime.getRuntime().exec("cmd /c start java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                        //ProcessBuilder pr = new ProcessBuilder("cmd", "/c", "start","java","-Duser.language=fr", "-Djline.terminal=jline.UnsupportedTerminal", "-Xms"+xms,"-Xmx"+xmx,"-jar"+"spigot.jar"+"nogui");
-                        //pr.directory( new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                        //Console.debugPrint(pr.directory().getAbsolutePath());
-                        proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                        //pr.redirectErrorStream(true);
-                        //pr.inheritIO();
-                        //proc = pr.start();
-                        // System.out.println("cmd /c start java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)));
-                    }
-
-                }
-            }
-
-        }else {
-            if(type.equals(Mods.DYNAMIC)){
-                if(startup != null){
-                    String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec;
-                    startup = startup.replaceAll("%jar%",jarPath);
-                    System.out.println(startup);
-                    proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                }else {
-                    System.out.println("cmd /c start java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec+" nogui");
-                    System.out.println( new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
-                    proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
+                    String line = "java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui";
+                   // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
+                    proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname))).start();
                     // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
                 }
 
@@ -335,19 +291,21 @@ public class JVMExecutor extends JVMStartupConfig{
                     if(startup != null){
                         String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec;
                         startup = startup.replaceAll("%jar%",jarPath);
-                        System.out.println(startup);
-                        proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                        System.out.println(startup);
+                        proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name))).start();
+                      //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     }else {
+                        String line ="java -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui";
 
-                        proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
+                        proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name))).start();
+
+                        // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                         // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     }
 
 
                 }
             }
-        }
+
 
         JVMService jvmService = JVMService.builder().
                 process(proc)
@@ -361,15 +319,18 @@ public class JVMExecutor extends JVMStartupConfig{
 
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
-        Console.print(Colors.ANSI_GREEN()+"Le serveur viens de démarrer le processus",Level.INFO);
-
-        Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
+        Console.print(Colors.GREEN_BOLD+"Le serveur "+Colors.YELLOW_BOLD+pathName+Colors.GREEN_BOLD+" vient de démarrer le processus",Level.INFO);
+        if(type == Mods.DYNAMIC){
+            Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/temp/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.FINE);
+        }
+        if(type == Mods.STATIC){
+            Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase())).getAbsolutePath(), Level.FINE);
+        }
 
         // Main.getInstance().processInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
 
 
         getStartServerList().add(finalname);
-        Console.debugPrint(String.valueOf(port));
 
         //CONNECTION TO SERVER
         // Connect connect = new Connect("localhost",port+1,"Console","8HetY4474XisrZ2FGwV5z",finalname);
@@ -377,7 +338,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
         //SCREEN SYSTEM
         new Screen(jvmService);
-       
+
 
         return true;
     }
@@ -398,14 +359,11 @@ public class JVMExecutor extends JVMStartupConfig{
 
                 int port = serversPort.get(finalName);
                 serversPort.put("cache-"+cache,port);
-                System.out.println(serversPort.get("cache-"+cache));
                 serversPort.remove(finalName);
             }
-            System.out.println(finalName);
             getStartServerList().remove(finalName);
 
 
-            System.out.println(getStartServerList());
 
 
             jvmServices.remove(i);
@@ -434,12 +392,10 @@ public class JVMExecutor extends JVMStartupConfig{
         if(serversPort.containsKey(name)){
             int port = serversPort.get(name);
             serversPort.put("cache-"+cache,port);
-            System.out.println(serversPort.get("cache-"+cache));
             serversPort.remove(name);
         }
 
 
-        System.out.println(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+finalName+"/"+name));
         if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+finalName+"/"+name))){
             Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+finalName+"/"+name));
         }

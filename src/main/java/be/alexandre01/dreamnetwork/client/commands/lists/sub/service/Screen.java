@@ -44,10 +44,9 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     }
 
     private void notComplete(){
-        Console.print(Colors.RED+"screen servername", Level.ALL);
     }
     private void sendList(ScreenManager screenManager){
-        System.out.println(Colors.GREEN + "▢ Proxy ; "+ Colors.BLUE+"▢ Server ;");
+        System.out.println(Colors.GREEN_BOLD + "▢ Proxy ; "+ Colors.CYAN_BOLD+"▢ Server ;");
         StringBuilder sb = new StringBuilder();
         AtomicInteger i = new AtomicInteger(1);
         if(screenManager.getScreens().isEmpty()){
@@ -57,9 +56,9 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
         screenManager.getScreens().forEach((s, screen) -> {
 
             if(screen.getService().getJvmExecutor().isProxy()){
-                sb.append(Colors.GREEN);
+                sb.append(Colors.GREEN_BOLD);
             }else {
-                sb.append(Colors.BLUE);
+                sb.append(Colors.CYAN_BOLD);
             }
             sb.append(screen.getScreenName());
             if(i.get() != screenManager.getScreens().size())

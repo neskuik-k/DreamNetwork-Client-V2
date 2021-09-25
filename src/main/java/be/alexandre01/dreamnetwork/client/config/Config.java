@@ -99,9 +99,8 @@ public class Config {
         return false;
 
     }
-    public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction) throws IOException {
-        System.out.println("Ok2!!!!");
-        CopyAndPaste copyAndPaste = new CopyAndPaste(sourceLocation,targetLocation,establishedAction);
+    public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction,String... exceptFile) throws IOException {
+        CopyAndPaste copyAndPaste = new CopyAndPaste(sourceLocation,targetLocation,establishedAction,exceptFile);
         copyAndPaste.execute();
     }
     public static void copy(File sourceLocation, File targetLocation) throws IOException {

@@ -1,6 +1,9 @@
 package be.alexandre01.dreamnetwork.client.config;
 
+import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import com.google.common.base.Preconditions;
+import org.apache.http.nio.util.DirectByteBufferAllocator;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,14 +16,8 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,43 +32,51 @@ public class CopyAndPaste {
     private File defaultLocation;
     private File defaultTargetLocation;
     private EstablishedAction establishedAction;
+    private String[] exeptFile;
     private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private long xmx;
     public boolean hasReached = false;
 
-    public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction){
+    public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction,String... exeptFile){
         this.defaultLocation = sourceLocation;
         this.defaultTargetLocation = targetLocation;
         this.establishedAction = establishedAction;
+        this.exeptFile = exeptFile;
         xmx = memoryBean.getHeapMemoryUsage().getMax();
         this.parts = new HashMap<>();
         this.fileChannels = new HashMap<>();
     }
-    private void countFiles(){
-        System.out.println("try");
-        try (Stream<Path> files = Files.list(defaultLocation.getAbsoluteFile().toPath())) {
-          currentFiles = 0;
+    private Collection<Path> countFiles(Path path){
+        Collection<Path> paths = null;
+        try (Stream<Path> files = Files.list(path)) {
+
+          paths = files.collect(Collectors.toList());
+          currentFiles = paths.size();
+            
+
         } catch (IOException e) {
-            e.printStackTrace();
+            e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
         }
-        filesToOperate = new AtomicLong(currentFiles);
-        System.out.println(filesToOperate);
+        if(filesToOperate == null){
+            filesToOperate = new AtomicLong(0);
+        }
+
+        filesToOperate.set(filesToOperate.get()+currentFiles);
+        return paths;
     }
     private void fetchCurrentFile(Path sourceLocation){
-        System.out.println("Fetch "+ filesToOperate.get());
-        System.out.println("File "+ sourceLocation);
         if (Files.isDirectory(sourceLocation)) {
-            System.out.println("dir");
             fetchFilesFromDirectory(sourceLocation);
         } else {
-            System.out.println("not dir");
-            paths.add(sourceLocation);
+            boolean result = Arrays.stream(exeptFile).anyMatch(sourceLocation.getFileName().toString()::equals);
+            if(!result){
+                paths.add(sourceLocation);
+            }
+
         }
-        System.out.println("AH1 "+ filesToOperate.get());
 
 
-        filesToOperate.set(filesToOperate.get()-1);
-        System.out.println("hmm" + filesToOperate.get());
+        filesToOperate.decrementAndGet();
         if(filesToOperate.get() == 0){
             proceedOperations();
         }
@@ -79,38 +84,26 @@ public class CopyAndPaste {
     private void fetchFilesFromDirectory(Path source){
         String in = defaultLocation.getAbsolutePath();
         String out = defaultTargetLocation.getAbsolutePath();
-            System.out.println("TRY OUT "+out+source.toString().substring(in.length()));
             Path outFile = Paths.get(out+source.toString().substring(in.length()));
-            System.out.println("OUT>>"+outFile);
 
         if (!Files.exists(outFile)) {
             try {
                 Files.createDirectory(outFile);
-                System.out.println("CREATE DIRECTORY");
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+        Collection<Path> list = countFiles(source);
+        list.forEach(this::fetchCurrentFile);
 
-        try {
-            Collection<Path> list = Files.list(source).collect(Collectors.toList());
-            filesToOperate.set(filesToOperate.get()+list.size());
-            list.forEach(this::fetchCurrentFile);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
 
 
     }
     private void proceedOperations(){
         String in = defaultLocation.getAbsolutePath();
         String out = defaultTargetLocation.getAbsolutePath();
-        System.out.println("SIZ");
-        System.out.println("SIZOUNET>>" +paths.size());
         for(Path path : paths){
-            System.out.println("TRY OUT "+out+path.toString().substring(in.length()));
             Path outFile = Paths.get(out+path.toString().substring(in.length()));
-            System.out.println("OUT>>"+outFile);
             try {
                 copyFile(path,outFile);
             } catch (IOException e) {
@@ -121,9 +114,7 @@ public class CopyAndPaste {
 
 
     public void execute(){
-        System.out.println("oof");
-        countFiles();
-        fetchCurrentFile(defaultLocation.toPath());
+        fetchFilesFromDirectory(defaultLocation.getAbsoluteFile().toPath());
     }
 
 
@@ -132,19 +123,20 @@ public class CopyAndPaste {
         int fileSize = (int) Files.size(in)+1;
 
         long allocatedMemory = xmx- (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory());
-        System.out.println("XMX "+ xmx/1024+"ko");
-        System.out.println("FREE MEMORY "+ allocatedMemory/1024+"ko");
+       // System.out.println("XMX "+ xmx/1024+"ko");
+       // System.out.println("FREE MEMORY "+ allocatedMemory/1024+"ko");
         int alloc = (int) Files.size(in)+1;
-        System.out.println("FILE SIZE "+ alloc/1024+"ko");
+       // System.out.println("FILE SIZE "+ alloc/1024+"ko");
 
         long position = 0;
         if(parts.containsKey(in)){
             position = parts.get(in);
         }
+
         alloc -= position;
-        System.out.println("GET POSITION >> "+ position/1024+"ko");
-        System.out.println("GET NEW ALLOC >> "+  alloc/1024+"ko");
-        if(alloc > xmx/8){
+       // System.out.println("GET POSITION >> "+ position/1024+"ko");
+        //System.out.println("GET NEW ALLOC >> "+  alloc/1024+"ko");
+      /*  if(alloc > xmx/8){
             System.out.println("TROP GROS");
             alloc = (int) (xmx/8)+1;
             long pAllocated = 0;
@@ -154,15 +146,19 @@ public class CopyAndPaste {
             System.out.println("OldAlloc>> "+ pAllocated+" + " + alloc);
             System.out.println("OldAlloc= "+ (pAllocated+alloc));
             parts.put(in,(pAllocated+alloc));
-        }else {
+        }else {*/
             if(parts.containsKey(in)){
-                System.out.println("remove");
                 parts.remove(in);
             }
 
+       // }
+
+        if(alloc > xmx){
+            System.out.println(in.getFileName()+" is too fat!");
+            parts.remove(in);
+            fileChannels.remove(in);
+            return;
         }
-
-
         ByteBuffer buffer = ByteBuffer.allocateDirect(alloc);
         AsynchronousFileChannel asyncChannelIn = AsynchronousFileChannel.open(in, StandardOpenOption.READ);
         long finalPosition = position;
@@ -185,7 +181,12 @@ public class CopyAndPaste {
 
                 try {
                     if (!Files.exists(target)){
-                        Files.createFile(target);
+                        try {
+                            Files.createFile(target);
+                        }catch (FileAlreadyExistsException f){
+                            return;
+                        }
+
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -198,7 +199,7 @@ public class CopyAndPaste {
                         asyncChannel = AsynchronousFileChannel.open(target, StandardOpenOption.WRITE);
                         if(parts.containsKey(in)){
                             fileChannels.put(in,asyncChannel);
-                            System.out.println("Put ASYNC CHANNEL");
+                          //  System.out.println("Put ASYNC CHANNEL");
                         }
                     }catch (IOException e){
                         e.printStackTrace();
@@ -211,11 +212,11 @@ public class CopyAndPaste {
 
                         @Override
                         public void completed(Integer result, ByteBuffer attachment) {
-                            System.out.println(result);
-                            System.out.println("Complete WRITE");
+                            // System.out.println("Complete WRITE");
                             paths.remove(in);
                            buffer.clear();
-                            try {
+                           //DEPRECATED IN JDK 9+
+                          /*  try {
                                 destroyDirectByteBuffer(buffer);
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
@@ -223,12 +224,10 @@ public class CopyAndPaste {
                                 e.printStackTrace();
                             } catch (NoSuchMethodException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
 
-                            System.out.println("HMM 1");
                             if(parts.containsKey(in)){
                                 try {
-                                    System.out.println("HAVE TO COPY");
                                     copyFile(in,target);
                                     return;
                                 } catch (IOException e) {
@@ -245,11 +244,9 @@ public class CopyAndPaste {
                                 }
                             }
 
-                            System.out.println("HMM 2");
-                            System.out.println("Parts SIZE >> "+ parts.size());
+                           // System.out.println("Parts SIZE >> "+ parts.size());
                             if(!parts.isEmpty()){
-                                System.out.println("Paths SIZE >> "+ paths.size());
-                                System.out.println("Paths  >> "+ paths.toArray().toString());
+                                //System.out.println("Paths  >> "+ paths.toArray().toString());
                             }
                             if(paths.size() == 0){
                                 if(hasReached)
@@ -273,9 +270,9 @@ public class CopyAndPaste {
                                 String out = defaultTargetLocation.getAbsolutePath();
 
                                 Path path = paths.get(0);
-                                System.out.println("TRY OUT "+out+path.toString().substring(in.length()));
+                              //  System.out.println("TRY OUT "+out+path.toString().substring(in.length()));
                                 Path outFile = Paths.get(out+path.toString().substring(in.length()));
-                                System.out.println("OUT>>"+outFile);
+                            //   System.out.println("OUT>>"+outFile);
                                 try {
                                     copyFile(path,outFile);
                                 } catch (IOException e) {
@@ -292,7 +289,7 @@ public class CopyAndPaste {
                             System.out.println("failed");
                             cancelled = true;
                             buffer.clear();
-
+                            /*
                             try {
                                 destroyDirectByteBuffer(buffer);
                             } catch (IllegalAccessException e) {
@@ -302,7 +299,7 @@ public class CopyAndPaste {
                             } catch (NoSuchMethodException e) {
                                 e.printStackTrace();
                             }
-
+                               */
 
                             if(paths.size() == 0){
                                 establishedAction.cancelled();
@@ -321,6 +318,7 @@ public class CopyAndPaste {
             public void failed(Throwable exc, ByteBuffer attachment) {
                 System.out.println("failed read");
                 buffer.clear();
+                /*
                 try {
                     destroyDirectByteBuffer(buffer);
                 } catch (IllegalAccessException e) {
@@ -330,6 +328,8 @@ public class CopyAndPaste {
                 } catch (NoSuchMethodException e) {
                     e.printStackTrace();
                 }
+
+                */
                 paths.clear();
                 establishedAction.cancelled();
             }
@@ -346,6 +346,7 @@ public class CopyAndPaste {
         Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
         cleanerMethod.setAccessible(true);
         Object cleaner = cleanerMethod.invoke(toBeDestroyed);
+
         Method cleanMethod = cleaner.getClass().getMethod("clean");
         cleanMethod.setAccessible(true);
         cleanMethod.invoke(cleaner);

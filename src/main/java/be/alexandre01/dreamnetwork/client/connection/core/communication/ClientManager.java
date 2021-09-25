@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.proxy.DefaultBungeeRequest;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.spigot.DefaultSpigotRequest;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -20,6 +21,7 @@ import lombok.Setter;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.logging.Level;
 
 public class ClientManager {
     private final HashMap<Integer,Client> clientByPort = new HashMap<>();
@@ -32,8 +34,8 @@ public class ClientManager {
     }
     public Client registerClient(Client client){
         clientByPort.put(client.port,client);
-        System.out.println("PORT >> "+ client.getPort());
-        System.out.println("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()));
+        Console.print("PORT >> " + client.getPort(), Level.FINE);
+        Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
         JVMService jvmService = JVMExecutor.servicePort.get(client.getPort());
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
@@ -68,7 +70,6 @@ public class ClientManager {
             this.jvmType = jvmType;
             requestManager = new RequestManager(this);
             if(jvmType == null){
-                System.out.println(info.split("-")[0]);
                 switch (info.split("-")[0]){
                     case "SPIGOT":
                     case "SPONGE":

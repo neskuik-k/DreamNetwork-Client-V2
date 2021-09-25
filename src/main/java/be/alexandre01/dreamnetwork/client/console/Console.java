@@ -37,6 +37,7 @@ public class Console extends Thread{
     private final ArrayList<ConsoleMessage> history;
     private int historySize;
     public static String defaultConsole;
+    public boolean isDebug = false;
     public static String actualConsole;
     private Thread thread;
     public boolean isRunning = false;
@@ -139,6 +140,9 @@ public class Console extends Thread{
         if(Console.actualConsole.equals(name)){
 
             //Client.getLogger().log(level,s+Colors.ANSI_RESET());
+            if(!isDebug && level == Level.FINE)
+                return;
+
             ConsoleReader.sReader.printAbove(Client.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s)));
            // ConsoleReader.sReader.setPrompt(writing);
         }
@@ -183,7 +187,27 @@ public class Console extends Thread{
 
         }
     }
-    
+    public static void clearConsole(PrintStream printStream){
+
+        try
+        {
+            final String os = System.getProperty("os.name");
+
+            if (os.contains("Windows"))
+            {
+                new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
+            }
+            else
+            {
+                printStream.print("\033[H\033[2J");
+                printStream.flush();
+            }
+        }
+        catch (final Exception ignored)
+        {
+
+        }
+    }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;
         if(thread == null){
@@ -198,6 +222,8 @@ public class Console extends Thread{
     public Console(String name){
         this.history = new ArrayList<>();
         this.name = name;
+        if(Client.getInstance() != null)
+            this.isDebug = Client.getInstance().isDebug();
     }
 
     @Override
@@ -243,8 +269,14 @@ public class Console extends Thread{
 
 
 
-        }catch (Exception e){
+        }catch (UserInterruptException e){
             SIG_ING();
+        }
+        catch (EndOfFileException e){
+            SIG_ING();
+        }
+        catch (Exception e){
+            e.printStackTrace();
         }
 
 
@@ -259,7 +291,7 @@ public class Console extends Thread{
         PrintWriter out = new PrintWriter(reader.getTerminal().writer());
         String data;
         try {
-            while ((data = reader.readLine( Colors.PURPLE+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+            while ((data = reader.readLine( Colors.PURPLE_BOLD+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
 
                     if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                         System.exit(0);

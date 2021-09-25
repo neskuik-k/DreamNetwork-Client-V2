@@ -23,9 +23,6 @@ public class DateBuilderTimer {
     public DateBuilderTimer(long time,boolean reversed){
 
         this.time = time+new Date().getTime();
-        System.out.println("Temps ! "+time);
-        System.out.println("Temps ! "+new Date().getTime());
-        System.out.println("Temps ! "+this.time);
          h = new SimpleDateFormat("hh");
          m = new SimpleDateFormat("mm");
          s = new SimpleDateFormat("ss");

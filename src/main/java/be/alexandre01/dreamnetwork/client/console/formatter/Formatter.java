@@ -26,25 +26,6 @@ public class Formatter {
     public  PrintStream prStr;
     public void format(){
         Ansi.setEnabled(true);
-        try {
-            System.setProperty("file.encoding","UTF-8");
-            Field charset = Charset.class.getDeclaredField("defaultCharset");
-            charset.setAccessible(true);
-            charset.set(null,null);
-        }catch (Exception e){
-            String version = System.getProperty("java.version");
-            NumberFormat format = NumberFormat.getInstance();
-            double v = 0;
-            try {
-                v = format.parse(version.split("_")[0]).doubleValue();
-                if(v <= 1.15d){
-                    e.printStackTrace();
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            }
-
-        }
 
         defaultStream = System.out;
         ByteArrayOutputStream loggerContent = new LoggingOutputStream(Client.getLogger(), Level.ALL);

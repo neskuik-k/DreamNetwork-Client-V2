@@ -86,7 +86,7 @@ public class TemplateLoading {
     }
 
     private void notConfigured(File dir){
-        Console.print(Chalk.on("[!] Template "+ dir.getName()+" is not yet configured !").red());
+        Console.debugPrint(Chalk.on("[!] Template "+ dir.getName()+" is not yet configured !").red());
         try {
             Thread.sleep(150);
         } catch (InterruptedException e) {

@@ -39,7 +39,6 @@ public class  Screen extends Thread {
     }
 
     public void destroy(){
-        System.out.println();
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.getConsole("s:"+screenName).destroy();
             Console.setActualConsole("m:default");

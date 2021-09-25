@@ -191,9 +191,6 @@ public class JVMStartupConfig {
     }
 
     public Integer getCurrentPort(String pathName, String finalname, JVMExecutor.Mods type){
-        System.out.println(pathName);
-        System.out.println(finalname);
-        System.out.println(type);
         String fileName;
         String checker;
         boolean proxy = false;
@@ -263,7 +260,6 @@ public class JVMStartupConfig {
 
             fileOut.write(inputBuffer.toString().getBytes());
             fileOut.close();
-            be.alexandre01.dreamnetwork.client.console.Console.debugPrint("debugPort :" + port);
             return port;
 
         } catch (Exception e) {

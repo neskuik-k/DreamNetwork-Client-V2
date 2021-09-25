@@ -70,7 +70,9 @@ public class Client {
         if(s != null && s.equalsIgnoreCase("true")){
             System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
             debug = true;
+
         }
+
 
          fileHandler = null;
         try {
@@ -89,6 +91,7 @@ public class Client {
        Console.defaultConsole = "m:default";
         Console.actualConsole =  "m:default";
 
+        Console.getConsole("m:default").isDebug = isDebug();
       //  Console.setActualConsole("m:default");
 
        Console.load("m:spiget");

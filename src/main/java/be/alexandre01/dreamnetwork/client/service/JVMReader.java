@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.client.console.Console;
 import lombok.Builder;
 import lombok.Data;
 import lombok.SneakyThrows;

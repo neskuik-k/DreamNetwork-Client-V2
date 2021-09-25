@@ -27,6 +27,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
+import sun.misc.Unsafe;
 
 
 public class Main {
@@ -48,14 +49,15 @@ public class Main {
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-
+        disableWarning();
         System.setProperty("illegal-access", "permit");
 
         commandReader = new be.alexandre01.dreamnetwork.client.commands.CommandReader();
         ConsoleReader.init();
 
-         Console.clearConsole();
+        Console.clearConsole(System.out);
         Config.createDir("data");
+        Config.removeDir("temp");
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -79,25 +81,6 @@ public class Main {
         }*/
 
 
-        try{
-            Field charset = Charset.class.getDeclaredField("defaultCharset");
-            charset.setAccessible(true);
-            charset.set(null,null);
-        }catch (Exception e){
-            //JDK16 COMPATIBILITY
-            String version = System.getProperty("java.version");
-            NumberFormat format = NumberFormat.getInstance();
-            double v = 0;
-            try {
-                v = format.parse(version.split("_")[0]).doubleValue();
-                if(v <= 1.15d){
-                    e.printStackTrace();
-                }
-            } catch (ParseException ex) {
-                ex.printStackTrace();
-            }
-        }
-
         if(Config.isWindows()){
             Client.setUsername(username = System.getProperty("user.name"));
         }else {
@@ -118,7 +101,6 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -143,6 +125,12 @@ public class Main {
                             }
                         }
                         isReady = true;
+                        if(!Config.isWindows()){
+                            String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                            Runtime.getRuntime().exec(defSIGKILL);
+                        }
+
+
                         outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
                         try {
                             Thread.sleep(2000);
@@ -190,5 +178,18 @@ public class Main {
 
        
         new TemplateLoading();
+    }
+    private static void disableWarning() {
+        try {
+            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+            theUnsafe.setAccessible(true);
+            Unsafe u = (Unsafe) theUnsafe.get(null);
+
+            Class cls = Class.forName("jdk.internal.module.IllegalAccessLogger");
+            Field logger = cls.getDeclaredField("logger");
+            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null);
+        } catch (Exception e) {
+            // ignore
+        }
     }
 }

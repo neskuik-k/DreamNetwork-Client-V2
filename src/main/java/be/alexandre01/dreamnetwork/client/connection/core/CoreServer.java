@@ -43,7 +43,7 @@ public class CoreServer extends Thread{
             // In this example, this does not happen, but you can do that to gracefully
             // shut down your server.
 
-
+            System.out.println("Aie");
             f.channel().closeFuture().sync();
         } catch (InterruptedException e) {
             e.printStackTrace();

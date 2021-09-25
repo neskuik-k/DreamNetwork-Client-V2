@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.console;
 
+import be.alexandre01.dreamnetwork.client.config.Config;
 import org.jline.builtins.Completers;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -22,6 +23,13 @@ public class ConsoleReader {
             Completers.TreeCompleter completer = new Completers.TreeCompleter(
                     nodes);
 
+            if(!Config.isWindows()){
+                String[] undefSEGKILL = {"/bin/sh","-c","stty intr undef </dev/tty"};
+                Runtime.getRuntime().exec(undefSEGKILL).waitFor();
+            }
+
+
+
             terminal = TerminalBuilder.builder()
                     .system(true)
                     .encoding(StandardCharsets.UTF_8)
@@ -40,12 +48,12 @@ public class ConsoleReader {
                     .parser(new MyParser())*/
                     .build();
 
+            sReader.unsetOpt(LineReader.Option.INSERT_TAB);
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
-
-      //  sReader.setHandleUserInterrupt(true);
-
 
 
     }

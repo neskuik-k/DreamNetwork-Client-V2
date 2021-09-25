@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.service.screen;
 
 
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ScreenManager {
        return screenCurrentId.get(processName)+1;
     }
     public void addScreen(Screen screen){
-        System.out.println("Screen name -> "+ screen.service.getJvmExecutor().getName()+"-"+screen.screenId);
+        System.out.println(Colors.YELLOW_BOLD+"Screen ouvert sous le nom de -> "+Colors.GREEN_BOLD+ screen.service.getJvmExecutor().getName()+"-"+screen.screenId);
         screens.put(screen.screenName,screen);
         screenCurrentId.put(screen.getService().getJvmExecutor().getName(),screen.screenId);
         //remove if available screen is taken

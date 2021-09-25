@@ -4,21 +4,22 @@ import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.request.Request;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Level;
 
 public class AuthentificationResponse extends CoreResponse{
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
-        System.out.println("Requete entrente->");
-        System.out.println(message);
+        Console.print("Requete entrente->",Level.FINE);
+        Console.print(message,Level.FINE);
         if(message.hasRequest()){
             Message msgTest = new Message();
-            msgTest.set("Hello","OKi");
 
 
             byte[] entry = msgTest.toString().getBytes(StandardCharsets.UTF_8);
@@ -28,11 +29,11 @@ public class AuthentificationResponse extends CoreResponse{
             ctx.writeAndFlush(buf);
 
             RequestType requestType = message.getRequest();
-            Console.print("REQUETE : "+ requestType);
+            Console.print("REQUETE : "+ requestType, Level.FINE);
 
             switch (requestType){
                 case CORE_HANDSHAKE:
-                    Console.print("HANDSHAKE");
+                    Console.print("HANDSHAKE", Level.FINE);
                     if(!message.contains("INFO") && !message.contains("PORT") && !message.contains("PASSWORD")){
                         ctx.channel().close();
                         return;
@@ -42,7 +43,7 @@ public class AuthentificationResponse extends CoreResponse{
                     int port = message.getInt("PORT");
                     String password = message.getString("PASSWORD");
 
-                    Console.print("CREATE CLIENT");
+                    Console.print("CREATE CLIENT", Level.FINE);
                     ClientManager.Client newClient = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()
                             .coreHandler(Client.getInstance().getCoreHandler())
                             .info(info)
@@ -53,6 +54,7 @@ public class AuthentificationResponse extends CoreResponse{
 
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
+                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+" lié à DreamNetwork");
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
@@ -63,6 +65,8 @@ public class AuthentificationResponse extends CoreResponse{
                                 newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
                                 remoteAdress[0].replaceAll("/",""),
                                 String.valueOf(newClient.getPort()));
+
+                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Serveur "+ newClient.getJvmService().getJvmExecutor().getName()+" lié à DreamNetwork");
                     }
                     break;
             }
