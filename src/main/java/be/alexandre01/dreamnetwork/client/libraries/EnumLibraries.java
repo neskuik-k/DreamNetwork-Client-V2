@@ -10,7 +10,7 @@ public enum EnumLibraries {
     LOGBACK_CLASSIC("https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.6/logback-classic-1.2.6.jar"),
     DOCKER_JAVA("https://repo1.maven.org/maven2/com/github/docker-java/docker-java/3.2.12/docker-java-3.2.12.jar"),
     JANSI("https://repo1.maven.org/maven2/org/fusesource/jansi/jansi/2.17.1/jansi-2.17.1.jar"),
-    JLINE("https://repo1.maven.org/maven2/jline/jline/2.14.6/jline-2.14.6.jar"),
+    JLINE("https://repo1.maven.org/maven2/org/jline/jline/3.1.3/jline-3.1.3.jar"),
     HTTPCORE_NIO("https://repo1.maven.org/maven2/org/apache/httpcomponents/httpcore-nio/4.4.14/httpcore-nio-4.4.14.jar"),
     HTTPCLIENT("https://repo1.maven.org/maven2/org/apache/httpcomponents/httpclient/4.5.13/httpclient-4.5.13.jar"),
     HTTPCLIENT_MIME("https://repo1.maven.org/maven2/org/apache/httpcomponents/httpmime/4.5.13/httpmime-4.5.13.jar"),

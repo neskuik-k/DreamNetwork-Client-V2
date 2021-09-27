@@ -59,7 +59,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                          return true;
                                      }
                                      jvmExecutor.addConfigsFiles();
-                                     jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null);
+                                     jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null,null);
                                      Console.print("Vous venez de configurer le serveur avec succès !");
                                  }catch (Exception e){
                                      e.printStackTrace();
@@ -76,7 +76,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                          return true;
                                      }
                                      jvmExecutor.addConfigsFiles();
-                                     jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,null,null);
+                                     jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,null,null,null);
                                      Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
                                  } catch (Exception e) {
                                      e.printStackTrace();
@@ -97,7 +97,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
-                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null);
+                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null,null);
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
                                      }catch (Exception e){
                                          e.printStackTrace();
@@ -114,7 +114,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
-                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,null,null);
+                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,null,null,null);
 
                                          Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
                                      }catch (Exception e){

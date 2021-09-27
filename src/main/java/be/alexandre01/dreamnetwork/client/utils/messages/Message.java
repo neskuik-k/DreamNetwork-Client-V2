@@ -46,7 +46,7 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public String getChannel(){
-        return (String) get("channel");
+        return containsKey("channel") ? (String) get("channel") : "core";
     }
     public Message setHeader(String header){
         put("header",header);
@@ -55,9 +55,14 @@ public class Message extends LinkedHashMap<String, Object> {
     public void setProvider(String provider){
         put("provider",provider);
     }
-
+    public void setSender(String provider){
+        put("sender",provider);
+    }
     public String getProvider(){
         return (String) get("provider");
+    }
+    public String getSender(){
+        return (String) get("sender");
     }
     public boolean hasProvider(){
         return containsKey("provider");
@@ -126,8 +131,10 @@ public class Message extends LinkedHashMap<String, Object> {
         GsonBuilder gsonBuilder = new GsonBuilder();
         gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
 
+
         String json = new Gson().toJson(this,Message.class);
         return json;
     }
-}
 
+
+}

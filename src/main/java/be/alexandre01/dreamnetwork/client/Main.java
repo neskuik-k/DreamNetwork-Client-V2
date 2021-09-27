@@ -91,16 +91,7 @@ public class Main {
                 Client.setUsername(username = System.getProperty("user.name"));
             };
         }
-        boolean l = false;
 
-            SecretFile secretFile = null;
-            try {
-                secretFile = new SecretFile();
-                secretFile.init();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
@@ -152,7 +143,22 @@ public class Main {
 
             }
         });
+            boolean l = false;
+            String keys = System.getProperty("keys");
 
+            SecretFile secretFile = null;
+            try {
+                secretFile = new SecretFile();
+            if(keys == null ){
+                secretFile.init();
+            }else {
+                secretFile.init(keys);
+            }
+
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");
                 secretFile.deleteSecretFile();

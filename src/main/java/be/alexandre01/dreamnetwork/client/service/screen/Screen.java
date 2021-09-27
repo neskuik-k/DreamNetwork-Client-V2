@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.client.service.screen;
 
+import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.stream.ScreenStream;
 import lombok.Data;
@@ -47,6 +49,11 @@ public class  Screen extends Thread {
         }
         ScreenManager.instance.remScreen(this);
         screenStream.exit();
+
+        if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
+            String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
+            Config.removeDir("/temp/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
+        }
     }
 
     public JVMService getService() {

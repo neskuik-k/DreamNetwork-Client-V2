@@ -1,9 +1,8 @@
 package be.alexandre01.dreamnetwork.client;
 
 
-import be.alexandre01.dreamnetwork.client.commands.CommandReader;
-import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
+import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -11,12 +10,9 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
-import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
-import be.alexandre01.dreamnetwork.client.service.jdk.JavaIndex;
-import be.alexandre01.dreamnetwork.client.service.jdk.JavaReader;
+import be.alexandre01.dreamnetwork.client.service.jvm.JavaIndex;
+import be.alexandre01.dreamnetwork.client.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.ASCIIART;
 import com.github.tomaslanger.chalk.Chalk;
@@ -27,13 +23,7 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.util.Arrays;
-import java.util.logging.ConsoleHandler;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -61,6 +51,8 @@ public class Client {
     private ClientManager clientManager;
     @Getter
     private JavaIndex javaIndex;
+    @Getter
+    private DNChannelManager channelManager;
 
 
     public Client(){
@@ -138,10 +130,12 @@ public class Client {
 
         JavaReader javaReader = new JavaReader();
         javaIndex = javaReader.getJavaIndex();
+
         
 
 
         //MANAGER
+        this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
     }
 

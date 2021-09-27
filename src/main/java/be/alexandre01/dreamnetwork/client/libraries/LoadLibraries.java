@@ -30,14 +30,15 @@ public class LoadLibraries{
                     return;
             System.out.println(Thread.currentThread().getContextClassLoader());
             ArrayList<URL> urls = new ArrayList<>();
-            MyClassloader classLoader = new MyClassloader(new URL[0], Main.class.getClassLoader());
-            LoadLibraries.classloader = classLoader;
+            CustomClassLoader classLoader = new CustomClassLoader(new URL[0], Main.class.getClassLoader());
+
                 for(File file : Objects.requireNonNull(dir.listFiles())){
-                    CustomClassLoader customClassLoader = new CustomClassLoader(file.toURI().toURL());
-                    urls.add(file.toURI().toURL());
+                //    CustomClassLoader customClassLoader = new CustomClassLoader(file.toURI().toURL());
+                  //  urls.add(file.toURI().toURL());
                     if(file.isDirectory())
                         continue;
 
+                    loadLibrary(file,classLoader);
                    // ClassLoader loader = URLClassLoader.newInstance(new URL[]{file.toURI().toURL()}, Client.class.getClassLoader());
                  /*   CustomClassLoader child = new CustomClassLoader(
                             file.toURI().toURL(),
@@ -49,14 +50,16 @@ public class LoadLibraries{
 
 
 
-                   /* Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+                 /*   Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
                     method.setAccessible(true);
-                    method.invoke(classLoader, file.toURI().toURL());*/
-                   classLoader.addURL(file.toURI().toURL());
-                    if(file.getName().contains("jline")){
+                    method.invoke(Thread.currentThread().getContextClassLoader(), file.toURI().toURL());
+
+                    Class.forName(file.toURI().toString());
+               //    classLoader.addURL(file.toURI().toURL());
+                    /*if(file.getName().contains("jline")){
                         System.out.println("YES");
                         System.out.println(  Class.forName("jline.console.ConsoleReader", true, classLoader).getName());
-                    }
+                    }*/
 
 
 
@@ -67,14 +70,14 @@ public class LoadLibraries{
 
                 }
 
-                ClassLoader classloader = SecureClassLoader.getSystemClassLoader() ;
+            /*   ClassLoader classloader = SecureClassLoader.getSystemClassLoader() ;
                 URL[] url = new URL[urls.size()];
-                urls.toArray(url);
+                urls.toArray(url);*/
                 ClassLoader customClassLoader = new URLClassLoader(urls.toArray(new URL[0]));
 
             System.out.println(Arrays.toString(urls.toArray(new URL[0])));;
 
-                Class<?> clazz = customClassLoader.loadClass("be.alexandre01.dreamnetwork.client.Main");
+                Class<?> clazz = classLoader.loadClass("be.alexandre01.dreamnetwork.client.Main");
             Method method = clazz.getMethod("main", String[].class);
 
             Thread thread = new Thread(() -> {
@@ -97,6 +100,16 @@ public class LoadLibraries{
 
         }catch (Exception e){
             e.printStackTrace();
+        }
+    }
+    public static synchronized void loadLibrary(java.io.File jar,URLClassLoader urlClassLoader) {
+        try {
+            java.net.URL url = jar.toURI().toURL();
+            java.lang.reflect.Method method = java.net.URLClassLoader.class.getDeclaredMethod("addURL", new Class[]{java.net.URL.class});
+            method.setAccessible(true); /*promote the method to public access*/
+            method.invoke(urlClassLoader, url);
+        } catch (Exception ex) {
+            throw new RuntimeException("Cannot load library from jar file '" + jar.getAbsolutePath() + "'. Reason: " + ex.getMessage());
         }
     }
     static void setAccessible(final AccessibleObject ao,

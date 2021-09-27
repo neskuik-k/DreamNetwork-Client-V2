@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.config;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.google.common.base.Preconditions;
 import org.apache.http.nio.util.DirectByteBufferAllocator;
 
@@ -18,15 +19,17 @@ import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
 import java.nio.file.*;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CopyAndPaste {
+public class CopyAndPaste extends Thread{
     private HashMap<Path, Long> parts;
     private HashMap<Path, AsynchronousFileChannel> fileChannels;
     private boolean cancelled;
     private long currentFiles;
+    private boolean warn = false;
     private AtomicLong filesToOperate;
     private List<Path> paths = new ArrayList<>();
     private File defaultLocation;
@@ -36,6 +39,7 @@ public class CopyAndPaste {
     private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private long xmx;
     public boolean hasReached = false;
+    AtomicBoolean b = new AtomicBoolean(false);
 
     public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction,String... exeptFile){
         this.defaultLocation = sourceLocation;
@@ -46,6 +50,8 @@ public class CopyAndPaste {
         this.parts = new HashMap<>();
         this.fileChannels = new HashMap<>();
     }
+
+
     private Collection<Path> countFiles(Path path){
         Collection<Path> paths = null;
         try (Stream<Path> files = Files.list(path)) {
@@ -112,8 +118,8 @@ public class CopyAndPaste {
         }
     }
 
-
-    public void execute(){
+    @Override
+    public void run(){
         fetchFilesFromDirectory(defaultLocation.getAbsoluteFile().toPath());
     }
 
@@ -136,7 +142,7 @@ public class CopyAndPaste {
         alloc -= position;
        // System.out.println("GET POSITION >> "+ position/1024+"ko");
         //System.out.println("GET NEW ALLOC >> "+  alloc/1024+"ko");
-      /*  if(alloc > xmx/8){
+        if(alloc > xmx/8){
             System.out.println("TROP GROS");
             alloc = (int) (xmx/8)+1;
             long pAllocated = 0;
@@ -146,12 +152,12 @@ public class CopyAndPaste {
             System.out.println("OldAlloc>> "+ pAllocated+" + " + alloc);
             System.out.println("OldAlloc= "+ (pAllocated+alloc));
             parts.put(in,(pAllocated+alloc));
-        }else {*/
+        }else {
             if(parts.containsKey(in)){
                 parts.remove(in);
             }
 
-       // }
+        }
 
         if(alloc > xmx){
             System.out.println(in.getFileName()+" is too fat!");
@@ -216,7 +222,7 @@ public class CopyAndPaste {
                             paths.remove(in);
                            buffer.clear();
                            //DEPRECATED IN JDK 9+
-                          /*  try {
+                            try {
                                 destroyDirectByteBuffer(buffer);
                             } catch (IllegalAccessException e) {
                                 e.printStackTrace();
@@ -224,7 +230,7 @@ public class CopyAndPaste {
                                 e.printStackTrace();
                             } catch (NoSuchMethodException e) {
                                 e.printStackTrace();
-                            }*/
+                            }
 
                             if(parts.containsKey(in)){
                                 try {
@@ -254,31 +260,63 @@ public class CopyAndPaste {
 
                                 hasReached = true;
                                 if(cancelled){
+                                    if(warn){
+                                        System.out.println(Colors.RED_BOLD+"java --add-opens are not set please add this argument before -jar");
+                                        System.out.println(Colors.RED_BOLD+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                                    }
                                     establishedAction.cancelled();
                                     return;
                                 }
-
+                                if(warn){
+                                    System.out.println(Colors.RED_BOLD+"java --add-opens are not set please add this argument before -jar");
+                                    System.out.println(Colors.RED_BOLD+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                                }
+                                CopyAndPaste.this.stop();
+                                if(b.get())
+                                    return;
+                                paths.clear();
+                                b.set(true);
                                 establishedAction.completed();
+
                                 return;
                             }
 
-
-
-
-                            if(paths.size() != 0){
                                 String in = defaultLocation.getAbsolutePath();
                                 String out = defaultTargetLocation.getAbsolutePath();
 
                                 Path path = paths.get(0);
+                              //  System.out.println(">> "+path);
+                                if(path == null && !cancelled){
+                                    if(b.get())
+                                        return;
+                                    paths.clear();
+                                    b.set(true);
+                                    establishedAction.completed();
+                                    CopyAndPaste.this.stop();
+                                    if(warn){
+                                        System.out.println(Colors.RED_BOLD+"java --add-opens are not set please add this argument before -jar");
+                                        System.out.println(Colors.RED_BOLD+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                                    }
+                                    cancelled = true;
+                                    return;
+                                }
+                                try {
                               //  System.out.println("TRY OUT "+out+path.toString().substring(in.length()));
                                 Path outFile = Paths.get(out+path.toString().substring(in.length()));
                             //   System.out.println("OUT>>"+outFile);
-                                try {
                                     copyFile(path,outFile);
                                 } catch (IOException e) {
                                     e.printStackTrace();
+                                    if(b.get())
+                                        return;
+                                    paths.clear();
+                                    b.set(true);
+                                    establishedAction.cancelled();
+                                    if(warn){
+                                        System.out.println("java --add-opens are not set please add this argument before -jar");
+                                        System.out.println("--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                                    }
                                 }
-                            }
                         }
 
                         @Override
@@ -289,7 +327,8 @@ public class CopyAndPaste {
                             System.out.println("failed");
                             cancelled = true;
                             buffer.clear();
-                            /*
+
+
                             try {
                                 destroyDirectByteBuffer(buffer);
                             } catch (IllegalAccessException e) {
@@ -299,10 +338,14 @@ public class CopyAndPaste {
                             } catch (NoSuchMethodException e) {
                                 e.printStackTrace();
                             }
-                               */
+
 
                             if(paths.size() == 0){
                                 establishedAction.cancelled();
+                                if(warn){
+                                    System.out.println("java --add-opens are not set please add this argument before -jar");
+                                    System.out.println("--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                                }
                             }
                         }
                     });
@@ -318,7 +361,8 @@ public class CopyAndPaste {
             public void failed(Throwable exc, ByteBuffer attachment) {
                 System.out.println("failed read");
                 buffer.clear();
-                /*
+
+
                 try {
                     destroyDirectByteBuffer(buffer);
                 } catch (IllegalAccessException e) {
@@ -329,9 +373,13 @@ public class CopyAndPaste {
                     e.printStackTrace();
                 }
 
-                */
+
                 paths.clear();
                 establishedAction.cancelled();
+                if(warn){
+                    System.out.println(Colors.RED_BOLD_BRIGHT+"java --add-opens are not set please add this argument before -jar");
+                    System.out.println(Colors.RED_BOLD_BRIGHT+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
+                }
             }
         });
 
@@ -340,17 +388,22 @@ public class CopyAndPaste {
             throws IllegalArgumentException, IllegalAccessException,
             InvocationTargetException, SecurityException, NoSuchMethodException {
 
-        Preconditions.checkArgument(toBeDestroyed.isDirect(),
-                "toBeDestroyed isn't direct!");
+        try {
+            Preconditions.checkArgument(toBeDestroyed.isDirect(),
+                    "toBeDestroyed isn't direct!");
 
-        Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
-        cleanerMethod.setAccessible(true);
-        Object cleaner = cleanerMethod.invoke(toBeDestroyed);
+            Method cleanerMethod = toBeDestroyed.getClass().getMethod("cleaner");
+            cleanerMethod.setAccessible(true);
+            Object cleaner = cleanerMethod.invoke(toBeDestroyed);
 
-        Method cleanMethod = cleaner.getClass().getMethod("clean");
-        cleanMethod.setAccessible(true);
-        cleanMethod.invoke(cleaner);
-
+            Method cleanMethod = cleaner.getClass().getMethod("clean");
+            cleanMethod.setAccessible(true);
+            cleanMethod.invoke(cleaner);
+        }catch (Exception e){
+            if(e.getClass().getSimpleName().equalsIgnoreCase("InaccessibleObjectException")){
+                warn = true;
+            }
+        }
     }
     public static void destroyBuffer(Buffer buffer) {
         if(buffer.isDirect()) {

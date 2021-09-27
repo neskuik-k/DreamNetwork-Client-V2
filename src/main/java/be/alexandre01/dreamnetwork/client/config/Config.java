@@ -101,7 +101,8 @@ public class Config {
     }
     public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction,String... exceptFile) throws IOException {
         CopyAndPaste copyAndPaste = new CopyAndPaste(sourceLocation,targetLocation,establishedAction,exceptFile);
-        copyAndPaste.execute();
+        Thread thread = new Thread(copyAndPaste);
+        thread.run();
     }
     public static void copy(File sourceLocation, File targetLocation) throws IOException {
         if (sourceLocation.isDirectory()) {

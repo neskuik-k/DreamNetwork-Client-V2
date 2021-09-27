@@ -12,7 +12,6 @@ import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
 import org.json.JSONObject;
-import sun.security.util.Debug;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,6 +28,18 @@ public class SecretFile {
         SecretFile.createSecretJson("5a665703-6f5b-4d8f-ba4e-772f3130d6b4","allahuakbar2021");
     }
 
+
+    public void init(String keys){
+        try {
+            String decoded = new String(Base64.getDecoder().decode(keys));
+
+            JSONObject json = new JSONObject(decoded);
+            secret = json.getString("secret");
+            uuid = json.getString("uuid");
+        }catch (Exception e){
+            System.out.println("Can't decode the secret code.");
+        }
+    }
     public void init() throws IOException {
         BufferedReader file = null;
         
@@ -40,7 +51,7 @@ public class SecretFile {
                     .terminal(ConsoleReader.terminal)
                     .build();
 
-            Character mask = Config.isWindows() ? (char)'*' : (char) '•';
+            Character mask = Config.isWindows() ? (char)'*' : (char) '⬩';
 
           //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());

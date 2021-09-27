@@ -23,6 +23,7 @@ public class CommandReader{
         commands.addCommands(new SpigetCommand("spiget"));
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
+        commands.addCommands(new EditCommand("edit"));
 
     }
 

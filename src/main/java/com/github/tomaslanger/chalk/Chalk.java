@@ -26,20 +26,11 @@ public class Chalk {
 
     static {
         try {
-            try {
-                try {
-                    Class.forName("org.fusesource.jansi.AnsiConsole",true,Thread.currentThread().getContextClassLoader()).getMethod("systemInstall").invoke(null);
+
+                    org.fusesource.jansi.AnsiConsole.systemInstall();
+                    //Class.forName("org.fusesource.jansi.AnsiConsole",true,Thread.currentThread().getContextClassLoader()).getMethod("systemInstall").invoke(null);
                     Thread.currentThread().getContextClassLoader();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-            } catch (NoSuchMethodException e) {
-                e.printStackTrace();
-            } catch (InvocationTargetException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
+
             colorEnabled = true;
             commandEnabled = true;
         } catch (UnsatisfiedLinkError e) {

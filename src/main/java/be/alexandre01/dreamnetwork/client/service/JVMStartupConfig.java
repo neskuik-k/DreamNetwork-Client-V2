@@ -19,6 +19,7 @@ public class JVMStartupConfig {
     @Getter String exec = null;
     @Getter String xmx;
     @Getter String pathName;
+    @Getter String javaVersion = "default";
     @Getter int port = 0;
     @Getter long confSize = 0;
     @Getter boolean proxy = false;
@@ -43,7 +44,7 @@ public class JVMStartupConfig {
         }
 
         if(updateFile){
-            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null);
+            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,null);
         }
         try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")){
@@ -63,6 +64,13 @@ public class JVMStartupConfig {
                     exec = exec+".jar";
                     while (exec.charAt(0) == ' '){
                         exec = exec.substring(1);
+                    }
+                }
+                if(line.startsWith("java-version:")){
+                    javaVersion = line;
+                    javaVersion = javaVersion.replace("java-version:","");
+                    while (javaVersion.charAt(0) == ' '){
+                        this.javaVersion = javaVersion.substring(1);
                     }
                 }
             }
@@ -118,7 +126,13 @@ public class JVMStartupConfig {
                     while (exec.charAt(0) == ' '){
                         exec = exec.substring(1);
                     }
-
+                }
+                if(line.startsWith("java-version:")){
+                    javaVersion = line;
+                    javaVersion = javaVersion.replace("java-version:","");
+                    while (javaVersion.charAt(0) == ' '){
+                        this.javaVersion = javaVersion.substring(1);
+                    }
                 }
                 isConfig = true;
             }
@@ -334,7 +348,7 @@ public class JVMStartupConfig {
             e.printStackTrace();
         }
     }
-    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup){
+    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup,String javaVersion){
         Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
         Console.print("MODS>"+type.name(),Level.FINE);
@@ -369,6 +383,9 @@ public class JVMStartupConfig {
             }
             if(startup != null){
                 writer.println("startup: "+startup);
+            }
+            if(javaVersion != null){
+                writer.println("java-version: "+javaVersion);
             }
             writer.println("proxy: "+proxy);
             writer.close();

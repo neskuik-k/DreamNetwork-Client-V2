@@ -17,12 +17,10 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
     public Install(){
         for(InstallationLinks s : InstallationLinks.values()){
             setCompletion(node("service",
-                    node("add",
+                    node("install",
                             node("server", "proxy",
                                     node(NullCompleter.INSTANCE,
                                             node(s.getVer()))))));
-            addCompletor("service","install","server","",s.getVer());
-            addCompletor("service","install","proxy","",s.getVer());
         }
     }
     @Override
@@ -70,6 +68,14 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 @Override
                 public void complete() {
                     System.out.println("updatefile");
+                    String javaVersion = "default";
+                    for(Integer i : installationLinks.getJavaVersion()){
+                        if(Client.getInstance().getJavaIndex().getJVersion().containsKey(i)){
+                            javaVersion = Client.getInstance().getJavaIndex().getJVersion().get(i).getName();
+                            break;
+                        }
+                    }
+
                     jvmExecutor.updateConfigFile(jvmExecutor.getPathName(),
                             jvmExecutor.getName(),
                             jvmExecutor.getType(),
@@ -78,7 +84,9 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             jvmExecutor.getPort(),
                             jvmExecutor.isProxy(),
                             installationLinks.name().toLowerCase(),
-                            jvmExecutor.getStartup());
+                            jvmExecutor.getStartup(),
+                            javaVersion
+                            );
                     jvmExecutor.setExec(installationLinks.name().toLowerCase()+".jar");
                     System.gc();
                 }
