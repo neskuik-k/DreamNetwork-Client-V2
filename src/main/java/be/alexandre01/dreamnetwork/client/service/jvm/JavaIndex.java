@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.utils.json.JSONFileUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonIOException;
@@ -15,12 +16,10 @@ import be.alexandre01.dreamnetwork.utils.Tuple;
 import lombok.Data;
 
 @Data
-public class JavaIndex extends LinkedHashMap<String, Object> {
+public class JavaIndex extends JSONFileUtils {
     private JavaVersion defaultJava = null;
     private HashMap<String, JavaVersion> jMap = new HashMap<>();
     private HashMap<Integer, JavaVersion> jVersion = new HashMap<>();
-    File javaIndexFile;
-
 
 
      @Override
@@ -41,7 +40,6 @@ public class JavaIndex extends LinkedHashMap<String, Object> {
          if(javaVersion.getVersion() != -1){
             jVersion.put(javaVersion.getVersion(),javaVersion);
          }
-
         }
          return k;
      }
@@ -52,21 +50,6 @@ public class JavaIndex extends LinkedHashMap<String, Object> {
         jMap.remove(key);
 
         return k;
-     }
-     public void refreshFile(){
-        Gson gson = new GsonBuilder().create();
-         try {
-            FileWriter f = new FileWriter(javaIndexFile);
-            gson.toJson(this,f);
-            f.flush();
-            f.close();
-        } catch (JsonIOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
      }
 }    
 

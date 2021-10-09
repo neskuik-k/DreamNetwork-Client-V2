@@ -81,7 +81,6 @@ public class CopyAndPaste extends Thread{
 
         }
 
-
         filesToOperate.decrementAndGet();
         if(filesToOperate.get() == 0){
             proceedOperations();
@@ -192,7 +191,6 @@ public class CopyAndPaste extends Thread{
                         }catch (FileAlreadyExistsException f){
                             return;
                         }
-
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

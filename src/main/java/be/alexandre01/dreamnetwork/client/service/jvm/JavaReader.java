@@ -19,6 +19,7 @@ import com.github.tomaslanger.chalk.Chalk;
 import com.google.gson.Gson;
 
 import lombok.Getter;
+import lombok.Setter;
 
 public class JavaReader {
 

@@ -56,7 +56,7 @@ public class AuthentificationResponse extends CoreResponse{
 
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
-                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+" lié à DreamNetwork");
+                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
@@ -68,7 +68,7 @@ public class AuthentificationResponse extends CoreResponse{
                                 remoteAdress[0].replaceAll("/",""),
                                 String.valueOf(newClient.getPort()));
 
-                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Serveur "+ newClient.getJvmService().getJvmExecutor().getName()+" lié à DreamNetwork");
+                        Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Serveur "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
                         ArrayList<String> servers = new ArrayList<>();
                         for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
                             for(JVMService service : jvmExecutor.getServices()){

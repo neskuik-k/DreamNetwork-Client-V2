@@ -302,7 +302,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
         String javaPath = Client.getInstance().getJavaIndex().getJMap().get(jvmStartup.javaVersion).getPath();
         if(jvmStartup.startup != null){
-            startup = jvmStartup.startup.replaceAll("%java%",javaPath).replaceAll("%exec%",jvmStartup.exec).replaceAll("%xmx%",jvmStartup.xmx).replaceAll("%xms%",jvmStartup.xms);;
+            startup = jvmStartup.startup.replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmStartup.xmx).replaceAll("%xms%",jvmStartup.xms);
         }
 
         Process proc = null;
@@ -310,13 +310,15 @@ public class JVMExecutor extends JVMStartupConfig{
 
             if(type.equals(Mods.DYNAMIC)){
                 if(startup != null){
-                    String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+exec;
-                    startup = startup.replaceAll("%jar%",jarPath);
-                    Console.print(startup,Level.FINE);
+                    String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath().replaceAll("\\\\","/")+"/"+ exec;
+                    startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
+                    Console.print(startup,Level.INFO);
                     proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).start();
                   //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
                 }else {
                     String line = javaPath+" -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+jvmStartup.exec +" nogui";
+
+                    Console.print(line,Level.INFO);
                    // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).start();
                     // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
@@ -325,12 +327,15 @@ public class JVMExecutor extends JVMStartupConfig{
             }else {
                 if(type.equals(Mods.STATIC)){
                     if(startup != null){
-                        String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+jvmStartup.exec;
-                        startup = startup.replaceAll("%jar%",jarPath);
-                        proc = new ProcessBuilder(jvmStartup.startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name))).start();
+                        String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmStartup.exec;
+
+                        startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
+                        System.out.println(startup);
+                        proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name))).start();
                       //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     }else {
                         String line = javaPath + " -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+ exec+" nogui";
+                        Console.print(line,Level.INFO);
                         proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name))).start();
 
                         // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
@@ -354,7 +359,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
-        Console.print(Colors.GREEN_BOLD+"Le serveur "+Colors.YELLOW_BOLD+pathName+Colors.GREEN_BOLD+" vient de démarrer le processus",Level.INFO);
+        Console.print(Colors.GREEN_BOLD+"Le serveur "+Colors.YELLOW_BOLD+finalname+Colors.GREEN_BOLD+" vient de démarrer le processus",Level.INFO);
         if(type == Mods.DYNAMIC){
             Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/temp/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
