@@ -3,4 +3,5 @@ type: STATIC
 xms: 1G
 xmx: 2G
 executable: bungeecord
+java-version: default
 proxy: true
