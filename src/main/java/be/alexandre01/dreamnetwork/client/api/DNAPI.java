@@ -81,7 +81,7 @@ public class DNAPI {
                 return false;
             }
             if(response.getBody().isEmpty()){
-                System.out.println(Colors.RED+ "The BODY response is EMPTY -> please retry.");
+                System.out.println(Colors.RED+ "The API is DOWN -> please retry later.");
                 System.exit(1);
                 return false;
             }
@@ -106,7 +106,7 @@ public class DNAPI {
 
                 System.out.println("There is an error with your license: "+sb.toString());
             }catch (Exception e){
-                System.out.println("The API Return an untranscribable body");
+                System.out.println("The API is DOWN -> please retry later.");
             }
 
         }
