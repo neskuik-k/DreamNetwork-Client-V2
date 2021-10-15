@@ -54,7 +54,19 @@ public enum RequestType {
     BUNGEECORD_EXECUTE_COMMAND(68),
     BUNGEECORD_LOG_MESSAGE(69),
     BUNGEECORD_WARNING_MESSAGE(70),
-    BUNGEECORD_ERROR_MESSAGE(71);
+    BUNGEECORD_ERROR_MESSAGE(71),
+
+    /*
+    DEV TOOLS REQUESTS (SCREEN VIEWER)
+     */
+    DEV_TOOLS_HANDSHAKE(91),
+    DEV_TOOLS_HANDHSAKE_SUCCESS(92),
+    DEV_TOOLS_VIEW_CONSOLE_MESSAGE(93),
+    DEV_TOOLS_SEND_COMMAND(94),
+    DEV_TOOLS_NEW_SERVER(95),
+    DEV_TOOLS_REMOVE_SERVER(96);
+
+
 
     @Getter private int id;
     private static final Map<Integer, RequestType> byId = new HashMap<Integer, RequestType>();

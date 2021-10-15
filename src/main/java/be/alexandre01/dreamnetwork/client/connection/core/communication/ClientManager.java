@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.connection.core.communication;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
+import be.alexandre01.dreamnetwork.client.connection.request.generated.devtool.DefaultDevToolRequest;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.proxy.DefaultBungeeRequest;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.spigot.DefaultSpigotRequest;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -19,20 +20,32 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class ClientManager {
     private final HashMap<Integer,Client> clientByPort = new HashMap<>();
-    private final HashMap<String,Client> clients = new HashMap<>();
-    private final HashMap<ChannelHandlerContext,Client> clientsByConnection = new HashMap<>();
+    @Getter private final HashMap<String,Client> clients = new HashMap<>();
+    @Getter private final HashMap<ChannelHandlerContext,Client> clientsByConnection = new HashMap<>();
+    @Getter private final ArrayList<Client> devTools = new ArrayList<>();
+
     private be.alexandre01.dreamnetwork.client.Client main;
     @Getter private Client proxy;
     public ClientManager(be.alexandre01.dreamnetwork.client.Client client){
         this.main = client;
     }
     public Client registerClient(Client client){
+        if(client.isDevTool){
+            client.clientManager = this;
+            clientsByConnection.put(client.getChannelHandlerContext(),client);
+            devTools.add(client);
+            return client;
+        }
         clientByPort.put(client.port,client);
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
@@ -54,6 +67,7 @@ public class ClientManager {
     @Data
     public static class Client{
         private int port;
+        private boolean isDevTool = false;
         private JVMContainer.JVMType jvmType = null;
         private String info;
         private ChannelHandlerContext channelHandlerContext;
@@ -62,9 +76,10 @@ public class ClientManager {
         private JVMService jvmService;
         private ClientManager clientManager;
         @Builder
-        public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType){
+        public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType,boolean isDevTool){
             this.port = port;
             this.info = info;
+            this.isDevTool = isDevTool;
             this.coreHandler = coreHandler;
             this.channelHandlerContext = ctx;
             this.jvmType = jvmType;
@@ -78,10 +93,22 @@ public class ClientManager {
                         break;
                     case "BUNGEE":
                         this.jvmType = JVMContainer.JVMType.PROXY;
-                        be.alexandre01.dreamnetwork.client.Client.getInstance().getClientManager().proxy = this;
+                        be.alexandre01.dreamnetwork.client.Client client = be.alexandre01.dreamnetwork.client.Client.getInstance();
+                        if(client.getClientManager().proxy == null){
+                            ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+                            service.scheduleAtFixedRate(() -> {
+                                client.getBundleManager().onProxyStarted();
+                                service.shutdown();
+                            },3,3, TimeUnit.SECONDS);
+
+                        }
+                        client.getClientManager().proxy = this;
                         requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
                         break;
                 }
+            }
+            if(isDevTool){
+                requestManager.getRequestBuilder().addRequestBuilder(new DefaultDevToolRequest());
             }
         }
 

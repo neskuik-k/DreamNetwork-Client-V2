@@ -43,7 +43,7 @@ public class JavaReader {
             this.javaIndex = gson.fromJson(reader,JavaIndex.class);
             if(javaIndex == null)
                 this.javaIndex = new JavaIndex();
-            javaIndex.setJavaIndexFile(javaIndexFile);
+            javaIndex.setIndexFile(javaIndexFile);
 
             if(javaIndex.isEmpty()){
                 javaIndex.put("default", "java");

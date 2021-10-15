@@ -1,0 +1,7 @@
+# lobby's configuration of the startup -|- DreamNetwork™ 2021
+type: DYNAMIC
+xms: 1G
+xmx: 2G
+executable: paper_spigot_1_8_8
+java-version: default
+proxy: false

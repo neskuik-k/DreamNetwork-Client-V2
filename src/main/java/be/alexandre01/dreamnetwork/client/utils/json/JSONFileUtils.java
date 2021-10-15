@@ -12,12 +12,12 @@ import java.util.LinkedHashMap;
 
 @Data
 public class JSONFileUtils extends LinkedHashMap<String, Object> {
-    private File javaIndexFile;
+    private File indexFile;
 
     public void refreshFile(){
-        Gson gson = new GsonBuilder().create();
+        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
         try {
-            FileWriter f = new FileWriter(javaIndexFile);
+            FileWriter f = new FileWriter(indexFile);
             gson.toJson(this,f);
             f.flush();
             f.close();

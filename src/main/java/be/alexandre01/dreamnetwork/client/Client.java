@@ -11,6 +11,10 @@ import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.client.service.bundle.BService;
+import be.alexandre01.dreamnetwork.client.service.bundle.BundleIndex;
+import be.alexandre01.dreamnetwork.client.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.client.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.client.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
@@ -53,10 +57,12 @@ public class Client {
     private JavaIndex javaIndex;
     @Getter
     private DNChannelManager channelManager;
+    @Getter
+    private BundleManager bundleManager;
 
 
     public Client(){
-        
+
         //JVM ARGUMENTS
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
@@ -130,6 +136,11 @@ public class Client {
 
         JavaReader javaReader = new JavaReader();
         javaIndex = javaReader.getJavaIndex();
+
+        this.bundleManager = new BundleManager();
+        bundleManager.init();
+
+        bundleManager.onReady();
 
         
 

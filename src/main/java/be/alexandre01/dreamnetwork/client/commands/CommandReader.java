@@ -19,6 +19,7 @@ public class CommandReader{
     public CommandReader(){
         commands = new CommandsManager();
         commands.addCommands(new ServiceCommand("service"));
+        commands.addCommands(new BundlesCommand("bundles"));
         commands.addCommands(new HelpCommand("help"));
         commands.addCommands(new SpigetCommand("spiget"));
         commands.addCommands(new ClearCommand("clear"));

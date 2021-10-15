@@ -14,6 +14,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import lombok.Getter;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,6 +27,9 @@ import java.util.logging.Level;
 public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     private ArrayList<CoreResponse> responses = new ArrayList<>();
+    private boolean hasDevUtilSoftwareAccess = true;
+    @Getter private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
+    private AuthentificationResponse authResponse;
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Client client;
@@ -33,7 +37,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         this.client = Client.getInstance();
         this.client.setCoreHandler(this);
         responses.add(new BaseResponse());
-        responses.add(new AuthentificationResponse());
+        responses.add(authResponse = new AuthentificationResponse());
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -44,8 +48,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
-        if(!remote.replaceAll("/","").equalsIgnoreCase("127.0.0.1")){
-            ctx.close();
+        if(!hasDevUtilSoftwareAccess){
+            if(!remote.replaceAll("/","").equalsIgnoreCase("127.0.0.1")){
+                ctx.close();
+            }
         }
     }
 
@@ -104,15 +110,27 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             return;
 
         try {
-            Message message = Message.createFromJsonString(s_to_decode);
-            for(CoreResponse iBasicClientResponse : responses){
+            //ALLOWED CONNECTION
+            if(allowedCTX.contains(ctx)){
+                Message message = Message.createFromJsonString(s_to_decode);
+                for(CoreResponse iBasicClientResponse : responses){
+                    try {
+                        iBasicClientResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+                }
+            }else {
+                //NOT ALLOWED CONNECTION
                 try {
-                    iBasicClientResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
+                Message message = Message.createFromJsonString(s_to_decode);
+                    authResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
-
                 }
             }
+
         } finally {
             m.release();
         }
@@ -120,13 +138,18 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        if(allowedCTX.contains(ctx))
         Console.print("Déconnexion d'un serveur");
+
         if(executorService != null){
             executorService.shutdown();
         }
         Console.print(ctx.channel().remoteAddress(),Level.FINE);
         ClientManager.Client client = Client.getInstance().getClientManager().getClient(ctx);
         if(client != null){
+            client.getClientManager().getDevTools().remove(client);
+        }
+        if(client != null && client.getJvmService() != null){
             client.getJvmService().getJvmExecutor().removeService(client.getJvmService().getId());
         }
     }
@@ -134,6 +157,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        if(allowedCTX.contains(ctx))
         System.out.println("Déconnexion d'un serveur");
         ctx.close();
         super.channelInactive(ctx);
