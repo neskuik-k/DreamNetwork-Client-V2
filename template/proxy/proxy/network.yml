@@ -1,7 +1,0 @@
-# proxy's configuration of the startup -|- DreamNetwork™ 2021
-type: STATIC
-xms: 1G
-xmx: 2G
-executable: bungeecord
-java-version: default
-proxy: true
