@@ -5,9 +5,6 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.nio.charset.Charset;
-import java.text.NumberFormat;
-import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,14 +12,12 @@ import be.alexandre01.dreamnetwork.client.commands.CommandReader;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import com.github.tomaslanger.chalk.Chalk;
 
-import be.alexandre01.dreamnetwork.client.api.DNAPI;
+import be.alexandre01.dreamnetwork.client.rest.DNAPI;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.SecretFile;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.SpigetConsole;
-import be.alexandre01.dreamnetwork.client.libraries.DownloadLibraries;
-import be.alexandre01.dreamnetwork.client.libraries.LoadLibraries;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;

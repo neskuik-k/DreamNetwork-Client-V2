@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.api;
+package be.alexandre01.dreamnetwork.client.rest;
 
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.google.gson.JsonObject;
@@ -44,18 +44,6 @@ public class DNAPI {
         }*/
     }
 
-    public void testReq(){
-        Unirest.setTimeouts(0, 0);
-        try {
-            HttpResponse<String> response = Unirest.get("http://e14d-2a01-cb10-8700-cd00-5022-f6d7-ceeb-2cdb.ngrok.io/")
-                    .asString();
-            System.out.println(response.getStatus());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
-        } catch (UnirestException e) {
-            e.printStackTrace();
-        }
-    }
     public boolean hasValidLicense(String uuid, String secret) {
         Unirest.setTimeouts(0, 0);
         HttpResponse<String> response = null;
