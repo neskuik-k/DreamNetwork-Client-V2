@@ -66,7 +66,7 @@ public class AuthentificationResponse extends CoreResponse{
                         Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
                         for(ClientManager.Client devtools : Client.getInstance().getClientManager().getDevTools()){
                             String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
-                            devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy());
+                            devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
                         }
                         Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
                     }
