@@ -9,10 +9,16 @@ import java.util.List;
 public class CoreByteDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-        if (in.readableBytes() < Character.BYTES) {
-            return; // (3)
+        while (in.readableBytes() > 0) {
+            in.markReaderIndex();
+            if (in.readableBytes() < 4) return;
+            int length = in.readInt();
+            if (in.readableBytes() < length) { // Not all bytes received yet
+                in.resetReaderIndex();
+                return;
+            }
+            out.add(in.copy(in.readerIndex(), length));
+            in.skipBytes(length);
         }
-        //final ByteBuf text = ctx.alloc().buffer(4);
-        out.add(in.readBytes(in.readableBytes())); // (4)
     }
 }

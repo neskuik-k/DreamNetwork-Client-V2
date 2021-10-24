@@ -35,6 +35,8 @@ public class ConsoleReader {
                     .encoding(StandardCharsets.UTF_8)
                     .nativeSignals(true)
                     .signalHandler(Terminal.SignalHandler.SIG_IGN)
+                    .jansi(true)
+                    .dumb(true)
                     .build();
 
 
@@ -49,6 +51,7 @@ public class ConsoleReader {
                     .build();
 
             sReader.unsetOpt(LineReader.Option.INSERT_TAB);
+
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {

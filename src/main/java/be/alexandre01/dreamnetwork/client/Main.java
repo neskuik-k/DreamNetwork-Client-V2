@@ -106,7 +106,9 @@ public class Main {
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
                                 for(JVMService service : jvmExecutor.getServices()){
-                                    //service.kill();
+                                    if(service.getClient() == null){
+                                        service.kill();
+                                    }
                                 }
                             }
                         }

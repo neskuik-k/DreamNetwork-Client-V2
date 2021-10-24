@@ -43,7 +43,6 @@ public class TemplateLoading {
             assert in != null;
             Config.createDir(path);
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
-            Console.print("Updating the Plugin JAR", Level.FINE);
         } catch (IOException e) {
             e.printStackTrace();
         }

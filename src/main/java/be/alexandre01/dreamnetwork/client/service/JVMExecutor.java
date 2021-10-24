@@ -225,7 +225,7 @@ public class JVMExecutor extends JVMStartupConfig{
     }
 
     private boolean proceedStarting(String finalname,int servers,JVMStartupConfig jvmStartup) throws IOException {
-        int port = 0;
+        Integer port = 0;
         if(!jvmStartup.proxy && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"Vous devez d'abord allumer le proxy avant de démarrer un serveur.");
 
@@ -252,6 +252,11 @@ public class JVMExecutor extends JVMStartupConfig{
                 changePort(type.getPath()+jvmStartup.pathName,finalname,port,type);
 
                 port = getCurrentPort(jvmStartup.type.getPath()+jvmStartup.pathName,finalname,jvmStartup.type);
+
+                if(port == null){
+                    System.out.println(Colors.RED_BOLD+"The port can't be foundable for the server "+ finalname);
+                    return false;
+                }
 
 
                 //   System.out.println(port);

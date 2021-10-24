@@ -31,14 +31,13 @@ public class CommandReader{
 
     public void run(Console console){
         this.console = console;
-
             console.setConsoleAction(new Console.IConsole() {
                 @Override
                 public void listener(String[] args) {
                     if(args.length != 0){
                         if(args[0].length() != 0){
                             commands.check(args);
-                        }
+                       }
                     }
                 }
 
@@ -47,11 +46,8 @@ public class CommandReader{
 
                 }
             });
+
             new Thread(console).start();
-
-
-
-
     }
 
 

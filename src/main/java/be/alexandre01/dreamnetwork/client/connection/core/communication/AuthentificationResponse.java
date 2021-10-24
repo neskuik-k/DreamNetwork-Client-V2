@@ -14,6 +14,9 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class AuthentificationResponse extends CoreResponse{
@@ -21,6 +24,9 @@ public class AuthentificationResponse extends CoreResponse{
     public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
         Console.print("Requete entrente->",Level.FINE);
         Console.print(message,Level.FINE);
+        ArrayList<ChannelHandlerContext> ctxs = Main.getInstance().getCoreHandler().getAllowedCTX();
+
+
         if(message.hasRequest()){
      /*       Message msgTest = new Message();
 
@@ -157,14 +163,17 @@ public class AuthentificationResponse extends CoreResponse{
                         }
                     }
 
-
+                    System.out.println("DevClient ?");
+                    ctxs.add(ctx);
                     devClient.getRequestManager().sendRequest(RequestType.DEV_TOOLS_HANDSHAKE);
 
                     devClient.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, devServers.toArray(new String[0]));
-                    Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
                     Console.print(Colors.YELLOW+"- "+ Colors.GREEN_BOLD+"Console distante DEVTOOL lié à DreamNetwork sous le nom "+ devUser+" via l'ip "+ devClient.getChannelHandlerContext().channel().remoteAddress());
                     break;
-
+            }
+        }else {
+            if(!ctxs.contains(ctx)){
+                ctx.channel().close();
             }
         }
     }

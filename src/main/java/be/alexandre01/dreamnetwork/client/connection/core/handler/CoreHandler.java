@@ -8,6 +8,8 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientMa
 import be.alexandre01.dreamnetwork.client.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import io.netty.buffer.ByteBuf;
@@ -43,7 +45,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
-       Console.print("Local ADRESS " + ctx.channel().localAddress(),Level.FINE);
+        Console.print("Local ADRESS " + ctx.channel().localAddress(),Level.FINE);
         Console.print("Remote ADRESS " + ctx.channel().remoteAddress(),Level.FINE);
 
 
@@ -57,7 +59,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) { // (1)
-       Console.print("CHANNEL ACTIVE",Level.FINE);
+        Console.print("CHANNEL ACTIVE",Level.FINE);
         Console.print(ctx.channel().remoteAddress().toString().split(":")[0],Level.FINE);
 
 
@@ -124,7 +126,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             }else {
                 //NOT ALLOWED CONNECTION
                 try {
-                Message message = Message.createFromJsonString(s_to_decode);
+                    Message message = Message.createFromJsonString(s_to_decode);
                     authResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -139,7 +141,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         if(allowedCTX.contains(ctx))
-        Console.print("Déconnexion d'un serveur");
+            Console.print("Déconnexion d'un serveur");
 
         if(executorService != null){
             executorService.shutdown();
@@ -158,7 +160,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
         if(allowedCTX.contains(ctx))
-        System.out.println("Déconnexion d'un serveur");
+            System.out.println("Déconnexion d'un serveur");
         ctx.close();
         super.channelInactive(ctx);
     }
@@ -166,7 +168,24 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if(!Main.isDisabling()){
-            cause.printStackTrace();
+            if(cause instanceof java.net.SocketException){
+                if(allowedCTX.contains(ctx)){
+                    HashMap<ChannelHandlerContext, ClientManager.Client> clientByConnexion = Client.getInstance().getClientManager().getClientsByConnection();
+                    if(clientByConnexion.containsKey(ctx)){
+                        JVMService jvmService = clientByConnexion.get(ctx).getJvmService();
+                        String name = null;
+                        if(jvmService != null){
+                             name = jvmService.getJvmExecutor().getName()+"-"+jvmService.getId();
+                        }
+                        if(clientByConnexion.get(ctx).isDevTool()){
+                            name = "DEVTOOLS";
+                        }
+                        System.out.println(Colors.RED_BOLD+ "Un processus '"+name+"' vient de s'éteindre sans le notifier.");
+                    }
+                }
+            }else {
+                cause.printStackTrace();
+            }
         }
 
         ctx.close();
@@ -187,11 +206,13 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         }
         byte[] entry = msg.toString().getBytes(StandardCharsets.UTF_8);
         final ByteBuf buf = ctx.alloc().buffer(entry.length);
+        buf.writeInt(msg.toString().length());
         buf.writeBytes(entry);
         if(listener == null){
             ctx.writeAndFlush(buf);
             return;
         }
         ctx.writeAndFlush(buf).addListener(listener);
+        //buf.release();
     }
 }

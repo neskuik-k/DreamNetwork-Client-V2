@@ -10,6 +10,7 @@ import org.jline.reader.Buffer;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.UserInterruptException;
+import org.jline.reader.impl.LineReaderImpl;
 import org.jline.utils.AttributedString;
 
 import java.io.BufferedReader;
@@ -101,16 +102,17 @@ public class Console extends Thread{
     public static void print(Object s, Level level){
         LineReader consoleReader  = ConsoleReader.sReader;
 
-        if(consoleReader.getHistory() == null || consoleReader.getHistory().size() == 0){
+
+        if(!instances.containsKey("m:default")){
+            debugPrint("Debug: "+s);
             return;
+
         }
-
-
-
         instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
 
     }
     public static void print(String s, Level level,String name){
+
         instances.get(name).fPrint(s + Colors.ANSI_RESET(),level);
     }
     public void forcePrint(String s, Level level){
@@ -239,10 +241,11 @@ public class Console extends Thread{
 
             LineReader reader =  ConsoleReader.sReader;
 
-            //reader.setPrompt(  this.writing);
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
-            while (isRunning && (data = reader.readLine(this.writing)) != null){
+            while (isRunning ){
+               if((data = reader.readLine(this.writing)) == null)
+                    continue;
 
                 try {
                     if(data.length() != 0)

@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelMana
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.client.console.formatter.Formatter;
@@ -103,7 +104,6 @@ public class Client {
     public void init(){
         formatter = new Formatter();
         formatter.format();
-
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
 
@@ -136,6 +136,7 @@ public class Client {
 
         JavaReader javaReader = new JavaReader();
         javaIndex = javaReader.getJavaIndex();
+
 
         this.bundleManager = new BundleManager();
         bundleManager.init();
