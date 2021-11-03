@@ -10,7 +10,7 @@ public class CorePipeline extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
         ch.pipeline().addLast("decoder",new CoreByteDecoder());
-        ch.pipeline().addLast(new CoreHandler());
         ch.pipeline().addLast("encoder",new CoreMessageEncoder());
+        ch.pipeline().addLast(new CoreHandler());
     }
 }

@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client;
 
 
+import be.alexandre01.dreamnetwork.client.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
@@ -60,6 +61,8 @@ public class Client {
     private DNChannelManager channelManager;
     @Getter
     private BundleManager bundleManager;
+    @Getter @Setter private boolean devToolsAccess = false;
+    @Getter @Setter private String devToolsToken = null;
 
 
     public Client(){
@@ -111,6 +114,8 @@ public class Client {
         Console console = Console.getConsole("m:default");
         console.defaultPrint = formatter.getDefaultStream();
 
+        DevToolsToken devToolsToken = new DevToolsToken();
+        devToolsToken.init();
         Main.getCommandReader().run(console);
         try {
             Thread thread = new Thread(new CoreServer(14520));
@@ -125,7 +130,7 @@ public class Client {
             if(Client.getInstance().isDebug()){
                 e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
             }else {
-                Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
+                Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developers about this error.");
             }
 
         }

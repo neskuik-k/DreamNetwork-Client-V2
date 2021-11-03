@@ -19,9 +19,17 @@ public class DefaultDevToolRequest extends RequestBuilder {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });
-        requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
-            return message;
-        }));
 
+        requestData.put(RequestType.DEV_TOOLS_REMOVE_SERVER,(message, client, args) -> {
+            message.set("SERVERS", Arrays.asList(args));
+            return message;
+        });
+
+        requestData.put(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,(message, client, args) -> {
+            message.set("DATAS", args[0]);
+            return message;
+        });
+
+        requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> message));
     }
 }

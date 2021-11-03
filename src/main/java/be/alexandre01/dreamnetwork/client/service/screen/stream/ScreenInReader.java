@@ -3,6 +3,8 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
 import be.alexandre01.dreamnetwork.client.console.ConsoleMessage;
@@ -83,10 +85,11 @@ public class ScreenInReader extends Thread {
                 if(datas.length() != 0){
                     console.printNL(data);
                     datas.setLength(0);
+
+                    for(ClientManager.Client client : screen.getDevToolsReading()){
+                        client.getRequestManager().sendRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,data);
+                    }
                 }
-
-
-
 
             }
         },250,250,TimeUnit.MILLISECONDS);

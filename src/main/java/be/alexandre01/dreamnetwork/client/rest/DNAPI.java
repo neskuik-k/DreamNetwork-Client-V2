@@ -28,7 +28,6 @@ public class DNAPI {
 
         System.out.println(args);
         DNAPI dnapi = new DNAPI();
-
             dnapi.hasValidLicense("","");
 
        /* try {
@@ -50,7 +49,7 @@ public class DNAPI {
         try {
             response = Unirest.post("https://api.dreamnetwork.cloud/licenses/validate")
                     .header("Content-Type", "application/x-www-form-urlencoded")
-                    //.header("User-Agent", "DreamNetwork-Client/1.2-")
+                    .header("User-Agent", "DreamNetwork-Client/1.2")
                     .field("uuid", uuid)
                     .field("secret", secret)
                     .asString();

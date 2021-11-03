@@ -149,6 +149,7 @@
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>/lib/</classpathPrefix>
                             <mainClass>be.alexandre01.dreamnetwork.client.Launcher</mainClass>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
                 </configuration>
@@ -238,6 +239,11 @@
             <name>jcenter-bintray</name>
             <url>http://jcenter.bintray.com</url>
         </repository>
+        <repository>
+            <id>bintray-jetbrains-pty4j</id>
+            <name>bintray</name>
+            <url>https://jetbrains.bintray.com/pty4j</url>
+        </repository>
     </repositories>
 
     <dependencies><!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
@@ -278,6 +284,11 @@
             <version>2.8.8</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
+        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
+
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+
 
         <dependency>
             <groupId>ch.qos.logback</groupId>
@@ -295,7 +306,21 @@
             <version>3.2.12</version>
             <scope>compile</scope>
         </dependency>
-
+            <dependency>
+                <groupId>org.jetbrains.pty4j</groupId>
+                <artifactId>pty4j</artifactId>
+                <version>0.11.4</version>
+            </dependency>
+        <dependency>
+            <groupId>io.nats</groupId>
+            <artifactId>jnats</artifactId>
+            <version>2.12.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zeromq</groupId>
+            <artifactId>jeromq</artifactId>
+            <version>0.5.2</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -303,8 +328,6 @@
             <version>1.18.20</version>
             <scope>compile</scope>
         </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
-
-
 
         <dependency>
             <groupId>org.fusesource.jansi</groupId>

@@ -22,6 +22,7 @@ public class LoadLibraries{
     private File dir;
     public static MyClassloader classloader;
     public void init(String[] args){
+        System.out.println("Hello batard");
         try {
 
 
@@ -77,7 +78,7 @@ public class LoadLibraries{
 
             System.out.println(Arrays.toString(urls.toArray(new URL[0])));;
 
-                Class<?> clazz = classLoader.loadClass("be.alexandre01.dreamnetwork.client.Main");
+         /*       Class<?> clazz = classLoader.loadClass("be.alexandre01.dreamnetwork.client.Main");
             Method method = clazz.getMethod("main", String[].class);
 
             Thread thread = new Thread(() -> {
@@ -90,7 +91,7 @@ public class LoadLibraries{
             }, "Application-Thread");
             thread.setPriority(Thread.MIN_PRIORITY);
             thread.setContextClassLoader(classLoader);
-            thread.start();
+            thread.start();*/
 
 
             /*ConsoleReader consoleReader = new ConsoleReader();

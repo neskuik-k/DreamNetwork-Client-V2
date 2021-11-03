@@ -26,6 +26,10 @@ public class DefaultBungeeRequest extends RequestBuilder {
             message.set("PROCESSNAME",args[0]);
             return message;
         });
+        requestData.put(RequestType.BUNGEECORD_EXECUTE_COMMAND,(message,client, args) -> {
+            message.set("CMD", args[0]);
+            return message;
+        });
         requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
           return message;
         }));

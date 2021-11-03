@@ -20,6 +20,10 @@ public class DefaultSpigotRequest extends RequestBuilder {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });
+        requestData.put(RequestType.SPIGOT_REMOVE_SERVERS,(message, client, args) -> {
+            message.set("SERVERS", Arrays.asList(args));
+            return message;
+        });
         requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
             return message;
         }));

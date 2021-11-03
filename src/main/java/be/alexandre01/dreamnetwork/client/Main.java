@@ -22,6 +22,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
+import lombok.Setter;
 import sun.misc.Unsafe;
 
 
