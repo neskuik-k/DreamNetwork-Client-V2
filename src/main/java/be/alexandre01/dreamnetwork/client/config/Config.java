@@ -39,10 +39,14 @@ public class Config {
         return false;
     }
     public static void createDir(String path){
+        createDir(path,true);
+    }
+    public static void createDir(String path,boolean notify){
         File theDir = new File(getPath(path));
 
         if (!theDir.exists()) {
-           Console.print(Chalk.on("Création du dossier... ").cyan() + theDir.getName(), Level.INFO);
+            if(notify)
+                Console.print(Chalk.on("Création du dossier... ").cyan() + theDir.getName(), Level.INFO);
             boolean result = false;
 
             try{
@@ -52,8 +56,8 @@ public class Config {
             catch(SecurityException se){
                 //handle it
             }
-            if(result) {
-               Console.print(Chalk.on("Dossier crée").cyan(),Level.INFO);
+            if(result && notify) {
+                Console.print(Chalk.on("Dossier crée").cyan(),Level.INFO);
             }
         }
     }

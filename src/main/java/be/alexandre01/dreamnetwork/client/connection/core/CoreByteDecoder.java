@@ -13,7 +13,7 @@ public class CoreByteDecoder extends ByteToMessageDecoder {
             in.markReaderIndex();
             if (in.readableBytes() < 4) return;
             int length = in.readInt();
-            if (in.readableBytes() < length) { // Not all bytes received yet
+            if (in.readableBytes() < length) {
                 in.resetReaderIndex();
                 return;
             }

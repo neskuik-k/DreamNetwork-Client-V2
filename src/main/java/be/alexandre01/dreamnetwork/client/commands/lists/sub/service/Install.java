@@ -35,7 +35,6 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service install proxy [name] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
                 return true;
             }
-            System.out.println(args[2]);
             JVMContainer.JVMType jvmType;
             try {
                 jvmType = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
@@ -67,7 +66,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
                 @Override
                 public void complete() {
-                    System.out.println("updatefile");
+                    System.out.println("File Updated with Success");
                     String javaVersion = "default";
                     for(Integer i : installationLinks.getJavaVersion()){
                         if(Client.getInstance().getJavaIndex().getJVersion().containsKey(i)){

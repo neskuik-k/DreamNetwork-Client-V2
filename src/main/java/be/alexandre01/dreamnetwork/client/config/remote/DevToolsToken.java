@@ -55,7 +55,6 @@ public class DevToolsToken {
         @Override
         public Object put(String key, Object value) {
             Object k = super.put(key, value);
-            System.out.println(key);
             if(key.equalsIgnoreCase("activeRemote")){
                 System.out.println(value);
                     if((boolean) value){

@@ -128,6 +128,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         if(!Message.isJSONValid(s_to_decode))
             return;
 
+        System.out.println(s_to_decode);
+
         try {
             //ALLOWED CONNECTION
             if(allowedCTX.contains(ctx)){

@@ -27,7 +27,7 @@ public class BaseResponse extends CoreResponse {
         if(message.hasRequest()){
             if(message.hasProvider()){
                 if(message.getProvider().equals("core")){
-                    RequestPacket request = client.getRequestManager().getRequest(Integer.parseInt((String) message.get("RID")));
+                    RequestPacket request = client.getRequestManager().getRequest(message.getRequestID());
                     if(request != null)
                         request.getRequestFutureResponse().onReceived(receivedPacket);
                 }
@@ -56,8 +56,7 @@ public class BaseResponse extends CoreResponse {
                     }
                 case CORE_RETRANSMISSION:
                     String server = message.getString("RETRANS");
-                    
-                    Client.getInstance().getClientManager().getClient(server).getChannelHandlerContext().writeAndFlush(message);
+                    Client.getInstance().getClientManager().getClient(server).writeAndFlush(message);
                     break;
                 case DEV_TOOLS_VIEW_CONSOLE_MESSAGE:
                     ScreenManager.instance.getScreens().get(message.getString("SERVERNAME")).getDevToolsReading().add(client);

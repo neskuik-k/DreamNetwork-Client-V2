@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.installer;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
@@ -140,6 +141,8 @@ public class Installer {
                 queueisAvailable = false;
                 if(iInstall != null)
                 iInstall.start();
+                Console.print("Starting installation...");
+                Client.getInstance().formatter.getDefaultStream().flush();
                 ListenableFuture<?> l = client.prepareGet(url).execute(new AsyncCompletionHandler<FileOutputStream>() {
                     String bar = "<->";
                     int space = 30;
@@ -181,7 +184,12 @@ public class Installer {
                                 directionRight = true;
                             }
                         }
-                        ConsoleReader.sReader.printAbove("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]\r");
+                        StringBuilder space = new StringBuilder();
+                        for (int i = 0; i < 35; i++) {
+                            space.append(" ");
+                        }
+                        Client.getInstance().formatter.getDefaultStream().print("Installation of "+ Colors.ANSI_CYAN+ name+Colors.ANSI_RESET()+"   "+ sb.toString()+ " ["+stream.getChannel().size()/(1024*1024)+"mb]"+space.toString()+"\r");
+                        Client.getInstance().formatter.getDefaultStream().flush();
                         return State.CONTINUE;
                     }
 
@@ -191,7 +199,6 @@ public class Installer {
 
                             ConsoleReader.sReader.printAbove("\n");
                             Client.getInstance().formatter.getDefaultStream().println("\nCOMPLETE... "+ stream.getChannel().size()/1024 +"kb in total");
-                            Client.getInstance().formatter.getDefaultStream().println("HELLO");
 
                             if(iInstall != null){
                                 iInstall.complete();
@@ -221,7 +228,6 @@ public class Installer {
                                 return stream;
                             }
                             queueisAvailable = true;
-                            Client.getInstance().formatter.getDefaultStream().println("QUEUE true");
                             try {
 
                                 client.close();

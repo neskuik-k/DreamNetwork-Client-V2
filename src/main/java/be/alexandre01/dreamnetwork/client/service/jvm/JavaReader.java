@@ -98,7 +98,6 @@ public class JavaReader {
             Collection<Path> paths = files.collect(Collectors.toList());
             for(Path p : paths){
                 if(Files.isDirectory(p)){
-                    System.out.println("FILENAME >" + p.getFileName());
                     if(p.getFileName().toString().equalsIgnoreCase("bin")){
                         String[] s = file.getName().split("-");
                         if(s.length > 1){

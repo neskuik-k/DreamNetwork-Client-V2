@@ -25,7 +25,7 @@ public class TemplateLoading {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Config.createDir("template");
+        Config.createDir("template",false);
         loadTemplate(proxyDirectories,"proxy");
         loadTemplate(serverDirectories,"server");
 
@@ -41,7 +41,7 @@ public class TemplateLoading {
 
         try {
             assert in != null;
-            Config.createDir(path);
+            Config.createDir(path,false);
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();

@@ -6,10 +6,7 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Message extends LinkedHashMap<String, Object> {
     private static final Type HASH_MAP_TYPE = new TypeToken<Map<String, Object>>() {
@@ -21,7 +18,7 @@ public class Message extends LinkedHashMap<String, Object> {
         super(new LinkedHashMap<>());
     }
     public Message set(String id,Object value){
-        put("DN-"+id,value.toString());
+        put("DN-"+id,value);
         return this;
     }
 
@@ -35,9 +32,16 @@ public class Message extends LinkedHashMap<String, Object> {
     public HashMap<String, Object> getObjectData(){
         return this;
     }
+    public int getRequestID(){
+        return ((Double) super.get("RID")).intValue();
+    }
+    @Override
+    public Object get(Object key) {
+        return super.get("DN-"+key);
+    }
 
-    public <T> T getObject(String key,Class<T> tClass){
-        return (T) get("DN-"+key);
+    public <T> T get(String key,Class<T> tClass){
+        return (T) super.get("DN-"+key);
     }
 
     public Message setChannel(String channel){
@@ -46,7 +50,7 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public String getChannel(){
-        return containsKey("channel") ? (String) get("channel") : "core";
+        return containsKey("channel") ? (String) super.get("channel") : "core";
     }
     public Message setHeader(String header){
         put("header",header);
@@ -59,25 +63,25 @@ public class Message extends LinkedHashMap<String, Object> {
         put("sender",provider);
     }
     public String getProvider(){
-        return (String) get("provider");
+        return (String) super.get("provider");
     }
     public String getSender(){
-        return (String) get("sender");
+        return (String) super.get("sender");
     }
     public boolean hasProvider(){
         return containsKey("provider");
     }
     public String getHeader(){
-        return (String) get("header");
+        return (String) super.get("header");
     }
 
     public Message setRequestType(RequestType requestType){
-        put("requestType",String.valueOf(requestType.getId()));
+        put("requestType",requestType.getId());
         return this;
     }
 
     public RequestType getRequest(){
-        return (RequestType) RequestType.getByID((int)Integer.parseInt((String) get("requestType")));
+        return (RequestType) RequestType.getByID(((Double) super.get("requestType")).intValue());
     }
 
     public boolean hasRequest(){
@@ -89,23 +93,37 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public String getString(String key){
-        return String.valueOf(get("DN-"+key));
+        return String.valueOf(super.get("DN-"+key));
     }
 
     public int getInt(String key){
-        return (int) Integer.parseInt(getString(key));
+        return ((Double) get(key)).intValue();
+      //  return (int) Integer.parseInt(getString(key));
     }
 
     public float getFloat(String key){
-        return (float) Float.parseFloat(getString(key));
+        return ((Double) get(key)).floatValue();
+       //return (float) Float.parseFloat(getString(key));
     }
 
     public long getLong(String key){
-        return (long) Long.parseLong(getString(key));
+        return (long) get(key);
+        //return (long) Long.parseLong(getString(key));
     }
 
+    public List<?> getList(String key) {
+        return (List<?>) get(key);
+        //return new ArrayList<>(Arrays.asList(getString(key).split(",")));
+    }
+    public <T> List<T> getList(String key, Class<T> tClass) {
+        return (List<T>) get(key);
+       // return new ArrayList<T>((Collection<? extends T>) Arrays.asList(getString(key).split(",")));
+    }
+
+
     public boolean getBoolean(String key){
-        return (boolean) Boolean.parseBoolean(getString(key));
+        return (boolean) get(key);
+        //return (boolean) Boolean.parseBoolean(getString(key));
     }
 
     public boolean hasChannel(){
@@ -129,7 +147,7 @@ public class Message extends LinkedHashMap<String, Object> {
     @Override
     public String toString() {
         GsonBuilder gsonBuilder = new GsonBuilder();
-        gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
+       // gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
 
 
         String json = new Gson().toJson(this,Message.class);

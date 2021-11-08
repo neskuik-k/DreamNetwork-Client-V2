@@ -149,9 +149,6 @@ public class AuthentificationResponse extends CoreResponse{
                 }
                 String token = new String(byteToken);
 
-                System.out.println(message);
-                System.out.println("token1 >> "+ token);
-                System.out.println("token2 >> "+ this.client.getDevToolsToken());
                 if(!token.equals(this.client.getDevToolsToken())){
                     ctx.channel().close();
                     return;
@@ -159,7 +156,6 @@ public class AuthentificationResponse extends CoreResponse{
                 String devInfo = message.getString("INFO");
                 String devUser = message.getString("USER");
                 int devPort = message.getInt("PORT");
-                String devPassword = message.getString("TOKEN");
 
                 Console.print("CREATE CLIENT", Level.FINE);
                 ClientManager.Client devClient = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()

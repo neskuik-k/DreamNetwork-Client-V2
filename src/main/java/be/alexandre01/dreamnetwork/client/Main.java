@@ -5,11 +5,17 @@ import java.io.PrintStream;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.alexandre01.dreamnetwork.client.commands.CommandReader;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.client.console.history.ReaderHistory;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.client.rest.DNAPI;
@@ -23,6 +29,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
 import lombok.Setter;
+import org.jline.reader.History;
 import sun.misc.Unsafe;
 
 
@@ -50,7 +57,8 @@ public class Main {
 
         commandReader = new be.alexandre01.dreamnetwork.client.commands.CommandReader();
         ConsoleReader.init();
-
+        ReaderHistory readerHistory = new ReaderHistory();
+        readerHistory.init();
         Console.clearConsole(System.out);
         Config.createDir("data");
         Config.removeDir("temp");
@@ -112,6 +120,18 @@ public class Main {
                                     }
                                 }
                             }
+                        }
+
+                        if(ConsoleReader.sReader != null){
+                            History h = ConsoleReader.sReader.getHistory();
+                            ArrayList<String> l = new ArrayList<>();
+                            for (int j = 0; j < h.size()-1; j++) {
+                                l.add(h.get(j));
+                            }
+
+                            List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
+                            readerHistory.getReaderHistoryIndex().put("history", Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
+                            readerHistory.getReaderHistoryIndex().refreshFile();
                         }
                         isReady = true;
                         if(!Config.isWindows()){
@@ -178,6 +198,7 @@ public class Main {
 
 
         instance = new Client();
+
         Client.instance = instance;
 
        

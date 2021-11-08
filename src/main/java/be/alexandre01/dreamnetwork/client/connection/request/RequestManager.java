@@ -29,7 +29,7 @@ public class RequestManager {
         request.setClient(client);
         request.setMessage(requestData.write(request.getMessage(),client,args));
         request.getClient().writeAndFlush(request.getMessage(),request.getListener());
-        requests.put(request.getRID(),request);
+        requests.put(request.getRequestID(),request);
         return request;
     }
     public RequestPacket sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, String... args){
@@ -47,7 +47,7 @@ public class RequestManager {
         RequestPacket request = new RequestPacket(requestType,requestData.write(message,client,args),listener);
         request.setClient(client);
         request.getClient().writeAndFlush(request.getMessage(),listener);
-        requests.put(request.getRID(),request);
+        requests.put(request.getRequestID(),request);
         return request;
          //client.writeAndFlush(requestData.write(message,client,args),listener);
     }
