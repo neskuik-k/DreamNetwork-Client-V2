@@ -48,7 +48,7 @@ public class Console extends Thread{
 
     public static Console load(String name){
         Console c = new Console(name);
-        if(Client.getInstance() != null){
+        if(Client.getInstance().formatter != null){
             c.defaultPrint = Client.getInstance().formatter.getDefaultStream();
         }
         instances.put(name,c);

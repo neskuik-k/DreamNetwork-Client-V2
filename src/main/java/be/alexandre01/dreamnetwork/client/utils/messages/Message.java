@@ -150,7 +150,7 @@ public class Message extends LinkedHashMap<String, Object> {
        // gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
 
 
-        String json = new Gson().toJson(this,Message.class);
+        String json = gsonBuilder.create().toJson(this,Message.class);
         return json;
     }
 

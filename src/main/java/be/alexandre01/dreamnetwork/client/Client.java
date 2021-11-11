@@ -44,7 +44,7 @@ public class Client {
     @Setter
     public static Logger logger = Logger.getLogger(Client.class.getName());
     @Getter
-    public static Client instance;
+    private final static Client instance;
     @Getter
     private JVMContainer jvmContainer;
     @Getter
@@ -65,18 +65,22 @@ public class Client {
     @Getter @Setter private String devToolsToken = null;
 
 
+    static {
+        instance = new Client();
+    }
     public Client(){
-
         //JVM ARGUMENTS
+    }
+
+    public void afterConstructor(){
         String s = System.getProperty("ebug");
         if(s != null && s.equalsIgnoreCase("true")){
             System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
             debug = true;
-
         }
 
 
-         fileHandler = null;
+        fileHandler = null;
         try {
             fileHandler = new FileHandler("latest.log");
             fileHandler.setLevel(Level.ALL);
@@ -90,14 +94,14 @@ public class Client {
 
 
 
-       Console.defaultConsole = "m:default";
+        Console.defaultConsole = "m:default";
         Console.actualConsole =  "m:default";
 
         Console.getConsole("m:default").isDebug = isDebug();
-      //  Console.setActualConsole("m:default");
+        //  Console.setActualConsole("m:default");
 
-       Console.load("m:spiget");
-       spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
+        Console.load("m:spiget");
+        spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
                 /*
         JVM CONTAINER TO STORE JVMExecutors
          */

@@ -197,9 +197,10 @@ public class Main {
         Console.load("m:default").isRunning = true;
 
 
-        instance = new Client();
+        instance = Client.getInstance();
+        instance.afterConstructor();
 
-        Client.instance = instance;
+        //Client.instance = instance;
 
        
         new TemplateLoading();

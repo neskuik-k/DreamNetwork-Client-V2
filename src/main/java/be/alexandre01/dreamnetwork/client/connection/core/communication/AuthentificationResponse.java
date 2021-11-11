@@ -80,7 +80,7 @@ public class AuthentificationResponse extends CoreResponse{
                             proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
                                     newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
                                     remoteAdress[0].replaceAll("/",""),
-                                    String.valueOf(newClient.getPort()));
+                                    newClient.getPort());
 
                             Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Serveur "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
                             ArrayList<String> servers = new ArrayList<>();

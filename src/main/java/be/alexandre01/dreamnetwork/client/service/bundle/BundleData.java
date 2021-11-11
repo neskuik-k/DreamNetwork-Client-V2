@@ -30,10 +30,6 @@ public class BundleData {
         this.name = name;
         this.autoStart = autoStart;
         this.services = new ArrayList<>();
-        /*services.add(new BService("UwU",100));
-        services.add(new BService("IwI",666));
-        services.add(new BService("^w^",666));
-        services.add(new BService("o.o",666));*/
     }
 
     public String hashToString(){
@@ -101,8 +97,15 @@ public class BundleData {
         ArrayList<BService> bServices = new ArrayList<>();
         for (String l : s.split(";")){
             String[] sep = l.split(":");
+            Integer active = null;
+            if(sep.length > 2){
+                try {
+                    active = Integer.parseInt(sep[2]);
+                }catch (Exception e){
+                }
+            }
             try{
-                BService bService = new BService(sep[0],Integer.parseInt(sep[1]));
+                BService bService = new BService(sep[0],Integer.parseInt(sep[1]),active);
                 bServices.add(bService);
             }catch (Exception ignored){
             }
@@ -141,8 +144,15 @@ public class BundleData {
 
         for (int i = 0; i < arr2.length; i++) {
             String[] sep = arr2[i].split(":");
+            Integer active = null;
+            if(sep.length > 2){
+                try {
+                    active = Integer.parseInt(sep[2]);
+                }catch (Exception e){
+                }
+            }
             try{
-                BService bService = new BService(sep[0],Integer.parseInt(sep[1]));
+                BService bService = new BService(sep[0],Integer.parseInt(sep[1]),active);
                 bServices.add(bService);
             }catch (Exception ignored){
             }

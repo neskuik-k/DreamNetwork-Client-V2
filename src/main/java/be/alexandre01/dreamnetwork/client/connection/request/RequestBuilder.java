@@ -21,7 +21,7 @@ public class RequestBuilder {
 
 
     public interface RequestData {
-        public Message write(Message message, ClientManager.Client client, String... args);
+        public Message write(Message message, ClientManager.Client client, Object... args);
     }
 
 }

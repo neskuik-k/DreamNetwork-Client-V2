@@ -50,7 +50,7 @@ public class Formatter {
             Client.getLogger().addHandler( handler);
             System.setOut(prStr);
             System.setErr(System.out);
-        if(!Client.instance.isDebug()){
+        if(!Client.getInstance().isDebug()){
             Client.getLogger().setLevel(Level.INFO);
         }else {
             Client.getLogger().setLevel(Level.FINER);

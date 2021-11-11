@@ -6,9 +6,11 @@ import lombok.Data;
 public class BService {
     private String serviceName;
     private int totalCount;
+    private Integer activeCount;
 
-    public BService(String serviceName, int totalCount) {
+    public BService(String serviceName, int totalCount,Integer activeCount) {
         this.serviceName = serviceName;
         this.totalCount = totalCount;
+        this.activeCount = activeCount;
     }
 }
