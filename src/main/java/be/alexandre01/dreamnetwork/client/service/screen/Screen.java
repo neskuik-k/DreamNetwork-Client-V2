@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.client.service.screen;
 
-import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -10,15 +9,8 @@ import be.alexandre01.dreamnetwork.client.service.screen.stream.ScreenStream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class  Screen extends Thread {

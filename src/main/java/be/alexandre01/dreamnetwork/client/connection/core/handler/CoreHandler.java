@@ -10,7 +10,6 @@ import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
@@ -26,11 +25,9 @@ import lombok.Setter;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class CoreHandler extends ChannelInboundHandlerAdapter{
@@ -159,6 +156,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+
+        //LOG
         if(allowedCTX.contains(ctx)){
             HashMap<ChannelHandlerContext, ClientManager.Client> clientByConnexion = Client.getInstance().getClientManager().getClientsByConnection();
             if(clientByConnexion.containsKey(ctx)){
@@ -181,7 +180,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         ClientManager.Client client = Client.getInstance().getClientManager().getClient(ctx);
 
 
-
+        //Remove Server
         if(client != null){
             client.getClientManager().getDevTools().remove(client);
             if(!client.isDevTool()){
@@ -199,6 +198,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
                 }
             }
         }
+        //UNREGISTER CHANNEL
+        Client.getInstance().getChannelManager().unregisterAllClientToChannel(client);
+
+        //REMOVE SERVICES
         if(client != null && client.getJvmService() != null){
             client.getJvmService().getJvmExecutor().removeService(client.getJvmService().getId());
         }

@@ -1,18 +1,20 @@
-package be.alexandre01.dreamnetwork.client.connection.request;
+package be.alexandre01.dreamnetwork.client.connection.core.channels;
 
-import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestFutureResponse;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
 @SuppressWarnings("unused")
-public class ReceivedPacket {
+public class ChannelPacket {
     private static int currentId;
 
     private RequestType requestType;
     private final GenericFutureListener<? extends Future<? super Void>> listener;
-    private int RID = -1;
+    private Integer RID = null;
     private final Message message;
     private String provider;
     private RequestFutureResponse requestFutureResponse;
@@ -20,7 +22,7 @@ public class ReceivedPacket {
     private ClientManager.Client client;
     private String channel;
 
-    public ReceivedPacket(Message message){
+    public ChannelPacket(Message message){
         this.message = message;
         if(message.hasRequest())
          this.requestType = message.getRequest();
@@ -36,17 +38,20 @@ public class ReceivedPacket {
         createResponse(message,client,null);
     }
 
-    public void createResponse(Message message, ClientManager.Client client,GenericFutureListener<? extends Future<? super Void>> listener){
-
+    public void createResponse(Message message, ClientManager.Client client, GenericFutureListener<? extends Future<? super Void>> listener){
         message.setProvider(provider);
         message.setSender("core");
-        message.setRequestType(RequestType.CORE_RETRANSMISSION);
+        message.setHeader("channel");
         message.setChannel(this.channel);
-        RequestBuilder.RequestData requestData = client.getRequestManager().requestBuilder.requestData.get(requestType);
 
-        message = requestData.write(message,client,this.provider);
+        if(requestType != null){
+            RequestBuilder.RequestData requestData = client.getRequestManager().getRequestBuilder().getRequestData().get(requestType);
+            if(requestData != null)
+            message = requestData.write(message,client,this.provider);
+        }
 
-        if(RID != -1)
+
+        if(RID != null)
             message.put("RID",RID);
         client.writeAndFlush(message,listener);
     }

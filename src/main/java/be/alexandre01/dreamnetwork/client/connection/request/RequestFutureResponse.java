@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
 
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.client.connection.core.channels.ChannelPacket;
 
 public interface RequestFutureResponse {
-    void onReceived(ReceivedPacket receivedPacket);
+    void onReceived(ChannelPacket receivedPacket);
 }

@@ -7,25 +7,19 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientMa
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
-import be.alexandre01.dreamnetwork.client.console.ConsoleMessage;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
-import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 
 import java.io.*;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
-import java.nio.CharBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Level;
 
 public class ScreenInReader extends Thread {
     Console console;
@@ -83,6 +77,9 @@ public class ScreenInReader extends Thread {
                 
 
                 if(datas.length() != 0){
+                    while(data.contains("\n\n") || data.contains("\n\r")){
+                        data = data.replaceAll("\n\n","").replaceAll("\n\r","");
+                    }
                     console.printNL(data);
                     datas.setLength(0);
 

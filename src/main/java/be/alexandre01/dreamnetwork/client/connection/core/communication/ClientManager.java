@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
-import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.devtool.DefaultDevToolRequest;
@@ -11,7 +10,6 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -29,9 +27,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class ClientManager {
-    private final HashMap<Integer,Client> clientByPort = new HashMap<>();
-    @Getter private final HashMap<String,Client> clients = new HashMap<>();
-    @Getter private final HashMap<ChannelHandlerContext,Client> clientsByConnection = new HashMap<>();
+    private final HashMap<Integer, Client> clientByPort = new HashMap<>();
+    @Getter private final HashMap<String, Client> clients = new HashMap<>();
+    @Getter private final HashMap<ChannelHandlerContext, Client> clientsByConnection = new HashMap<>();
     @Getter private final ArrayList<Client> devTools = new ArrayList<>();
 
     private be.alexandre01.dreamnetwork.client.Client main;
@@ -39,7 +37,7 @@ public class ClientManager {
     public ClientManager(be.alexandre01.dreamnetwork.client.Client client){
         this.main = client;
     }
-    public Client registerClient(Client client){
+    public Client registerClient(ClientManager.Client client){
         if(client.isDevTool){
             client.clientManager = this;
             clientsByConnection.put(client.getChannelHandlerContext(),client);
@@ -64,7 +62,8 @@ public class ClientManager {
     public Client getClient(ChannelHandlerContext ctx){
         return clientsByConnection.get(ctx);
     }
-    @Data
+
+    @Getter @Setter
     public static class Client{
         private int port;
         private boolean isDevTool = false;
@@ -75,6 +74,8 @@ public class ClientManager {
         private CoreHandler coreHandler;
         private JVMService jvmService;
         private ClientManager clientManager;
+        private ArrayList<String> accessChannels = new ArrayList<>();
+
         @Builder
         public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType,boolean isDevTool){
             this.port = port;

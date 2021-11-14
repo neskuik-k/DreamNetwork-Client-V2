@@ -7,19 +7,15 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientMa
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
-import be.alexandre01.dreamnetwork.client.service.jvm.JavaVersion;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.utils.timers.DateBuilderTimer;
 
-import com.pty4j.PtyProcess;
-import com.pty4j.PtyProcessBuilder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
