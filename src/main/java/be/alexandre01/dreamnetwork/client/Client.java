@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
+import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
@@ -64,7 +65,7 @@ public class Client {
     @Getter @Setter private boolean devToolsAccess = false;
     @Getter @Setter private String devToolsToken = null;
 
-
+    @Getter private ServicePlayersManager servicePlayersManager;
     static {
         instance = new Client();
     }
@@ -152,7 +153,7 @@ public class Client {
 
         bundleManager.onReady();
 
-        
+        servicePlayersManager = new ServicePlayersManager();
 
 
         //MANAGER

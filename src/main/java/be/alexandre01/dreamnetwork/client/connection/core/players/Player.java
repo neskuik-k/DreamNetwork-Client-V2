@@ -8,16 +8,22 @@ import java.util.UUID;
 
 @Getter
 public class Player {
-    private int id;
+    private final int id;
     @Setter private ClientManager.Client server;
-    private String name;
-    private UUID uuid;
+    private final String name;
+    private final UUID uuid;
 
 
-    public Player(int id, ClientManager.Client server, String name, UUID uuid) {
+    public Player(int id, String name, UUID uuid) {
         this.id = id;
-        this.server = server;
+
         this.name = name;
         this.uuid = uuid;
+    }
+    public Player(int id, String name) {
+        this.id = id;
+
+        this.name = name;
+        this.uuid = null;
     }
 }

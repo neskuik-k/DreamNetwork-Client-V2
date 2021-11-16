@@ -3,6 +3,8 @@ package be.alexandre01.dreamnetwork.client.connection.core.communication;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannel;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.ChannelPacket;
+import be.alexandre01.dreamnetwork.client.connection.core.players.Player;
+import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestPacket;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -14,6 +16,7 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public class BaseResponse extends CoreResponse {
     private Client client;
@@ -116,6 +119,51 @@ public class BaseResponse extends CoreResponse {
                     break;
                 case CORE_UNREGISTER_CHANNEL:
                     this.client.getChannelManager().unregisterClientToChannel(client,message.getString("CHANNEL"));
+                    break;
+                case CORE_UPDATE_PLAYER:
+                    ServicePlayersManager s = this.client.getServicePlayersManager();
+                    int id = message.getInt("ID");
+                    if(s.getPlayersMap().containsKey(id)){
+                        if(message.contains("P")){
+                            Player player;
+                            if(message.contains("U")){
+                                 player = new Player(id,message.getString("P"), UUID.fromString(message.getString("U")));
+                            }else {
+                                 player = new Player(id,message.getString("P"));
+                            }
+                            s.registerPlayer(player);
+                        }else {
+                            return;
+                        }
+                    }
+
+                    if (message.contains("S")) {
+                        s.udpatePlayerServer(id,message.getString("S"));
+                    }
+                    break;
+                case CORE_REMOVE_PLAYER:
+                    s = this.client.getServicePlayersManager();
+                    id = message.getInt("ID");
+
+                    s.unregisterPlayer(id);
+                    break;
+                case CORE_ASK_DATA:
+                    s = this.client.getServicePlayersManager();
+                    String mode = message.getString("MODE");
+                    if(mode.equals("ALWAYS")){
+                        boolean bo = s.getWantToBeInformed().containsKey(client);
+                        s.removeUpdatingClient(client);
+                        if(!bo)
+                            s.getWantToBeDirectlyInformed().add(client);
+                        return;
+                    }else {
+                        if(!message.contains("TIME")){
+                            return;
+                        }
+                        long time =  message.getLong("TIME");
+                        s.removeUpdatingClient(client);
+                        s.addUpdatingClient(client,time);
+                    }
                     break;
 
             }
