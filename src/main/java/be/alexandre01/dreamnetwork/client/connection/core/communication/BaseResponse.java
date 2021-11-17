@@ -123,7 +123,7 @@ public class BaseResponse extends CoreResponse {
                 case CORE_UPDATE_PLAYER:
                     ServicePlayersManager s = this.client.getServicePlayersManager();
                     int id = message.getInt("ID");
-                    if(s.getPlayersMap().containsKey(id)){
+                    if(!s.getPlayersMap().containsKey(id)){
                         if(message.contains("P")){
                             Player player;
                             if(message.contains("U")){

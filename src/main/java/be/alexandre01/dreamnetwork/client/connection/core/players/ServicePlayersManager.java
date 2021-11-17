@@ -22,6 +22,7 @@ public class ServicePlayersManager {
     @Getter ArrayList<ClientManager.Client> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ClientManager.Client,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
 
+    @Getter HashMap<Player,ClientManager.Client> isRegistered = new HashMap<>();
     Multimap<ClientManager.Client, Player> services = ArrayListMultimap.create();
     Multimap<ClientManager.Client,Player> toUpdates =ArrayListMultimap.create();
     Multimap<ClientManager.Client,Player> toRemove = ArrayListMultimap.create();
@@ -40,13 +41,17 @@ public class ServicePlayersManager {
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         service.scheduleAtFixedRate(() -> {
             Collection<Player> pToUpdate = toUpdates.get(client);
-            if(!pToUpdate.isEmpty())
-                client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,pToUpdate.toArray());
-            toUpdates.removeAll(client);
             Collection<Player> pToRemove = toRemove.get(client);
+
             if(!pToRemove.isEmpty())
                 client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,pToRemove.toArray());
             toRemove.removeAll(client);
+
+            if(!pToUpdate.isEmpty())
+                client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,pToUpdate.toArray());
+            toUpdates.removeAll(client);
+
+
         },time,time, TimeUnit.MILLISECONDS);
     }
 
@@ -93,6 +98,5 @@ public class ServicePlayersManager {
         for(ClientManager.Client c : wantToBeInformed.keySet()){
             toRemove.put(c,player);
         }
-
     }
 }

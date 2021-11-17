@@ -21,7 +21,6 @@ import java.util.concurrent.TimeoutException;
 public class DNAPI {
     public String url = "https://api.dreamnetwork.cloud/";
 
-
     public static void main(String[] args){
 
 
