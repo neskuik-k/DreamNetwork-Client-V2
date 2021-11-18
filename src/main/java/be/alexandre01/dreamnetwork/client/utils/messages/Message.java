@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.utils.messages;
 
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.console.Console;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,6 +19,8 @@ public class Message extends LinkedHashMap<String, Object> {
         super(new LinkedHashMap<>());
     }
     public Message set(String id,Object value){
+        Console.debugPrint(value);
+
         put("DN-"+id,value);
         return this;
     }
@@ -144,14 +147,12 @@ public class Message extends LinkedHashMap<String, Object> {
         }
     }
 
-    @Override
     public String toString() {
         GsonBuilder gsonBuilder = new GsonBuilder();
        // gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
 
 
-        String json = gsonBuilder.create().toJson(this,Message.class);
-        return json;
+        return gsonBuilder.create().toJson(this,Message.class);
     }
 
 

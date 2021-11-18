@@ -89,14 +89,23 @@ public class ServicePlayersManager {
     }
 
     public void unregisterPlayer(int id){
+        System.out.println("Remove 3?");
         Player player = getPlayer(id);
+        System.out.println("Remove 4?");
         playersMap.remove(id);
+        System.out.println("Remove 5?");
         services.remove(player.getServer(),player);
+        System.out.println("Remove 6?");
         for(ClientManager.Client c : wantToBeDirectlyInformed){
-            c.getRequestManager().sendRequest(RequestType.SPIGOT_REMOVE_SERVERS,player);
+            System.out.println("Remove 7?");
+            System.out.println("Try ?");
+            c.getRequestManager().sendRequest(RequestType.SPIGOT_UNREGISTER_PLAYERS,player);
+            System.out.println("Remove 8?");
         }
         for(ClientManager.Client c : wantToBeInformed.keySet()){
+            System.out.println("Remove 9?");
             toRemove.put(c,player);
+            System.out.println("Remove 10?");
         }
     }
 }

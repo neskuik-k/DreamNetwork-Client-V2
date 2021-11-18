@@ -142,8 +142,10 @@ public class BaseResponse extends CoreResponse {
                     }
                     break;
                 case CORE_REMOVE_PLAYER:
+                    System.out.println("Remove ?");
                     s = this.client.getServicePlayersManager();
                     id = message.getInt("ID");
+                    System.out.println("Remove 2?");
 
                     s.unregisterPlayer(id);
                     break;
