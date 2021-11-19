@@ -46,18 +46,18 @@ public class DefaultSpigotRequest extends RequestBuilder {
                     sb.append(p.getId()).append(";");
                     String name = service.getJvmExecutor().getName()+"-"+service.getId();
 
-                    sb.append(name).append(";");
-                    if(!c.getServicePlayersManager().getIsRegistered().containsKey(p)){
-                        sb.append(p.getName()).append(";");
+                    sb.append(name);
+                    if(!c.getServicePlayersManager().getIsRegistered().containsKey(p) || !c.getServicePlayersManager().getIsRegistered().get(p).contains(client)){
+                        System.out.println(p);
+                        sb.append(";");
+                        sb.append(p.getName());
                         if(p.getUuid() != null){
+                            sb.append(";");
                             sb.append(p.getUuid().toString());
                         }
 
                         c.getServicePlayersManager().getIsRegistered().put(p,client);
                     }
-
-
-
                     s.add(sb.toString());
                 }
             }

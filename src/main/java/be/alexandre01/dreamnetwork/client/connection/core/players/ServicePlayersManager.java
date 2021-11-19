@@ -22,7 +22,7 @@ public class ServicePlayersManager {
     @Getter ArrayList<ClientManager.Client> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ClientManager.Client,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
 
-    @Getter HashMap<Player,ClientManager.Client> isRegistered = new HashMap<>();
+    @Getter Multimap<Player,ClientManager.Client> isRegistered = ArrayListMultimap.create();
     Multimap<ClientManager.Client, Player> services = ArrayListMultimap.create();
     Multimap<ClientManager.Client,Player> toUpdates =ArrayListMultimap.create();
     Multimap<ClientManager.Client,Player> toRemove = ArrayListMultimap.create();
@@ -39,6 +39,7 @@ public class ServicePlayersManager {
     }
     public void addUpdatingClient(ClientManager.Client client, long time){
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+        toUpdates.putAll(client,playersMap.values());
         service.scheduleAtFixedRate(() -> {
             Collection<Player> pToUpdate = toUpdates.get(client);
             Collection<Player> pToRemove = toRemove.get(client);
@@ -52,7 +53,7 @@ public class ServicePlayersManager {
             toUpdates.removeAll(client);
 
 
-        },time,time, TimeUnit.MILLISECONDS);
+        },0,time, TimeUnit.MILLISECONDS);
     }
 
     public void udpatePlayerServer(int id,String server){

@@ -154,9 +154,13 @@ public class BaseResponse extends CoreResponse {
                     String mode = message.getString("MODE");
                     if(mode.equals("ALWAYS")){
                         boolean bo = s.getWantToBeInformed().containsKey(client);
+
                         s.removeUpdatingClient(client);
-                        if(!bo)
+                        if(!bo){
+                            client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,s.getPlayersMap().values().toArray());
                             s.getWantToBeDirectlyInformed().add(client);
+                        }
+
                         return;
                     }else {
                         if(!message.contains("TIME")){
