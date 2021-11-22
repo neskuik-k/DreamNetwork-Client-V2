@@ -37,7 +37,7 @@ public class ServicePlayersManager {
         toUpdates.removeAll(client);
         toRemove.removeAll(client);
     }
-    public void addUpdatingClient(ClientManager.Client client, long time){
+    public void addUpdatingClient(ClientManager.Client client, long time,DataType dataType){
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         toUpdates.putAll(client,playersMap.values());
         service.scheduleAtFixedRate(() -> {
@@ -108,5 +108,9 @@ public class ServicePlayersManager {
             toRemove.put(c,player);
             System.out.println("Remove 10?");
         }
+    }
+
+    public enum DataType{
+        PLAYERS_COUNT, PLAYERS_LIST;
     }
 }

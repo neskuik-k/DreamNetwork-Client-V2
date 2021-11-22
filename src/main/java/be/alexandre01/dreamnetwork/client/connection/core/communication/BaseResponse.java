@@ -142,23 +142,28 @@ public class BaseResponse extends CoreResponse {
                     }
                     break;
                 case CORE_REMOVE_PLAYER:
-                    System.out.println("Remove ?");
                     s = this.client.getServicePlayersManager();
                     id = message.getInt("ID");
-                    System.out.println("Remove 2?");
 
                     s.unregisterPlayer(id);
                     break;
                 case CORE_ASK_DATA:
                     s = this.client.getServicePlayersManager();
+                    String type = message.getString("TYPE");
                     String mode = message.getString("MODE");
                     if(mode.equals("ALWAYS")){
                         boolean bo = s.getWantToBeInformed().containsKey(client);
 
                         s.removeUpdatingClient(client);
                         if(!bo){
-                            client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,s.getPlayersMap().values().toArray());
-                            s.getWantToBeDirectlyInformed().add(client);
+                            if(type.equalsIgnoreCase("PLAYERS")){
+                                client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,s.getPlayersMap().values().toArray());
+                                s.getWantToBeDirectlyInformed().add(client);
+                                return;
+                            }
+                            if(type.equalsIgnoreCase("PCOUNT")){
+
+                            }
                         }
 
                         return;
@@ -166,9 +171,19 @@ public class BaseResponse extends CoreResponse {
                         if(!message.contains("TIME")){
                             return;
                         }
-                        long time =  message.getLong("TIME");
-                        s.removeUpdatingClient(client);
-                        s.addUpdatingClient(client,time);
+                        if(type.equalsIgnoreCase("PLAYERS")){
+                            long time =  message.getLong("TIME");
+                            s.removeUpdatingClient(client);
+                            s.addUpdatingClient(client,time, ServicePlayersManager.DataType.PLAYERS_LIST);
+                            return;
+                        }
+                        if(type.equalsIgnoreCase("PCOUNT")){
+                            long time =  message.getLong("TIME");
+                            s.removeUpdatingClient(client);
+                            s.addUpdatingClient(client,time, ServicePlayersManager.DataType.PLAYERS_LIST);
+                        }
+
+
                     }
                     break;
 
