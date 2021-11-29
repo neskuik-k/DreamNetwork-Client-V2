@@ -16,11 +16,11 @@ public class ChannelPacket {
     private final GenericFutureListener<? extends Future<? super Void>> listener;
     private Integer RID = null;
     private final Message message;
-    private String provider;
+    private final String provider;
     private RequestFutureResponse requestFutureResponse;
 
     private ClientManager.Client client;
-    private String channel;
+    private final String channel;
 
     public ChannelPacket(Message message){
         this.message = message;
@@ -52,7 +52,7 @@ public class ChannelPacket {
 
 
         if(RID != null)
-            message.put("RID",RID);
+            message.setInRoot("RID",RID);
         client.writeAndFlush(message,listener);
     }
 }

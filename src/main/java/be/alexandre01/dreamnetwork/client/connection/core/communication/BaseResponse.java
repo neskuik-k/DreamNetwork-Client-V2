@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannel;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.ChannelPacket;
 import be.alexandre01.dreamnetwork.client.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
+import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersObject;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestPacket;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -19,7 +20,7 @@ import java.util.Collection;
 import java.util.UUID;
 
 public class BaseResponse extends CoreResponse {
-    private Client client;
+    private final Client client;
     public BaseResponse(){
         this.client = Client.getInstance();
     }
@@ -38,16 +39,13 @@ public class BaseResponse extends CoreResponse {
         }
         if(message.getHeader()!=null){
             if(message.getHeader().equals("channel") && message.getChannel() != null){
-                Console.debugPrint("NotNull +"+ message.getChannel() );
                 if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
-                    Console.debugPrint("HasChannel");
                     final Collection<ClientManager.Client> clients = this.client.getChannelManager().clientsRegistered.get(message.getChannel());
-                    Console.debugPrint("GetClients");
                     if(!clients.isEmpty()){
-                        Console.debugPrint("NotEmptyGetClients");
-                        Console.debugPrint("NotEmptyGetClients "+ this.client.getChannelManager().clientsRegistered.get(message.getChannel()));
+                        /*Console.debugPrint("NotEmptyGetClients");
+                        Console.debugPrint("NotEmptyGetClients "+ this.client.getChannelManager().clientsRegistered.get(message.getChannel()));*/
                         for(ClientManager.Client c : this.client.getChannelManager().getClientsRegistered().get(message.getChannel())){
-                            Console.debugPrint("C=>> "+c);
+
                             c.getCoreHandler().writeAndFlush(message,c);
                         }
                     }
@@ -85,7 +83,7 @@ public class BaseResponse extends CoreResponse {
                         cmdClient.getRequestManager().sendRequest(RequestType.SPIGOT_EXECUTE_COMMAND,message.getString("CMD"));
                     }
                 case CORE_RETRANSMISSION:
-                    String server = message.getString("RETRANS");
+                    String server = (String) message.getInRoot("RETRANS");
                     this.client.getClientManager().getClient(server).writeAndFlush(message);
                     break;
                 case DEV_TOOLS_VIEW_CONSOLE_MESSAGE:
@@ -158,11 +156,15 @@ public class BaseResponse extends CoreResponse {
                         if(!bo){
                             if(type.equalsIgnoreCase("PLAYERS")){
                                 client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,s.getPlayersMap().values().toArray());
-                                s.getWantToBeDirectlyInformed().add(client);
+
+                                s.getObjects().put(client,new ServicePlayersObject(client, ServicePlayersManager.DataType.PLAYERS_LIST));
+                                s.getWantToBeDirectlyInformed().add(s.getObject(client));
                                 return;
                             }
                             if(type.equalsIgnoreCase("PCOUNT")){
-
+                                s.getObjects().put(client,new ServicePlayersObject(client, ServicePlayersManager.DataType.PLAYERS_COUNT));
+                                client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS_COUNT,s.getPlayersMap().values().toArray());
+                                s.getWantToBeDirectlyInformed().add(s.getObject(client));
                             }
                         }
 

@@ -199,10 +199,14 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             }
         }
         //UNREGISTER CHANNEL
-        Client.getInstance().getChannelManager().unregisterAllClientToChannel(client);
+        if(client != null){
+            Client.getInstance().getChannelManager().unregisterAllClientToChannel(client);
+            //UNREGISTER PLAYER LISTENERS
+            Client.getInstance().getServicePlayersManager().removeUpdatingClient(client);
+        }
 
-        //UNREGISTER PLAYER LISTENERS
-        Client.getInstance().getServicePlayersManager().removeUpdatingClient(client);
+
+
 
         //REMOVE SERVICES
         if(client != null && client.getJvmService() != null){

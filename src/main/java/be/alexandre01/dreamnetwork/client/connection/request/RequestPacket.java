@@ -27,7 +27,7 @@ public class RequestPacket {
         this.message = message;
         this.provider = "core";
         message.setProvider(provider);
-        message.put("RID",requestID);
+        message.setInRoot("RID",requestID);
         currentId++;
     }
     public RequestPacket(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
@@ -37,7 +37,7 @@ public class RequestPacket {
         this.message = message;
         this.provider = "core";
         message.setProvider(provider);
-        message.put("RID",requestID);
+        message.setInRoot("RID",requestID);
         currentId++;
     }
     public RequestPacket send(ClientManager.Client client){

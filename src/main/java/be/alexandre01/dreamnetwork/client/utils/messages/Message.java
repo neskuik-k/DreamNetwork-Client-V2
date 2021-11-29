@@ -21,13 +21,14 @@ public class Message extends LinkedHashMap<String, Object> {
     public Message set(String id,Object value){
         Console.debugPrint(value);
 
-        put("DN-"+id,value);
+        super.put("DN-"+id,value);
         return this;
     }
 
-    public Message setInRoot(String id,Object value){
-        return null;
+    public Object setInRoot(String id, Object value){
+        return super.put(id,value);
     }
+
     public boolean contains(String key){
         return containsKey("DN-"+key);
     }
@@ -43,12 +44,17 @@ public class Message extends LinkedHashMap<String, Object> {
         return super.get("DN-"+key);
     }
 
+
+    public Object getInRoot(Object key){
+        return super.get(key);
+    }
+
     public <T> T get(String key,Class<T> tClass){
         return (T) super.get("DN-"+key);
     }
 
     public Message setChannel(String channel){
-        put("channel",channel);
+        super.put("channel",channel);
         return this;
     }
 
@@ -56,14 +62,14 @@ public class Message extends LinkedHashMap<String, Object> {
         return containsKey("channel") ? (String) super.get("channel") : "core";
     }
     public Message setHeader(String header){
-        put("header",header);
+        super.put("header",header);
         return this;
     }
     public void setProvider(String provider){
-        put("provider",provider);
+        super.put("provider",provider);
     }
     public void setSender(String provider){
-        put("sender",provider);
+        super.put("sender",provider);
     }
     public String getProvider(){
         return (String) super.get("provider");
@@ -79,7 +85,7 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public Message setRequestType(RequestType requestType){
-        put("requestType",requestType.getId());
+        super.put("requestType",requestType.getId());
         return this;
     }
 
