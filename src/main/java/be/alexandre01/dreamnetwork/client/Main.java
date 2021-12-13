@@ -61,7 +61,7 @@ public class Main {
         readerHistory.init();
         Console.clearConsole(System.out);
         Config.createDir("data");
-        Config.removeDir("temp");
+        Config.removeDir("tmp");
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -106,7 +106,9 @@ public class Main {
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
                                 for(JVMService service : jvmExecutor.getServices()){
-                                    //service.kill();
+                                    if(service.getClient() == null){
+                                        service.kill();
+                                    }
                                 }
                             }
 

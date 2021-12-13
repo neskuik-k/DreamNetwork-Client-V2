@@ -10,12 +10,16 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.utils.timers.DateBuilderTimer;
 
+import com.sun.jna.Pointer;
+import com.sun.jna.platform.win32.Kernel32;
+import com.sun.jna.platform.win32.WinNT;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -165,10 +169,10 @@ public class JVMExecutor extends JVMStartupConfig{
             String finalname =  jvmStartup.name+"-"+servers;
 
             if(type.equals(Mods.DYNAMIC)){
-                if(Config.contains("temp/"+jvmStartup.pathName+"/"+finalname+"/"+jvmStartup.name)){
-                    Config.removeDir("temp/"+jvmStartup.pathName+"/"+finalname+"/"+jvmStartup.name);
+                if(Config.contains("tmp/"+jvmStartup.pathName+"/"+finalname+"/"+jvmStartup.name)){
+                    Config.removeDir("tmp/"+jvmStartup.pathName+"/"+finalname+"/"+jvmStartup.name);
                 }
-                Config.createDir("temp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname);
+                Config.createDir("tmp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname);
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
@@ -176,7 +180,7 @@ public class JVMExecutor extends JVMStartupConfig{
                 int finalServers = servers;
                 service.scheduleAtFixedRate(() -> {
                     try {
-                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/template/" + pathName + "/" + name)).getAbsolutePath())), new File(Config.getPath("temp/" + pathName + "/" + name + "/" + finalname)), new EstablishedAction() {
+                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/template/" + pathName + "/" + name)).getAbsolutePath())), new File(Config.getPath("tmp/" + pathName + "/" + name + "/" + finalname)), new EstablishedAction() {
                             @Override
                             public void completed() {
                                 dateBuilderTimer.loadComplexDate();
@@ -269,7 +273,7 @@ public class JVMExecutor extends JVMStartupConfig{
                     serversPort.put(finalname,port);
                 }else{
                     if(jvmStartup.type.equals(Mods.DYNAMIC)){
-                        port = getCurrentPort("/temp/"+jvmStartup.pathName,finalname,jvmStartup.type);
+                        port = getCurrentPort("/tmp/"+jvmStartup.pathName,finalname,jvmStartup.type);
                         serversPortList.add(port);
                         serversPort.put(finalname,port);
                     }
@@ -290,7 +294,7 @@ public class JVMExecutor extends JVMStartupConfig{
                     changePort("/template/"+jvmStartup.pathName,finalname,port,jvmStartup.type);
                 }else {
                     if(jvmStartup.type.equals(Mods.DYNAMIC)){
-                        changePort("/temp/"+jvmStartup.pathName,finalname,port,jvmStartup.type);
+                        changePort("/tmp/"+jvmStartup.pathName,finalname,port,jvmStartup.type);
                     }
                 }
 
@@ -317,15 +321,15 @@ public class JVMExecutor extends JVMStartupConfig{
                 String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath().replaceAll("\\\\","/")+"/"+ exec;
                 startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
                 Console.print(startup,Level.INFO);
-                proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).redirectErrorStream(true).start();
+                proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).redirectErrorStream(true).start();
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }else {
-                String line = javaPath+" -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+jvmStartup.exec +" nogui";
+                String line = javaPath+" -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+jvmStartup.exec +" nogui";
 
                 Console.print(line,Level.INFO);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/temp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).redirectErrorStream(true).start();
-                // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
+                proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmStartup.pathName+"/"+jvmStartup.name+"/"+finalname))).redirectErrorStream(true).start();
+                // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }
 
         }else {
@@ -336,9 +340,10 @@ public class JVMExecutor extends JVMStartupConfig{
                     startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
                     System.out.println(startup);
                     proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name))).redirectErrorStream(true).start();
+
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 }else {
-                    String line = javaPath + " -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+ exec+" nogui";
+                    String line = javaPath + " -Xms"+jvmStartup.xms+" -Xmx"+jvmStartup.xmx+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmStartup.pathName+"/"+jvmStartup.name)).getAbsolutePath()+"/"+ exec+" nogui";
                     Console.print(line,Level.INFO);
                     proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name))).redirectErrorStream(true).start();
 
@@ -351,6 +356,7 @@ public class JVMExecutor extends JVMStartupConfig{
             }
 
 
+        System.out.println("PROCESS ID >" + getProcessID(proc));
         JVMService jvmService = JVMService.builder().
                 process(proc)
                 .jvmExecutor(this)
@@ -365,7 +371,7 @@ public class JVMExecutor extends JVMStartupConfig{
         //t.start();
         Console.print(Colors.GREEN_BOLD+"Le serveur "+Colors.YELLOW_BOLD+finalname+Colors.GREEN_BOLD+" vient de démarrer le processus",Level.INFO);
         if(type == Mods.DYNAMIC){
-            Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/temp/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.FINE);
+            Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
         if(type == Mods.STATIC){
             Console.print("Chemins d'accès : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase())).getAbsolutePath(), Level.FINE);
@@ -395,8 +401,8 @@ public class JVMExecutor extends JVMStartupConfig{
         try{
             JVMService jvmService = jvmServices.get(i);
             String finalName = name+"-"+jvmService.getId();
-            if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+name+"/"+finalName))){
-                Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+name+"/"+finalName));
+            if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+name+"/"+finalName))){
+                Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+name+"/"+finalName));
             }
 
             jvmServices.remove(i);
@@ -443,8 +449,8 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
 
-        if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+finalName+"/"+name))){
-            Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/temp/"+pathName+"/"+finalName+"/"+name));
+        if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+finalName+"/"+name))){
+            Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+finalName+"/"+name));
         }
     }
 
@@ -503,11 +509,60 @@ public class JVMExecutor extends JVMStartupConfig{
         }else {
             Console.print(Colors.ANSI_RED()+"start [SERVER OR PROXY] ServerName",Level.WARNING);
         }
+    }
+    //LINUX ONLY
+    public static synchronized long getPidOfProcess(Process p) {
+        long pid = -1;
 
+        try {
+            if (p.getClass().getName().equals("java.lang.UNIXProcess")) {
+                Field f = p.getClass().getDeclaredField("pid");
+                f.setAccessible(true);
+                pid = f.getLong(p);
+                f.setAccessible(false);
+            }
+        } catch (Exception e) {
+            pid = -1;
+        }
+        return pid;
+    }
+    //INCLUDE JNA
+    public static long getProcessID(Process p)
+    {
+        long result = -1;
+        try
+        {
+            //for windows
+            if (p.getClass().getName().equals("java.lang.Win32Process") ||
+                    p.getClass().getName().equals("java.lang.ProcessImpl"))
+            {
+                Field f = p.getClass().getDeclaredField("handle");
+                f.setAccessible(true);
+                long handl = f.getLong(p);
+                Kernel32 kernel = Kernel32.INSTANCE;
+                WinNT.HANDLE hand = new WinNT.HANDLE();
+                hand.setPointer(Pointer.createConstant(handl));
+                result = kernel.GetProcessId(hand);
+                f.setAccessible(false);
+            }
+            //for unix based operating systems
+            else if (p.getClass().getName().equals("java.lang.UNIXProcess"))
+            {
+                Field f = p.getClass().getDeclaredField("pid");
+                f.setAccessible(true);
+                result = f.getLong(p);
+                f.setAccessible(false);
+            }
+        }
+        catch(Exception ex)
+        {
+            result = -1;
+        }
+        return result;
     }
 
     public enum Mods {
-        STATIC("/template/"),DYNAMIC("/temp/");
+        STATIC("/template/"),DYNAMIC("/tmp/");
 
         private String path;
         Mods(String path){
@@ -520,7 +575,5 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
     }
-
-
 }
 

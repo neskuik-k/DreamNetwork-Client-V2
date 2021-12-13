@@ -48,7 +48,7 @@ public class  Screen extends Thread {
 
         if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
             String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
-            Config.removeDir("/temp/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
+            Config.removeDir("/tmp/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
         }
     }
 

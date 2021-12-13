@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.connection.core.channels;
 
+import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestFutureResponse;
@@ -33,15 +34,28 @@ public class ChannelPacket {
         this.provider = message.getProvider();
         this.channel = message.getChannel();
     }
-
-    public void createResponse(Message message, ClientManager.Client client){
-        createResponse(message,client,null);
+    public ChannelPacket(String channel,String provider){
+        this.listener = null;
+        this.provider = provider;
+        this.channel = channel;
+        this.message = null;
     }
 
-    public void createResponse(Message message, ClientManager.Client client, GenericFutureListener<? extends Future<? super Void>> listener){
+    public void createResponse(Message message,ClientManager.Client client){
+        createResponse(message,client,null,"channel");
+    }
+    public void createResponse(Message message,ClientManager.Client client,String header){
+        createResponse(message,client,null,header);
+    }
+
+    public void createResponse(Message message,ClientManager.Client client, GenericFutureListener<? extends Future<? super Void>> listener){
+        createResponse(message,client,listener,"channel");
+    }
+
+    public void createResponse(Message message,ClientManager.Client client, GenericFutureListener<? extends Future<? super Void>> listener,String header){
         message.setProvider(provider);
         message.setSender("core");
-        message.setHeader("channel");
+        message.setHeader(header);
         message.setChannel(this.channel);
 
         if(requestType != null){
@@ -55,4 +69,5 @@ public class ChannelPacket {
             message.setInRoot("RID",RID);
         client.writeAndFlush(message,listener);
     }
+
 }

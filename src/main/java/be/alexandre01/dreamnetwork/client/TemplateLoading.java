@@ -8,9 +8,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import org.apache.commons.io.IOUtils;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.logging.Level;
 
 public class TemplateLoading {
@@ -48,19 +46,30 @@ public class TemplateLoading {
         }
     }
     private void loadTemplate(File[] directory, String pathName){
+        File previewFile = new File(Config.getPath("preview/DreamNetwork-Plugin.jar"));
+        InputStream is = null;
+        boolean isPreview = false;
+        if(previewFile.exists())
+            isPreview = true;
+
         if(directory != null){
             for(File dir : directory){
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
                 if(Config.contains(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins")){
+                    if(isPreview){
+                        System.out.println("[+] Adding preview jar plugin to template "+name+"...");
+                        try {
+                            is = new FileInputStream(previewFile);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                    }else {
+                        is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
+                    }
                     File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar");
-
-                        InputStream is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
                         file.delete();
                         replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
-
-
-
                 }
 
 

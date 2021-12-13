@@ -306,11 +306,6 @@
             <version>3.2.12</version>
             <scope>compile</scope>
         </dependency>
-            <dependency>
-                <groupId>org.jetbrains.pty4j</groupId>
-                <artifactId>pty4j</artifactId>
-                <version>0.11.4</version>
-            </dependency>
         <dependency>
             <groupId>io.nats</groupId>
             <artifactId>jnats</artifactId>

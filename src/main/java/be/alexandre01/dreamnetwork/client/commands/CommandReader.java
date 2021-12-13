@@ -16,6 +16,8 @@ public class CommandReader{
     Console console;
     private boolean stop = false;
 
+
+
     public CommandReader(){
         commands = new CommandsManager();
         commands.addCommands(new ServiceCommand("service"));
@@ -27,7 +29,6 @@ public class CommandReader{
         commands.addCommands(new EditCommand("edit"));
 
     }
-
 
     public void run(Console console){
         this.console = console;

@@ -346,16 +346,20 @@ public class Console extends Thread{
         return history;
     }
     public void refreshHistory(String data,Level lvl){
-        if(historySize >= 1000){
+        if(lvl.equals(Level.FINE) && !Client.getInstance().isDebug()){
+            return;
+        }
+        if(historySize >= 5000){
             history.remove(0);
             historySize--;
         }
         //debugPrint("history >> "+data);
+
         history.add(new ConsoleMessage(data,lvl));
         historySize += data.length();
     }
     public void refreshHistory(String data){
-        if(historySize >= 1000){
+        if(historySize >= 5000){
             history.remove(0);
             historySize--;
         }

@@ -37,7 +37,7 @@ public class ScreenStream {
      //   reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
 
         //reader = new BufferedReader(new InputStreamReader(screen.getService().getProcess().getInputStream()));
-        System.out.println(screen.getService().getProcess().getInputStream());
+
 
         LineReader c = null;
        if(console.getConsoleAction() == null){

@@ -38,22 +38,66 @@ public class BaseResponse extends CoreResponse {
             }
         }
         if(message.getHeader()!=null){
+            if(message.getHeader().equals("cData") && message.getChannel() != null){
+                if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
+                    DNChannel channel = this.client.getChannelManager().getChannel(message.getChannel());
+                    if(message.contains("init")){
+                        if(message.getBoolean("init")){
+                            String key = message.getString("key");
+                            if(!dnChannel.getObjects().containsKey(key)){
+                                dnChannel.getObjects().put(key, message.get("value"));
+                            }
+                        }
+                    }
+                    if(!message.contains("update")){
+                        channel.storeData(message.getString("key"),message.get("value"),client);
+                    }else {
+                        channel.storeData(message.getString("key"),message.get("value"), message.getBoolean("update"),client);
+                    }
+
+                }
+            }
+            if(message.getHeader().equals("cAsk") && message.getChannel() != null){
+                System.out.println("Est ce que je m'aime aussi ?");
+                System.out.println(message.getChannel());
+                System.out.println(this.client.getChannelManager().getClientsRegistered().keySet());
+                if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
+                    System.out.println("Hmm ouais");
+                    DNChannel channel = this.client.getChannelManager().getChannel(message.getChannel());
+                    System.out.println("Le channel bien sur  : " + channel.getName());
+                    System.out.println(message +" il faut ça ?");
+                    message.set("value", channel.getData(message.getString("key")));
+                    System.out.println("To >> "+ message);
+                    ChannelPacket channelPacket = new ChannelPacket(message);
+                    channelPacket.createResponse(message,client,"cAsk");
+                }
+            }
             if(message.getHeader().equals("channel") && message.getChannel() != null){
                 if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
                     final Collection<ClientManager.Client> clients = this.client.getChannelManager().clientsRegistered.get(message.getChannel());
                     if(!clients.isEmpty()){
+                        boolean resend = true;
+
+                        if(this.client.getChannelManager().getDontResendsData().contains(client)){
+                            resend = false;
+                        }
                         /*Console.debugPrint("NotEmptyGetClients");
                         Console.debugPrint("NotEmptyGetClients "+ this.client.getChannelManager().clientsRegistered.get(message.getChannel()));*/
                         for(ClientManager.Client c : this.client.getChannelManager().getClientsRegistered().get(message.getChannel())){
-
+                            if(!resend && c == client){
+                                continue;
+                            }
                             c.getCoreHandler().writeAndFlush(message,c);
                         }
                     }
                 }
             }
         }
+        System.out.println("Message reçu : " + message);
         if(message.hasRequest()){
+            System.out.println("Has Request");
             if(message.hasProvider()){
+                System.out.println("Has Provider");
                 if(message.getProvider().equals("core")){
                     RequestPacket request = client.getRequestManager().getRequest(message.getRequestID());
                     if(request != null)
@@ -113,7 +157,8 @@ public class BaseResponse extends CoreResponse {
                     }
                     break;
                 case CORE_REGISTER_CHANNEL:
-                    this.client.getChannelManager().registerClientToChannel(client,message.getString("CHANNEL"));
+                    System.out.println("register channel !  " + message.getString("CHANNEL"));
+                    this.client.getChannelManager().registerClientToChannel(client,message.getString("CHANNEL"),message.contains("RESEND") && message.getBoolean("RESEND"));
                     break;
                 case CORE_UNREGISTER_CHANNEL:
                     this.client.getChannelManager().unregisterClientToChannel(client,message.getString("CHANNEL"));

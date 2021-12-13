@@ -12,6 +12,7 @@ import java.util.HashMap;
 public class DNChannelManager {
     final HashMap<String, DNChannel> channels;
     public final Multimap<String, ClientManager.Client> clientsRegistered = ArrayListMultimap.create();
+    public final ArrayList<ClientManager.Client> dontResendsData = new ArrayList<>();
     final ArrayList<String> channelRegisteredInCore = new ArrayList<>();
     public DNChannelManager(){
         channels = new HashMap<>();
@@ -26,8 +27,17 @@ public class DNChannelManager {
         channels.put(dnChannel.getName(),dnChannel);
     }
 
-    public void registerClientToChannel(ClientManager.Client client, String channel){
+    public void registerClientToChannel(ClientManager.Client client, String channel, boolean resend){
+        System.out.println("Registering client to channel ?");
         clientsRegistered.put(channel,client);
+        if(!hasChannel(channel)){
+            createChannel(new DNChannel(channel));
+        }else {
+            getChannel(channel);
+        }
+        if(!resend)
+            dontResendsData.add(client);
+
         client.getAccessChannels().add(channel);
     }
 

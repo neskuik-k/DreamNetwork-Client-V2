@@ -284,13 +284,13 @@ public class JVMStartupConfig {
     }
     public String getLine(String finalname){
         String name = finalname.split("-")[0];
-        File properties = new File(System.getProperty("user.dir")+ Config.getPath("/temp/server/"+name+"/"+finalname+"/logs/latest.log"));
+        File properties = new File(System.getProperty("user.dir")+ Config.getPath("/tmp/server/"+name+"/"+finalname+"/logs/latest.log"));
         if(!properties.exists()){
             return null;
         }
         try {
 
-            BufferedReader file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath("/temp/server/"+name+"/"+finalname+"/logs/latest.log")));
+            BufferedReader file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath("/tmp/server/"+name+"/"+finalname+"/logs/latest.log")));
 
             String line = null;
 

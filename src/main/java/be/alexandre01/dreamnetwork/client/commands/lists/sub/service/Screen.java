@@ -36,7 +36,6 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
 
         if(screenManager.containsScreen(args[1])){
             screenManager.watch(args[1]);
-            System.out.println("Connected to screen");
         }else {
          sendList(screenManager);
         }
@@ -46,7 +45,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     private void notComplete(){
     }
     private void sendList(ScreenManager screenManager){
-        System.out.println(Colors.GREEN_BOLD + "▢ Proxy ; "+ Colors.CYAN_BOLD+"▢ Server ;");
+        System.out.println(Colors.GREEN_BOLD + "[*] Proxy ; "+ Colors.CYAN_BOLD+"[*] Server ;");
         StringBuilder sb = new StringBuilder();
         AtomicInteger i = new AtomicInteger(1);
         if(screenManager.getScreens().isEmpty()){
