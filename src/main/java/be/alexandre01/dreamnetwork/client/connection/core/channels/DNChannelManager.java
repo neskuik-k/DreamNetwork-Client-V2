@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
@@ -35,6 +36,8 @@ public class DNChannelManager {
         }else {
             getChannel(channel);
         }
+
+        client.getRequestManager().sendRequest(RequestType.CORE_REGISTER_CHANNEL,channel,getChannel(channel).getObjects());
         if(!resend)
             dontResendsData.add(client);
 

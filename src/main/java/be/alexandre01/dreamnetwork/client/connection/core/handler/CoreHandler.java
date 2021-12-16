@@ -192,8 +192,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
                 }
                 for(ClientManager.Client c : Client.getInstance().getClientManager().getDevTools()){
                     if(c != null){
-                        c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
-                        c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVER);
+                        //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
+                        c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVER,server);
                     }
                 }
             }

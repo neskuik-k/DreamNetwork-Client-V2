@@ -29,6 +29,7 @@ public enum RequestType {
     CORE_REGISTER_CHANNEL(15),
     CORE_UNREGISTER_CHANNEL(16),
     CORE_ASK_DATA(17),
+    CORE_STOP_PROXY(18),
     /**
      * SPIGOT REQUESTS
      */
@@ -72,6 +73,7 @@ public enum RequestType {
     DEV_TOOLS_SEND_COMMAND(94),
     DEV_TOOLS_NEW_SERVER(95),
     DEV_TOOLS_REMOVE_SERVER(96);
+
 
 
 

@@ -80,5 +80,10 @@ public class DefaultSpigotRequest extends RequestBuilder {
             return message;
         });
 
+        requestData.put(RequestType.CORE_REGISTER_CHANNEL,(message, client, args) -> {
+            message.set("CHANNEL", args[0]);
+            message.set("MAP",args[1]);
+            return message;
+        });
     }
 }
