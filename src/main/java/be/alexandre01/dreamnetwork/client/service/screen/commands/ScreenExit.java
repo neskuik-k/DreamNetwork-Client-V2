@@ -16,7 +16,6 @@ public class ScreenExit implements Command.CommandExecutor {
     public boolean execute(String[] args) {
         //   Console.debugPrint("Exit >>"+ Arrays.asList(args));
         if(args[0].equalsIgnoreCase(":exit")){
-            Console.debugPrint("exit ! ");
             Console.setActualConsole("m:default");
 
             screen.getScreenStream().exit();

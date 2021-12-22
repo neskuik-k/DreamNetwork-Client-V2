@@ -88,12 +88,17 @@ public class AuthentificationResponse extends CoreResponse{
 
 
                             for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+                                if(!jvmExecutor.getServices().isEmpty()){
                                 for(JVMService service : jvmExecutor.getServices()){
+
                                     if(service.getClient() != null){
-                                        String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
+                                        String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+";"+newClient.getJvmService().getJvmExecutor().getType().name().charAt(0)+";t";
                                         service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
-                                        servers.add(jvmExecutor.getName()+"-"+service.getId());
+                                        servers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType().name().charAt(0)+";t");
                                     }
+                                    }
+                                }else {
+                                    servers.add(jvmExecutor.getName()+";"+jvmExecutor.getType().name().charAt(0)+";f");
                                 }
                             }
                             for(ClientManager.Client devtools : Client.getInstance().getClientManager().getDevTools()){
@@ -102,13 +107,13 @@ public class AuthentificationResponse extends CoreResponse{
                                     devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
                             }
 
-                            for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+                          /*  for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
                                 for(JVMService service : jvmExecutor.getServices()){
                                     if(service.getClient() != null){
                                         servers.add(jvmExecutor.getName()+"-"+service.getId());
                                     }
                                 }
-                            }
+                            }*/
 
                             newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, servers.toArray(new String[0]));
                             Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);

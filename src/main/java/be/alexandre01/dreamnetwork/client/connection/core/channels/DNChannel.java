@@ -45,7 +45,6 @@ public class DNChannel {
         setData(key,object,autoSend);
         System.out.println("Object>>"+ object);
         if(autoSend){
-            Console.debugPrint("I need to update this value : "+ object);
             ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
             Message message;
             message = new Message().set("key", key).set("value", object);

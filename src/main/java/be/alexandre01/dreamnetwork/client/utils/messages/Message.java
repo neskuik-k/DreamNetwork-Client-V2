@@ -19,8 +19,6 @@ public class Message extends LinkedHashMap<String, Object> {
         super(new LinkedHashMap<>());
     }
     public Message set(String id,Object value){
-        Console.debugPrint(value);
-
         super.put("DN-"+id,value);
         return this;
     }
