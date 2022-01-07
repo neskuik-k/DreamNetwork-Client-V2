@@ -35,7 +35,6 @@ public class SpigetConsole {
         ressourcesSelected = new ArrayList<>();
         serverSelected = new ArrayList<>();
         console.writing = "- ";
-        System.out.println(console.getKillListener());
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public void onKill(LineReader reader) {
@@ -44,7 +43,6 @@ public class SpigetConsole {
                 nConsole.run();
             }
         });
-        System.out.println(console.getKillListener());
 
 
         run();

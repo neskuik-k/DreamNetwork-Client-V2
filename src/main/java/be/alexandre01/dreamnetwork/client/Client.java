@@ -140,7 +140,7 @@ public class Client {
             }
 
         }
-        System.out.println("5");
+
         console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
 
 

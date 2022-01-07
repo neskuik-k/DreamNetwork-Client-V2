@@ -65,6 +65,19 @@ public class AuthentificationResponse extends CoreResponse{
                         }
                         if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                             newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
+                            for(JVMExecutor service : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+                                if(!service.getServices().isEmpty()){
+                                    for(JVMService jvmService : service.getServices()){
+                                        if(jvmService.getClient() != null){
+                                            String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
+                                            newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                                    newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
+                                                    remoteAdress[0].replaceAll("/",""),
+                                                    jvmService.getPort());
+                                        }
+                                    }
+                                }
+                            }
                             Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
                             for(ClientManager.Client devtools : Client.getInstance().getClientManager().getDevTools()){
                                 String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();

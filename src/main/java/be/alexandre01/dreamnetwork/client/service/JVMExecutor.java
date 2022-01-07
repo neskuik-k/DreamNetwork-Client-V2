@@ -157,7 +157,7 @@ public class JVMExecutor extends JVMStartupConfig{
                     int num = Integer.parseInt( string.replace(name+"-",""));
                     servers++;
                 } catch (NumberFormatException e) {
-                    Console.print("There was an error in the creation of the server",Level.WARNING);
+                    Console.print("Une erreur dans la création du serveur",Level.WARNING);
                     return false;
                 }
             }
