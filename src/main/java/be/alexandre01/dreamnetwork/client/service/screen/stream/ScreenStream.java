@@ -26,6 +26,15 @@ public class ScreenStream {
     public ScreenStream(String name,Screen screen){
         Console.load("s:"+name);
         this.console = Console.getConsole("s:"+name);
+        console.setKillListener(new Console.ConsoleKillListener() {
+            @Override
+            public void onKill(LineReader reader) {
+                Console.setActualConsole("m:default");
+                Console nConsole = Console.getConsole("m:default");
+                nConsole.run();
+                screen.getScreenStream().exit();
+            }
+        });
         this.screen = screen;
         reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);

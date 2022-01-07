@@ -22,7 +22,6 @@ public class LoadLibraries{
     private File dir;
     public static MyClassloader classloader;
     public void init(String[] args){
-        System.out.println("Hello batard");
         try {
 
 
@@ -136,7 +135,7 @@ public class LoadLibraries{
             e.printStackTrace();
         }
         if(objects.length == 0){
-            System.out.println("Wtf");
+
             try {
                 return clazz.newInstance();
             } catch (InstantiationException e) {

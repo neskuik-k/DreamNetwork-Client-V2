@@ -35,7 +35,7 @@ public class CommandsManager {
                }
        }
        if(!hasFound){
-           Console.print(Chalk.on("Commande introuvable.  | Tapez 'help' pour avoir de l'aide.").underline().red(), Level.WARNING);
+           Console.print(Chalk.on("Command not found. | Type 'help' for assistance.").underline().red(), Level.WARNING);
            PrintWriter writer = null;
        }
 
@@ -45,7 +45,6 @@ public class CommandsManager {
         Scanner in = new Scanner(System.in);
         String s = in.nextLine();
         Thread.sleep(500);
-        System.out.println("WOW");
         System.out.println("You entered string "+s);
         int a = in.nextInt();
         System.out.println("You entered integer "+a);

@@ -46,7 +46,7 @@ public class Config {
 
         if (!theDir.exists()) {
             if(notify)
-                Console.print(Chalk.on("Création du dossier... ").cyan() + theDir.getName(), Level.INFO);
+                Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), Level.INFO);
             boolean result = false;
 
             try{
@@ -57,7 +57,7 @@ public class Config {
                 //handle it
             }
             if(result && notify) {
-                Console.print(Chalk.on("Dossier crée").cyan(),Level.INFO);
+                Console.print(Chalk.on("Directory created").cyan(),Level.INFO);
             }
         }
     }
@@ -65,7 +65,7 @@ public class Config {
         File theDir = new File(getPath(path));
 
         if (!theDir.exists()) {
-            Console.print(Chalk.on("Création du fichier... "+ theDir.getName()).cyan(), Level.INFO);
+            Console.print(Chalk.on("Creating the file...  "+ theDir.getName()).cyan(), Level.INFO);
             boolean result = false;
 
             try{
@@ -80,7 +80,7 @@ public class Config {
                 //handle it
             }
             if(result) {
-                Console.print(Chalk.on("Fichier crée !"), Level.INFO);
+                Console.print(Chalk.on("File created"), Level.INFO);
             }
         }
         return theDir;

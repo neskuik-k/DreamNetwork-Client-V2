@@ -30,7 +30,7 @@ public class JavaReader {
         if(!javaIndexFile.exists()){
             try {
                 javaIndexFile.createNewFile();
-                System.out.println(javaIndexFile.getAbsolutePath());
+              //  System.out.println(javaIndexFile.getAbsolutePath());
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

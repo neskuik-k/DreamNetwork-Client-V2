@@ -18,8 +18,7 @@ public class TemplateLoading {
     public TemplateLoading(){
         System.out.println(Chalk.on("Loading templates...").underline());
         try {
-            //Alexandre actuellement
-            Thread.sleep(750);
+            Thread.sleep(200);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

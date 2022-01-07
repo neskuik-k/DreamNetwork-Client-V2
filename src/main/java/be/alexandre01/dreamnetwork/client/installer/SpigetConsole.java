@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
 import com.github.tomaslanger.chalk.Chalk;
+import org.jline.reader.LineReader;
 
 import java.io.File;
 import java.io.IOException;
@@ -34,6 +35,16 @@ public class SpigetConsole {
         ressourcesSelected = new ArrayList<>();
         serverSelected = new ArrayList<>();
         console.writing = "- ";
+        System.out.println(console.getKillListener());
+        console.setKillListener(new Console.ConsoleKillListener() {
+            @Override
+            public void onKill(LineReader reader) {
+                Console.setActualConsole("m:default");
+                Console nConsole = Console.getConsole("m:default");
+                nConsole.run();
+            }
+        });
+        System.out.println(console.getKillListener());
 
 
         run();

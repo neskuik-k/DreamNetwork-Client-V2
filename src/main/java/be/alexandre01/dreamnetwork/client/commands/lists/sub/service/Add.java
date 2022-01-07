@@ -55,15 +55,15 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
                                          jvmExecutor.addConfigsFiles();
-                                         Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
+                                         Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                          return true;
                                      }
                                      jvmExecutor.addConfigsFiles();
                                      jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null,null);
-                                     Console.print("Vous venez de configurer le serveur avec succès !");
+                                     Console.print("You have successfully configured the server!");
                                  }catch (Exception e){
                                      e.printStackTrace();
-                                     Console.print(Colors.ANSI_RED()+"Une erreur c'est produite, certainement car vous avez mal noté le port", Level.SEVERE);
+                                     Console.print(Colors.ANSI_RED()+"An error occurred, probably because you wrote the port down wrong", Level.SEVERE);
                                  }
                              }else {
                                  try {
@@ -72,15 +72,15 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
                                          jvmExecutor.addConfigsFiles();
-                                         Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
+                                         Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                          return true;
                                      }
                                      jvmExecutor.addConfigsFiles();
                                      jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,null,null,null);
-                                     Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
+                                     Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                  } catch (Exception e) {
                                      e.printStackTrace();
-                                     Console.print(Colors.ANSI_RED()+"Une erreur c'est produite lors de l'update du fichier.", Level.SEVERE);
+                                     Console.print(Colors.ANSI_RED()+"An error occurred while updating the file.", Level.SEVERE);
                                  }
                              }
 
@@ -93,15 +93,15 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                          if(jvmExecutor == null){
                                              jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
                                              jvmExecutor.addConfigsFiles();
-                                             Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
+                                             Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
                                          jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null,null);
-                                         Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
+                                         Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                      }catch (Exception e){
                                          e.printStackTrace();
-                                         Console.print(Colors.ANSI_RED()+"Une erreur c'est produite, certainement car vous avez mal noté le port", Level.SEVERE);
+                                         Console.print(Colors.ANSI_RED()+"An error occurred, probably because you wrote the port down wrong", Level.SEVERE);
                                      }
 
                                  }else {
@@ -110,16 +110,16 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                          if(jvmExecutor == null){
                                              jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,true);
                                              jvmExecutor.addConfigsFiles();
-                                             Console.print(Colors.ANSI_GREEN()+"Vous venez de configurer le serveur avec succès !");
+                                             Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
                                          jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,null,null,null);
 
-                                         Console.print(Colors.ANSI_GREEN()+"Vous venez de re-configurer le serveur avec succès !");
+                                         Console.print(Colors.ANSI_GREEN()+"You have successfully re-configured the server!");
                                      }catch (Exception e){
                                          e.printStackTrace();
-                                         Console.print(Colors.ANSI_RED()+"Une erreur c'est produite lors de l'update du fichier.", Level.SEVERE);
+                                         Console.print(Colors.ANSI_RED()+"An error occurred while updating the file.", Level.SEVERE);
                                      }
                                  }
                              }else {

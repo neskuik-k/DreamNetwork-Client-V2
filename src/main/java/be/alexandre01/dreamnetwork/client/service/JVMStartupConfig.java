@@ -137,7 +137,7 @@ public class JVMStartupConfig {
                 isConfig = true;
             }
         }catch (IOException e){
-            Console.print(Colors.ANSI_RED()+"Le serveur en question n'est pas encore configuré",Level.SEVERE);
+            Console.print(Colors.ANSI_RED()+"The server in question is not yet configured",Level.SEVERE);
             isConfig = false;
             return;
         }

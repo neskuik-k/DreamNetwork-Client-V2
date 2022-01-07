@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
 
 @Getter
 public class DNChannel {
@@ -43,7 +44,7 @@ public class DNChannel {
     public void storeData(String key, Object object, boolean autoSend, ClientManager.Client... clients){
         List<ClientManager.Client> c = Arrays.asList(clients);
         setData(key,object,autoSend);
-        System.out.println("Object>>"+ object);
+        Console.print("Object>>"+ object, Level.FINE);
         if(autoSend){
             ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
             Message message;

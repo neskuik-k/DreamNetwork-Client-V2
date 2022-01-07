@@ -2,6 +2,9 @@ package be.alexandre01.dreamnetwork.client.connection.request.generated.proxy;
 
 import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.console.Console;
+
+import java.util.logging.Level;
 
 public class DefaultBungeeRequest extends RequestBuilder {
     public DefaultBungeeRequest() {
@@ -11,10 +14,7 @@ public class DefaultBungeeRequest extends RequestBuilder {
             return message;
         });
         requestData.put(RequestType.BUNGEECORD_REGISTER_SERVER,(message,client, args) -> {
-            System.out.println("REQUEST REGISTER SERVER");
-            System.out.println(args[0]);
-            System.out.println(args[1]);
-            System.out.println(args[2]);
+            Console.print("REQUEST REGISTER SERVER", Level.FINE);
             message.set("PROCESSNAME",args[0]);
             message.set("REMOTEIP",args[1]);
             message.set("PORT",args[2]);
@@ -22,7 +22,6 @@ public class DefaultBungeeRequest extends RequestBuilder {
         });
         requestData.put(RequestType.BUNGEECORD_UNREGISTER_SERVER,(message,client, args) -> {
             System.out.println("REQUEST UNREGISTER SERVER");
-            System.out.println(args[0]);
             message.set("PROCESSNAME",args[0]);
             return message;
         });

@@ -27,6 +27,7 @@ public class CommandReader{
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
+        commands.addCommands(new GuiCommand("gui"));
 
     }
 

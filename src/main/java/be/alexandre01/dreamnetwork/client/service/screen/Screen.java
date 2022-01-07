@@ -40,7 +40,7 @@ public class  Screen extends Thread {
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.getConsole("s:"+screenName).destroy();
             Console.setActualConsole("m:default");
-            System.out.println("Le PROCESSUS "+service.getJvmExecutor().getName()+" vient de se tuer.");
+            System.out.println("The PROCESS "+service.getJvmExecutor().getName()+" has just killed himself.");
 
         }
         ScreenManager.instance.remScreen(this);

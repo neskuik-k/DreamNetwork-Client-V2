@@ -8,7 +8,6 @@ import io.netty.util.ReferenceCountUtil;
 public class DiscardServerHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
-        System.out.println("Wow une nouvelle connection");
         System.out.println("Local ADRESS" + ctx.channel().localAddress());
         System.out.println("Remote ADRESS" + ctx.channel().remoteAddress());
     }

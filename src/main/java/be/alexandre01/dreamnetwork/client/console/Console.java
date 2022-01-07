@@ -6,6 +6,8 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 
 import com.github.tomaslanger.chalk.Chalk;
+import lombok.Getter;
+import lombok.Setter;
 import org.jline.reader.Buffer;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -45,6 +47,23 @@ public class Console extends Thread{
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     ScheduledExecutorService scheduler = null;
     public PrintStream defaultPrint;
+    @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
+        @Override
+        public void onKill(LineReader reader) {
+            String data;
+            while ((data = reader.readLine( Colors.PURPLE_BOLD+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+                if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
+                    System.exit(0);
+                }else {
+                    Console.debugPrint("Cancelled.");
+                    run();
+                }
+
+
+                break;
+            }
+        }
+    };
 
     public static Console load(String name){
         Console c = new Console(name);
@@ -288,25 +307,11 @@ public class Console extends Thread{
     public void SIG_ING(){
         LineReader reader =  ConsoleReader.sReader;
 
-
-
         //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
         PrintWriter out = new PrintWriter(reader.getTerminal().writer());
-        String data;
+
         try {
-            while ((data = reader.readLine( Colors.PURPLE_BOLD+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
-
-                    if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
-                        System.exit(0);
-                    }else {
-                        Console.debugPrint("Cancelled.");
-                        run();
-                    }
-
-
-                    break;
-
-            }
+            Console.getConsole(actualConsole).killListener.onKill(reader);
         }catch (UserInterruptException e){
             SIG_ING();
         }
@@ -349,7 +354,7 @@ public class Console extends Thread{
         if(lvl.equals(Level.FINE) && !Client.getInstance().isDebug()){
             return;
         }
-        if(historySize >= 5000){
+        if(historySize >= 2000){
             history.remove(0);
             historySize--;
         }
@@ -359,7 +364,7 @@ public class Console extends Thread{
         historySize += data.length();
     }
     public void refreshHistory(String data){
-        if(historySize >= 5000){
+        if(historySize >= 2000){
             history.remove(0);
             historySize--;
         }
@@ -415,6 +420,10 @@ public class Console extends Thread{
 
 
     private static Buffer stashed;
+
+    public interface ConsoleKillListener {
+        void onKill(LineReader reader);
+    }
 
     /*  public static void stashLine() {
         LineReader console = ConsoleReader.sReader;

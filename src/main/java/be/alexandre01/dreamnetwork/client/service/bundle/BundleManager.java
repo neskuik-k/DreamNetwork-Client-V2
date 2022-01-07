@@ -55,11 +55,6 @@ public class BundleManager {
                 bundleIndex.refreshFile();
             }
 
-            if(!bundleDatas.isEmpty()){
-                for (BundleData b : bundleDatas) {
-                    Console.debugPrint(b.toString());
-                }
-            }
 
 
 

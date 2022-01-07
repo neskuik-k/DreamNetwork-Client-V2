@@ -47,7 +47,7 @@ public class ScreenOutReader {
     }
 
     public void run() {
-        Console.debugPrint("run");
+
         console.setConsoleAction(new Console.IConsole() {
             @Override
             public void listener(String[] args) {

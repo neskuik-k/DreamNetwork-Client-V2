@@ -56,7 +56,6 @@ public class DevToolsToken {
         public Object put(String key, Object value) {
             Object k = super.put(key, value);
             if(key.equalsIgnoreCase("activeRemote")){
-                System.out.println(value);
                     if((boolean) value){
                         Client.getInstance().setDevToolsAccess(true);
                     }

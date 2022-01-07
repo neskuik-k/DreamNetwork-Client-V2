@@ -32,7 +32,6 @@ public class TimeServer extends ChannelInboundHandlerAdapter {
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
         if(executorService != null){
-            System.out.println("WOW");
             executorService.shutdown();
         }
     }

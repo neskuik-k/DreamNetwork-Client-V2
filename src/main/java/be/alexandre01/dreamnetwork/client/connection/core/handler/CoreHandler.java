@@ -125,7 +125,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
         if(!Message.isJSONValid(s_to_decode))
             return;
 
-        System.out.println(s_to_decode);
+      //  System.out.println(s_to_decode);
 
         try {
             //ALLOWED CONNECTION
@@ -169,7 +169,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
                 if(clientByConnexion.get(ctx).isDevTool()){
                     name = "DEVTOOLS";
                 }
-                Console.print(Colors.RED_BOLD+ "Un processus '"+name+"' vient de s'éteindre.");
+                Console.print(Colors.RED_BOLD+ "A process '"+name+"' has just stopped.");
             }
         }
 

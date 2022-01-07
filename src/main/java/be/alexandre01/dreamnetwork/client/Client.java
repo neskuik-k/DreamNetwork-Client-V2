@@ -75,6 +75,8 @@ public class Client {
 
     public void afterConstructor(){
         String s = System.getProperty("ebug");
+        System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
+        System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
             System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
             debug = true;
@@ -118,14 +120,13 @@ public class Client {
    
         Console console = Console.getConsole("m:default");
         console.defaultPrint = formatter.getDefaultStream();
-
         DevToolsToken devToolsToken = new DevToolsToken();
         devToolsToken.init();
         Main.getCommandReader().run(console);
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
-            console.fPrint("The Netty CoreServer System has been started on  the port 14520.",Level.INFO);
+            console.fPrint("The CoreServer System has been started on  the port 14520.",Level.INFO);
         } catch (Exception e) {
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
             for(StackTraceElement s : e.getStackTrace()){
@@ -139,7 +140,8 @@ public class Client {
             }
 
         }
-        console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"Le Network a été démarré avec succès / Faites help pour avoir les commandes", Level.INFO);
+        System.out.println("5");
+        console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
 
 
         ScreenManager.load();

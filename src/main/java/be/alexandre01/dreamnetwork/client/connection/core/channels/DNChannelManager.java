@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
@@ -26,10 +27,10 @@ public class DNChannelManager {
     }
     public void createChannel(DNChannel dnChannel){
         channels.put(dnChannel.getName(),dnChannel);
+        System.out.println(Colors.PURPLE + "Le channel " + dnChannel.getName() + " s'est enregistré " + Colors.RESET);
     }
 
     public void registerClientToChannel(ClientManager.Client client, String channel, boolean resend){
-        System.out.println("Registering client to channel ?");
         clientsRegistered.put(channel,client);
         if(!hasChannel(channel)){
             createChannel(new DNChannel(channel));

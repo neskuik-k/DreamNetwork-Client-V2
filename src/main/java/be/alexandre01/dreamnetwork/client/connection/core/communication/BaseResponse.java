@@ -18,6 +18,7 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Collection;
 import java.util.UUID;
+import java.util.logging.Level;
 
 public class BaseResponse extends CoreResponse {
     private final Client client;
@@ -58,16 +59,11 @@ public class BaseResponse extends CoreResponse {
                 }
             }
             if(message.getHeader().equals("cAsk") && message.getChannel() != null){
-                System.out.println("Est ce que je m'aime aussi ?");
-                System.out.println(message.getChannel());
-                System.out.println(this.client.getChannelManager().getClientsRegistered().keySet());
                 if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
-                    System.out.println("Hmm ouais");
                     DNChannel channel = this.client.getChannelManager().getChannel(message.getChannel());
-                    System.out.println("Le channel bien sur  : " + channel.getName());
-                    System.out.println(message +" il faut ça ?");
+                    Console.print("Le channel bien sur  : " + channel.getName(),Level.FINE);
                     message.set("value", channel.getData(message.getString("key")));
-                    System.out.println("To >> "+ message);
+                    Console.print("To >> "+ message, Level.FINE);
                     ChannelPacket channelPacket = new ChannelPacket(message);
                     channelPacket.createResponse(message,client,"cAsk");
                 }
@@ -93,11 +89,9 @@ public class BaseResponse extends CoreResponse {
                 }
             }
         }
-        System.out.println("Message reçu : " + message);
+
         if(message.hasRequest()){
-            System.out.println("Has Request");
             if(message.hasProvider()){
-                System.out.println("Has Provider");
                 if(message.getProvider().equals("core")){
                     RequestPacket request = client.getRequestManager().getRequest(message.getRequestID());
                     if(request != null)
@@ -121,7 +115,6 @@ public class BaseResponse extends CoreResponse {
                     stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
                     break;
                 case SPIGOT_EXECUTE_COMMAND:
-                    System.out.println("EXECUTE COMMAND");
                     ClientManager.Client cmdClient =  this.client.getClientManager().getClient(message.getString("SERVERNAME"));
                     if(cmdClient != null){
                         cmdClient.getRequestManager().sendRequest(RequestType.SPIGOT_EXECUTE_COMMAND,message.getString("CMD"));
@@ -157,7 +150,6 @@ public class BaseResponse extends CoreResponse {
                     }
                     break;
                 case CORE_REGISTER_CHANNEL:
-                    System.out.println("register channel !  " + message.getString("CHANNEL"));
                     this.client.getChannelManager().registerClientToChannel(client,message.getString("CHANNEL"),message.contains("RESEND") && message.getBoolean("RESEND"));
                     break;
                 case CORE_UNREGISTER_CHANNEL:

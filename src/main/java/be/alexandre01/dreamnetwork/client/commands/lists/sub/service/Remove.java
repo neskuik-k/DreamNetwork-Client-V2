@@ -27,10 +27,10 @@ public class Remove extends SubCommandCompletor implements SubCommandExecutor {
                     String name = args[2];
                     if(Config.contains("template/"+args[1].toLowerCase()+"/"+name)){
                         Config.removeDir("template/"+args[1].toLowerCase()+"/"+name);
-                        Console.print(Chalk.on("[V] Ce serveur a été supprimé").blue(), Level.INFO);
-                        Console.print(Chalk.on("Le dossier a été supprimé dans le dossier 'template' ").blue(), Level.INFO);
+                        Console.print(Chalk.on("[V] This server has been deleted").blue(), Level.INFO);
+                        Console.print(Chalk.on("The folder has been deleted in the 'template' folder ").blue(), Level.INFO);
                     }else {
-                        Console.print(Chalk.on("[!] Ce serveur n'existe pas").red(), Level.WARNING);
+                        Console.print(Chalk.on("[!] This server does not exist").red(), Level.WARNING);
                     }
 
 
