@@ -4,13 +4,13 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
+import kong.unirest.HttpResponse;
+import kong.unirest.Unirest;
+import kong.unirest.UnirestException;
+import kong.unirest.json.JSONArray;
+import kong.unirest.json.JSONObject;
 import org.asynchttpclient.*;
 import org.asynchttpclient.util.HttpConstants;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 import java.io.IOException;
@@ -43,7 +43,7 @@ public class DNAPI {
     }
 
     public boolean hasValidLicense(String uuid, String secret) {
-        Unirest.setTimeouts(0, 0);
+        //Unirest.setTimeouts(0, 0);
         HttpResponse<String> response = null;
         try {
             response = Unirest.post("https://api.dreamnetwork.cloud/licenses/validate")

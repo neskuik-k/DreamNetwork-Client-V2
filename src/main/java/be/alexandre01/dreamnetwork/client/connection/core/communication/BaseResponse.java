@@ -225,7 +225,6 @@ public class BaseResponse extends CoreResponse {
 
                     }
                     break;
-
             }
         }
     }

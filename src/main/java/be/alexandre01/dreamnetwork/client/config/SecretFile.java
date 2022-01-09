@@ -7,11 +7,12 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import kong.unirest.json.JSONObject;
 import lombok.Data;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
-import org.json.JSONObject;
+
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

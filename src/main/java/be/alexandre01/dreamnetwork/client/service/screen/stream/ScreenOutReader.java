@@ -78,7 +78,6 @@ public class ScreenOutReader {
                                     }
 
                                 }
-                                 Console.debugPrint("fuck ?");
 
                                 Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
                                 writer.write(sb.toString()+"\n");

@@ -13,6 +13,7 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.logging.Level;
@@ -69,9 +70,10 @@ public class AuthentificationResponse extends CoreResponse{
                                 if(!service.getServices().isEmpty()){
                                     for(JVMService jvmService : service.getServices()){
                                         if(jvmService.getClient() != null){
+                                            System.out.println(Colors.RED+"<!>"+Colors.YELLOW+" Recovering "+Colors.PURPLE+ jvmService.getJvmExecutor().getName()+"-"+jvmService.getId()+Colors.YELLOW+" on the proxy");
                                             String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                             newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                                    newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
+                                                    jvmService.getJvmExecutor().getName()+"-"+jvmService.getId(),
                                                     remoteAdress[0].replaceAll("/",""),
                                                     jvmService.getPort());
                                         }
