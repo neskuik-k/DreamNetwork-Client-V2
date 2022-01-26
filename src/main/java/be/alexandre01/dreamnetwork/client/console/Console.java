@@ -161,10 +161,13 @@ public class Console extends Thread{
         if(Console.actualConsole.equals(name)){
 
             //Client.getLogger().log(level,s+Colors.ANSI_RESET());
+            final String msgWithoutColorCodes = ((String)s).replaceAll("\u001B\\[[;\\d]*m", "");
+            Client.getInstance().getFileHandler().publish(new LogRecord(level,msgWithoutColorCodes));
             if(!isDebug && level == Level.FINE)
                 return;
 
             ConsoleReader.sReader.printAbove(Client.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s)));
+
            // ConsoleReader.sReader.setPrompt(writing);
         }
         if(scheduler == null){

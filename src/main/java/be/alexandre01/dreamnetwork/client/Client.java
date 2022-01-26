@@ -33,6 +33,7 @@ import java.io.InputStream;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Client {
@@ -128,15 +129,19 @@ public class Client {
             thread.start();
             console.fPrint("The CoreServer System has been started on  the port 14520.",Level.INFO);
         } catch (Exception e) {
+
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
             for(StackTraceElement s : e.getStackTrace()){
                 Client.getInstance().formatter.getDefaultStream().println("----->");
+                Client.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,"----->"));
                 console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
             }
             if(Client.getInstance().isDebug()){
                 e.printStackTrace(Client.getInstance().formatter.getDefaultStream());
             }else {
-                Client.getInstance().formatter.getDefaultStream().println("Please contact the DN developers about this error.");
+                formatter.getDefaultStream().println("Please contact the DN developers about this error.");
+                fileHandler.publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
+
             }
 
         }
