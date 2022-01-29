@@ -28,6 +28,7 @@ public class BaseResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
         //Console.debugPrint(message);
+        Console.print("Requete entrente->",Level.FINE);
         ChannelPacket receivedPacket = new ChannelPacket(message);
         DNChannel dnChannel = this.client.getChannelManager().getChannel(message.getChannel());
         if(dnChannel != null){

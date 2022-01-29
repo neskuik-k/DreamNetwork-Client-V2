@@ -1,13 +1,14 @@
 package be.alexandre01.dreamnetwork.client.connection.request.exception;
 
 import be.alexandre01.dreamnetwork.client.Client;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
 import org.fusesource.jansi.Ansi;
 
 public class RequestNotFoundException extends Exception{
-    public RequestNotFoundException(){
-        super("The request isn't foundable.");
+    public RequestNotFoundException(RequestType requestType){
+        super("The request "+requestType.name()+" isn't foundable.");
         if(Ansi.isEnabled()){
            Client.getLogger().severe(Ansi.Color.RED+"ERROR CAUSE>> "+getMessage()+" || "+ getClass().getSimpleName());
             for(StackTraceElement s : getStackTrace()){

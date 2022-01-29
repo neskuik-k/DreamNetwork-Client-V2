@@ -32,5 +32,10 @@ public class DefaultBungeeRequest extends RequestBuilder {
         requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
           return message;
         }));
+        requestData.put(RequestType.CORE_REGISTER_CHANNEL,(message, client, args) -> {
+            message.set("CHANNEL", args[0]);
+            message.set("MAP",args[1]);
+            return message;
+        });
     }
 }

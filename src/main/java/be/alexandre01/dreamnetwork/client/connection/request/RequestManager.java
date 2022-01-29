@@ -35,7 +35,7 @@ public class RequestManager {
     public RequestPacket sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
          if(!requestBuilder.requestData.containsKey(requestType)){
              try {
-                 throw new RequestNotFoundException();
+                 throw new RequestNotFoundException(requestType);
              } catch (RequestNotFoundException e) {
                  e.printStackTrace();
              }

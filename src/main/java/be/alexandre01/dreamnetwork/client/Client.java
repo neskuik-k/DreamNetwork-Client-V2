@@ -51,6 +51,7 @@ public class Client {
     private JVMContainer jvmContainer;
     @Getter
     private SpigetConsole spigetConsole;
+    private StatsConsole statsConsole;
     @Getter @Setter
     private static String username;
     @Getter @Setter
@@ -106,6 +107,11 @@ public class Client {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
+
+
+        Console.load("m:stats");
+        statsConsole = new StatsConsole(Console.getConsole("m:stats"));
+
                 /*
         JVM CONTAINER TO STORE JVMExecutors
          */
