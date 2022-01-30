@@ -123,16 +123,16 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      }
                                  }
                              }else {
-                                 Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
-                                 Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                                 Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
+                                 Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
                              }
                          }
 
 
                      }
                  }else {
-                     Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
-                     Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] (PORT) => add a server ", Level.INFO);
+                     Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
+                     Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
                  }
                 return true;
             }

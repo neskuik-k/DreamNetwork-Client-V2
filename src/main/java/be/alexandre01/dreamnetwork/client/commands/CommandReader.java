@@ -27,12 +27,13 @@ public class CommandReader{
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
-        commands.addCommands(new GuiCommand("gui"));
+      //  commands.addCommands(new GuiCommand("gui"));
 
     }
 
     public void run(Console console){
         this.console = console;
+        console.collapseSpace = true;
             console.setConsoleAction(new Console.IConsole() {
                 @Override
                 public void listener(String[] args) {

@@ -44,6 +44,7 @@ public class Console extends Thread{
     public static String actualConsole;
     private Thread thread;
     public boolean isRunning = false;
+    public boolean collapseSpace = false;
     public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+Client.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     ScheduledExecutorService scheduler = null;
     public PrintStream defaultPrint;
@@ -270,6 +271,8 @@ public class Console extends Thread{
                     continue;
 
                 try {
+                    if(collapseSpace)
+                        data = data.trim().replaceAll("\\s{2,}", " ");
                     if(data.length() != 0)
                         out.println("=> "+ data);
                     out.flush();
