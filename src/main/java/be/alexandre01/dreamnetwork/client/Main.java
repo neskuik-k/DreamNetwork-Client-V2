@@ -54,13 +54,12 @@ public class Main {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         disableWarning();
         System.setProperty("illegal-access", "permit");
-
         commandReader = new be.alexandre01.dreamnetwork.client.commands.CommandReader();
         ConsoleReader.init();
+        Config.createDir("data");
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
         Console.clearConsole(System.out);
-        Config.createDir("data");
         Config.removeDir("tmp");
 
         DNAPI dnapi = new DNAPI();
