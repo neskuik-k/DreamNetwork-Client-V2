@@ -21,6 +21,12 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
+    - name: Extract Maven project version
+      run: echo ::set-output name=version::$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec)
+      id: project
+
+    - name: Show extracted Maven project version
+      run: echo ${{ steps.project.outputs.version }}     
     - name: Get version
       run: |
         VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
@@ -28,7 +34,7 @@ jobs:
       id: get_version
     - name: ls
       run: 'ls'
-      id: ls
+      id: ls  
     - name: Remove Deobfuscated Jar
       run: "find . -type f ! -name '*-prod.jar' -delete"
       id: remove
@@ -45,9 +51,9 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source_file: 'target'
+        source_file: 'target/*'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
-        destination_folder: 'hypervisor/builds/${{ env.VERSION }}'
+        destination_folder: 'hypervisor/builds/${{ steps.project.outputs.version }}'
         user_email: 'altata01@hotmail.com'
-        user_name: 'Alexandre01Dev'
-        commit_message: 'A custom message for the commit'
+        user_name: 'DreamNetBot'
+        commit_message: 'Sending new build'
