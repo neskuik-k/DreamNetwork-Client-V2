@@ -8,7 +8,6 @@ on:
     branches: [ master ]
   pull_request:
     branches: [ master ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -33,15 +32,3 @@ jobs:
       with:
         name: Package
         path: staging
-    - name: Pushes to another repository
-      id: push_directory
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'target/*-prod.jar'
-        destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
-        destination_folder: 'hypervisor/builds/${{ env.VERSION }}'
-        user_email: 'altata01@hotmail.com'
-        user_name: 'DreamNetBot'
-        commit_message: 'A custom message for the commit'
