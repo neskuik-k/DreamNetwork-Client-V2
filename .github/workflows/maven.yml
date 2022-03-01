@@ -30,14 +30,14 @@ jobs:
       run: 'ls'
       id: ls
     - name: Remove Deobfuscated Jar
-      run: 'rm -i !(*-prod.jar)'
+      run: "find . -type f ! -name '*-prod.jar' -delete"
       id: remove
     - name: Create Dir
       run: mkdir staging && cp target/*-prod.jar staging
     - uses: actions/upload-artifact@v2
       with:
         name: Package
-        path: target
+        path: stagging
         
     - name: Pushes to another repository
       id: push_directory
@@ -45,7 +45,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source_file: 'stagging'
+        source_file: 'target'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
         destination_folder: 'hypervisor/builds/${{ env.VERSION }}'
         user_email: 'altata01@hotmail.com'
