@@ -29,12 +29,15 @@ jobs:
     - name: ls
       run: 'ls'
       id: ls
+    - name: Remove Deobfuscated Jar
+      run: 'rm -i !(*-prod.jar)'
+      id: remove
     - name: Create Dir
       run: mkdir staging && cp target/*-prod.jar staging
     - uses: actions/upload-artifact@v2
       with:
         name: Package
-        path: staging
+        path: target
         
     - name: Pushes to another repository
       id: push_directory
