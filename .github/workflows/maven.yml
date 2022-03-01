@@ -43,5 +43,5 @@ jobs:
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
         destination_folder: 'hypervisor/builds/${{ env.VERSION }}'
         user_email: 'altata01@hotmail.com'
-        user_name: 'DreamNetBot'
+        user_name: 'Alexandre01Dev'
         commit_message: 'A custom message for the commit'
