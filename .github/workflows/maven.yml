@@ -39,7 +39,7 @@ jobs:
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source_file: 'target/*-prod.jar'
+        source_file: 'stagging/'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
         destination_folder: 'hypervisor/builds/${{ env.VERSION }}'
         user_email: 'altata01@hotmail.com'
