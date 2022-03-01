@@ -26,6 +26,9 @@ jobs:
         VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
         echo "::set-output name=version::$VERSION"
       id: get_version
+    - name: ls
+      run: 'ls'
+      id: ls
     - name: Create Dir
       run: mkdir staging && cp target/*-prod.jar staging
     - uses: actions/upload-artifact@v2
