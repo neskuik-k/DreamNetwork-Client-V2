@@ -11,9 +11,7 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Set up JDK 8
@@ -24,21 +22,17 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn --batch-mode --update-snapshots verify
+    - name: Get version
+      run: |
+        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
+        echo "::set-output name=version::$VERSION"
+      id: get_version
     - name: Create Dir
       run: mkdir staging && cp target/*-prod.jar staging
       uses: actions/upload-artifact@v2
       with:
         name: Package
         path: staging
-    - name: Install manual libraries
-      run: |
-        mvn install:install-file -Dfile=lib/xyz.jar -DgroupId=com.xyz-DartifactId=xyz -Dversion=8.3.0 -Dpackaging=jar
-
-    - name: Get version
-      run: |
-        VERSION=$( mvn help:evaluate -Dexpression=project.version -q -DforceStdout )
-        echo "::set-output name=version::$VERSION"
-      id: get_version
     - name: Pushes to another repository
       id: push_directory
       uses: dmnemec/copy_file_to_another_repo_action@main
