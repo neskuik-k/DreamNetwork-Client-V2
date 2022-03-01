@@ -45,15 +45,17 @@ jobs:
         name: Package
         path: stagging
         
+    - name: Rename File
+      run: "mv target/DreamNetworkV2-${{ steps.project.outputs.version }}-prod.jar target/DreamNetwork.jar"
     - name: Pushes to another repository
       id: push_directory
       uses: dmnemec/copy_file_to_another_repo_action@main
       env:
         API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
       with:
-        source_file: 'target/*'
+        source_file: 'target/DreamNetwork.jar'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
-        destination_folder: 'hypervisor/builds/${{ steps.project.outputs.version }}'
+        destination_folder: 'hypervisor/builds/${{ steps.project.outputs.version }}-$BUILD_NUMBER'
         user_email: 'altata01@hotmail.com'
         user_name: 'DreamNetBot'
         commit_message: 'Sending new build'
