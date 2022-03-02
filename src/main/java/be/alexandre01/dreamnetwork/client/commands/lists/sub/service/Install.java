@@ -86,6 +86,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             jvmExecutor.getStartup(),
                             javaVersion
                             );
+
                     jvmExecutor.setExec(installationLinks.name().toLowerCase()+".jar");
                     System.gc();
                 }

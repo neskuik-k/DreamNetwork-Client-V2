@@ -27,30 +27,31 @@ public class HelpCommand extends Command {
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
                 Console.print(Chalk.on("How to manage a service ").underline());
                 Console.print("service", Level.INFO);
-                Console.print("add proxy [name] | add a proxy ", Level.INFO);
+                Console.print("service add proxy [name] | add a proxy ", Level.INFO);
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
                 Console.print(Chalk.on("How to start or stop a server: ").underline());
-                Console.print("start server [name] | start a server ", Level.INFO);
-                Console.print("start proxy [name] | start a proxy ", Level.INFO);
+                Console.print("service start server [name] | start a server ", Level.INFO);
+                Console.print("service start proxy [name] | start a proxy ", Level.INFO);
                 Console.debugPrint("");
-                Console.print("stop server [name] | stop a server ", Level.INFO);
-                Console.print("stop proxy [name] | stop a proxy ", Level.INFO);
+                Console.print("service stop server [name] | stop a server ", Level.INFO);
+                Console.print("service stop proxy [name] | stop a proxy ", Level.INFO);
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
 
                 Console.print(Chalk.on("How to connect to the console: ").underline());
-                Console.print("screen server [name] | connect to the server's console ", Level.INFO);
-                Console.print("screen proxy [name] | connect to the proxy's console ", Level.INFO);
+                Console.print("service screen server [name] | connect to the server's console ", Level.INFO);
+                Console.print("service screen proxy [name] | connect to the proxy's console ", Level.INFO);
 
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
 
                 Console.print(Chalk.on("How to remove server: ").underline());
-                Console.print("remove server [name] | remove a server ", Level.INFO);
-                Console.print("remove proxy [name] | remove a proxy ", Level.INFO);
+                Console.print("service remove server [name] | remove a server ", Level.INFO);
+                Console.print("service remove proxy [name] | remove a proxy ", Level.INFO);
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
                 return true;
             }
         };
     }
+
     public static class HelpBuilder{
         private ArrayList<Object> sbs;
         private List<Integer> indexLoggerException = new ArrayList<>();
