@@ -30,7 +30,6 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -133,7 +132,7 @@ public class Client {
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
-            console.fPrint("The CoreServer System has been started on  the port 14520.",Level.INFO);
+            console.fPrint("The CoreServer System has been started on the port 14520.",Level.INFO);
         } catch (Exception e) {
 
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
@@ -173,5 +172,4 @@ public class Client {
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
     }
-
 }
