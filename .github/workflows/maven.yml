@@ -34,7 +34,10 @@ jobs:
       id: get_version
     - name: ls
       run: 'ls'
-      id: ls  
+      id: ls
+    - name: ls target
+      run: 'cd target && ls'
+      id: lstarget
     - name: Remove Deobfuscated Jar
       run: "find . -type f ! -name '*-prod.jar' -delete"
       id: remove
