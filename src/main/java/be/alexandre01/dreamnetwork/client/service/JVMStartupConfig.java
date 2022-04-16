@@ -10,21 +10,13 @@ import java.io.*;
 import java.util.Date;
 import java.util.logging.Level;
 @Data
-public class JVMStartupConfig {
+public class JVMStartupConfig extends JVMConfig{
     @Getter boolean isConfig;
-    @Getter String name;
-    @Getter JVMExecutor.Mods type;
-    @Getter String xms;
-    @Getter String startup = null;
-    @Getter String exec = null;
-    @Getter String xmx;
-    @Getter String pathName;
-    @Getter String javaVersion = "default";
-    @Getter int port = 0;
     @Getter long confSize = 0;
     @Getter boolean proxy = false;
     @Getter boolean fixedData = false;
     @Getter File fileRootDir;
+
 
 
 

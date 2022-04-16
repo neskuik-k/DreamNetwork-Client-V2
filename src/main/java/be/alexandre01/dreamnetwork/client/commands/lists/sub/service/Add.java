@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.client.utils.clients.RamArgumentsChecker;
 import com.github.tomaslanger.chalk.Chalk;
 import org.jline.reader.impl.completer.NullCompleter;
 
@@ -47,6 +48,12 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                          System.out.println(Chalk.on("[!] The type is incorrect... try PROXY or SERVER"));
                          return true;
                      }
+
+                     if(!(RamArgumentsChecker.check(args[4]) && RamArgumentsChecker.check(args[5]))){
+                         System.out.println(Chalk.on("[!] The RAM Argument is incorrect... try for example: 512M or 1G"));
+                         return true;
+                     }
+
                          if(args[3].equalsIgnoreCase("STATIC")){
                              Config.createDir("template/"+args[1]+"/"+args[2]);
                              if(args.length == 7){
@@ -67,7 +74,6 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                  }
                              }else {
                                  try {
-                                     //ServerInstance.updateConfigFile(args[1],args[2], Mods.STATIC,args[4],args[5],0,proxy);
                                      JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
