@@ -56,6 +56,11 @@ public class ScreenInReader extends Thread {
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
+                if(!process.isAlive()){
+                    screen.destroy();
+                    isRunning = false;
+                }
+
                 if(!isRunning){
                     try {
                         reader.mark(0);
@@ -65,11 +70,6 @@ public class ScreenInReader extends Thread {
                     }
                     service.shutdown();
                     return;
-                }
-
-                if(!process.isAlive()){
-                    screen.destroy();
-                    isRunning = false;
                 }
 
 
@@ -90,6 +90,7 @@ public class ScreenInReader extends Thread {
 
             }
         },250,250,TimeUnit.MILLISECONDS);
+
         try {
             ByteBuffer buffer = ByteBuffer.allocate(1024);
             ReadableByteChannel channel = Channels.newChannel(reader);

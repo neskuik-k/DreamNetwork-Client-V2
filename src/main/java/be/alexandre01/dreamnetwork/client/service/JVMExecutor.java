@@ -20,6 +20,8 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -238,7 +240,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
-                while (portsBlackList.contains(port)){
+                while (portsBlackList.contains(port) && !isPortAvailable(port)){
                     port = port + 2;
                 }
                 if(!serversPort.isEmpty()){
@@ -261,6 +263,10 @@ public class JVMExecutor extends JVMStartupConfig{
                     return false;
                 }
 
+                if(!isPortAvailable(port)){
+                    System.out.println(Colors.RED_BOLD+"The port isn't available "+ finalname);
+                   return false;
+                }
 
                 //   System.out.println(port);
                 serversPortList.add(port);
@@ -574,6 +580,37 @@ public class JVMExecutor extends JVMStartupConfig{
             return path;
         }
 
+    }
+
+    public boolean isPortAvailable(int port) {
+        System.out.println("Checking if port "+port+" is available...");
+        if (port < 1 || port > 65535) {
+            throw new IllegalArgumentException("Invalid start port: " + port);
+        }
+
+        ServerSocket ss = null;
+        DatagramSocket ds = null;
+        try {
+            ss = new ServerSocket(port);
+            ss.setReuseAddress(true);
+            ds = new DatagramSocket(port);
+            ds.setReuseAddress(true);
+            return true;
+        } catch (IOException e) {
+        } finally {
+            if (ds != null) {
+                ds.close();
+            }
+
+            if (ss != null) {
+                try {
+                    ss.close();
+                } catch (IOException e) {
+                }
+            }
+        }
+
+        return false;
     }
 }
 

@@ -45,6 +45,10 @@ public class  Screen extends Thread {
         }
         ScreenManager.instance.remScreen(this);
         screenStream.exit();
+        if(getService().getClient() == null){
+            getService().removeService();
+        }
+
 
         if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
             String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
