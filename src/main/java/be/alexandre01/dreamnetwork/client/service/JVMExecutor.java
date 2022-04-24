@@ -263,10 +263,6 @@ public class JVMExecutor extends JVMStartupConfig{
                     return false;
                 }
 
-                if(!isPortAvailable(port)){
-                    System.out.println(Colors.RED_BOLD+"The port isn't available "+ finalname);
-                   return false;
-                }
 
                 //   System.out.println(port);
                 serversPortList.add(port);
