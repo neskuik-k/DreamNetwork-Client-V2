@@ -240,7 +240,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
-                while (portsBlackList.contains(port) && !isPortAvailable(port)){
+                while (portsBlackList.contains(port) || !isPortAvailable(port)){
                     port = port + 2;
                 }
                 if(!serversPort.isEmpty()){
