@@ -2,9 +2,8 @@ package be.alexandre01.dreamnetwork.client.connection.request.generated.spigot;
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.players.Player;
-import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 
 import java.util.ArrayList;

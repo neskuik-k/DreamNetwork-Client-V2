@@ -1,26 +1,36 @@
 package be.alexandre01.dreamnetwork.client.service;
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.client.service.interfaces.IService;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.client.service.screen.Screen;
+import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import lombok.Builder;
 import lombok.Data;
 @Data @Builder
 public class JVMService implements IService {
     private int id;
     private int port;
-    private ClientManager.Client client;
+    private Client client;
     private JVMExecutor jvmExecutor;
     private Process process;
 
+    private Screen screen = null;
+
     @Override
     public void stop(){
+        if(screen != null){
+            screen.destroy();
+        }
+
         if(client != null){
             client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
             client.getChannelHandlerContext().close();
         }else{
             process.destroy();
         }
+
+
     }
 
     @Override
@@ -33,7 +43,7 @@ public class JVMService implements IService {
 
     }
 
-    public void setClient(ClientManager.Client client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 

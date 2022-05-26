@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.request.generated.proxy;
 
-import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
 import java.util.logging.Level;

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client;
 
 
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -72,7 +73,7 @@ public class TemplateLoading {
                 }
 
 
-                JVMExecutor jvmExecutor = JVMExecutor.initIfPossible(pathName,name,false);
+                JVMExecutor jvmExecutor = IJVMExecutor.initIfPossible(pathName,name,false);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;

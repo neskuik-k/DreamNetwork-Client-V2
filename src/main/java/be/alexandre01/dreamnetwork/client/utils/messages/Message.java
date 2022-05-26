@@ -1,12 +1,10 @@
 package be.alexandre01.dreamnetwork.client.utils.messages;
 
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
-import java.math.BigDecimal;
 import java.util.*;
 
 public class Message extends LinkedHashMap<String, Object> {

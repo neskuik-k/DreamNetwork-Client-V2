@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.service.interfaces;
+package be.alexandre01.dreamnetwork.api.service;
 
 public interface IService {
     void stop();

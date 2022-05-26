@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannel;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.ChannelPacket;
@@ -7,7 +9,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersObject;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestPacket;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -26,7 +28,7 @@ public class BaseResponse extends CoreResponse {
         this.client = Client.getInstance();
     }
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client) throws Exception {
         //Console.debugPrint(message);
         Console.print("Requete entrente->",Level.FINE);
         ChannelPacket receivedPacket = new ChannelPacket(message);
@@ -34,7 +36,7 @@ public class BaseResponse extends CoreResponse {
         if(dnChannel != null){
             dnChannel.received(receivedPacket);
             if(!dnChannel.getDnChannelInterceptors().isEmpty()){
-                for (DNChannel.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()){
+                for (AChannelPacket.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()){
                     dnChannelInterceptor.received(receivedPacket);
                 }
             }
@@ -71,7 +73,7 @@ public class BaseResponse extends CoreResponse {
             }
             if(message.getHeader().equals("channel") && message.getChannel() != null){
                 if(this.client.getChannelManager().getClientsRegistered().containsKey(message.getChannel())){
-                    final Collection<ClientManager.Client> clients = this.client.getChannelManager().clientsRegistered.get(message.getChannel());
+                    final Collection<be.alexandre01.dreamnetwork.client.connection.core.communication.Client> clients = this.client.getChannelManager().getClientsRegistered().get(message.getChannel());
                     if(!clients.isEmpty()){
                         boolean resend = true;
 
@@ -80,7 +82,7 @@ public class BaseResponse extends CoreResponse {
                         }
                         /*Console.debugPrint("NotEmptyGetClients");
                         Console.debugPrint("NotEmptyGetClients "+ this.client.getChannelManager().clientsRegistered.get(message.getChannel()));*/
-                        for(ClientManager.Client c : this.client.getChannelManager().getClientsRegistered().get(message.getChannel())){
+                        for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client c : this.client.getChannelManager().getClientsRegistered().get(message.getChannel())){
                             if(!resend && c == client){
                                 continue;
                             }
@@ -116,7 +118,7 @@ public class BaseResponse extends CoreResponse {
                     stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
                     break;
                 case SPIGOT_EXECUTE_COMMAND:
-                    ClientManager.Client cmdClient =  this.client.getClientManager().getClient(message.getString("SERVERNAME"));
+                    be.alexandre01.dreamnetwork.client.connection.core.communication.Client cmdClient =  this.client.getClientManager().getClient(message.getString("SERVERNAME"));
                     if(cmdClient != null){
                         cmdClient.getRequestManager().sendRequest(RequestType.SPIGOT_EXECUTE_COMMAND,message.getString("CMD"));
                     }

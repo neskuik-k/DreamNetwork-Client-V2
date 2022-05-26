@@ -1,7 +1,10 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.connection.request.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
@@ -12,20 +15,20 @@ import lombok.Getter;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-public class RequestManager {
+public class RequestManager implements IRequestManager {
     @Getter
     RequestBuilder requestBuilder;
-    private ClientManager.Client client;
+    private Client client;
     private HashMap<Integer, RequestPacket> requests = new HashMap<>();
 
-    public RequestManager(ClientManager.Client client){
+    public RequestManager(Client client){
         this.client = client;
         requestBuilder = new RequestBuilder();
         requestBuilder.addRequestBuilder();
     }
 
     public RequestPacket sendRequest(RequestPacket request,Object... args){
-        RequestBuilder.RequestData requestData = requestBuilder.requestData.get(request.getRequestType());
+        RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(request.getRequestType());
         request.setClient(client);
         request.setMessage(requestData.write(request.getMessage(),client,args));
         request.getClient().writeAndFlush(request.getMessage(),request.getListener());
@@ -33,7 +36,7 @@ public class RequestManager {
         return request;
     }
     public RequestPacket sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
-         if(!requestBuilder.requestData.containsKey(requestType)){
+         if(!requestBuilder.getRequestData().containsKey(requestType)){
              try {
                  throw new RequestNotFoundException(requestType);
              } catch (RequestNotFoundException e) {
@@ -41,7 +44,7 @@ public class RequestManager {
              }
          }
 
-         RequestBuilder.RequestData requestData = requestBuilder.requestData.get(requestType);
+         RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(requestType);
          message.setHeader("RequestType");
         message.setRequestType(requestType);
         RequestPacket request = new RequestPacket(requestType,requestData.write(message,client,args),listener);

@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service.screen;
 
 import be.alexandre01.dreamnetwork.client.config.Config;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 public class  Screen extends Thread {
     JVMService service;
     ArrayList<String> history;
-    ArrayList<ClientManager.Client> devToolsReading = new ArrayList<>();
+    ArrayList<Client> devToolsReading = new ArrayList<>();
     ScreenStream screenStream;
     Integer screenId;
     String screenName;
@@ -28,6 +28,7 @@ public class  Screen extends Thread {
         screenId = screenManager.getId(service.getJvmExecutor().getName());
         screenName = service.getJvmExecutor().getName()+"-"+screenId;
         this.screenStream = new ScreenStream(screenName,this);
+        service.setScreen(this);
         screenManager.addScreen(this);
     }
 

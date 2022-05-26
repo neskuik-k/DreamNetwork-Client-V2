@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.request.generated.devtool;
 
-import be.alexandre01.dreamnetwork.client.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 
 import java.util.Arrays;
 

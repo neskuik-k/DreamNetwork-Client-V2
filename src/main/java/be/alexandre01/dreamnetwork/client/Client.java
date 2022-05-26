@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.client.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
@@ -60,7 +61,7 @@ public class Client {
     @Getter
     private JavaIndex javaIndex;
     @Getter
-    private DNChannelManager channelManager;
+    private IDNChannelManager channelManager;
     @Getter
     private BundleManager bundleManager;
     @Getter @Setter private boolean devToolsAccess = false;

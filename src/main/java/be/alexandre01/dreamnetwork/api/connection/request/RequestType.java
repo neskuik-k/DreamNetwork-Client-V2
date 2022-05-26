@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.connection.request;
+package be.alexandre01.dreamnetwork.api.connection.request;
 
 import lombok.Getter;
 

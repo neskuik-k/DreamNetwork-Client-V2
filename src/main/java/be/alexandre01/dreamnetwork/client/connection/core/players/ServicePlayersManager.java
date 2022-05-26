@@ -1,9 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.core.players;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -19,23 +17,23 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class ServicePlayersManager {
-    @Getter final HashMap<ClientManager.Client,ServicePlayersObject> objects = new HashMap<>();
+    @Getter final HashMap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,ServicePlayersObject> objects = new HashMap<>();
     @Getter final HashMap<Integer, Player> playersMap = new HashMap<>();
     @Getter final ArrayList<ServicePlayersObject> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ServicePlayersObject,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
 
-    @Getter Multimap<Player,ClientManager.Client> isRegistered = ArrayListMultimap.create();
-    Multimap<ClientManager.Client, Player> services = ArrayListMultimap.create();
-    Multimap<ClientManager.Client,Player> toUpdates =ArrayListMultimap.create();
-    Multimap<ClientManager.Client,Player> toRemove = ArrayListMultimap.create();
-    HashMap<ClientManager.Client,Integer> count = new HashMap<>();
+    @Getter Multimap<Player, be.alexandre01.dreamnetwork.client.connection.core.communication.Client> isRegistered = ArrayListMultimap.create();
+    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client, Player> services = ArrayListMultimap.create();
+    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Player> toUpdates =ArrayListMultimap.create();
+    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Player> toRemove = ArrayListMultimap.create();
+    HashMap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Integer> count = new HashMap<>();
     int totalCount = 0;
     public void registerPlayer(Player player){
         playersMap.put(player.getId(),player);
         totalCount++;
     }
 
-    public void removeUpdatingClient(ClientManager.Client client){
+    public void removeUpdatingClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
         ServicePlayersObject s = getObject(client);
         wantToBeInformed.remove(s);
         wantToBeDirectlyInformed.remove(s);
@@ -43,10 +41,10 @@ public class ServicePlayersManager {
         toRemove.removeAll(client);
     }
 
-    public ServicePlayersObject getObject(ClientManager.Client client){
+    public ServicePlayersObject getObject(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
         return objects.get(client);
     }
-    public void addUpdatingClient(ClientManager.Client client, long time,DataType dataType){
+    public void addUpdatingClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client, long time, DataType dataType){
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         objects.put(client,new ServicePlayersObject(client,dataType));
         toUpdates.putAll(client,playersMap.values());
@@ -70,7 +68,7 @@ public class ServicePlayersManager {
             ArrayList<String> a = new ArrayList<>();
             service.scheduleAtFixedRate(() -> {
                     StringBuilder sb = new StringBuilder();
-                    for(ClientManager.Client c : count.keySet()){
+                    for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client c : count.keySet()){
                         sb.append(c.getJvmService().getJvmExecutor().getName()).append("-").append(c.getJvmService().getId());
                         sb.append(";");
                         sb.append(count.get(client));
@@ -101,8 +99,8 @@ public class ServicePlayersManager {
         if(jvmExecutor != null){
             JVMService jvmService = jvmExecutor.getService(i);
             if(jvmService != null){
-                ClientManager.Client client = jvmService.getClient();
-                ClientManager.Client oldClient = player.getServer();
+                be.alexandre01.dreamnetwork.client.connection.core.communication.Client client = jvmService.getClient();
+                be.alexandre01.dreamnetwork.client.connection.core.communication.Client oldClient = player.getServer();
                 if(oldClient != null){
                     count.put(oldClient,count.get(oldClient)-1);
                     services.remove(oldClient,player);
@@ -144,7 +142,7 @@ public class ServicePlayersManager {
 
     public void unregisterPlayer(int id){
         Player player = getPlayer(id);
-        ClientManager.Client oldClient = player.getServer();
+        be.alexandre01.dreamnetwork.client.connection.core.communication.Client oldClient = player.getServer();
         if(oldClient != null){
             count.put(oldClient,count.get(oldClient)-1);
             services.remove(oldClient,player);

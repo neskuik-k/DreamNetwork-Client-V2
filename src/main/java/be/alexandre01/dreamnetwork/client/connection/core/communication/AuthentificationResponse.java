@@ -1,9 +1,10 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -13,12 +14,11 @@ import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.Base64.Decoder;
 import java.util.logging.Level;
 
-public class AuthentificationResponse extends CoreResponse{
+public class AuthentificationResponse extends CoreResponse {
     final CoreHandler coreHandler;
     final private Client client;
     final private Decoder decoder = Base64.getDecoder();
@@ -29,7 +29,7 @@ public class AuthentificationResponse extends CoreResponse{
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, ClientManager.Client client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client) throws Exception {
         Console.print("Requete entrente->",Level.FINE);
         Console.print(message,Level.FINE);
         ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
@@ -51,7 +51,7 @@ public class AuthentificationResponse extends CoreResponse{
                         String password = message.getString("PASSWORD");
 
                         Console.print("CREATE CLIENT", Level.FINE);
-                        ClientManager.Client newClient = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()
+                        be.alexandre01.dreamnetwork.client.connection.core.communication.Client newClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
                                 .coreHandler(Client.getInstance().getCoreHandler())
                                 .info(info)
                                 .port(port)
@@ -81,7 +81,7 @@ public class AuthentificationResponse extends CoreResponse{
                                 }
                             }
                             Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
-                            for(ClientManager.Client devtools : Client.getInstance().getClientManager().getDevTools()){
+                            for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client devtools : Client.getInstance().getClientManager().getDevTools()){
                                 String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
                                 devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
                             }
@@ -89,7 +89,7 @@ public class AuthentificationResponse extends CoreResponse{
                         }
                         if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                             newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
-                            ClientManager.Client proxy = Client.getInstance().getClientManager().getProxy();
+                            be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
                             String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
                             proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
@@ -116,7 +116,7 @@ public class AuthentificationResponse extends CoreResponse{
                                     servers.add(jvmExecutor.getName()+";"+jvmExecutor.getType().name().charAt(0)+";f");
                                 }
                             }
-                            for(ClientManager.Client devtools : Client.getInstance().getClientManager().getDevTools()){
+                            for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client devtools : Client.getInstance().getClientManager().getDevTools()){
                                 String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
                                 if(devtools != null)
                                     devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
@@ -178,7 +178,7 @@ public class AuthentificationResponse extends CoreResponse{
                 int devPort = message.getInt("PORT");
 
                 Console.print("CREATE CLIENT", Level.FINE);
-                ClientManager.Client devClient = Client.getInstance().getClientManager().registerClient(ClientManager.Client.builder()
+                be.alexandre01.dreamnetwork.client.connection.core.communication.Client devClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
                         .coreHandler(Client.getInstance().getCoreHandler())
                         .info(devInfo)
                         .port(devPort)

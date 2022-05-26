@@ -1,7 +1,9 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestFutureResponse;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -18,7 +20,7 @@ public class RequestPacket {
     private String provider;
     private RequestFutureResponse requestFutureResponse;
 
-    private ClientManager.Client client;
+    private Client client;
 
     public RequestPacket(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
         this.requestType = requestType;
@@ -40,7 +42,7 @@ public class RequestPacket {
         message.setInRoot("RID",requestID);
         currentId++;
     }
-    public RequestPacket send(ClientManager.Client client){
+    public RequestPacket send(Client client){
         return client.getRequestManager().sendRequest(this);
     }
 }

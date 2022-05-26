@@ -1,25 +1,21 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.utils.timers.DateBuilderTimer;
 
-import com.sun.jna.Pointer;
-import com.sun.jna.platform.win32.Kernel32;
-import com.sun.jna.platform.win32.WinNT;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -33,7 +29,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 
-public class JVMExecutor extends JVMStartupConfig{
+public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
     @Getter @Setter private static ArrayList<String> serverList = new ArrayList<>();
@@ -49,37 +45,6 @@ public class JVMExecutor extends JVMStartupConfig{
     public HashMap<Integer,JVMService> jvmServices = new HashMap<>();
 
 
-    public static JVMExecutor initIfPossible(String pathName,String name,boolean updateFile){
-        JVMExecutor.Mods type = null;
-        String xms = null;
-        String xmx = null;
-        int port = 0;
-        boolean proxy = false;
-
-        try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/network.yml")) {
-                if (line.startsWith("type:")) {
-                    type = JVMExecutor.Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
-                }
-                if (line.startsWith("xms:")) {
-                    xms = line.replace("xms:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("xmx:")) {
-                    xmx = line.replace("xmx:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("port:")) {
-                    port = Integer.parseInt(line.replace("port:", "").replaceAll(" ", ""));
-                }
-                if (line.contains("proxy: true")) {
-                    proxy = true;
-                }
-            }
-        } catch (Exception e){
-            return null;
-        }
-        return new JVMExecutor(pathName,name,type,xms,xmx,port,proxy,updateFile);
-    }
-
     public JVMExecutor(String pathName,String name, Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile) {
         super(pathName,name,type,xms,xmx,port,proxy,updateFile);
         JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
@@ -92,13 +57,16 @@ public class JVMExecutor extends JVMStartupConfig{
         Client.getInstance().getJvmContainer().addExecutor(this,jvmType);
     }
 
+    @Override
     public void setPort(int port){
         this.port = port;
     }
 
+    @Override
     public synchronized void startServer(){
         startServer(this);
     }
+    @Override
     public synchronized void startServer(JVMConfig jvmConfig){
         boolean b = queue.isEmpty();
         queue.add(jvmConfig);
@@ -125,6 +93,12 @@ public class JVMExecutor extends JVMStartupConfig{
 
         if(!queue.isEmpty())
         if(!isConfig) return false;
+
+
+        if(jvmConfig.type == Mods.STATIC && !jvmServices.isEmpty()){
+            Console.print(Colors.ANSI_RED()+"The server is already running",Level.WARNING);
+            return false;
+        }
 
         if(!this.hasExecutable()){
             Console.print(Colors.ANSI_RED()+"The server executable is missing: "+ exec);
@@ -358,7 +332,7 @@ public class JVMExecutor extends JVMStartupConfig{
             }
 
 
-        Console.print("PROCESS ID >" + getProcessID(proc),Level.FINE);
+        Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
         JVMService jvmService = JVMService.builder().
                 process(proc)
                 .jvmExecutor(this)
@@ -399,6 +373,7 @@ public class JVMExecutor extends JVMStartupConfig{
 
         return true;
     }
+    @Override
     public void removeService(int i){
         try{
             JVMService jvmService = jvmServices.get(i);
@@ -424,7 +399,7 @@ public class JVMExecutor extends JVMStartupConfig{
             jvmServices.remove(i);
 
             if(!jvmService.getJvmExecutor().isProxy()){
-                ClientManager.Client proxy = Client.getInstance().getClientManager().getProxy();
+                be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
 
                 proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_UNREGISTER_SERVER,
                         finalName);
@@ -434,150 +409,41 @@ public class JVMExecutor extends JVMStartupConfig{
         }
 
     }
-    public static void stopServer(String name, String pathName){
-        String finalName = name.split("-")[0];
-        /*if(getProcess(name) != null){
-            System.out.println("DESTROY");
-            getProcess(name).destroy();
-        }*/
-        if(getStartServerList().contains(name)){
-            getStartServerList().remove(name);
 
-        }
-        if(serversPort.containsKey(name)){
-            int port = serversPort.get(name);
-            serversPort.put("cache-"+cache,port);
-            serversPort.remove(name);
-        }
-
-
-        if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+finalName+"/"+name))){
-            Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+finalName+"/"+name));
-        }
-    }
-
+    @Override
     public JVMService getService(Integer i) {
         return jvmServices.get(i);
     }
+    @Override
     public Collection<JVMService> getServices() {
         return jvmServices.values();
     }
+    @Override
     public String getName() {
         return name;
     }
 
+    @Override
     public Mods getType() {
         return type;
     }
 
+    @Override
     public String getXms() {
         return xms;
     }
 
+    @Override
     public String getXmx() {
         return xmx;
     }
 
+    @Override
     public int getPort() {
         return port;
     }
 
-    public static void startTest(String typeServer,String name){
-
-            if(typeServer.equalsIgnoreCase("server")||typeServer.equalsIgnoreCase("proxy")){
-                if(Config.contains("template/"+typeServer+"/"+name)){
-                    JVMExecutor process = new JVMExecutor(name,typeServer);
-                    process.startServer();
-                    //ServerInstance.startServer(args[2],args[1]);
-                }else {
-                    Console.print(Colors.ANSI_RED()+"You need to configurate your server first before doing this command", Level.WARNING);
-                }
-            }else {
-                Console.print(Colors.ANSI_RED()+"start [SERVER OR PROXY] ServerName",Level.WARNING);
-            }
-
-    }
-    public static void startTest(String typeServer,String name,int port){
-
-        if(typeServer.equalsIgnoreCase("server")||typeServer.equalsIgnoreCase("proxy")){
-            if(Config.contains("template/"+typeServer+"/"+name)){
-                JVMExecutor process = new JVMExecutor(name,typeServer);
-                process.setPort(port);
-                process.startServer();
-                //ServerInstance.startServer(args[2],args[1]);
-            }else {
-                Console.print(Colors.ANSI_RED()+"You need to configurate your server first before doing this command", Level.WARNING);
-            }
-        }else {
-            Console.print(Colors.ANSI_RED()+"start [SERVER OR PROXY] ServerName",Level.WARNING);
-        }
-    }
-    //LINUX ONLY
-    public static synchronized long getPidOfProcess(Process p) {
-        long pid = -1;
-
-        try {
-            if (p.getClass().getName().equals("java.lang.UNIXProcess")) {
-                Field f = p.getClass().getDeclaredField("pid");
-                f.setAccessible(true);
-                pid = f.getLong(p);
-                f.setAccessible(false);
-            }
-        } catch (Exception e) {
-            pid = -1;
-        }
-        return pid;
-    }
-    //INCLUDE JNA
-    public static long getProcessID(Process p)
-    {
-        long result = -1;
-        try
-        {
-            //for windows
-            if (p.getClass().getName().equals("java.lang.Win32Process") ||
-                    p.getClass().getName().equals("java.lang.ProcessImpl"))
-            {
-                Field f = p.getClass().getDeclaredField("handle");
-                f.setAccessible(true);
-                long handl = f.getLong(p);
-                Kernel32 kernel = Kernel32.INSTANCE;
-                WinNT.HANDLE hand = new WinNT.HANDLE();
-                hand.setPointer(Pointer.createConstant(handl));
-                result = kernel.GetProcessId(hand);
-                f.setAccessible(false);
-            }
-            //for unix based operating systems
-            else if (p.getClass().getName().equals("java.lang.UNIXProcess"))
-            {
-                Field f = p.getClass().getDeclaredField("pid");
-                f.setAccessible(true);
-                result = f.getLong(p);
-                f.setAccessible(false);
-            }
-        }
-        catch(Exception ex)
-        {
-            result = -1;
-        }
-        return result;
-    }
-
-    public enum Mods {
-        STATIC("/template/"),DYNAMIC("/tmp/");
-
-        private String path;
-        Mods(String path){
-            this.path = path;
-        }
-
-
-        public String getPath(){
-            return path;
-        }
-
-    }
-
+    @Override
     public boolean isPortAvailable(int port) {
         System.out.println("Checking if port "+port+" is available...");
         if (port < 1 || port > 65535) {

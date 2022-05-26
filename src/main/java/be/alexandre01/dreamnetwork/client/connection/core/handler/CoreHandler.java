@@ -4,9 +4,8 @@ import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.AuthentificationResponse;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.BaseResponse;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.client.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -159,7 +158,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
         //LOG
         if(allowedCTX.contains(ctx)){
-            HashMap<ChannelHandlerContext, ClientManager.Client> clientByConnexion = Client.getInstance().getClientManager().getClientsByConnection();
+            HashMap<ChannelHandlerContext, be.alexandre01.dreamnetwork.client.connection.core.communication.Client> clientByConnexion = Client.getInstance().getClientManager().getClientsByConnection();
             if(clientByConnexion.containsKey(ctx)){
                 JVMService jvmService = clientByConnexion.get(ctx).getJvmService();
                 String name = null;
@@ -177,7 +176,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             executorService.shutdown();
         }
         Console.print(ctx.channel().remoteAddress(),Level.FINE);
-        ClientManager.Client client = Client.getInstance().getClientManager().getClient(ctx);
+        be.alexandre01.dreamnetwork.client.connection.core.communication.Client client = Client.getInstance().getClientManager().getClient(ctx);
 
 
         //Remove Server
@@ -185,12 +184,12 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
             client.getClientManager().getDevTools().remove(client);
             if(!client.isDevTool()){
                 String server = client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId();
-                for(ClientManager.Client c : Client.getInstance().getClientManager().getClients().values()){
+                for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client c : Client.getInstance().getClientManager().getClients().values()){
                     if(c.getJvmType() == JVMContainer.JVMType.SERVER){
                         c.getRequestManager().sendRequest(RequestType.SPIGOT_REMOVE_SERVERS,server);
                     }
                 }
-                for(ClientManager.Client c : Client.getInstance().getClientManager().getDevTools()){
+                for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client c : Client.getInstance().getClientManager().getDevTools()){
                     if(c != null){
                         //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
                         c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVER,server);
@@ -242,11 +241,11 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
 
 
-    public void writeAndFlush(Message msg, ClientManager.Client client){
+    public void writeAndFlush(Message msg, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
         this.writeAndFlush(msg,null,client);
     }
 
-    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, ClientManager.Client client){
+    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
         Console.print(Colors.YELLOW+"write and flush>> "+Colors.WHITE+ msg, Level.FINE);
         ChannelHandlerContext ctx = client.getChannelHandlerContext();
         Console.print(ctx, Level.FINE);
