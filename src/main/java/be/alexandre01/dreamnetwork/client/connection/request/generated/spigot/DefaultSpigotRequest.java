@@ -26,7 +26,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
             return message;
         });
         requestData.put(RequestType.SPIGOT_REMOVE_SERVERS,(message, client, args) -> {
-            message.set("S", Arrays.asList(args));
+            message.set("SERVERS", Arrays.asList(args));
             return message;
         });
         requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
@@ -63,6 +63,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
 
             return message;
         });
+
 
         requestData.put(RequestType.SPIGOT_UNREGISTER_PLAYERS,(message, client, args) -> {
             ArrayList<Integer> s = new ArrayList<>();

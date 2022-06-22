@@ -180,6 +180,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter{
 
 
         //Remove Server
+        System.out.println("Remove server, client : " + client);
         if(client != null){
             client.getClientManager().getDevTools().remove(client);
             if(!client.isDevTool()){

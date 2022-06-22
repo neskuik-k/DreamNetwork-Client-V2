@@ -222,7 +222,7 @@ public class BaseResponse extends CoreResponse {
                         if(type.equalsIgnoreCase("PCOUNT")){
                             long time =  message.getLong("TIME");
                             s.removeUpdatingClient(client);
-                            s.addUpdatingClient(client,time, ServicePlayersManager.DataType.PLAYERS_LIST);
+                            s.addUpdatingClient(client,time, ServicePlayersManager.DataType.PLAYERS_COUNT);
                         }
 
 

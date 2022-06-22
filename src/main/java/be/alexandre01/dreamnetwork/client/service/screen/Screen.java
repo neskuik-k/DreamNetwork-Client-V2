@@ -25,7 +25,7 @@ public class  Screen extends Thread {
         this.service = service;
         this.history = new ArrayList<>();
         ScreenManager screenManager = ScreenManager.instance;
-        screenId = screenManager.getId(service.getJvmExecutor().getName());
+        screenId = screenManager.getId(service);
         screenName = service.getJvmExecutor().getName()+"-"+screenId;
         this.screenStream = new ScreenStream(screenName,this);
         service.setScreen(this);

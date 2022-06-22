@@ -72,13 +72,9 @@ public class ServicePlayersManager {
                         sb.append(c.getJvmService().getJvmExecutor().getName()).append("-").append(c.getJvmService().getId());
                         sb.append(";");
                         sb.append(count.get(client));
-
                         a.add(sb.toString());
                     }
-
-
                     client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS_COUNT,totalCount,a.toArray());
-
             },0,time, TimeUnit.MILLISECONDS);
         }
 

@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.client.service.screen;
 
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -28,14 +29,17 @@ public class ScreenManager {
         availableScreenIds = new ArrayList<>();
         screenIds = new ArrayList<>();
     }
-    public int getId(String processName){
+    public int getId(JVMService service){
+        return service.getId();
+
+        /*
         if(!screenCurrentId.containsKey(processName)){
             return 0;
         }
         if(!availableScreenIds.isEmpty()){
             return availableScreenIds.get(0);
         }
-       return screenCurrentId.get(processName)+1;
+       return screenCurrentId.get(processName)+1;*/
     }
     public void addScreen(Screen screen){
         System.out.println(Colors.YELLOW_BOLD+"Screen ouvert sous le nom de -> "+Colors.GREEN_BOLD+ screen.service.getJvmExecutor().getName()+"-"+screen.screenId);
