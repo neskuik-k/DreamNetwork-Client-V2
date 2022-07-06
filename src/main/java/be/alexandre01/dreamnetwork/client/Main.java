@@ -178,7 +178,7 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
+           if(false){//!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");
                 secretFile.deleteSecretFile();
                 System.exit(1);
