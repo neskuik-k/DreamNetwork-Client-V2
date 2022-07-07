@@ -1,6 +1,9 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -15,11 +18,11 @@ import java.util.logging.Level;
 
 public class ClientManager implements IClientManager {
     private final HashMap<Integer, Client> clientByPort = new HashMap<>();
-    @Getter private final HashMap<String, Client> clients = new HashMap<>();
-    @Getter private final HashMap<ChannelHandlerContext, Client> clientsByConnection = new HashMap<>();
-    @Getter private final ArrayList<Client> devTools = new ArrayList<>();
+    @Getter private final HashMap<String, IClient> clients = new HashMap<>();
+    @Getter private final HashMap<ChannelHandlerContext, IClient> clientsByConnection = new HashMap<>();
+    @Getter private final ArrayList<IClient> devTools = new ArrayList<>();
 
-    private be.alexandre01.dreamnetwork.client.Client main;
+    private final be.alexandre01.dreamnetwork.client.Client main;
     @Getter @Setter
     private Client proxy;
     public ClientManager(be.alexandre01.dreamnetwork.client.Client client){
@@ -36,7 +39,7 @@ public class ClientManager implements IClientManager {
         clientByPort.put(client.getPort(),client);
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
-        JVMService jvmService = JVMExecutor.servicePort.get(client.getPort());
+        IService jvmService = JVMExecutor.servicePort.get(client.getPort());
         clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
         client.setJvmService(jvmService);
@@ -46,12 +49,13 @@ public class ClientManager implements IClientManager {
     }
 
     @Override
-    public Client getClient(String processName){
+    public IClient getClient(String processName){
         return clients.get(processName);
     }
     @Override
-    public Client getClient(ChannelHandlerContext ctx){
+    public IClient getClient(ChannelHandlerContext ctx){
         return clientsByConnection.get(ctx);
     }
+
 
 }

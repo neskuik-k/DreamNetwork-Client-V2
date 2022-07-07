@@ -3,9 +3,9 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.config.Config;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -44,6 +44,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                      JVMContainer.JVMType jvmType;
                      try {
                          jvmType = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
+
                      }catch (Exception e){
                          System.out.println(Chalk.on("[!] The type is incorrect... try PROXY or SERVER"));
                          return true;
@@ -53,6 +54,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                          System.out.println(Chalk.on("[!] The RAM Argument is incorrect... try for example: 512M or 1G"));
                          return true;
                      }
+
 
                          if(args[3].equalsIgnoreCase("STATIC")){
                              Config.createDir("template/"+args[1]+"/"+args[2]);
@@ -89,53 +91,55 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                      Console.print(Colors.ANSI_RED()+"An error occurred while updating the file.", Level.SEVERE);
                                  }
                              }
+                             return true;
 
                          }else {
-                             if(args[3].equalsIgnoreCase("DYNAMIC")){
-                                 Config.createDir("template/"+args[1]+"/"+args[2]);
-                                 if(args.length == 7){
+                             if(args[3].equalsIgnoreCase("DYNAMIC")) {
+                                 Config.createDir("template/" + args[1] + "/" + args[2]);
+                                 if (args.length == 7) {
                                      try {
-                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
-                                         if(jvmExecutor == null){
-                                             jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
+                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
+                                         if (jvmExecutor == null) {
+                                             jvmExecutor = new JVMExecutor(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], Integer.parseInt(args[6]), proxy, true);
                                              jvmExecutor.addConfigsFiles();
-                                             Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
+                                             Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
-                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],Integer.parseInt(args[6]),proxy,null,null,null);
-                                         Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
-                                     }catch (Exception e){
+                                         jvmExecutor.updateConfigFile(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
+                                         Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+                                     } catch (Exception e) {
                                          e.printStackTrace();
-                                         Console.print(Colors.ANSI_RED()+"An error occurred, probably because you wrote the port down wrong", Level.SEVERE);
+                                         Console.print(Colors.ANSI_RED() + "An error occurred, probably because you wrote the port down wrong", Level.SEVERE);
                                      }
 
-                                 }else {
+                                 } else {
                                      try {
-                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
-                                         if(jvmExecutor == null){
-                                             jvmExecutor = new JVMExecutor(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,true);
+                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
+                                         if (jvmExecutor == null) {
+                                             jvmExecutor = new JVMExecutor(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], 0, proxy, true);
                                              jvmExecutor.addConfigsFiles();
-                                             Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
+                                             Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
                                              return true;
                                          }
                                          jvmExecutor.addConfigsFiles();
-                                         jvmExecutor.updateConfigFile(args[1],args[2], JVMExecutor.Mods.DYNAMIC,args[4],args[5],0,proxy,null,null,null);
+                                         jvmExecutor.updateConfigFile(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], 0, proxy, null, null, null);
 
-                                         Console.print(Colors.ANSI_GREEN()+"You have successfully re-configured the server!");
-                                     }catch (Exception e){
+                                         Console.print(Colors.ANSI_GREEN() + "You have successfully re-configured the server!");
+                                     } catch (Exception e) {
                                          e.printStackTrace();
-                                         Console.print(Colors.ANSI_RED()+"An error occurred while updating the file.", Level.SEVERE);
+                                         Console.print(Colors.ANSI_RED() + "An error occurred while updating the file.", Level.SEVERE);
                                      }
+                                     return true;
                                  }
-                             }else {
-                                 Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
-                                 Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
                              }
+
                          }
 
+                     Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
+                     Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
 
-                     }
+                 }
                  }else {
                      Console.print(Colors.ANSI_RED()+"[!] service add server [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
                      Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);

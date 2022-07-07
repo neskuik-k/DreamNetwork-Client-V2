@@ -1,14 +1,12 @@
-package be.alexandre01.dreamnetwork.client.commands;
+package be.alexandre01.dreamnetwork.api.commands;
 
 
-import be.alexandre01.dreamnetwork.client.commands.lists.HelpCommand;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 
-import lombok.Getter;
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -16,15 +14,12 @@ import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 
 
-public class Command{
-    private HashMap<String, SubCommandExecutor> c;
-    @Getter private String name;
-    @Getter private HelpCommand.HelpBuilder helpBuilder;
+public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
+
 
     protected CommandExecutor commandExecutor = new CommandExecutor() {
         @Override
@@ -35,11 +30,11 @@ public class Command{
                     sendHelp();
                     return true;
                 }
-                if(!c.containsKey(subArgs[0])){
+                if(!subCommands.containsKey(subArgs[0])){
                     sendHelp();
                     return true;
                 }
-                if(!c.get(subArgs[0]).onSubCommand(subArgs)){
+                if(!subCommands.get(subArgs[0]).onSubCommand(subArgs)){
                     sendHelp();
                 }
                 return true;
@@ -49,12 +44,14 @@ public class Command{
         }
     };
 
+    @Override
     public void setCompletion(Completers.TreeCompleter.Node node){
         ConsoleReader.nodes.add(node);
     }
+    @Override
     public void setAutoCompletions(){
       LineReader reader = ConsoleReader.sReader;
-        c.forEach((s, subCommandExecutor) -> {
+        subCommands.forEach((s, subCommandExecutor) -> {
             if(subCommandExecutor instanceof SubCommandCompletor){
                 SubCommandCompletor completor = (SubCommandCompletor) subCommandExecutor;
 
@@ -78,9 +75,11 @@ public class Command{
             }
         });
     }
+    @Override
     public void setCompletionsTest(Completer completer){
         //ConsoleReader.sReader.addCompleter(completer);
     }
+    @Override
     public void sendHelp(){
         if(helpBuilder.getSize() <= 1){
             Console.print(Colors.ANSI_RED()+" Invalid arguments.");
@@ -89,26 +88,33 @@ public class Command{
         }
     }
     public Command(String name){
-        this.name = name;
-        c = new HashMap<>();
-        helpBuilder = new HelpCommand.HelpBuilder(name);
+        super(name);
     }
+    @Override
     public void addSubCommand(String subCommand, SubCommandExecutor sce){
-        c.put(subCommand,sce);
+        subCommands.put(subCommand,sce);
     }
 
+    @Override
     public SubCommandExecutor getSubCommand(String subCommand){
-        return c.get(subCommand);
+        return subCommands.get(subCommand);
     }
 
+    @Override
     public boolean onCommand(String[] args){
        if(commandExecutor.execute(args))
            return true;
        return false;
     }
 
-    public interface CommandExecutor{
-        boolean execute(String[] args);
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public HelpBuilder getHelpBuilder() {
+        return helpBuilder;
     }
 
 

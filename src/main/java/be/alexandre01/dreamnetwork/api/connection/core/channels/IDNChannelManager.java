@@ -1,30 +1,31 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannel;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 
 public interface IDNChannelManager {
     boolean hasChannel(String name);
 
-    DNChannel getChannel(String name);
+    IDNChannel getChannel(String name);
 
-    void createChannel(DNChannel dnChannel);
+    void createChannel(IDNChannel dnChannel);
 
-    void registerClientToChannel(Client client, String channel, boolean resend);
+    void registerClientToChannel(IClient client, String channel, boolean resend);
 
-    void unregisterClientToChannel(Client client, String channel);
+    void unregisterClientToChannel(IClient client, String channel);
 
-    void unregisterAllClientToChannel(Client client);
+    void unregisterAllClientToChannel(IClient client);
 
     void registerCoreToChannel(String channel);
 
     void unregisterCoreToChannel(String channel);
 
-    java.util.HashMap<String, DNChannel> getChannels();
+    java.util.HashMap<String, IDNChannel> getChannels();
 
-    com.google.common.collect.Multimap<String, Client> getClientsRegistered();
+    com.google.common.collect.Multimap<String, IClient> getClientsRegistered();
 
-    java.util.ArrayList<Client> getDontResendsData();
+    java.util.ArrayList<IClient> getDontResendsData();
 
     java.util.ArrayList<String> getChannelRegisteredInCore();
 

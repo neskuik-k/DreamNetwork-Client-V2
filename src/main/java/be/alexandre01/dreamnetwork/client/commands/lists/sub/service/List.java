@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import lombok.NonNull;
 

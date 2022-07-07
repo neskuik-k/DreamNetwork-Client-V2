@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.client.service.screen.commands;
 
 
 
-import be.alexandre01.dreamnetwork.client.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 

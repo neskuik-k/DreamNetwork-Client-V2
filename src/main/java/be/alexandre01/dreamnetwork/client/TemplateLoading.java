@@ -73,7 +73,7 @@ public class TemplateLoading {
                 }
 
 
-                JVMExecutor jvmExecutor = IJVMExecutor.initIfPossible(pathName,name,false);
+                IJVMExecutor jvmExecutor = IJVMExecutor.initIfPossible(pathName,name,false);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;

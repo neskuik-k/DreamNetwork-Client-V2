@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
-import be.alexandre01.dreamnetwork.client.connection.request.RequestPacket;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -21,7 +20,7 @@ public interface IRequestManager {
      * @param args
      * @return
      */
-    public RequestPacket sendRequest(RequestType requestType, Message message, Object... args);
+    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, Object... args);
 
     /**
      * Send a request to the core and catch when the request is sent
@@ -29,7 +28,7 @@ public interface IRequestManager {
      * @param args
      * @return
      */
-    public RequestPacket sendRequest(RequestType requestType, Object... args);
+    public RequestPacket sendRequest(RequestInfo requestInfo, Object... args);
 
     /**
      * Send a request to the core and catch when the request is sent
@@ -38,7 +37,7 @@ public interface IRequestManager {
      * @param args
      * @return
      */
-    public RequestPacket sendRequest(RequestType requestType, boolean notifiedWhenSent, Object... args);
+    public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args);
 
 
     /**
@@ -50,7 +49,7 @@ public interface IRequestManager {
      * @return
      */
 
-    RequestPacket sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args);
+    RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args);
 
 
     /**
@@ -61,7 +60,7 @@ public interface IRequestManager {
      * @param args
      * @return
      */
-    public RequestPacket sendRequest(RequestType requestType, Message message, boolean notifiedWhenSent, Object... args);
+    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args);
 
 
     /**
@@ -70,6 +69,8 @@ public interface IRequestManager {
      * @return
      */
     RequestPacket getRequest(int RID);
+
+    RequestBuilder getRequestBuilder();
 
 
 }

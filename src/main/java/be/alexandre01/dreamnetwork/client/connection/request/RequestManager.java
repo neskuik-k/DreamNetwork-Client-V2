@@ -1,9 +1,7 @@
 package be.alexandre01.dreamnetwork.client.connection.request;
 
 
-import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.*;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.connection.request.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -28,26 +26,26 @@ public class RequestManager implements IRequestManager {
     }
 
     public RequestPacket sendRequest(RequestPacket request,Object... args){
-        RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(request.getRequestType());
+        RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(request.getRequestInfo());
         request.setClient(client);
         request.setMessage(requestData.write(request.getMessage(),client,args));
         request.getClient().writeAndFlush(request.getMessage(),request.getListener());
         requests.put(request.getRequestID(),request);
         return request;
     }
-    public RequestPacket sendRequest(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
-         if(!requestBuilder.getRequestData().containsKey(requestType)){
+    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
+         if(!requestBuilder.getRequestData().containsKey(requestInfo)){
              try {
-                 throw new RequestNotFoundException(requestType);
+                 throw new RequestNotFoundException(requestInfo);
              } catch (RequestNotFoundException e) {
                  e.printStackTrace();
              }
          }
 
-         RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(requestType);
+         RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(requestInfo);
          message.setHeader("RequestType");
-        message.setRequestType(requestType);
-        RequestPacket request = new RequestPacket(requestType,requestData.write(message,client,args),listener);
+        message.setRequestInfo(requestInfo);
+        RequestPacket request = new RequestPacket(requestInfo,requestData.write(message,client,args),listener);
         request.setClient(client);
         request.getClient().writeAndFlush(request.getMessage(),listener);
         requests.put(request.getRequestID(),request);
@@ -55,34 +53,34 @@ public class RequestManager implements IRequestManager {
          //client.writeAndFlush(requestData.write(message,client,args),listener);
     }
 
-    public RequestPacket sendRequest(RequestType requestType, Object... args){
-       return this.sendRequest(requestType,new Message(),future -> {
-            Console.print("Request "+ requestType.name()+" sended with success!", Level.FINE);
+    public RequestPacket sendRequest(RequestInfo requestInfo, Object... args){
+       return this.sendRequest(requestInfo,new Message(),future -> {
+            Console.print("Request "+ requestInfo.name+" sended with success!", Level.FINE);
         },args);
     }
 
-    public RequestPacket sendRequest(RequestType requestType, Message message, Object... args){
-        return this.sendRequest(requestType,message,null,args);
+    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, Object... args){
+        return this.sendRequest(requestInfo,message,null,args);
     }
 
-    public RequestPacket sendRequest(RequestType requestType, boolean notifiedWhenSent, Object... args){
+    public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
-          return this.sendRequest(requestType,new Message(),future -> {
-                System.out.println("Request"+ requestType.name()+" sended with success!");
+          return this.sendRequest(requestInfo,new Message(),future -> {
+                System.out.println("Request"+ requestInfo.name+" sended with success!");
             },args);
 
         }
-       return this.sendRequest(requestType,new Message(),null,args);
+       return this.sendRequest(requestInfo,new Message(),null,args);
     }
 
-    public RequestPacket sendRequest(RequestType requestType, Message message, boolean notifiedWhenSent, Object... args){
+    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
-            return this.sendRequest(requestType,message,future -> {
-                System.out.println("Request"+ requestType.name()+" sended with success!");
+            return this.sendRequest(requestInfo,message,future -> {
+                System.out.println("Request"+ requestInfo.name+" sended with success!");
             },args);
 
         }
-        return this.sendRequest(requestType,message,null,args);
+        return this.sendRequest(requestInfo,message,null,args);
     }
     public RequestPacket getRequest(int RID){
         return requests.get(RID);

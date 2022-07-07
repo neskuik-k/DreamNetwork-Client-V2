@@ -64,6 +64,21 @@
                                             public static ** valueOf(java.lang.String);
                                             }
                                         </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.api.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.console.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.console.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.utils.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
 
                                         <option>-keep public class javax.xml.*</option>
                                     </options>
@@ -120,6 +135,152 @@
                                 </configuration>
                             </execution>
                         </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>API</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>11</java.version>
+                <outputPath>${project.basedir}/target/</outputPath>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <outputFile>${outputPath}/${project.artifactId}-${project.version}-api.jar</outputFile>
+                                    <minimizeJar>true</minimizeJar>
+                                    <filters>
+                                        <filter>
+                                            <artifact>log4j:log4j</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>commons-logging:commons-logging</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/addons/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/cluster/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/commands/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/config/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/libraries/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/connection/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/docker/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/events/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/installer/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/rest/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/service/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/client/*.class</exclude>
+                                                <exclude>files/**</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                    <relocations>
+
+                                    </relocations>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.0.13</version>
+                        <executions>
+                            <execution>
+                                <id>obfuscation-packaging</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <proguardVersion>7.1</proguardVersion>
+                                    <obfuscate>true</obfuscate>
+                                    <attach>true</attach>
+                                    <appendClassifier>false</appendClassifier>
+                                    <addMavenDescriptor>true</addMavenDescriptor>
+                                    <injar>${project.build.finalName}.jar</injar>
+                                    <outjar>${project.build.finalName}-small.jar</outjar>
+                                    <injarNotExistsSkip>true</injarNotExistsSkip>
+                                    <libs>
+                                        <lib>${java.home}/lib/rt.jar</lib>
+                                    </libs>
+
+                                    <options>
+                                        <option>-allowaccessmodification</option>
+                                        <option>-dontoptimize</option>
+                                        <option>-dontshrink</option>
+                                        <option>-dontnote</option>
+                                        <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
+                                        <option>-keepattributes Signature,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.client.Launcher</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.Launcher {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>
+                                            -keepclassmembers class * extends java.lang.Enum {
+                                            <![CDATA[<fields>]]>;
+                                            public static **[] values();
+                                            public static ** valueOf(java.lang.String);
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.api.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.client.console.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.console.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.client.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.utils.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.utils.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+
+                                        <option>-keep public class javax.xml.*</option>
+                                    </options>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>6.2.2</version>
+                            </dependency>
+                        </dependencies>
                     </plugin>
                 </plugins>
             </build>
@@ -242,7 +403,6 @@
     </repositories>
 
     <dependencies><!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-
 
 
 

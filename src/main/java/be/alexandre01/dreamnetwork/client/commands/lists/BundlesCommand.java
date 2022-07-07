@@ -1,9 +1,8 @@
 package be.alexandre01.dreamnetwork.client.commands.lists;
 
-import be.alexandre01.dreamnetwork.client.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.bundles.Create;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.bundles.Remove;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.*;
 
 
 public class BundlesCommand extends Command {

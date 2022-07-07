@@ -1,5 +1,6 @@
-package be.alexandre01.dreamnetwork.client.connection.core.players;
+package be.alexandre01.dreamnetwork.api.connection.core.players;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,7 +10,7 @@ import java.util.UUID;
 @Getter
 public class Player {
     private final int id;
-    @Setter private Client server;
+    @Setter private IClient server;
     private final String name;
     private final UUID uuid;
 

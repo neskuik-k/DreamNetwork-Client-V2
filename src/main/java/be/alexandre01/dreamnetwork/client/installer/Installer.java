@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.installer;
 
+import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
@@ -22,11 +23,11 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Installer {
     public static boolean queueisAvailable = true;
-    public static ArrayList<IInstall> queue = new ArrayList<>();
+    public static ArrayList<ContentInstaller.IInstall> queue = new ArrayList<>();
     @SneakyThrows
-    public static boolean launchDependInstall(String version, File file, IInstall iInstall){
+    public static boolean launchDependInstall(String version, File file, ContentInstaller.IInstall iInstall){
         if(!queueisAvailable){
-            queue.add(new IInstall() {
+            queue.add(new ContentInstaller.IInstall() {
                 @Override
                 public void start() {
 
@@ -50,9 +51,9 @@ public class Installer {
         return false;
     }
     @SneakyThrows
-    public static boolean launchMultipleInstallation(String url, List<File> files, String name, IInstall iInstall){
+    public static boolean launchMultipleInstallation(String url, List<File> files, String name, ContentInstaller.IInstall iInstall){
         if(!queueisAvailable){
-            queue.add(new IInstall() {
+            queue.add(new ContentInstaller.IInstall() {
                 @Override
                 public void start() {
 
@@ -67,7 +68,7 @@ public class Installer {
         }
         FileOutputStream stream = new FileOutputStream(files.get(0).getAbsolutePath()+"/"+ name);
         try {
-            install(url, stream, name, new IInstall() {
+            install(url, stream, name, new ContentInstaller.IInstall() {
                 @Override
                 public void start() {
 
@@ -105,7 +106,7 @@ public class Installer {
     @SneakyThrows
     public static boolean launchInstallation(String url, File file,String name){
         if(!queueisAvailable){
-            queue.add(new IInstall() {
+            queue.add(new ContentInstaller.IInstall() {
                 @Override
                 public void start() {
 
@@ -133,7 +134,7 @@ public class Installer {
     private static void install(String url, FileOutputStream stream, String name){
         install(url,stream,name,null);
     }
-    private static void install(String url, FileOutputStream stream, String name, IInstall iInstall){
+    private static void install(String url, FileOutputStream stream, String name, ContentInstaller.IInstall iInstall){
             try {
                 AsyncHttpClient client = Dsl.asyncHttpClient();
 
@@ -206,7 +207,7 @@ public class Installer {
 
 
                             if(!queue.isEmpty()){
-                                IInstall i = queue.get(0);
+                                ContentInstaller.IInstall i = queue.get(0);
                                 queue.remove(0);
                                 Client.getInstance().formatter.getDefaultStream().println("!QUEUE EMPTY");
                                 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
@@ -251,10 +252,7 @@ public class Installer {
 
     }
 
-        public interface IInstall{
-        public void start();
-        public void complete();
-        }
+
 
 
 

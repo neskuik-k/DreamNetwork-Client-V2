@@ -1,8 +1,9 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.installer.Installer;
 import be.alexandre01.dreamnetwork.client.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -58,7 +59,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
             }
 
 
-            Installer.launchDependInstall(args[3], jvmExecutor.getFileRootDir(), new Installer.IInstall() {
+            Installer.launchDependInstall(args[3], jvmExecutor.getFileRootDir(), new ContentInstaller.IInstall() {
                 @Override
                 public void start() {
 

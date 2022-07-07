@@ -1,5 +1,9 @@
 package be.alexandre01.dreamnetwork.client.connection.core.players;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
+import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
@@ -16,24 +20,26 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ServicePlayersManager {
-    @Getter final HashMap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,ServicePlayersObject> objects = new HashMap<>();
+public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager {
+    @Getter final HashMap<IClient, ServicePlayersObject> objects = new HashMap<>();
     @Getter final HashMap<Integer, Player> playersMap = new HashMap<>();
     @Getter final ArrayList<ServicePlayersObject> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ServicePlayersObject,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
 
-    @Getter Multimap<Player, be.alexandre01.dreamnetwork.client.connection.core.communication.Client> isRegistered = ArrayListMultimap.create();
-    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client, Player> services = ArrayListMultimap.create();
-    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Player> toUpdates =ArrayListMultimap.create();
-    Multimap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Player> toRemove = ArrayListMultimap.create();
-    HashMap<be.alexandre01.dreamnetwork.client.connection.core.communication.Client,Integer> count = new HashMap<>();
+    @Getter Multimap<Player, IClient> isRegistered = ArrayListMultimap.create();
+    Multimap<IClient, Player> services = ArrayListMultimap.create();
+    Multimap<IClient,Player> toUpdates =ArrayListMultimap.create();
+    Multimap<IClient,Player> toRemove = ArrayListMultimap.create();
+    HashMap<IClient,Integer> count = new HashMap<>();
     int totalCount = 0;
+    @Override
     public void registerPlayer(Player player){
         playersMap.put(player.getId(),player);
         totalCount++;
     }
 
-    public void removeUpdatingClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
+    @Override
+    public void removeUpdatingClient(IClient client){
         ServicePlayersObject s = getObject(client);
         wantToBeInformed.remove(s);
         wantToBeDirectlyInformed.remove(s);
@@ -41,10 +47,12 @@ public class ServicePlayersManager {
         toRemove.removeAll(client);
     }
 
-    public ServicePlayersObject getObject(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
+    @Override
+    public ServicePlayersObject getObject(IClient client){
         return objects.get(client);
     }
-    public void addUpdatingClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client, long time, DataType dataType){
+    @Override
+    public void addUpdatingClient(IClient client, long time, DataType dataType){
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
         objects.put(client,new ServicePlayersObject(client,dataType));
         toUpdates.putAll(client,playersMap.values());
@@ -68,7 +76,7 @@ public class ServicePlayersManager {
             ArrayList<String> a = new ArrayList<>();
             service.scheduleAtFixedRate(() -> {
                     StringBuilder sb = new StringBuilder();
-                    for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client c : count.keySet()){
+                    for(IClient c : count.keySet()){
                         sb.append(c.getJvmService().getJvmExecutor().getName()).append("-").append(c.getJvmService().getId());
                         sb.append(";");
                         sb.append(count.get(client));
@@ -80,7 +88,8 @@ public class ServicePlayersManager {
 
     }
 
-    public void udpatePlayerServer(int id,String server){
+    @Override
+    public void udpatePlayerServer(int id, String server){
         Player player = getPlayer(id);
         String[] args = server.split("-");
 
@@ -93,10 +102,10 @@ public class ServicePlayersManager {
         }
 
         if(jvmExecutor != null){
-            JVMService jvmService = jvmExecutor.getService(i);
+            IService jvmService = jvmExecutor.getService(i);
             if(jvmService != null){
-                be.alexandre01.dreamnetwork.client.connection.core.communication.Client client = jvmService.getClient();
-                be.alexandre01.dreamnetwork.client.connection.core.communication.Client oldClient = player.getServer();
+                IClient client = jvmService.getClient();
+                IClient oldClient = player.getServer();
                 if(oldClient != null){
                     count.put(oldClient,count.get(oldClient)-1);
                     services.remove(oldClient,player);
@@ -132,13 +141,15 @@ public class ServicePlayersManager {
     }
 
 
+    @Override
     public Player getPlayer(int id){
         return playersMap.get(id);
     }
 
+    @Override
     public void unregisterPlayer(int id){
         Player player = getPlayer(id);
-        be.alexandre01.dreamnetwork.client.connection.core.communication.Client oldClient = player.getServer();
+        IClient oldClient = player.getServer();
         if(oldClient != null){
             count.put(oldClient,count.get(oldClient)-1);
             services.remove(oldClient,player);
@@ -151,10 +162,6 @@ public class ServicePlayersManager {
         for(ServicePlayersObject c : wantToBeInformed.keySet()){
             toRemove.put(c.getClient(),player);
         }
-    }
-
-    public enum DataType{
-        PLAYERS_COUNT, PLAYERS_LIST;
     }
 
 }

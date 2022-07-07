@@ -1,22 +1,28 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
+import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.*;
 import java.util.Date;
 import java.util.logging.Level;
-@Data
-public class JVMStartupConfig extends JVMConfig{
+@Getter @Setter
+public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @Getter boolean isConfig;
     @Getter long confSize = 0;
     @Getter boolean proxy = false;
     @Getter boolean fixedData = false;
     @Getter File fileRootDir;
 
+    public static Builder builder(){
+        return new Builder();
+    }
 
 
 
@@ -73,9 +79,10 @@ public class JVMStartupConfig extends JVMConfig{
         }
     }
 
-    public JVMStartupConfig(String pathName,String name){
+    public JVMStartupConfig(String pathName,String name,boolean isBuilded){
         this.name = name;
         this.pathName = pathName;
+        if(isBuilded) return;
         update();
     }
 
@@ -134,7 +141,8 @@ public class JVMStartupConfig extends JVMConfig{
             return;
         }
     }
-    public boolean changePort(String pathName , String finalname , int port, JVMExecutor.Mods type){
+    @Override
+    public boolean changePort(String pathName, String finalname, int port, JVMExecutor.Mods type){
         String name = finalname.split("-")[0];
         String fileName;
         String checker;
@@ -196,6 +204,7 @@ public class JVMStartupConfig extends JVMConfig{
 
     }
 
+    @Override
     public Integer getCurrentPort(String pathName, String finalname, JVMExecutor.Mods type){
         String fileName;
         String checker;
@@ -274,6 +283,7 @@ public class JVMStartupConfig extends JVMConfig{
         }
         return null;
     }
+    @Override
     public String getLine(String finalname){
         String name = finalname.split("-")[0];
         File properties = new File(System.getProperty("user.dir")+ Config.getPath("/tmp/server/"+name+"/"+finalname+"/logs/latest.log"));
@@ -310,6 +320,7 @@ public class JVMStartupConfig extends JVMConfig{
         }
         return null;
     }
+    @Override
     public void addConfigsFiles(){
         System.out.println("PROCESS ADD CONFIG");
         InputStream isp = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
@@ -340,7 +351,8 @@ public class JVMStartupConfig extends JVMConfig{
             e.printStackTrace();
         }
     }
-    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy,String exec, String startup,String javaVersion){
+    @Override
+    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
         Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
         Console.print("MODS>"+type.name(),Level.FINE);
@@ -387,13 +399,103 @@ public class JVMStartupConfig extends JVMConfig{
             e.printStackTrace();
         }
     }
+    @Override
     public long getConfigSize(){
         return  Config.createFile((System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")).length();
     }
+    @Override
     public boolean hasExecutable(){
         if(Config.contains(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name+"/"+exec))){
             return true;
         }
         return false;
+    }
+
+    public static class Builder implements IStartupConfigBuilder {
+        private String name;
+        private String pathName;
+        private JVMExecutor.Mods type;
+        private String Xms;
+        private String Xmx;
+        private int port;
+        private boolean proxy;
+
+        private String exec;
+
+        private String startup;
+
+        private String javaVersion;
+
+
+
+        @Override
+        public Builder name(String name){
+            this.name = name;
+            return this;
+        }
+        @Override
+        public Builder pathName(String pathName){
+            this.pathName = pathName;
+            return this;
+        }
+
+        @Override
+        public Builder type(JVMExecutor.Mods type){
+            this.type = type;
+            return this;
+        }
+        @Override
+        public Builder xms(String Xms){
+            this.Xms = Xms;
+            return this;
+        }
+        @Override
+        public Builder xmx(String Xmx){
+            this.Xmx = Xmx;
+            return this;
+        }
+        @Override
+        public Builder port(int port){
+            this.port = port;
+            return this;
+        }
+        @Override
+        public Builder proxy(boolean proxy){
+            this.proxy = proxy;
+            return this;
+        }
+
+        @Override
+        public Builder exec(String exec){
+            this.exec = exec;
+            return this;
+        }
+
+        @Override
+        public Builder startup(String startup){
+            this.startup = startup;
+            return this;
+        }
+
+        @Override
+        public Builder javaVersion(String javaVersion){
+            this.javaVersion = javaVersion;
+            return this;
+        }
+
+
+        @Override
+        public JVMStartupConfig build(){
+            JVMStartupConfig j =  new JVMStartupConfig(name,pathName,true);
+            j.setType(type);
+            j.setXms(Xms);
+            j.setXmx(Xmx);
+            j.setPort(port);
+            j.setProxy(proxy);
+            j.setJavaVersion(javaVersion);
+            j.setExec(exec);
+            j.setStartup(startup);
+            return j;
+        }
     }
 }

@@ -1,13 +1,10 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.edit;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.config.Config;
-import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.jvm.JavaIndex;
-import be.alexandre01.dreamnetwork.client.service.jvm.JavaVersion;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 

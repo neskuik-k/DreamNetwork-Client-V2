@@ -1,10 +1,11 @@
-package be.alexandre01.dreamnetwork.client.commands;
+package be.alexandre01.dreamnetwork.api.commands;
 
 
 
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.commands.lists.*;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import lombok.Getter;
 
 import java.io.IOException;
 import java.util.concurrent.Executors;
@@ -12,8 +13,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 public class CommandReader{
-    CommandsManager commands;
-    Console console;
+    @Getter CommandsManager commands;
+    @Getter Console console;
     private boolean stop = false;
 
 
@@ -27,7 +28,7 @@ public class CommandReader{
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
-      //  commands.addCommands(new GuiCommand("gui"));
+        //commands.addCommands(new GuiCommand("gui"));
 
     }
 

@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service.screen;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -13,10 +15,10 @@ import java.util.ArrayList;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class  Screen extends Thread {
+public class  Screen extends Thread implements IScreen {
     JVMService service;
     ArrayList<String> history;
-    ArrayList<Client> devToolsReading = new ArrayList<>();
+    ArrayList<IClient> devToolsReading = new ArrayList<>();
     ScreenStream screenStream;
     Integer screenId;
     String screenName;
@@ -37,6 +39,7 @@ public class  Screen extends Thread {
     }
 
 
+    @Override
     public void destroy(){
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.getConsole("s:"+screenName).destroy();
@@ -57,14 +60,17 @@ public class  Screen extends Thread {
         }
     }
 
+    @Override
     public JVMService getService() {
         return service;
     }
 
+    @Override
     public ArrayList<String> getHistory() {
         return history;
     }
 
+    @Override
     public ScreenStream getScreenStream() {
         return screenStream;
     }

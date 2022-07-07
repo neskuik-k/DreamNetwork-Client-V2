@@ -1,8 +1,6 @@
-package be.alexandre01.dreamnetwork.client.connection.request;
+package be.alexandre01.dreamnetwork.api.connection.request;
 
 
-import be.alexandre01.dreamnetwork.api.connection.request.RequestFutureResponse;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
@@ -13,7 +11,7 @@ import lombok.Data;
 public class RequestPacket {
     private static int currentId;
 
-    private final RequestType requestType;
+    private final RequestInfo requestInfo;
     private final GenericFutureListener<? extends Future<? super Void>> listener;
     private final int requestID;
     private Message message;
@@ -22,8 +20,8 @@ public class RequestPacket {
 
     private Client client;
 
-    public RequestPacket(RequestType requestType, Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
-        this.requestType = requestType;
+    public RequestPacket(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
+        this.requestInfo = requestInfo;
         this.listener = listener;
         this.requestID = currentId;
         this.message = message;
@@ -33,7 +31,7 @@ public class RequestPacket {
         currentId++;
     }
     public RequestPacket(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
-        this.requestType = RequestType.CUSTOM;
+        this.requestInfo = RequestType.CUSTOM;
         this.listener = listener;
         this.requestID = currentId;
         this.message = message;

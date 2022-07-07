@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.utils.messages;
 
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
@@ -80,17 +81,17 @@ public class Message extends LinkedHashMap<String, Object> {
         return (String) super.get("header");
     }
 
-    public Message setRequestType(RequestType requestType){
-        super.put("requestType",requestType.getId());
+    public Message setRequestInfo(RequestInfo requestType){
+        super.put("RI",requestType.id);
         return this;
     }
 
-    public RequestType getRequest(){
-        return (RequestType) RequestType.getByID(((Double) super.get("requestType")).intValue());
+    public RequestInfo getRequest(){
+        return (RequestInfo) RequestType.getByID(((Double) super.get("RI")).intValue());
     }
 
     public boolean hasRequest(){
-        return containsKey("requestType");
+        return containsKey("RI");
     }
 
     public JsonObject toJsonObject() {

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -7,7 +8,11 @@ import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import lombok.Builder;
 import lombok.Data;
-@Data @Builder
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+@Builder
 public class JVMService implements IService {
     private int id;
     private int port;
@@ -56,5 +61,10 @@ public class JVMService implements IService {
     @Override
     public void removeService() {
         jvmExecutor.removeService(id);
+    }
+
+    @Override
+    public void setClient(IClient client) {
+        this.client = (Client) client;
     }
 }

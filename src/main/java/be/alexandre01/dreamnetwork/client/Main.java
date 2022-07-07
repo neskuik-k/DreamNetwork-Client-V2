@@ -8,12 +8,14 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
-import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import be.alexandre01.dreamnetwork.client.commands.CommandReader;
+import be.alexandre01.dreamnetwork.api.commands.CommandReader;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.client.commands.lists.sub.edit.JVM;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.history.ReaderHistory;
 import com.github.tomaslanger.chalk.Chalk;
@@ -28,7 +30,6 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
-import lombok.Setter;
 import org.jline.reader.History;
 import sun.misc.Unsafe;
 
@@ -54,7 +55,7 @@ public class Main {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         disableWarning();
         System.setProperty("illegal-access", "permit");
-        commandReader = new be.alexandre01.dreamnetwork.client.commands.CommandReader();
+        commandReader = new CommandReader();
         ConsoleReader.init();
         Config.createDir("data");
         ReaderHistory readerHistory = new ReaderHistory();
@@ -104,7 +105,7 @@ public class Main {
                         boolean isReady = false;
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
-                                for(JVMService service : jvmExecutor.getServices()){
+                                for(IService service : jvmExecutor.getServices()){
                                     if(service.getClient() == null){
                                         service.kill();
                                     }
@@ -115,7 +116,7 @@ public class Main {
 
                         for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
                             if(!jvmExecutor.jvmServices.isEmpty()){
-                                for(JVMService service : jvmExecutor.getServices()){
+                                for(IService service : jvmExecutor.getServices()){
                                     if(service.getClient() == null){
                                         service.kill();
                                     }
@@ -178,7 +179,7 @@ public class Main {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
+            if(false){//!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
                 System.out.println(Colors.RED+ "The license key is invalid!");
                 secretFile.deleteSecretFile();
                 System.exit(1);

@@ -1,7 +1,9 @@
 package be.alexandre01.dreamnetwork.client;
 
 
+import be.alexandre01.dreamnetwork.api.DNClientAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 import be.alexandre01.dreamnetwork.client.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
@@ -66,6 +68,8 @@ public class Client {
     private BundleManager bundleManager;
     @Getter @Setter private boolean devToolsAccess = false;
     @Getter @Setter private String devToolsToken = null;
+
+    @Getter private DNClientAPI dnClientAPI;
 
     @Getter private ServicePlayersManager servicePlayersManager;
     static {
@@ -155,7 +159,7 @@ public class Client {
         console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
 
 
-        ScreenManager.load();
+        IScreenManager.load();
 
         JavaReader javaReader = new JavaReader();
         javaIndex = javaReader.getJavaIndex();
@@ -172,5 +176,7 @@ public class Client {
         //MANAGER
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
+
+        this.dnClientAPI = new DNClientAPI();
     }
 }

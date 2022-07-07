@@ -1,11 +1,12 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.service.IConfig;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
-@Builder @Setter @Getter
-public class JVMConfig {
+@Setter @Getter
+public class JVMConfig implements IConfig {
     String name;
     JVMExecutor.Mods type;
     String xms;

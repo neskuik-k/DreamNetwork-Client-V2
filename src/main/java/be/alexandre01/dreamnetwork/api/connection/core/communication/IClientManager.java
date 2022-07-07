@@ -4,19 +4,19 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import io.netty.channel.ChannelHandlerContext;
 
 public interface IClientManager {
-    Client registerClient(Client client);
+    IClient registerClient(Client client);
 
-    Client getClient(String processName);
+    IClient getClient(String processName);
 
-    Client getClient(ChannelHandlerContext ctx);
+    IClient getClient(ChannelHandlerContext ctx);
 
-    java.util.HashMap<String, Client> getClients();
+    java.util.HashMap<String, IClient> getClients();
 
-    java.util.HashMap<ChannelHandlerContext, Client> getClientsByConnection();
+    java.util.HashMap<ChannelHandlerContext, IClient> getClientsByConnection();
 
-    java.util.ArrayList<Client> getDevTools();
+    java.util.ArrayList<IClient> getDevTools();
 
-    Client getProxy();
+    IClient getProxy();
 
-    void setProxy(Client proxy);
+
 }

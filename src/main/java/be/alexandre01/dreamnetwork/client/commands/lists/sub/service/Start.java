@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMConfig;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
@@ -10,7 +10,6 @@ import be.alexandre01.dreamnetwork.client.service.JVMStartupConfig;
 import be.alexandre01.dreamnetwork.client.utils.clients.RamArgumentsChecker;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
-import org.jline.reader.impl.completer.NullCompleter;
 
 import static org.jline.builtins.Completers.TreeCompleter.node;
 

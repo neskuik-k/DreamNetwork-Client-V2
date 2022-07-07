@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.bundles;
 
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import lombok.NonNull;
 
 import static org.jline.builtins.Completers.TreeCompleter.node;

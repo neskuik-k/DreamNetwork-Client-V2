@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.installer;
 
+import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -93,7 +94,7 @@ public class SpigetConsole {
 
                                         @Override
                                         public void run() {
-                                            Installer.launchMultipleInstallation(ressource.getDwnLink(), dirs, ressource.getFileName(), new Installer.IInstall() {
+                                            Installer.launchMultipleInstallation(ressource.getDwnLink(), dirs, ressource.getFileName(), new ContentInstaller.IInstall() {
                                                 @Override
                                                 public void start() {
 

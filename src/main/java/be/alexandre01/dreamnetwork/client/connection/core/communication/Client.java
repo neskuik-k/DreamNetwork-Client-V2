@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.client.connection.request.generated.devtool.DefaultDevToolRequest;
@@ -33,7 +35,7 @@ public class Client implements IClient {
 
     private final RequestManager requestManager;
     private CoreHandler coreHandler;
-    private JVMService jvmService;
+    private IService jvmService;
     private ClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
 

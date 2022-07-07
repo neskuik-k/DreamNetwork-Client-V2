@@ -15,12 +15,12 @@ public class DefaultDevToolRequest extends RequestBuilder {
             message.set("CMD", args[0]);
             return message;
         });
-        requestData.put(RequestType.DEV_TOOLS_NEW_SERVER,(message, client, args) -> {
+        requestData.put(RequestType.DEV_TOOLS_NEW_SERVERS,(message, client, args) -> {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });
 
-        requestData.put(RequestType.DEV_TOOLS_REMOVE_SERVER,(message, client, args) -> {
+        requestData.put(RequestType.DEV_TOOLS_REMOVE_SERVERS,(message, client, args) -> {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });

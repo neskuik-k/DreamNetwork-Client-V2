@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.client.commands.lists;
 
-import be.alexandre01.dreamnetwork.client.commands.Command;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.edit.JVM;
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.gui.Stats;
 
 

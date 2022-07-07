@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
@@ -25,9 +27,9 @@ public interface IClient {
 
     IRequestManager getRequestManager();
 
-    be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler getCoreHandler();
+    ICoreHandler getCoreHandler();
 
-    be.alexandre01.dreamnetwork.client.service.JVMService getJvmService();
+    IService getJvmService();
 
     ClientManager getClientManager();
 
@@ -45,7 +47,7 @@ public interface IClient {
 
     void setCoreHandler(be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler coreHandler);
 
-    void setJvmService(be.alexandre01.dreamnetwork.client.service.JVMService jvmService);
+
 
     void setClientManager(ClientManager clientManager);
 

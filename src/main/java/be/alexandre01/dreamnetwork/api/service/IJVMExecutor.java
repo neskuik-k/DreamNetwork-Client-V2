@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMConfig;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
+import be.alexandre01.dreamnetwork.client.service.JVMStartupConfig;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
@@ -14,8 +15,14 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.logging.Level;
 
-public interface IJVMExecutor {
-    static JVMExecutor initIfPossible(String pathName, String name, boolean updateFile) {
+public abstract class IJVMExecutor extends JVMStartupConfig {
+    public IJVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile) {
+        super(pathName, name, type, xms, xmx, port, proxy, updateFile);
+    }
+    public IJVMExecutor(String pathName, String name) {
+        super(pathName, name,false);
+    }
+    public static IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile) {
         Mods type = null;
         String xms = null;
         String xmx = null;
@@ -88,7 +95,7 @@ public interface IJVMExecutor {
 
         if (typeServer.equalsIgnoreCase("server") || typeServer.equalsIgnoreCase("proxy")) {
             if (Config.contains("template/" + typeServer + "/" + name)) {
-                JVMExecutor process = new JVMExecutor(name, typeServer);
+                IJVMExecutor process = new JVMExecutor(name, typeServer);
                 process.setPort(port);
                 process.startServer();
                 //ServerInstance.startServer(args[2],args[1]);
@@ -118,7 +125,7 @@ public interface IJVMExecutor {
     }
 
     //INCLUDE JNA
-    static long getProcessID(Process p) {
+    public static long getProcessID(Process p) {
         long result = -1;
         try {
             //for windows
@@ -170,7 +177,7 @@ public interface IJVMExecutor {
         return JVMExecutor.serversPort;
     }
 
-    static java.util.HashMap<Integer, JVMService> getServicePort() {
+    static java.util.HashMap<Integer, IService> getServicePort() {
         return JVMExecutor.servicePort;
     }
 
@@ -202,7 +209,7 @@ public interface IJVMExecutor {
         JVMExecutor.serversPort = serversPort;
     }
 
-    static void setServicePort(java.util.HashMap<Integer, JVMService> servicePort) {
+    static void setServicePort(java.util.HashMap<Integer, IService> servicePort) {
         JVMExecutor.servicePort = servicePort;
     }
 
@@ -210,29 +217,19 @@ public interface IJVMExecutor {
         JVMExecutor.cache = cache;
     }
 
-    void setPort(int port);
 
-    void startServer();
 
-    void startServer(JVMConfig jvmConfig);
 
-    void removeService(int i);
+    public abstract void startServer();
 
-    JVMService getService(Integer i);
+    public abstract void startServer(IConfig jvmConfig);
 
-    Collection<JVMService> getServices();
+    public abstract void removeService(int i);
 
-    String getName();
+    public abstract IService getService(Integer i);
 
-    Mods getType();
+    public abstract Collection<IService> getServices();
 
-    String getXms();
-
-    String getXmx();
-
-    int getPort();
-
-    boolean isPortAvailable(int port);
 
     public enum Mods {
         STATIC("/template/"), DYNAMIC("/tmp/");

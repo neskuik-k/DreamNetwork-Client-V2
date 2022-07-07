@@ -1,7 +1,8 @@
 package be.alexandre01.dreamnetwork.client.connection.request.generated.spigot;
 
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.connection.core.players.Player;
+import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
@@ -40,7 +41,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
                     if(p.getServer().getJvmService() == null){
                         continue;
                     }
-                    JVMService service = p.getServer().getJvmService();
+                    IService service = p.getServer().getJvmService();
                     StringBuilder sb = new StringBuilder();
                     sb.append(p.getId()).append(";");
                     String name = service.getJvmExecutor().getName()+"-"+service.getId();

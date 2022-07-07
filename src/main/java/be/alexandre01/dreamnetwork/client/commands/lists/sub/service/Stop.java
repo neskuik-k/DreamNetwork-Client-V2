@@ -1,14 +1,14 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.client.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
-import org.jline.reader.impl.completer.NullCompleter;
 
 import static org.jline.builtins.Completers.TreeCompleter.node;
 
@@ -56,7 +56,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                 return true;
             }
 
-            JVMService jvmService = jvmExecutor.getService(sId);
+            IService jvmService = jvmExecutor.getService(sId);
             jvmService.stop();
             return true;
         }

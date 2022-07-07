@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.client.connection.core.channels;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
@@ -42,7 +43,7 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void storeData(String key, Object object, be.alexandre01.dreamnetwork.client.connection.core.communication.Client... clients){
+    public void storeData(String key, Object object, IClient... clients){
         boolean autoSend = true;
         if(autoSendObjects.containsKey(key)){
             autoSend = autoSendObjects.get(key);
@@ -51,8 +52,8 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void storeData(String key, Object object, boolean autoSend, be.alexandre01.dreamnetwork.client.connection.core.communication.Client... clients){
-        List<be.alexandre01.dreamnetwork.client.connection.core.communication.Client> c = Arrays.asList(clients);
+    public void storeData(String key, Object object, boolean autoSend, IClient... clients){
+        List<IClient> c = Arrays.asList(clients);
         setData(key,object,autoSend);
         Console.print("Object>>"+ object, Level.FINE);
         if(autoSend){
@@ -64,7 +65,7 @@ public class DNChannel implements IDNChannel {
                 return;
 
 
-            for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client : channelManager.getClientsRegistered().get(getName())){
+            for(IClient client : channelManager.getClientsRegistered().get(getName())){
                 if(c.contains(client)){
                     continue;
                 }
@@ -86,7 +87,7 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void sendMessage(Message message, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client){
+    public void sendMessage(Message message, IClient client){
         message.setProvider("core");
         ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
         channelPacket.createResponse(message,client);

@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.commands.sub;
+package be.alexandre01.dreamnetwork.api.commands.sub;
 
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import org.jline.builtins.Completers;

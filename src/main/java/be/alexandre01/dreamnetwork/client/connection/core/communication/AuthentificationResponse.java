@@ -1,6 +1,10 @@
 package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.service.IContainer;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
@@ -29,98 +33,96 @@ public class AuthentificationResponse extends CoreResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, be.alexandre01.dreamnetwork.client.connection.core.communication.Client client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
         Console.print("Requete entrente->",Level.FINE);
         Console.print(message,Level.FINE);
         ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
         if(message.hasRequest()){
-            RequestType requestType = message.getRequest();
-            Console.print("REQUETE : "+ requestType, Level.FINE);
+            RequestInfo requestInfo = message.getRequest();
+            Console.print("REQUETE : "+ requestInfo, Level.FINE);
 
             if(!coreHandler.getExternalConnection().contains(ctx)){
-                switch (requestType){
-                    case CORE_HANDSHAKE:
-                        Console.print("HANDSHAKE", Level.FINE);
-                        if(!message.contains("INFO") && !message.contains("PORT") && !message.contains("PASSWORD")){
-                            ctx.channel().close();
-                            return;
-                        }
+                if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
+                    Console.print("HANDSHAKE", Level.FINE);
+                    if (!message.contains("INFO") && !message.contains("PORT") && !message.contains("PASSWORD")) {
+                        ctx.channel().close();
+                        return;
+                    }
 
-                        String info = message.getString("INFO");
-                        int port = message.getInt("PORT");
-                        String password = message.getString("PASSWORD");
+                    String info = message.getString("INFO");
+                    int port = message.getInt("PORT");
+                    String password = message.getString("PASSWORD");
 
-                        Console.print("CREATE CLIENT", Level.FINE);
-                        be.alexandre01.dreamnetwork.client.connection.core.communication.Client newClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
-                                .coreHandler(Client.getInstance().getCoreHandler())
-                                .info(info)
-                                .port(port)
-                                .jvmType(null)
-                                .ctx(ctx)
-                                .build());
+                    Console.print("CREATE CLIENT", Level.FINE);
+                    be.alexandre01.dreamnetwork.client.connection.core.communication.Client newClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
+                            .coreHandler(Client.getInstance().getCoreHandler())
+                            .info(info)
+                            .port(port)
+                            .jvmType(null)
+                            .ctx(ctx)
+                            .build());
 
 
-                        if(newClient.getJvmType() == null){
-                            Console.print(Colors.RED+"Client "+newClient.getInfo()+" not recognized and tried to connect");
-                            return;
-                        }
-                        if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
-                            newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
-                            for(JVMExecutor service : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
-                                if(!service.getServices().isEmpty()){
-                                    for(JVMService jvmService : service.getServices()){
-                                        if(jvmService.getClient() != null){
-                                            System.out.println(Colors.RED+"<!>"+Colors.YELLOW+" Recovering "+Colors.PURPLE+ jvmService.getJvmExecutor().getName()+"-"+jvmService.getId()+Colors.YELLOW+" on the proxy");
-                                            String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
-                                            newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                                    jvmService.getJvmExecutor().getName()+"-"+jvmService.getId(),
-                                                    remoteAdress[0].replaceAll("/",""),
-                                                    jvmService.getPort());
-                                        }
+                    if (newClient.getJvmType() == null) {
+                        Console.print(Colors.RED + "Client " + newClient.getInfo() + " not recognized and tried to connect");
+                        return;
+                    }
+                    if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
+                        newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
+                        for (JVMExecutor service : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                            if (!service.getServices().isEmpty()) {
+                                for (IService jvmService : service.getServices()) {
+                                    if (jvmService.getClient() != null) {
+                                        System.out.println(Colors.RED + "<!>" + Colors.YELLOW + " Recovering " + Colors.PURPLE + jvmService.getJvmExecutor().getName() + "-" + jvmService.getId() + Colors.YELLOW + " on the proxy");
+                                        String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
+                                        newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                                jvmService.getJvmExecutor().getName() + "-" + jvmService.getId(),
+                                                remoteAdress[0].replaceAll("/", ""),
+                                                jvmService.getPort());
                                     }
                                 }
                             }
-                            Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Proxy "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
-                            for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client devtools : Client.getInstance().getClientManager().getDevTools()){
-                                String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
-                                devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
-                            }
-                            Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
                         }
-                        if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
-                            newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
-                            be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
-                            String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
+                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        for (IClient devtools : Client.getInstance().getClientManager().getDevTools()) {
+                            String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId();
+                            devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
+                        }
+                        Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
+                    }
+                    if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
+                        newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
+                        be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
+                        String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
-                            proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                    newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId(),
-                                    remoteAdress[0].replaceAll("/",""),
-                                    newClient.getPort());
+                        proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId(),
+                                remoteAdress[0].replaceAll("/", ""),
+                                newClient.getPort());
 
-                            Console.print(Colors.YELLOW+"- "+ Colors.CYAN_BOLD+"Serveur "+ newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+" lié à DreamNetwork");
-                            ArrayList<String> servers = new ArrayList<>();
+                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        ArrayList<String> servers = new ArrayList<>();
 
 
+                        for (JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                            if (!jvmExecutor.getServices().isEmpty()) {
+                                for (IService service : jvmExecutor.getServices()) {
 
-                            for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
-                                if(!jvmExecutor.getServices().isEmpty()){
-                                for(JVMService service : jvmExecutor.getServices()){
-
-                                    if(service.getClient() != null){
-                                        String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+";"+newClient.getJvmService().getJvmExecutor().getType().name().charAt(0)+";t";
+                                    if (service.getClient() != null) {
+                                        String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
                                         service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
-                                        servers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType().name().charAt(0)+";t");
+                                        servers.add(jvmExecutor.getName() + "-" + service.getId() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
                                     }
-                                    }
-                                }else {
-                                    servers.add(jvmExecutor.getName()+";"+jvmExecutor.getType().name().charAt(0)+";f");
                                 }
+                            } else {
+                                servers.add(jvmExecutor.getName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f");
                             }
-                            for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client devtools : Client.getInstance().getClientManager().getDevTools()){
-                                String server = newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId();
-                                if(devtools != null)
-                                    devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+newClient.getJvmService().getJvmExecutor().getType()+";"+ newClient.getJvmService().getJvmExecutor().isProxy()+";true");
-                            }
+                        }
+                        for (IClient devtools : Client.getInstance().getClientManager().getDevTools()) {
+                            String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId();
+                            if (devtools != null)
+                                devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
+                        }
 
                           /*  for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
                                 for(JVMService service : jvmExecutor.getServices()){
@@ -130,20 +132,18 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }*/
 
-                            newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, servers.toArray(new String[0]));
-                            Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
+                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, servers.toArray(new String[0]));
+                        Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
+                    }
+                    return;
+                }
 
-                        }
-                        break;
-                    case DEV_TOOLS_HANDSHAKE:
-                        devToolsCheck(requestType, message, ctx, ctxs);
-                        break;
+                if (RequestType.DEV_TOOLS_HANDSHAKE.equals(requestInfo)) {
+                    devToolsCheck(requestInfo, message, ctx, ctxs);
                 }
             }else {
-                switch (requestType) {
-                    case DEV_TOOLS_HANDSHAKE:
-                        devToolsCheck(requestType, message, ctx, ctxs);
-                        break;
+                if (RequestType.DEV_TOOLS_HANDSHAKE.equals(requestInfo)) {
+                    devToolsCheck(requestInfo, message, ctx, ctxs);
                 }
             }
         }else {
@@ -153,7 +153,7 @@ public class AuthentificationResponse extends CoreResponse {
         }
     }
 
-    public void devToolsCheck(RequestType requestType,Message message,ChannelHandlerContext ctx,ArrayList<ChannelHandlerContext> ctxs){
+    public void devToolsCheck(RequestInfo requestInfo,Message message,ChannelHandlerContext ctx,ArrayList<ChannelHandlerContext> ctxs){
 
                 Console.print("HANDSHAKE", Level.FINE);
                 if(!message.contains("INFO") && !message.contains("PORT") && !message.contains("TOKEN") && !message.contains("USER")){
@@ -192,7 +192,7 @@ public class AuthentificationResponse extends CoreResponse {
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
-                    for(JVMService service : jvmExecutor.getServices()){
+                    for(IService service : jvmExecutor.getServices()){
                         devServers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
                     }
                 }
@@ -202,7 +202,7 @@ public class AuthentificationResponse extends CoreResponse {
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
-                    for(JVMService service : jvmExecutor.getServices()){
+                    for(IService service : jvmExecutor.getServices()){
                         devServers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
                     }
                 }
@@ -210,7 +210,7 @@ public class AuthentificationResponse extends CoreResponse {
                 ctxs.add(ctx);
                 devClient.getRequestManager().sendRequest(RequestType.DEV_TOOLS_HANDSHAKE);
 
-                devClient.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, str);
+                devClient.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, str);
                 Console.print(Colors.YELLOW+"- "+ Colors.GREEN_BOLD+"Console distante DEVTOOL lié à DreamNetwork sous le nom "+ devUser+" via l'ip "+ devClient.getChannelHandlerContext().channel().remoteAddress());
     }
 }

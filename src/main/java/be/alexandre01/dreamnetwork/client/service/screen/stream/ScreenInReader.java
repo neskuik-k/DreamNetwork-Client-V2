@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -82,7 +83,7 @@ public class ScreenInReader extends Thread {
                     console.printNL(data);
                     datas.setLength(0);
 
-                    for(be.alexandre01.dreamnetwork.client.connection.core.communication.Client client : screen.getDevToolsReading()){
+                    for(IClient client : screen.getDevToolsReading()){
                         client.getRequestManager().sendRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,data);
                     }
                 }

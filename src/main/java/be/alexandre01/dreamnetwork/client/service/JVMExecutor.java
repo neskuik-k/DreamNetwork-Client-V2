@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.config.EstablishedAction;
@@ -29,7 +31,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 
-public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
+public class JVMExecutor extends IJVMExecutor {
 
 
     @Getter @Setter private static ArrayList<String> serverList = new ArrayList<>();
@@ -39,10 +41,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter @Setter  public static ArrayList<Integer> serversPortList = new ArrayList<>();
     @Getter @Setter  public static ArrayList<Integer> portsBlackList = new ArrayList<>();
     @Getter @Setter  public static HashMap<String,Integer> serversPort = new HashMap<>();
-    @Getter @Setter  public static HashMap<Integer, JVMService> servicePort = new HashMap<>();
+    @Getter @Setter  public static HashMap<Integer, IService> servicePort = new HashMap<>();
     @Getter @Setter  public static Integer cache = 0;
-    private ArrayList<JVMConfig> queue = new ArrayList<>();
-    public HashMap<Integer,JVMService> jvmServices = new HashMap<>();
+    private ArrayList<IConfig> queue = new ArrayList<>();
+    public HashMap<Integer,IService> jvmServices = new HashMap<>();
 
 
     public JVMExecutor(String pathName,String name, Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile) {
@@ -53,13 +55,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     public JVMExecutor(String pathName,String name){
         super(pathName,name);
-        JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        JVMContainer.JVMType jvmType = ((isProxy()) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
         Client.getInstance().getJvmContainer().addExecutor(this,jvmType);
     }
 
     @Override
     public void setPort(int port){
-        this.port = port;
+        this.setPort(port);
     }
 
     @Override
@@ -67,7 +69,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         startServer(this);
     }
     @Override
-    public synchronized void startServer(JVMConfig jvmConfig){
+    public synchronized void startServer(IConfig jvmConfig){
         boolean b = queue.isEmpty();
         queue.add(jvmConfig);
 
@@ -78,8 +80,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         startJVM(jvmConfig);
     }
 
-    private synchronized void startJVM(JVMConfig jvmConfig){
-        Console.print("StartJVM "+ jvmConfig.name,Level.FINE);
+    private synchronized void startJVM(IConfig jvmConfig){
+        Console.print("StartJVM "+ jvmConfig.getName(),Level.FINE);
         if(!start(jvmConfig)){
             Console.print(Colors.ANSI_RED()+"The server could not be started",Level.WARNING);
             queue.remove(jvmConfig);
@@ -89,29 +91,29 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
         }
     }
-    private synchronized boolean start(JVMConfig jvmConfig){
+    private synchronized boolean start(IConfig jvmConfig){
 
         if(!queue.isEmpty())
-        if(!isConfig) return false;
+        if(!isConfig()) return false;
 
 
-        if(jvmConfig.type == Mods.STATIC && !jvmServices.isEmpty()){
+        if(jvmConfig.getType() == Mods.STATIC && !jvmServices.isEmpty()){
             Console.print(Colors.ANSI_RED()+"The server is already running",Level.WARNING);
             return false;
         }
 
         if(!this.hasExecutable()){
-            Console.print(Colors.ANSI_RED()+"The server executable is missing: "+ exec);
+            Console.print(Colors.ANSI_RED()+"The server executable is missing: "+ getExec());
             return false;
         }
 
-        if(this.confSize != getConfigSize() && !isFixedData()){
+        if(this.getConfigSize() != getConfigSize() && !isFixedData()){
             update();
         }
 
         boolean proxy;
         int servers = 0;
-        if(jvmConfig.pathName.contains("server")){
+        if(jvmConfig.getPathName().contains("server")){
             proxy = false;
         }else {
             proxy = true;
@@ -127,10 +129,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
         for (String string : getStartServerList()){
-            if(string.startsWith(name+"-")){
+            if(string.startsWith(getName()+"-")){
 
                 try{
-                    int num = Integer.parseInt( string.replace(name+"-",""));
+                    int num = Integer.parseInt( string.replace(getName()+"-",""));
                     servers++;
                 } catch (NumberFormatException e) {
                     Console.print("Une erreur dans la création du serveur",Level.WARNING);
@@ -142,13 +144,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
-            String finalname =  jvmConfig.name+"-"+servers;
+            String finalname =  jvmConfig.getName()+"-"+servers;
 
-            if(type.equals(Mods.DYNAMIC)){
-                if(Config.contains("tmp/"+jvmConfig.pathName+"/"+finalname+"/"+jvmConfig.name)){
-                    Config.removeDir("tmp/"+jvmConfig.pathName+"/"+finalname+"/"+jvmConfig.name);
+            if(getType().equals(Mods.DYNAMIC)){
+                if(Config.contains("tmp/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName())){
+                    Config.removeDir("tmp/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName());
                 }
-                Config.createDir("tmp/"+jvmConfig.pathName+"/"+jvmConfig.name+"/"+finalname);
+                Config.createDir("tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname);
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
@@ -156,7 +158,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 int finalServers = servers;
                 service.scheduleAtFixedRate(() -> {
                     try {
-                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/template/" + pathName + "/" + name)).getAbsolutePath())), new File(Config.getPath("tmp/" + pathName + "/" + name + "/" + finalname)), new EstablishedAction() {
+                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/template/" + getPathName() + "/" + getName())).getAbsolutePath())), new File(Config.getPath("tmp/" + getPathName() + "/" + getName() + "/" + finalname)), new EstablishedAction() {
                             @Override
                             public void completed() {
                                 dateBuilderTimer.loadComplexDate();
@@ -185,7 +187,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                     startJVM(queue.get(0));
                                 }
                             }
-                        },exec);
+                        },getExec());
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -203,14 +205,14 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
     }
 
-    private boolean proceedStarting(String finalname,int servers,JVMConfig jvmConfig) throws IOException {
+    private boolean proceedStarting(String finalname,int servers,IConfig jvmConfig) throws IOException {
         Integer port = 0;
-        if(!this.proxy && Client.getInstance().getClientManager().getProxy() == null){
+        if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
 
             return false;
         }
-        if(jvmConfig.port == 0){
+        if(jvmConfig.getPort() == 0){
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
@@ -228,9 +230,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
 
                 // System.out.println(port);
-                changePort(type.getPath()+jvmConfig.pathName,finalname,port,type);
+                changePort(getType().getPath()+jvmConfig.getPathName(),finalname,port,getType());
 
-                port = getCurrentPort(jvmConfig.type.getPath()+jvmConfig.pathName,finalname,jvmConfig.type);
+                port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,jvmConfig.getType());
 
                 if(port == null){
                     System.out.println(Colors.RED_BOLD+"The port can't be foundable for the server "+ finalname);
@@ -242,14 +244,14 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 serversPortList.add(port);
                 serversPort.put(finalname,port);
             }else {
-                if(jvmConfig.type.equals(Mods.STATIC)){
+                if(jvmConfig.getType().equals(Mods.STATIC)){
                     // System.out.println("template/"+pathName);
-                    port = getCurrentPort("/template/"+jvmConfig.pathName,finalname,jvmConfig.type);
+                    port = getCurrentPort("/template/"+jvmConfig.getPathName(),finalname,jvmConfig.getType());
                     serversPortList.add(port);
                     serversPort.put(finalname,port);
                 }else{
-                    if(jvmConfig.type.equals(Mods.DYNAMIC)){
-                        port = getCurrentPort("/tmp/"+jvmConfig.pathName,finalname,jvmConfig.type);
+                    if(jvmConfig.getType().equals(Mods.DYNAMIC)){
+                        port = getCurrentPort("/tmp/"+jvmConfig.getPathName(),finalname,jvmConfig.getType());
                         serversPortList.add(port);
                         serversPort.put(finalname,port);
                     }
@@ -266,11 +268,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     }
                 }
 
-                if(jvmConfig.type.equals(Mods.STATIC)){
-                    changePort("/template/"+jvmConfig.pathName,finalname,port,jvmConfig.type);
+                if(jvmConfig.getType().equals(Mods.STATIC)){
+                    changePort("/template/"+jvmConfig.getPathName(),finalname,port,jvmConfig.getType());
                 }else {
-                    if(jvmConfig.type.equals(Mods.DYNAMIC)){
-                        changePort("/tmp/"+jvmConfig.pathName,finalname,port,jvmConfig.type);
+                    if(jvmConfig.getType().equals(Mods.DYNAMIC)){
+                        changePort("/tmp/"+jvmConfig.getPathName(),finalname,port,jvmConfig.getType());
                     }
                 }
 
@@ -284,44 +286,44 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         String resourcePath = null;
         String startup = null;
 
-        String javaPath = Client.getInstance().getJavaIndex().getJMap().get(jvmConfig.javaVersion).getPath();
-        if(jvmConfig.startup != null){
-            startup = jvmConfig.startup.replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmConfig.xmx).replaceAll("%xms%",jvmConfig.xms);
+        String javaPath = Client.getInstance().getJavaIndex().getJMap().get(jvmConfig.getJavaVersion()).getPath();
+        if(jvmConfig.getStartup() != null){
+            startup = jvmConfig.getStartup().replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmConfig.getXmx()).replaceAll("%xms%",jvmConfig.getXms());
         }
 
         Process proc = null;
 
 
-        if(type.equals(Mods.DYNAMIC)){
+        if(getType().equals(Mods.DYNAMIC)){
             if(startup != null){
-                String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.pathName+"/"+jvmConfig.name)).getAbsolutePath().replaceAll("\\\\","/")+"/"+ exec;
+                String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+ getExec();
                 startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
                 Console.print(startup,Level.FINE);
-                proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.pathName+"/"+jvmConfig.name+"/"+finalname))).redirectErrorStream(true).start();
+                proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }else {
-                String line = javaPath+" -Xms"+jvmConfig.xms+" -Xmx"+jvmConfig.xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.pathName+"/"+jvmConfig.name)).getAbsolutePath()+"/"+jvmConfig.exec +" nogui";
+                String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExec() +" nogui";
 
                 Console.print(line,Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.pathName+"/"+jvmConfig.name+"/"+finalname))).redirectErrorStream(true).start();
+                proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }
 
         }else {
-            if(type.equals(Mods.STATIC)){
+            if(getType().equals(Mods.STATIC)){
                 if(startup != null){
-                    String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.pathName+"/"+jvmConfig.name)).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmConfig.exec;
+                    String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmConfig.getExec();
 
                     startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
                     Console.print(startup,Level.FINE);
-                    proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.pathName+"/"+jvmConfig.name))).redirectErrorStream(true).start();
+                    proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()))).redirectErrorStream(true).start();
 
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 }else {
-                    String line = javaPath + " -Xms"+jvmConfig.xms+" -Xmx"+jvmConfig.xmx+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.pathName+"/"+jvmConfig.name)).getAbsolutePath()+"/"+ exec+" nogui";
+                    String line = javaPath + " -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+ getExec()+" nogui";
                     Console.print(line,Level.FINE);
-                    proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name))).redirectErrorStream(true).start();
+                    proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+getPathName()+"/"+getName()))).redirectErrorStream(true).start();
 
                     // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                     // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
@@ -346,11 +348,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
         Console.print(Colors.GREEN_BOLD+"The server "+Colors.YELLOW_BOLD+finalname+Colors.GREEN_BOLD+" has just started the process",Level.INFO);
-        if(type == Mods.DYNAMIC){
-            Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.FINE);
+        if(getType() == Mods.DYNAMIC){
+            Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+getName().toLowerCase()+"/"+getName()+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
-        if(type == Mods.STATIC){
-            Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase())).getAbsolutePath(), Level.FINE);
+        if(getType() == Mods.STATIC){
+            Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+getName().toLowerCase())).getAbsolutePath(), Level.FINE);
         }
 
         // Main.getInstance().processInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
@@ -376,10 +378,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     public void removeService(int i){
         try{
-            JVMService jvmService = jvmServices.get(i);
-            String finalName = name+"-"+jvmService.getId();
-            if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+name+"/"+finalName))){
-                Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+pathName+"/"+name+"/"+finalName));
+            IService jvmService = jvmServices.get(i);
+            String finalName = getName()+"-"+jvmService.getId();
+            if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+getPathName()+"/"+getName()+"/"+finalName))){
+                Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+getPathName()+"/"+getName()+"/"+finalName));
             }
 
             jvmServices.remove(i);
@@ -410,40 +412,17 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     }
 
-    @Override
-    public JVMService getService(Integer i) {
+
+    public IService getService(Integer i) {
         return jvmServices.get(i);
     }
-    @Override
-    public Collection<JVMService> getServices() {
+
+    public Collection<IService> getServices() {
         return jvmServices.values();
     }
-    @Override
-    public String getName() {
-        return name;
-    }
 
-    @Override
-    public Mods getType() {
-        return type;
-    }
 
-    @Override
-    public String getXms() {
-        return xms;
-    }
 
-    @Override
-    public String getXmx() {
-        return xmx;
-    }
-
-    @Override
-    public int getPort() {
-        return port;
-    }
-
-    @Override
     public boolean isPortAvailable(int port) {
         System.out.println("Checking if port "+port+" is available...");
         if (port < 1 || port > 65535) {

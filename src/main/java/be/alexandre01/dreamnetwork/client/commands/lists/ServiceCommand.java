@@ -1,9 +1,7 @@
 package be.alexandre01.dreamnetwork.client.commands.lists;
 
-import be.alexandre01.dreamnetwork.client.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.*;
-
-import static org.jline.builtins.Completers.TreeCompleter.node;
 
 
 public class ServiceCommand extends Command {

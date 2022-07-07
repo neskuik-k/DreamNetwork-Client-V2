@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.client.commands.sub;
+package be.alexandre01.dreamnetwork.api.commands.sub;
 
 
 import lombok.NonNull;
