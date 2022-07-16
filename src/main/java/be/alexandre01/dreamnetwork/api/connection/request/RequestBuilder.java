@@ -1,24 +1,33 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import lombok.Data;
+import lombok.Getter;
 
 
 import java.util.HashMap;
 
 @Data
 public class RequestBuilder {
-    protected HashMap<RequestInfo, RequestData> requestData;
+    @Getter private static final Multimap<RequestInfo, RequestData> globalRequestData = ArrayListMultimap.create();
+    protected Multimap<RequestInfo, RequestData> requestData;
 
     public RequestBuilder(){
-        requestData = new HashMap<>();
+        requestData = ArrayListMultimap.create();
     }
 
     public void addRequestBuilder(RequestBuilder... requestBuilders){
         for(RequestBuilder requestBuilder : requestBuilders){
             requestData.putAll(requestBuilder.requestData);
+        }
+    }
+
+    public static void addGlobalRequestData(RequestBuilder... requestBuilders){
+        for(RequestBuilder requestBuilder : requestBuilders){
+            globalRequestData.putAll(requestBuilder.requestData);
         }
     }
 

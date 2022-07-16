@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service.bundle;
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -72,7 +73,7 @@ public class BundleManager {
                 if(!bundleData.isAutoStart())
                     return;
                 for(BService bService : bundleData.getServices()){
-                    JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData.getJvmType());
+                    IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData.getJvmType());
                     if(jvmExecutor == null){
                         Console.debugPrint(Colors.RED +"- Bundle "+ bundleData.getName()+" can't find "+ bService.getServiceName()+" service");
                         continue;

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
+
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -15,7 +16,7 @@ public interface IRequestManager {
 
     /**
      * Send a request to the core and catch when the request is sent
-     * @param requestType
+     * @param requestInfo
      * @param message
      * @param args
      * @return
@@ -24,7 +25,7 @@ public interface IRequestManager {
 
     /**
      * Send a request to the core and catch when the request is sent
-     * @param requestType
+     * @param requestInfo
      * @param args
      * @return
      */
@@ -32,7 +33,7 @@ public interface IRequestManager {
 
     /**
      * Send a request to the core and catch when the request is sent
-     * @param requestType
+     * @param requestInfo
      * @param notifiedWhenSent
      * @param args
      * @return
@@ -42,7 +43,7 @@ public interface IRequestManager {
 
     /**
      * Send a request to the core and catch when the request is sent
-     * @param requestType
+     * @param requestInfo
      * @param message
      * @param listener
      * @param args
@@ -54,7 +55,7 @@ public interface IRequestManager {
 
     /**
      * send a request to the core and catch when the request is sent
-     * @param requestType
+     * @param requestInfo
      * @param message
      * @param notifiedWhenSent
      * @param args
@@ -68,7 +69,7 @@ public interface IRequestManager {
      * @param RID
      * @return
      */
-    RequestPacket getRequest(int RID);
+    RequestPacket getRequest(int MID);
 
     RequestBuilder getRequestBuilder();
 

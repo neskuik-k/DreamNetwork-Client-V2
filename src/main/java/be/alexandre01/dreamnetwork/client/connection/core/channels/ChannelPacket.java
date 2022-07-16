@@ -2,13 +2,15 @@ package be.alexandre01.dreamnetwork.client.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestFutureResponse;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.Collection;
 
 @SuppressWarnings("unused")
 public class ChannelPacket extends AChannelPacket {
@@ -16,7 +18,7 @@ public class ChannelPacket extends AChannelPacket {
 
     private RequestInfo requestInfo;
     private final GenericFutureListener<? extends Future<? super Void>> listener;
-    private Integer RID = null;
+    private Integer MID = null;
     private final Message message;
     private final String provider;
     private RequestFutureResponse requestFutureResponse;
@@ -29,8 +31,8 @@ public class ChannelPacket extends AChannelPacket {
         if(message.hasRequest())
          this.requestInfo = message.getRequest();
         this.listener = null;
-        if(message.containsKey("RID")){
-            this.RID = message.getRequestID();
+        if(message.containsKey("MID")){
+            this.MID = message.getMessageID();
         }
         this.provider = message.getProvider();
         this.channel = message.getChannel();
@@ -67,14 +69,22 @@ public class ChannelPacket extends AChannelPacket {
         message.setChannel(this.channel);
 
         if(requestInfo != null){
-            RequestBuilder.RequestData requestData = client.getRequestManager().getRequestBuilder().getRequestData().get(requestInfo);
-            if(requestData != null)
-            message = requestData.write(message,client,this.provider);
+            Collection<RequestBuilder.RequestData> requestData = client.getRequestManager().getRequestBuilder().getRequestData().get(requestInfo);
+            if (requestData != null) {
+                for (RequestBuilder.RequestData data : requestData) {
+                    message = data.write(message, client, this.provider);
+                }
+            }
+            if (RequestBuilder.getGlobalRequestData().containsKey(requestInfo)) {
+                for (RequestBuilder.RequestData data : RequestBuilder.getGlobalRequestData().get(requestInfo)) {
+                    message = data.write(message, client, this.provider);
+                }
+            }
         }
 
 
-        if(RID != null)
-            message.setInRoot("RID",RID);
+        if(MID != null)
+            message.setInRoot("MID",MID);
         client.writeAndFlush(message,listener);
     }
 

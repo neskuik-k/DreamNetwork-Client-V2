@@ -116,6 +116,7 @@ public class Config {
         }
     }
     public static void write(InputStream in, File targetLocation) throws IOException {
+
         if(!targetLocation.exists())
             targetLocation.createNewFile();
         try (
@@ -126,6 +127,8 @@ public class Config {
             while ((length = in.read(buf)) > 0) {
                 out.write(buf, 0, length);
             }
+            out.flush();
+            out.close();
         }
     }
     private static void copyDirectory(File source, File target) throws IOException {

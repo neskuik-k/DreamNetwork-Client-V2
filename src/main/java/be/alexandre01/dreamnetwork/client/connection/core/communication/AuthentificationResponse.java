@@ -2,18 +2,17 @@ package be.alexandre01.dreamnetwork.client.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
-import be.alexandre01.dreamnetwork.api.service.IContainer;
+import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceLinkedEvent;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -25,21 +24,35 @@ import java.util.logging.Level;
 public class AuthentificationResponse extends CoreResponse {
     final CoreHandler coreHandler;
     final private Client client;
+
+
     final private Decoder decoder = Base64.getDecoder();
 
-    public AuthentificationResponse() {
+    public AuthentificationResponse(CoreHandler coreHandler) {
         this.client = Client.getInstance();
-        this.coreHandler = client.getCoreHandler();
+        this.coreHandler = coreHandler;
+    }
+
+    @Override
+    protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client) {
+        Console.print("Requete entrente->",Level.FINE);
+        Console.print(message,Level.FINE);
+
+        if(!message.hasRequest()){
+            if(!coreHandler.getAllowedCTX().contains(ctx)){
+                ctx.channel().close();
+            }
+            return false;
+        }
+        return true;
     }
 
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
-        Console.print("Requete entrente->",Level.FINE);
-        Console.print(message,Level.FINE);
-        ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
-        if(message.hasRequest()){
             RequestInfo requestInfo = message.getRequest();
             Console.print("REQUETE : "+ requestInfo, Level.FINE);
+
+            ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
 
             if(!coreHandler.getExternalConnection().contains(ctx)){
                 if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
@@ -55,7 +68,7 @@ public class AuthentificationResponse extends CoreResponse {
 
                     Console.print("CREATE CLIENT", Level.FINE);
                     be.alexandre01.dreamnetwork.client.connection.core.communication.Client newClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
-                            .coreHandler(Client.getInstance().getCoreHandler())
+                            .coreHandler(coreHandler)
                             .info(info)
                             .port(port)
                             .jvmType(null)
@@ -69,7 +82,7 @@ public class AuthentificationResponse extends CoreResponse {
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
-                        for (JVMExecutor service : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                        for (IJVMExecutor service : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
@@ -84,11 +97,13 @@ public class AuthentificationResponse extends CoreResponse {
                             }
                         }
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        this.client.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.client.getDnClientAPI(), newClient, newClient.getJvmService()));
+
                         for (IClient devtools : Client.getInstance().getClientManager().getDevTools()) {
                             String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
-                        Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
+                       coreHandler.getAllowedCTX().add(ctx);
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
@@ -101,10 +116,12 @@ public class AuthentificationResponse extends CoreResponse {
                                 newClient.getPort());
 
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        this.client.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.client.getDnClientAPI(), newClient, newClient.getJvmService()));
+
                         ArrayList<String> servers = new ArrayList<>();
 
 
-                        for (JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                        for (IJVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
                             if (!jvmExecutor.getServices().isEmpty()) {
                                 for (IService service : jvmExecutor.getServices()) {
 
@@ -133,7 +150,7 @@ public class AuthentificationResponse extends CoreResponse {
                             }*/
 
                         newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, servers.toArray(new String[0]));
-                        Main.getInstance().getCoreHandler().getAllowedCTX().add(ctx);
+                       coreHandler.getAllowedCTX().add(ctx);
                     }
                     return;
                 }
@@ -146,14 +163,9 @@ public class AuthentificationResponse extends CoreResponse {
                     devToolsCheck(requestInfo, message, ctx, ctxs);
                 }
             }
-        }else {
-            if(!ctxs.contains(ctx)){
-                ctx.channel().close();
-            }
-        }
     }
 
-    public void devToolsCheck(RequestInfo requestInfo,Message message,ChannelHandlerContext ctx,ArrayList<ChannelHandlerContext> ctxs){
+    public void devToolsCheck(RequestInfo requestInfo, Message message, ChannelHandlerContext ctx, ArrayList<ChannelHandlerContext> ctxs){
 
                 Console.print("HANDSHAKE", Level.FINE);
                 if(!message.contains("INFO") && !message.contains("PORT") && !message.contains("TOKEN") && !message.contains("USER")){
@@ -179,7 +191,7 @@ public class AuthentificationResponse extends CoreResponse {
 
                 Console.print("CREATE CLIENT", Level.FINE);
                 be.alexandre01.dreamnetwork.client.connection.core.communication.Client devClient = Client.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.client.connection.core.communication.Client.builder()
-                        .coreHandler(Client.getInstance().getCoreHandler())
+                        .coreHandler(coreHandler)
                         .info(devInfo)
                         .port(devPort)
                         .jvmType(null)
@@ -188,7 +200,7 @@ public class AuthentificationResponse extends CoreResponse {
                         .build());
 
                 ArrayList<String> devServers = new ArrayList<>();
-                for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+                for(IJVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
@@ -198,7 +210,7 @@ public class AuthentificationResponse extends CoreResponse {
                 }
 
 
-                for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+                for(IJVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 

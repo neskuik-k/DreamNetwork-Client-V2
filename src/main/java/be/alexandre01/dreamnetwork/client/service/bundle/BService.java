@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.client.service.bundle;
 
-import be.alexandre01.dreamnetwork.client.events.EventCatcher;
 import lombok.Data;
 
 @Data

@@ -10,6 +10,7 @@ import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
 
@@ -26,9 +27,21 @@ public class RequestManager implements IRequestManager {
     }
 
     public RequestPacket sendRequest(RequestPacket request,Object... args){
-        RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(request.getRequestInfo());
+        Collection<RequestBuilder.RequestData> requestData = requestBuilder.getRequestData().get(request.getRequestInfo());
+
         request.setClient(client);
-        request.setMessage(requestData.write(request.getMessage(),client,args));
+        Message message = request.getMessage();
+        if(requestData != null) {
+            for (RequestBuilder.RequestData data : requestData) {
+                message = data.write(message, client, args);
+            }
+        }
+        if(RequestBuilder.getGlobalRequestData().containsKey(request.getRequestInfo())){
+            for(RequestBuilder.RequestData data : RequestBuilder.getGlobalRequestData().get(request.getRequestInfo())){
+                message = data.write(message,client,args);
+            }
+        }
+        request.setMessage(message);
         request.getClient().writeAndFlush(request.getMessage(),request.getListener());
         requests.put(request.getRequestID(),request);
         return request;
@@ -42,10 +55,22 @@ public class RequestManager implements IRequestManager {
              }
          }
 
-         RequestBuilder.RequestData requestData = requestBuilder.getRequestData().get(requestInfo);
-         message.setHeader("RequestType");
+         Collection<RequestBuilder.RequestData> requestData = requestBuilder.getRequestData().get(requestInfo);
+
+
+         message.setHeader("RI");
         message.setRequestInfo(requestInfo);
-        RequestPacket request = new RequestPacket(requestInfo,requestData.write(message,client,args),listener);
+        if(requestData != null) {
+            for (RequestBuilder.RequestData data : requestData) {
+                message = data.write(message, client, args);
+            }
+        }
+        if(RequestBuilder.getGlobalRequestData().containsKey(requestInfo)){
+            for(RequestBuilder.RequestData data : RequestBuilder.getGlobalRequestData().get(requestInfo)){
+                message = data.write(message,client,args);
+            }
+        }
+        RequestPacket request = new RequestPacket(requestInfo,message,listener);
         request.setClient(client);
         request.getClient().writeAndFlush(request.getMessage(),listener);
         requests.put(request.getRequestID(),request);
@@ -55,7 +80,7 @@ public class RequestManager implements IRequestManager {
 
     public RequestPacket sendRequest(RequestInfo requestInfo, Object... args){
        return this.sendRequest(requestInfo,new Message(),future -> {
-            Console.print("Request "+ requestInfo.name+" sended with success!", Level.FINE);
+            Console.print("Request "+ requestInfo.name()+" sended with success!", Level.FINE);
         },args);
     }
 
@@ -66,7 +91,7 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
           return this.sendRequest(requestInfo,new Message(),future -> {
-                System.out.println("Request"+ requestInfo.name+" sended with success!");
+                System.out.println("Request"+ requestInfo.name()+" sended with success!");
             },args);
 
         }
@@ -76,13 +101,13 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
             return this.sendRequest(requestInfo,message,future -> {
-                System.out.println("Request"+ requestInfo.name+" sended with success!");
+                System.out.println("Request"+ requestInfo.name()+" sended with success!");
             },args);
 
         }
         return this.sendRequest(requestInfo,message,null,args);
     }
-    public RequestPacket getRequest(int RID){
-        return requests.get(RID);
+    public RequestPacket getRequest(int MID){
+        return requests.get(MID);
     }
 }

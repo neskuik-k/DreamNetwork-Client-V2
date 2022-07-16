@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
@@ -43,7 +44,7 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
             }
 
 
-            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], type);
+            IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], type);
 
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());

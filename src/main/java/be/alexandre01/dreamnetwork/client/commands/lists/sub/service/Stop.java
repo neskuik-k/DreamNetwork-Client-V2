@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
@@ -41,7 +42,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
             }
 
             String[] processName = args[2].split("-");
-            JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(processName[0], type);
+            IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(processName[0], type);
 
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not correct..").red());

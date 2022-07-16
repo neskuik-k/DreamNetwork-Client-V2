@@ -1,7 +1,8 @@
 package be.alexandre01.dreamnetwork.client.addons;
 
-import be.alexandre01.dreamnetwork.api.DreamAddon;
+import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.client.Client;
+import lombok.Getter;
 
 import java.util.LinkedHashMap;
 
@@ -11,9 +12,9 @@ public class AddonsManager {
     public AddonsManager(Client client) {
         this.client = client;
     }
-    private LinkedHashMap<String, DreamAddon> addons = new LinkedHashMap<>();
+    @Getter private LinkedHashMap<String, DreamExtension> addons = new LinkedHashMap<>();
 
-    public void registerAddon(DreamAddon addon) {
+    public void registerAddon(DreamExtension addon) {
         addons.put(addon.getName(), addon);
     }
 }

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.client.config.Config;
@@ -60,7 +61,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                              Config.createDir("template/"+args[1]+"/"+args[2]);
                              if(args.length == 7){
                                  try {
-                                     JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
+                                     JVMExecutor jvmExecutor = (JVMExecutor) Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
                                          jvmExecutor.addConfigsFiles();
@@ -76,7 +77,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                  }
                              }else {
                                  try {
-                                     JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
+                                     JVMExecutor jvmExecutor = (JVMExecutor) Client.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
                                          jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
                                          jvmExecutor.addConfigsFiles();
@@ -98,7 +99,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                  Config.createDir("template/" + args[1] + "/" + args[2]);
                                  if (args.length == 7) {
                                      try {
-                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
+                                         JVMExecutor jvmExecutor = (JVMExecutor) Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
                                          if (jvmExecutor == null) {
                                              jvmExecutor = new JVMExecutor(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], Integer.parseInt(args[6]), proxy, true);
                                              jvmExecutor.addConfigsFiles();
@@ -115,7 +116,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
 
                                  } else {
                                      try {
-                                         JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
+                                         JVMExecutor jvmExecutor = (JVMExecutor) Client.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
                                          if (jvmExecutor == null) {
                                              jvmExecutor = new JVMExecutor(args[1], args[2], JVMExecutor.Mods.DYNAMIC, args[4], args[5], 0, proxy, true);
                                              jvmExecutor.addConfigsFiles();

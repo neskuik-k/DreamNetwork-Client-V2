@@ -3,109 +3,19 @@ package be.alexandre01.dreamnetwork.api.service;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
-import be.alexandre01.dreamnetwork.client.service.JVMConfig;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
+
 import be.alexandre01.dreamnetwork.client.service.JVMStartupConfig;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.logging.Level;
 
-public abstract class IJVMExecutor extends JVMStartupConfig {
-    public IJVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile) {
-        super(pathName, name, type, xms, xmx, port, proxy, updateFile);
-    }
-    public IJVMExecutor(String pathName, String name) {
-        super(pathName, name,false);
-    }
-    public static IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile) {
-        Mods type = null;
-        String xms = null;
-        String xmx = null;
-        int port = 0;
-        boolean proxy = false;
+public interface IJVMExecutor  {
 
-        try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/network.yml")) {
-                if (line.startsWith("type:")) {
-                    type = Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
-                }
-                if (line.startsWith("xms:")) {
-                    xms = line.replace("xms:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("xmx:")) {
-                    xmx = line.replace("xmx:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("port:")) {
-                    port = Integer.parseInt(line.replace("port:", "").replaceAll(" ", ""));
-                }
-                if (line.contains("proxy: true")) {
-                    proxy = true;
-                }
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return new JVMExecutor(pathName, name, type, xms, xmx, port, proxy, updateFile);
-    }
-
-    static void stopServer(String name, String pathName) {
-        String finalName = name.split("-")[0];
-        /*if(getProcess(name) != null){
-            System.out.println("DESTROY");
-            getProcess(name).destroy();
-        }*/
-        if (JVMExecutor.getStartServerList().contains(name)) {
-            JVMExecutor.getStartServerList().remove(name);
-
-        }
-        if (JVMExecutor.serversPort.containsKey(name)) {
-            int port = JVMExecutor.serversPort.get(name);
-            JVMExecutor.serversPort.put("cache-" + JVMExecutor.cache, port);
-            JVMExecutor.serversPort.remove(name);
-        }
-
-
-        if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/tmp/" + pathName + "/" + finalName + "/" + name))) {
-            Config.removeDir(Config.getPath(System.getProperty("user.dir") + "/tmp/" + pathName + "/" + finalName + "/" + name));
-        }
-    }
-
-    static void startTest(String typeServer, String name) {
-
-        if (typeServer.equalsIgnoreCase("server") || typeServer.equalsIgnoreCase("proxy")) {
-            if (Config.contains("template/" + typeServer + "/" + name)) {
-                JVMExecutor process = new JVMExecutor(name, typeServer);
-                process.startServer();
-                //ServerInstance.startServer(args[2],args[1]);
-            } else {
-                Console.print(Colors.ANSI_RED() + "You need to configurate your server first before doing this command", Level.WARNING);
-            }
-        } else {
-            Console.print(Colors.ANSI_RED() + "start [SERVER OR PROXY] ServerName", Level.WARNING);
-        }
-
-    }
-
-    static void startTest(String typeServer, String name, int port) {
-
-        if (typeServer.equalsIgnoreCase("server") || typeServer.equalsIgnoreCase("proxy")) {
-            if (Config.contains("template/" + typeServer + "/" + name)) {
-                IJVMExecutor process = new JVMExecutor(name, typeServer);
-                process.setPort(port);
-                process.startServer();
-                //ServerInstance.startServer(args[2],args[1]);
-            } else {
-                Console.print(Colors.ANSI_RED() + "You need to configurate your server first before doing this command", Level.WARNING);
-            }
-        } else {
-            Console.print(Colors.ANSI_RED() + "start [SERVER OR PROXY] ServerName", Level.WARNING);
-        }
-    }
 
     //LINUX ONLY
     static long getPidOfProcess(Process p) {
@@ -153,82 +63,102 @@ public abstract class IJVMExecutor extends JVMStartupConfig {
         return result;
     }
 
-    static java.util.ArrayList<String> getServerList() {
-        return JVMExecutor.getServerList();
+    public static java.util.ArrayList<String> getServerList() {
+        return IJVMExecutor.getServerList();
     }
 
-    static java.util.ArrayList<String> getStartServerList() {
-        return JVMExecutor.getStartServerList();
+    public static java.util.ArrayList<String> getStartServerList() {
+        return IJVMExecutor.getStartServerList();
     }
 
-    static java.util.HashMap<String, java.io.BufferedReader> getProcessServersInput() {
-        return JVMExecutor.getProcessServersInput();
+    public static java.util.HashMap<String, java.io.BufferedReader> getProcessServersInput() {
+        return IJVMExecutor.getProcessServersInput();
     }
 
-    static java.util.ArrayList<Integer> getServersPortList() {
-        return JVMExecutor.serversPortList;
+    public static java.util.ArrayList<Integer> getServersPortList() {
+        return IJVMExecutor.getServersPortList();
     }
 
-    static java.util.ArrayList<Integer> getPortsBlackList() {
-        return JVMExecutor.portsBlackList;
+    public static java.util.ArrayList<Integer> getPortsBlackList() {
+        return IJVMExecutor.getPortsBlackList();
     }
 
-    static java.util.HashMap<String, Integer> getServersPort() {
-        return JVMExecutor.serversPort;
+    public static java.util.HashMap<String, Integer> getServersPort() {
+        return IJVMExecutor.getServersPort();
     }
 
-    static java.util.HashMap<Integer, IService> getServicePort() {
-        return JVMExecutor.servicePort;
+    public static java.util.HashMap<Integer, IService> getServicePort() {
+        return IJVMExecutor.getServicePort();
     }
 
-    static Integer getCache() {
-        return JVMExecutor.cache;
+    public static Integer getCache() {
+        return IJVMExecutor.getCache();
     }
 
-    static void setServerList(java.util.ArrayList<String> serverList) {
-        JVMExecutor.setServerList(serverList);
+    public static void setServerList(java.util.ArrayList<String> serverList) {
+        IJVMExecutor.setServerList(serverList);
     }
 
-    static void setStartServerList(java.util.ArrayList<String> startServerList) {
-        JVMExecutor.setStartServerList(startServerList);
+    public static void setStartServerList(java.util.ArrayList<String> startServerList) {
+        IJVMExecutor.setStartServerList(startServerList);
     }
 
-    static void setProcessServersInput(java.util.HashMap<String, java.io.BufferedReader> processServersInput) {
-        JVMExecutor.setProcessServersInput(processServersInput);
-    }
-
-    static void setServersPortList(java.util.ArrayList<Integer> serversPortList) {
-        JVMExecutor.serversPortList = serversPortList;
-    }
-
-    static void setPortsBlackList(java.util.ArrayList<Integer> portsBlackList) {
-        JVMExecutor.portsBlackList = portsBlackList;
-    }
-
-    static void setServersPort(java.util.HashMap<String, Integer> serversPort) {
-        JVMExecutor.serversPort = serversPort;
-    }
-
-    static void setServicePort(java.util.HashMap<Integer, IService> servicePort) {
-        JVMExecutor.servicePort = servicePort;
-    }
-
-    static void setCache(Integer cache) {
-        JVMExecutor.cache = cache;
+    public static void setProcessServersInput(java.util.HashMap<String, java.io.BufferedReader> processServersInput) {
+        IJVMExecutor.setProcessServersInput(processServersInput);
     }
 
 
 
 
-    public abstract void startServer();
 
-    public abstract void startServer(IConfig jvmConfig);
+    public static void setCache(Integer cache) {
+        IJVMExecutor.setCache(cache);
+    }
 
-    public abstract void removeService(int i);
 
-    public abstract IService getService(Integer i);
 
-    public abstract Collection<IService> getServices();
+
+    public void startServer();
+
+    public void startServer(IConfig jvmConfig);
+
+    public void removeService(int i);
+
+    public IService getService(Integer i);
+
+    public Collection<IService> getServices();
+
+    public boolean isProxy();
+
+    public String getName();
+
+    public boolean isConfig();
+
+    public boolean isFixedData();
+
+    public File getFileRootDir();
+
+    public IConfig getConfig();
+
+    public Mods getType();
+
+    public String getXms();
+
+    public String getStartup();
+
+    public String getExec();
+
+    public String getXmx();
+
+    public String getPathName();
+
+    public String getJavaVersion();
+
+    public int getPort();
+
+    public boolean hasExecutable();
+
+
 
 
     public enum Mods {

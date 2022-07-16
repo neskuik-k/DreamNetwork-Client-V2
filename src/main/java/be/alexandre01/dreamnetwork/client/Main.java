@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -30,6 +31,7 @@ import be.alexandre01.dreamnetwork.client.service.JVMContainer;
 import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.JVMService;
 import lombok.Getter;
+import lombok.Setter;
 import org.jline.reader.History;
 import sun.misc.Unsafe;
 
@@ -49,6 +51,8 @@ public class Main {
     private static boolean license;
     @Getter
     private static CommandReader commandReader;
+
+    @Getter @Setter private static TemplateLoading templateLoading;
 
 
 
@@ -103,8 +107,8 @@ public class Main {
                     disabling = true;
                     if(instance != null){
                         boolean isReady = false;
-                        for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
-                            if(!jvmExecutor.jvmServices.isEmpty()){
+                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
+                            if(!jvmExecutor.getServices().isEmpty()){
                                 for(IService service : jvmExecutor.getServices()){
                                     if(service.getClient() == null){
                                         service.kill();
@@ -114,8 +118,8 @@ public class Main {
 
                         }
 
-                        for(JVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
-                            if(!jvmExecutor.jvmServices.isEmpty()){
+                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
+                            if(!jvmExecutor.getServices().isEmpty()){
                                 for(IService service : jvmExecutor.getServices()){
                                     if(service.getClient() == null){
                                         service.kill();
@@ -141,7 +145,7 @@ public class Main {
                             Runtime.getRuntime().exec(defSIGKILL);
                         }
 
-
+                        Client.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
                         outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
                         try {
                             Thread.sleep(2000);
@@ -156,6 +160,8 @@ public class Main {
                             e.printStackTrace();
                         }
                     }
+
+
                 }catch (Exception e){
                     System.out.println(e.getMessage());
                     e.printStackTrace();
@@ -191,6 +197,8 @@ public class Main {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+
+
             loadClient();
 
     }

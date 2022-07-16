@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.commands;
 
 
 
+import be.alexandre01.dreamnetwork.api.events.list.commands.CoreCommandExecuteEvent;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.commands.lists.*;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -12,8 +13,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import static be.alexandre01.dreamnetwork.client.console.Console.print;
+
 public class CommandReader{
     @Getter CommandsManager commands;
+
+    Client client;
     @Getter Console console;
     private boolean stop = false;
 
@@ -30,6 +35,8 @@ public class CommandReader{
         commands.addCommands(new EditCommand("edit"));
         //commands.addCommands(new GuiCommand("gui"));
 
+        client = Client.getInstance();
+
     }
 
     public void run(Console console){
@@ -40,6 +47,12 @@ public class CommandReader{
                 public void listener(String[] args) {
                     if(args.length != 0){
                         if(args[0].length() != 0){
+                            CoreCommandExecuteEvent event = new CoreCommandExecuteEvent(client.getDnClientAPI(), args);
+                            client.getEventsFactory().callEvent(event);
+                            if(event.isCancelled()){
+                                print("Command cancelled");
+                                return;
+                            }
                             commands.check(args);
                        }
                     }

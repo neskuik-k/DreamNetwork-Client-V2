@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.handler;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandler;
@@ -7,6 +8,8 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandler;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.ArrayList;
 
 public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
     @Override
@@ -38,4 +41,6 @@ public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
     java.util.ArrayList<ChannelHandlerContext> getExternalConnection();
 
     void setHasDevUtilSoftwareAccess(boolean hasDevUtilSoftwareAccess);
+
+    public ArrayList<CoreResponse> getResponses();
 }

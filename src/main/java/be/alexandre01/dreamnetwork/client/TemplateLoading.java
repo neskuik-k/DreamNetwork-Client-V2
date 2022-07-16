@@ -2,12 +2,16 @@ package be.alexandre01.dreamnetwork.client;
 
 
 
+import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.config.Config;
+import be.alexandre01.dreamnetwork.client.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
-import org.apache.commons.io.IOUtils;
+import org.apache.commons.compress.utils.ByteUtils;
+import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.logging.Level;
@@ -17,9 +21,10 @@ public class TemplateLoading {
     File[] serverDirectories = new File(Config.getPath("template/server/")).listFiles(File::isDirectory);
     File[] proxyDirectories = new File(Config.getPath("template/proxy/")).listFiles(File::isDirectory);
     public TemplateLoading(){
+        Main.setTemplateLoading(this);
         System.out.println(Chalk.on("Loading templates...").underline());
         try {
-            Thread.sleep(200);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -28,11 +33,13 @@ public class TemplateLoading {
         loadTemplate(serverDirectories,"server");
 
         try {
-            Thread.sleep(150);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         System.out.println("\n");
+
+
         Client.getInstance().init();
     }
     private void replaceFile(InputStream in,String path,String fileName){
@@ -40,6 +47,7 @@ public class TemplateLoading {
         try {
             assert in != null;
             Config.createDir(path,false);
+            Console.print("Writing file: " + path +"/"+ fileName, Level.FINE);
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -73,7 +81,7 @@ public class TemplateLoading {
                 }
 
 
-                IJVMExecutor jvmExecutor = IJVMExecutor.initIfPossible(pathName,name,false);
+                IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().initIfPossible(pathName,name,false);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;
@@ -93,12 +101,85 @@ public class TemplateLoading {
         }
     }
 
+    public void createCustomRequestsFile(){
+        createCustomRequestsFile(proxyDirectories,"proxy");
+        createCustomRequestsFile(serverDirectories,"server");
+        Console.print(" [!] Custom requests file created !");
+    }
+
+    private void createCustomRequestsFile(File[] directory,String pathName){
+        if(directory != null) {
+            RequestFile requestFile = new RequestFile();
+            for (CustomRequestInfo requestInfo : RequestType.customRequests){
+                requestFile.put(requestInfo);
+            }
+            requestFile.encode();
+
+            for (File dir : directory) {
+                String name = dir.getName();
+                //TRY TO LOAD COMPONENT
+                if (Config.contains(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins")) {
+                    Config.createDir(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins/DreamNetwork");
+                    try {
+                        requestFile.write(Config.getPath(System.getProperty("user.dir") + "/template/"+pathName+"/"+name+"/plugins/DreamNetwork"));
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            }
+        }
+    }
+
+    public void sendCustomsFileToProxies(InputStream in,String fileName){
+        createCustomFiles(proxyDirectories,"proxy",in,fileName);
+    }
+    public void sendCustomsFileToServers(InputStream in,String fileName){
+        createCustomFiles(serverDirectories,"server",in,fileName);
+    }
+    private void createCustomFiles(File[] directory,String pathName,InputStream in,String fileName){
+        if(directory != null) {
+            try {
+            byte[] bytes = cloneInputStream(in);
+            for (File dir : directory) {
+                String name = dir.getName();
+                //TRY TO LOAD COMPONENT
+                if (Config.contains(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins")) {
+                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/"+fileName);
+                    file.delete();
+                    InputStream is = new ByteArrayInputStream(bytes);
+                    replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/",fileName);
+                }
+
+            }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+
+
     private void notConfigured(File dir){
         Console.debugPrint(Chalk.on("[!] Template "+ dir.getName()+" is not yet configured !").red());
         try {
             Thread.sleep(150);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+
+    //clone inputstream without closing it
+    private byte[] cloneInputStream(InputStream in) throws IOException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int len;
+        while ((len = in.read(buffer)) >= 0) {
+            out.write(buffer, 0, len);
+        }
+        out.close();
+        return out.toByteArray();
     }
 }

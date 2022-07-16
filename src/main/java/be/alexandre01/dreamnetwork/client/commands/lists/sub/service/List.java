@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
@@ -18,11 +19,11 @@ public class List extends SubCommandCompletor implements SubCommandExecutor {
     public boolean onSubCommand(@NonNull String[] args) {
         if(args[0].equalsIgnoreCase("list")){
             System.out.println("Services for proxy:");
-            for(JVMExecutor executor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+            for(IJVMExecutor executor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
                 System.out.println(executor.getName());
             }
             System.out.println("Services for spigot:");
-            for(JVMExecutor executor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+            for(IJVMExecutor executor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
                 System.out.println(executor.getName());
             }
             return true;

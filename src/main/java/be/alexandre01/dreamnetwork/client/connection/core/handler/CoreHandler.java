@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.client.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
+import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
+import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
@@ -12,7 +14,6 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
@@ -34,7 +35,10 @@ import java.util.logging.Level;
 
 public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHandler {
 
-    private ArrayList<CoreResponse> responses = new ArrayList<>();
+
+
+    @Getter  private ArrayList<CoreResponse> responses = new ArrayList<>();
+    @Getter private static ArrayList<CoreResponse> globalResponses = new ArrayList<>();
     @Setter @Getter private boolean hasDevUtilSoftwareAccess = false;
     @Getter private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
     private AuthentificationResponse authResponse;
@@ -44,11 +48,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     private final Client client;
     public CoreHandler(){
         this.client = Client.getInstance();
-        this.client.setCoreHandler(this);
         this.hasDevUtilSoftwareAccess = Client.getInstance().isDevToolsAccess();
 
         responses.add(new BaseResponse());
-        authResponse = new AuthentificationResponse();
+        authResponse = new AuthentificationResponse(this);
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -74,7 +77,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void channelActive(final ChannelHandlerContext ctx) { // (1)
         Console.print("CHANNEL ACTIVE",Level.FINE);
         Console.print(ctx.channel().remoteAddress().toString().split(":")[0],Level.FINE);
-
 
         if(!queue.isEmpty()){
             taskQueue();
@@ -135,17 +137,26 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 Message message = Message.createFromJsonString(s_to_decode);
                 for(CoreResponse iBasicClientResponse : responses){
                     try {
-                        iBasicClientResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
+                        iBasicClientResponse.onAutoResponse(message,ctx,client.getClientManager().getClient(ctx));
                     } catch (Exception e) {
                         e.printStackTrace();
 
                     }
                 }
+                for(CoreResponse iBasicClientResponse : globalResponses){
+                    try {
+                        iBasicClientResponse.onAutoResponse(message,ctx,client.getClientManager().getClient(ctx));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+
+                    }
+                }
+
             }else {
                 //NOT ALLOWED CONNECTION
                 try {
                     Message message = Message.createFromJsonString(s_to_decode);
-                    authResponse.onResponse(message,ctx,client.getClientManager().getClient(ctx));
+                    authResponse.onAutoResponse(message,ctx,client.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -172,6 +183,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                     name = "DEVTOOLS";
                 }
                 Console.print(Colors.RED_BOLD+ "A process '"+name+"' has just stopped.");
+                client.getEventsFactory().callEvent(new CoreServiceStopEvent(client.getDnClientAPI(),jvmService));
             }
         }
 

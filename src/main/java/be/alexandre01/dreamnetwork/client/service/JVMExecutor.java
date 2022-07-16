@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -31,7 +32,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 
-public class JVMExecutor extends IJVMExecutor {
+public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
     @Getter @Setter private static ArrayList<String> serverList = new ArrayList<>();
@@ -54,14 +55,16 @@ public class JVMExecutor extends IJVMExecutor {
     }
 
     public JVMExecutor(String pathName,String name){
-        super(pathName,name);
+        super(pathName,name,false);
         JVMContainer.JVMType jvmType = ((isProxy()) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
         Client.getInstance().getJvmContainer().addExecutor(this,jvmType);
     }
 
+
+
     @Override
     public void setPort(int port){
-        this.setPort(port);
+        this.port = port;
     }
 
     @Override
@@ -364,6 +367,10 @@ public class JVMExecutor extends IJVMExecutor {
         // Connect connect = new Connect("localhost",port+1,"Console","8HetY4474XisrZ2FGwV5z",finalname);
         //   connect.setServer(this);
 
+
+        Client client = Client.getInstance();
+
+        client.getEventsFactory().callEvent(new CoreServiceStartEvent(client.getDnClientAPI(),jvmService));
         //SCREEN SYSTEM
         new Screen(jvmService);
 
@@ -400,7 +407,7 @@ public class JVMExecutor extends IJVMExecutor {
 
             jvmServices.remove(i);
 
-            if(!jvmService.getJvmExecutor().isProxy()){
+            if(!isProxy()){
                 be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
 
                 proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_UNREGISTER_SERVER,
@@ -421,6 +428,10 @@ public class JVMExecutor extends IJVMExecutor {
         return jvmServices.values();
     }
 
+    @Override
+    public IConfig getConfig() {
+        return this;
+    }
 
 
     public boolean isPortAvailable(int port) {

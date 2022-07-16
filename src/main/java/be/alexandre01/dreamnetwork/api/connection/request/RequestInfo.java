@@ -1,10 +1,20 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
-public class RequestInfo {
-    public int id;
-    public String name;
+public class RequestInfo  {
+    private final int id;
 
-    public RequestInfo(int id){
+    private final String name;
+    public RequestInfo(int id,String name){
         this.id = id;
+        this.name = name;
+    }
+
+
+    public int id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
     }
 }

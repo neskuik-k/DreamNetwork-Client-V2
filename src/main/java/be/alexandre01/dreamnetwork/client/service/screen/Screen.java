@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service.screen;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
@@ -20,7 +21,7 @@ public class  Screen extends Thread implements IScreen {
     ArrayList<String> history;
     ArrayList<IClient> devToolsReading = new ArrayList<>();
     ScreenStream screenStream;
-    Integer screenId;
+    volatile Integer screenId;
     String screenName;
 
     public Screen(JVMService service){
@@ -32,6 +33,8 @@ public class  Screen extends Thread implements IScreen {
         this.screenStream = new ScreenStream(screenName,this);
         service.setScreen(this);
         screenManager.addScreen(this);
+        be.alexandre01.dreamnetwork.client.Client client = be.alexandre01.dreamnetwork.client.Client.getInstance();
+        client.getEventsFactory().callEvent(new CoreScreenCreateEvent(client.getDnClientAPI(),this));
     }
 
     @Override
@@ -58,6 +61,8 @@ public class  Screen extends Thread implements IScreen {
             String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
             Config.removeDir("/tmp/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
         }
+        be.alexandre01.dreamnetwork.client.Client client = be.alexandre01.dreamnetwork.client.Client.getInstance();
+        client.getEventsFactory().callEvent(new CoreScreenCreateEvent(client.getDnClientAPI(),this));
     }
 
     @Override

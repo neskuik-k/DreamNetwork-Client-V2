@@ -2,8 +2,15 @@ package be.alexandre01.dreamnetwork.client;
 
 
 import be.alexandre01.dreamnetwork.api.DNClientAPI;
+import be.alexandre01.dreamnetwork.api.addons.Addon;
+import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.events.EventsFactory;
+import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
+import be.alexandre01.dreamnetwork.client.addons.AddonsLoader;
+import be.alexandre01.dreamnetwork.client.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.client.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.client.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannelManager;
@@ -33,6 +40,7 @@ import lombok.Setter;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -56,8 +64,7 @@ public class Client {
     private StatsConsole statsConsole;
     @Getter @Setter
     private static String username;
-    @Getter @Setter
-    private CoreHandler coreHandler;
+
     @Getter
     private ClientManager clientManager;
     @Getter
@@ -69,8 +76,12 @@ public class Client {
     @Getter @Setter private boolean devToolsAccess = false;
     @Getter @Setter private String devToolsToken = null;
 
+    @Getter private AddonsLoader addonsLoader;
+    @Getter private AddonsManager addonsManager;
+
     @Getter private DNClientAPI dnClientAPI;
 
+    @Getter private EventsFactory eventsFactory;
     @Getter private ServicePlayersManager servicePlayersManager;
     static {
         instance = new Client();
@@ -123,17 +134,22 @@ public class Client {
     }
 
     public void init(){
+
+
+
         formatter = new Formatter();
         formatter.format();
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
 
-   
+
         Console console = Console.getConsole("m:default");
         console.defaultPrint = formatter.getDefaultStream();
         DevToolsToken devToolsToken = new DevToolsToken();
         devToolsToken.init();
         Main.getCommandReader().run(console);
+
+        System.out.println("CoreServer is starting...");
         try {
             Thread thread = new Thread(new CoreServer(14520));
             thread.start();
@@ -165,6 +181,27 @@ public class Client {
         javaIndex = javaReader.getJavaIndex();
 
 
+        eventsFactory = new EventsFactory();
+        //LOAD ADDONS
+        addonsLoader = new AddonsLoader();
+        addonsManager = new AddonsManager(this);
+        addonsLoader.getAddons().forEach(addon -> {
+            Class<?> c = addon.getDefaultClass();
+            DreamExtension extension = null;
+            try {
+                extension = (DreamExtension) c.getDeclaredConstructor(Addon.class).newInstance(addon);
+                extension.onLoad();
+                addonsManager.registerAddon(extension);
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.out.println(addon.getDreamyName() + " is not supported");
+            }
+        });
+
+
+        //Send CUSTOM REQUESTS TO SERVERS
+        Main.getTemplateLoading().createCustomRequestsFile();
+
         this.bundleManager = new BundleManager();
         bundleManager.init();
 
@@ -178,5 +215,14 @@ public class Client {
         this.clientManager = new ClientManager(this);
 
         this.dnClientAPI = new DNClientAPI();
+
+
+        addonsManager.getAddons().values().forEach(DreamExtension::start);
+        getEventsFactory().callEvent(new CoreInitEvent(getDnClientAPI()));
+
+    }
+
+    public ArrayList<CoreResponse> getGlobalResponses(){
+        return CoreHandler.getGlobalResponses();
     }
 }

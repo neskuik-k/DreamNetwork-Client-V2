@@ -17,7 +17,7 @@ public class Interceptor extends PrintStream{
 
         @Override
         public void print(String s)
-        {//do what ever you like
+        {
             try {
                 Console.print(new String(s.getBytes(), "UTF-8"), Level.INFO);
 

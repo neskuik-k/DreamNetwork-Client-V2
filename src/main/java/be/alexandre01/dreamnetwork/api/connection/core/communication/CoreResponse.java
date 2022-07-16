@@ -1,11 +1,52 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
-public abstract class CoreResponse {
-    public abstract void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception;
+import java.util.LinkedHashMap;
 
+public abstract class CoreResponse {
+    private final LinkedHashMap<Integer,RequestInterceptor> map = new LinkedHashMap<>();
+
+
+
+    public void onAutoResponse(Message message, ChannelHandlerContext ctx, IClient client){
+        if(!preReader(message,ctx,client)){
+            return;
+        }
+        try {
+            if(message.hasRequest()){
+                final RequestInterceptor interceptor = map.get(message.getRequestID());
+                if (interceptor != null) {
+                    interceptor.onRequest(message, ctx, client);
+                }
+            }
+            onResponse(message,ctx,client);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
+        // override this
+    }
+
+    public void addRequestInterceptor(RequestInfo requestInfo, RequestInterceptor requestInterceptor){
+        map.put(requestInfo.id(),requestInterceptor);
+    }
+
+    private RequestInterceptor getRequestInterceptor(Message message){
+        return map.get(message.getRequestID());
+    }
+    public interface RequestInterceptor {
+        public void onRequest(Message message, ChannelHandlerContext ctx, IClient client) throws Exception;
+    }
+
+    protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client){
+        // do nothing
+        return true;
+    }
 }

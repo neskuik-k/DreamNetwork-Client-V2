@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.installer;
 
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.config.Config;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -27,7 +28,7 @@ public class SpigetConsole {
     Console console;
     private ArrayList<Ressource> ressourcesFind;
     private ArrayList<Ressource> ressourcesSelected;
-    private ArrayList<JVMExecutor> serverSelected;
+    private ArrayList<IJVMExecutor> serverSelected;
     public SpigetConsole(Console console){
         this.console = console;
         ressourcesFind = new ArrayList<>();
@@ -74,7 +75,7 @@ public class SpigetConsole {
                                 return;
                             }
                             List<File> dirs = new ArrayList<>();
-                            for (JVMExecutor jvmExecutor : serverSelected){
+                            for (IJVMExecutor jvmExecutor : serverSelected){
                                 Config.createDir(Config.getPath(jvmExecutor.getFileRootDir().getAbsolutePath()+"/plugins/"));
                                 dirs.add(new File(Config.getPath(jvmExecutor.getFileRootDir().getAbsolutePath()+"/plugins/")));
                             }
@@ -360,7 +361,7 @@ public class SpigetConsole {
                             if(args[1].equalsIgnoreCase("RMV")){
                                 if(args.length > 2){
                                     if(isNumber(args[2])){
-                                        JVMExecutor jvmExecutor = null;
+                                        IJVMExecutor jvmExecutor = null;
                                         try {
                                             jvmExecutor = serverSelected.get(Integer.parseInt(args[2])-1);
                                         }catch (Exception ignored){
@@ -384,7 +385,7 @@ public class SpigetConsole {
                             if(args[1].equalsIgnoreCase("LIST")){
                                 if(!serverSelected.isEmpty()){
                                     int i = 1;
-                                    for (JVMExecutor jvmExecutor : serverSelected){
+                                    for (IJVMExecutor jvmExecutor : serverSelected){
                                         console.fPrint("["+i+"] - "+ Colors.CYAN+jvmExecutor.getName()+Colors.RESET+"\n",Level.INFO);
                                         i++;
                                     }
@@ -415,7 +416,7 @@ public class SpigetConsole {
 
     }
     private boolean addServer(String name, JVMContainer.JVMType jvmType){
-        JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(name,jvmType);
+        IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(name,jvmType);
         if(jvmExecutor != null){
             serverSelected.add(jvmExecutor);
             return true;

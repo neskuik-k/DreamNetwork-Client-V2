@@ -14,11 +14,11 @@ import java.util.Date;
 import java.util.logging.Level;
 @Getter @Setter
 public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
-    @Getter boolean isConfig;
-    @Getter long confSize = 0;
-    @Getter boolean proxy = false;
-    @Getter boolean fixedData = false;
-    @Getter File fileRootDir;
+    boolean isConfig;
+    long confSize = 0;
+    boolean proxy = false;
+    boolean fixedData = false;
+    File fileRootDir;
 
     public static Builder builder(){
         return new Builder();

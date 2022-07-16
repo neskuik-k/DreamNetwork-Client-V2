@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.connection.core.players;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
@@ -93,7 +94,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
         Player player = getPlayer(id);
         String[] args = server.split("-");
 
-        JVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[0], JVMContainer.JVMType.SERVER);
+        IJVMExecutor jvmExecutor = Client.getInstance().getJvmContainer().getJVMExecutor(args[0], JVMContainer.JVMType.SERVER);
         int i;
         try {
             i = Integer.parseInt(args[1]);

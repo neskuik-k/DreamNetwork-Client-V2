@@ -6,7 +6,7 @@
 
     <groupId>be.alexandre01.dreamnetwork</groupId>
     <artifactId>DreamNetworkV2</artifactId>
-    <version>1.9.3-SNAPSHOT</version>
+    <version>1.10.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <profiles>
@@ -51,7 +51,7 @@
                                         <option>-dontshrink</option>
                                         <option>-dontnote</option>
                                         <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
-                                        <option>-keepattributes Signature,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
+                                        <option>-keepattributes Signature,InnerClasses,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
                                         <option>-keep class be.alexandre01.dreamnetwork.client.Launcher</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.Launcher {
                                             <![CDATA[<methods>]]>;
@@ -69,8 +69,14 @@
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.console.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.console.** {
+                                        <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.client.console.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.console.** {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -79,6 +85,12 @@
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.client.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.utils.** {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+
 
                                         <option>-keep public class javax.xml.*</option>
                                     </options>
@@ -235,7 +247,7 @@
                                         <option>-dontshrink</option>
                                         <option>-dontnote</option>
                                         <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
-                                        <option>-keepattributes Signature,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
+                                        <option>-keepattributes Signature,SourceFile,InnerClasses,LineNumberTable,*Annotations*,LocalVariable*Table</option>
                                         <option>-keep class be.alexandre01.dreamnetwork.client.Launcher</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.Launcher {
                                             <![CDATA[<methods>]]>;
@@ -251,6 +263,12 @@
                                         <option>-keep class be.alexandre01.dreamnetwork.api.**</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.** {
                                             <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
                                             }
                                         </option>
                                         <option>-keep class be.alexandre01.dreamnetwork.client.console.**</option>
@@ -406,6 +424,7 @@
 
 
 
+
         <dependency>
             <groupId>commons-io</groupId>
             <artifactId>commons-io</artifactId>
@@ -418,9 +437,11 @@
             <artifactId>unirest-java</artifactId>
             <version>3.13.6</version>
         </dependency>
-
-
-        <!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.30</version>
+        </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
         <dependency>
             <groupId>com.diogonunes</groupId>
             <artifactId>JColor</artifactId>
