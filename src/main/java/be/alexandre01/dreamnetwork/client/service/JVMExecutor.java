@@ -393,7 +393,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             jvmServices.remove(i);
             serversPortList.remove( Integer.valueOf(jvmService.getPort()));
-            servicePort.remove(jvmService.getPort());
+            if(servicePort.get(jvmService.getPort()) != null && servicePort.get(jvmService.getPort()) == jvmService){
+                servicePort.remove(jvmService.getPort());
+            }
             if(serversPort.containsKey(finalName)){
 
                 int port = serversPort.get(finalName);

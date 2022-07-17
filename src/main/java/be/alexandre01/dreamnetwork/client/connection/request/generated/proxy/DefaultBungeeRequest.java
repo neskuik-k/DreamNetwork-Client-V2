@@ -18,6 +18,7 @@ public class DefaultBungeeRequest extends RequestBuilder {
             message.set("PROCESSNAME",args[0]);
             message.set("REMOTEIP",args[1]);
             message.set("PORT",args[2]);
+            message.set("MODS",args[3]);
             return message;
         });
         requestData.put(RequestType.BUNGEECORD_UNREGISTER_SERVER,(message,client, args) -> {

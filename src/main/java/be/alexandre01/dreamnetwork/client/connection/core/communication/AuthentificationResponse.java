@@ -91,7 +91,7 @@ public class AuthentificationResponse extends CoreResponse {
                                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
                                                 jvmService.getJvmExecutor().getName() + "-" + jvmService.getId(),
                                                 remoteAdress[0].replaceAll("/", ""),
-                                                jvmService.getPort());
+                                                jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
                                     }
                                 }
                             }
@@ -113,7 +113,7 @@ public class AuthentificationResponse extends CoreResponse {
                         proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
                                 newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId(),
                                 remoteAdress[0].replaceAll("/", ""),
-                                newClient.getPort());
+                                newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
 
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
                         this.client.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.client.getDnClientAPI(), newClient, newClient.getJvmService()));
