@@ -5,3 +5,5 @@
 *.log
 /temp/
 /tmp/
+/.vscode/
+/addons/

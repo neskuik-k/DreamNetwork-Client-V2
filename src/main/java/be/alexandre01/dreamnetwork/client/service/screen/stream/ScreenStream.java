@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
@@ -12,7 +13,7 @@ import java.io.*;
 import java.util.stream.Collectors;
 
 public class ScreenStream {
-    public Screen screen;
+    public IScreen screen;
     public PrintStream oldOut = System.out;
     public InputStream oldIn = System.in;
     public InputStream reader;
@@ -41,7 +42,7 @@ public class ScreenStream {
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
     }
-    public void init(String name, Screen screen){
+    public void init(String name, IScreen screen){
         this.screen = screen;
      //   reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
 

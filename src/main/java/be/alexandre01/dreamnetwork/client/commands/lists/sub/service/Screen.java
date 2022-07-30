@@ -2,7 +2,11 @@ package be.alexandre01.dreamnetwork.client.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
 
 
@@ -25,8 +29,36 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
             sendList(screenManager);
         }
 
+
         if(args.length == 1){
             notComplete();
+            return true;
+        }
+
+        if(args[1].equalsIgnoreCase("refresh")){
+            System.out.println(Colors.BLUE+"Try to refresh the screens");
+            for (IJVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+                for (IService service : jvmExecutor.getServices()) {
+                    if(service.getScreen() == null){
+                        new be.alexandre01.dreamnetwork.client.service.screen.Screen(service);
+                        System.out.println(Colors.BLUE+" Backuping screen for service on "+jvmExecutor.getName()+"-"+service.getId()+"...");
+                    }else {
+                        System.out.println(Colors.BLUE+" Screen for service on "+jvmExecutor.getName()+"-"+service.getId()+" is already backuped + " + service.getScreen());
+                    }
+                }
+
+            }
+            for (IJVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+                for (IService service : jvmExecutor.getServices()) {
+                    if(service.getScreen() == null){
+                        new be.alexandre01.dreamnetwork.client.service.screen.Screen(service);
+                        System.out.println(Colors.BLUE+" Backuping screen for service on "+jvmExecutor.getName()+"-"+service.getId()+"...");
+                    }else {
+                        System.out.println(Colors.BLUE+" Screen for service on "+jvmExecutor.getName()+"-"+service.getId()+" is already backuped + " + service.getScreen());
+                    }
+                }
+
+            }
             return true;
         }
 

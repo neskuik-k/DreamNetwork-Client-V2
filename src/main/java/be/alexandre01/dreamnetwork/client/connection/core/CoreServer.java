@@ -8,6 +8,8 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.logging.LogLevel;
+import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.ResourceLeakDetector;
 
 import java.util.logging.Level;
@@ -33,6 +35,7 @@ public class CoreServer extends Thread{
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class) // (3)
                     .childHandler(new CorePipeline())
+                    .handler(new LoggingHandler(LogLevel.INFO))
                     .option(ChannelOption.SO_BACKLOG, 128)          // (5)
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 

@@ -122,7 +122,7 @@ public interface IJVMExecutor  {
 
     public void startServer(IConfig jvmConfig);
 
-    public void removeService(int i);
+    public void removeService(IService service);
 
     public IService getService(Integer i);
 

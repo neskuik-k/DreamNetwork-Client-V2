@@ -59,6 +59,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
 
             IService jvmService = jvmExecutor.getService(sId);
             jvmService.stop();
+            jvmService.removeService();
             return true;
         }
 

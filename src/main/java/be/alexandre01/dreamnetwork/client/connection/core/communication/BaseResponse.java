@@ -45,6 +45,7 @@ public class BaseResponse extends CoreResponse {
                 return;
             }
             stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
+            stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
         addRequestInterceptor(SPIGOT_EXECUTE_COMMAND,(message, ctx, c) -> {
