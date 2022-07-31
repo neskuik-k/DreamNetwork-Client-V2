@@ -27,7 +27,6 @@ public class DreamExtension {
 
     private ArrayList<RequestType> requestTypes = new ArrayList<>();
 
-    @Getter public IRequestManager manager;
     
     public void onLoad(){
         // do nothing
@@ -40,9 +39,6 @@ public class DreamExtension {
     public DreamExtension(Addon addon){
         dnClientAPI = DNClientAPI.getInstance();
         this.addon = addon;
-    }
-    public String getName(){
-        return "DreamNetwork";
     }
 
     final void load(Client client){

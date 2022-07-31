@@ -56,13 +56,14 @@ public class AddonsLoader {
             }
             System.out.println("Loading addons...");
             if(isDirEmpty(dir.toPath())) {
-                System.out.println("Dir empty");
+                System.out.println("The addons folder is empty. Skipping...");
                 return;
             }
             for(File file : Objects.requireNonNull(dir.listFiles())) {
-                System.out.println("Loading addon: " + file.getName());
                 if (file.isDirectory())
                     continue;
+
+                System.out.println("Loading addon: " + file.getName());
 
                 Addon cache = null;
                 for (Addon module : cachedAddons) {
@@ -96,7 +97,7 @@ public class AddonsLoader {
                     }
                 }
                 if(addon == null)
-                    return;
+                    continue;
 
                 addon.setFile(file);
                 addon.setChild(child);

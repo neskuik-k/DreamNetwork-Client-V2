@@ -3,12 +3,13 @@ package be.alexandre01.dreamnetwork.client.service.screen.commands;
 
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 
 public class ScreenExit implements Command.CommandExecutor {
-    Screen screen;
-    public ScreenExit(Screen screen){
+    IScreen screen;
+    public ScreenExit(IScreen screen){
         this.screen = screen;
     }
 

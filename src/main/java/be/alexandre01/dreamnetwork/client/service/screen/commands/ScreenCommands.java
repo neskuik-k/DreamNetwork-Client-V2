@@ -2,14 +2,15 @@ package be.alexandre01.dreamnetwork.client.service.screen.commands;
 
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 
 import java.util.ArrayList;
 
 public class ScreenCommands {
     public ArrayList<Command.CommandExecutor> executorList;
-    private Screen screen;
-    public ScreenCommands(Screen screen){
+    private IScreen screen;
+    public ScreenCommands(IScreen screen){
         this.executorList = new ArrayList<>();
         this.screen = screen;
     }

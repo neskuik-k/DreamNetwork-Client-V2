@@ -10,15 +10,16 @@ public enum InstallationLinks {
     PAPER_SPIGOT_1_10_2("https://papermc.io/api/v2/projects/paper/versions/1.10.2/builds/918/downloads/paper-1.10.2-918.jar","1.10.2",to(8,17)),
     PAPER_SPIGOT_1_11_2("https://papermc.io/api/v2/projects/paper/versions/1.11.2/builds/1106/downloads/paper-1.11.2-1106.jar","1.11.2",to(8,17)),
     PAPER_SPIGOT_1_12_2("https://papermc.io/api/v2/projects/paper/versions/1.12.2/builds/1620/downloads/paper-1.12.2-1620.jar","1.12.2",to(8,17)),
-    PAPER_SPIGOT_1_13_2("https://papermc.io/api/v2/projects/paper/versions/1.13.2/builds/657/downloads/paper-1.13.2-657.ja","1.13.2",to(8,17)),
+    PAPER_SPIGOT_1_13_2("https://papermc.io/api/v2/projects/paper/versions/1.13.2/builds/657/downloads/paper-1.13.2-657.jar","1.13.2",to(8,17)),
     PAPER_SPIGOT_1_14_4("https://papermc.io/api/v2/projects/paper/versions/1.14.4/builds/245/downloads/paper-1.14.4-245.jar","1.14.2",to(8,17)),
     PAPER_SPIGOT_1_15_2("https://papermc.io/api/v2/projects/paper/versions/1.15.2/builds/393/downloads/paper-1.15.2-393.jar","1.15.2",to(8,17)),
     PAPER_SPIGOT_1_16_5("https://papermc.io/api/v2/projects/paper/versions/1.16.5/builds/794/downloads/paper-1.16.5-794.jar","1.16.5",to(8,17)),
     PAPER_SPIGOT_1_17_1("https://papermc.io/api/v2/projects/paper/versions/1.17.1/builds/397/downloads/paper-1.17.1-397.jar","1.17.1",to(16,17)),
-    PAPER_SPIGOT_1_18("https://papermc.io/api/v2/projects/paper/versions/1.18/builds/63/downloads/paper-1.18-63.jar","1.18",to(17,17)),
+    PAPER_SPIGOT_1_18_2("https://api.papermc.io/v2/projects/paper/versions/1.18.2/builds/387/downloads/paper-1.18.2-387.jar","1.18.2",to(17,17)),
+    PAPER_SPIGOT_1_19("https://api.papermc.io/v2/projects/paper/versions/1.19/builds/65/downloads/paper-1.19-65.jar","1.19",to(17,18)),
 
     BUNGEECORD("https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar","BUNGEECORD",to(8,17)),
-    WATERFALL("https://papermc.io/api/v2/projects/waterfall/versions/1.18/builds/465/downloads/waterfall-1.18-474.jar","WATERFALL",to(8,17)),
+    WATERFALL("https://api.papermc.io/v2/projects/waterfall/versions/1.19/builds/498/downloads/waterfall-1.19-498.jar","WATERFALL",to(8,17)),
     FLAMECORD("https://www.dropbox.com/s/3hknjx4k0ezto1y/FlameCord.jar?dl=1","FLAMECORD",to(8,17));
 
     private String url;

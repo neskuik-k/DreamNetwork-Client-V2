@@ -18,6 +18,7 @@ import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientMa
 import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.client.console.ConsolePath;
 import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.console.formatter.ConciseFormatter;
@@ -131,6 +132,7 @@ public class Client {
         JVM CONTAINER TO STORE JVMExecutors
          */
         this.jvmContainer = new JVMContainer();
+
     }
 
     public void init(){
@@ -185,19 +187,20 @@ public class Client {
         //LOAD ADDONS
         addonsLoader = new AddonsLoader();
         addonsManager = new AddonsManager(this);
+        this.dnClientAPI = new DNClientAPI();
         addonsLoader.getAddons().forEach(addon -> {
             Class<?> c = addon.getDefaultClass();
             DreamExtension extension = null;
             try {
                 extension = (DreamExtension) c.getDeclaredConstructor(Addon.class).newInstance(addon);
                 extension.onLoad();
+                System.out.println("Addon "+addon.getDreamyName()+" has been loaded.");
                 addonsManager.registerAddon(extension);
             } catch (Exception e) {
                 e.printStackTrace();
                 System.out.println(addon.getDreamyName() + " is not supported");
             }
         });
-
 
         //Send CUSTOM REQUESTS TO SERVERS
         Main.getTemplateLoading().createCustomRequestsFile();
@@ -214,7 +217,7 @@ public class Client {
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
 
-        this.dnClientAPI = new DNClientAPI();
+
 
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);

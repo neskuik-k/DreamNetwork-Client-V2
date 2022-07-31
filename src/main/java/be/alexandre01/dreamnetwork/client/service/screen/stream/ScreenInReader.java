@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.client.console.Console;
@@ -24,13 +25,13 @@ import java.util.concurrent.TimeUnit;
 public class ScreenInReader extends Thread {
     Console console;
     InputStream in;
-    JVMService server;
+    IService server;
     public InputStream reader;
     private Screen screen;
 
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
-    public ScreenInReader(Console console, JVMService server, InputStream reader, Screen screen) {
+    public ScreenInReader(Console console, IService server, InputStream reader, Screen screen) {
         this.console = console;
         this.server = server;
         this.reader = reader;

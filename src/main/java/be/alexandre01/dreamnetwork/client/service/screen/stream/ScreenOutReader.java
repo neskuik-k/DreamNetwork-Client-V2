@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service.screen.stream;
 
 
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.console.Console;
 
@@ -22,11 +23,11 @@ public class ScreenOutReader {
     ScreenCommands commands;
     BufferedWriter writer;
     private String[] args;
-    private final Screen screen;
+    private final IScreen screen;
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ScreenOutReader(Screen screen, Console console){
+    public ScreenOutReader(IScreen screen, Console console){
       //  this.consoleReader = consoleReader;
         //Console.debugPrint(consoleReader.getCompleters());
 

@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.Client;
 import be.alexandre01.dreamnetwork.client.Main;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.AuthentificationResponse;
@@ -225,14 +226,14 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
         //REMOVE SERVICES
         if(client != null && client.getJvmService() != null){
-            client.getJvmService().getJvmExecutor().removeService(client.getJvmService().getId());
+            client.getJvmService().getJvmExecutor().removeService(client.getJvmService());
         }
 
 
 
         if(client != null && client.isDevTool()){
             ScreenManager screenManager = ScreenManager.instance;
-            for(Screen screen : screenManager.getScreens().values()){
+            for(IScreen screen : screenManager.getScreens().values()){
                 screen.getDevToolsReading().remove(client);
             }
         }
@@ -249,6 +250,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
         if(!Main.isDisabling()){
             if(!(cause instanceof java.net.SocketException)){
+                Console.print(cause.getMessage(),Level.FINE);
                 cause.printStackTrace();
             }
         }

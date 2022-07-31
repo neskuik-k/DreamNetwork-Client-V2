@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.screen.IScreenManager {
-   @Getter private HashMap<String,Screen> screens;
+   @Getter private HashMap<String,IScreen> screens;
     @Getter private ArrayList<Integer> screenIds;
     @Getter private ArrayList<Integer> availableScreenIds;
 
@@ -48,7 +48,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public void remScreen(IScreen screen){
-        screens.remove(screen.getScreenName());
+        if(screens.containsValue(screen)){
+            screens.remove(screen.getScreenName());
+        }
         availableScreenIds.add(screen.getScreenId());
         screenIds.remove(screen.getScreenId());
 
@@ -62,7 +64,7 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     public void watch(String server){
         //Console.clearConsole();
         //A PATCH
-       screens.get(server).screenStream.init(server,screens.get(server));
+       screens.get(server).getScreenStream().init(server,screens.get(server));
     }
 
     @Override

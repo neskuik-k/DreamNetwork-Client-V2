@@ -13,6 +13,7 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.client.console.Console;
 import be.alexandre01.dreamnetwork.client.console.colors.Colors;
 import be.alexandre01.dreamnetwork.client.service.JVMContainer;
+import be.alexandre01.dreamnetwork.client.service.screen.Screen;
 import be.alexandre01.dreamnetwork.client.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -97,6 +98,10 @@ public class AuthentificationResponse extends CoreResponse {
                             }
                         }
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        if(newClient.getJvmService().getScreen() == null){
+                            new Screen(newClient.getJvmService());
+                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                        }
                         this.client.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.client.getDnClientAPI(), newClient, newClient.getJvmService()));
 
                         for (IClient devtools : Client.getInstance().getClientManager().getDevTools()) {
@@ -116,6 +121,10 @@ public class AuthentificationResponse extends CoreResponse {
                                 newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
 
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        if(newClient.getJvmService().getScreen() == null){
+                            new Screen(newClient.getJvmService());
+                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                        }
                         this.client.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.client.getDnClientAPI(), newClient, newClient.getJvmService()));
 
                         ArrayList<String> servers = new ArrayList<>();

@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -20,13 +21,16 @@ public class JVMService implements IService {
     private JVMExecutor jvmExecutor;
     private Process process;
 
-    private Screen screen = null;
+    private IScreen screen = null;
+
+
 
     @Override
-    public void stop(){
+    public synchronized void stop(){
         if(screen != null){
             screen.destroy();
         }
+
 
         if(client != null){
             client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
@@ -34,19 +38,13 @@ public class JVMService implements IService {
         }else{
             process.destroy();
         }
+    }
 
+    public synchronized void restart() {
 
     }
 
-    @Override
-    public void restart() {
 
-    }
-
-    @Override
-    public void sendData() {
-
-    }
 
     public void setClient(Client client) {
         this.client = client;
@@ -59,8 +57,9 @@ public class JVMService implements IService {
     }
 
     @Override
-    public void removeService() {
-        jvmExecutor.removeService(id);
+    public synchronized void removeService() {
+        jvmExecutor.removeService(this);
+
     }
 
     @Override

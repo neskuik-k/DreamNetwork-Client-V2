@@ -148,8 +148,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
             String finalname =  jvmConfig.getName()+"-"+servers;
-
-            if(getType().equals(Mods.DYNAMIC)){
+            if(jvmConfig.getType().equals(Mods.DYNAMIC)){
                 if(Config.contains("tmp/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName())){
                     Config.removeDir("tmp/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName());
                 }
@@ -209,13 +208,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     private boolean proceedStarting(String finalname,int servers,IConfig jvmConfig) throws IOException {
-        Integer port = 0;
+        Integer port = jvmConfig.getPort();
         if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
 
             return false;
         }
-        if(jvmConfig.getPort() == 0){
+        if(port == 0){
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
@@ -233,7 +232,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
 
                 // System.out.println(port);
-                changePort(getType().getPath()+jvmConfig.getPathName(),finalname,port,getType());
+                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,getType());
 
                 port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,jvmConfig.getType());
 
@@ -297,7 +296,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         Process proc = null;
 
 
-        if(getType().equals(Mods.DYNAMIC)){
+        if(jvmConfig.getType().equals(Mods.DYNAMIC)){
             if(startup != null){
                 String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+ getExec();
                 startup = startup.replaceAll("%java%",javaPath).replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
@@ -314,7 +313,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
 
         }else {
-            if(getType().equals(Mods.STATIC)){
+            if(jvmConfig.getType().equals(Mods.STATIC)){
                 if(startup != null){
                     String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmConfig.getExec();
 
@@ -335,7 +334,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                 }
             }
-
 
         Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
         JVMService jvmService = JVMService.builder().
@@ -383,17 +381,17 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         return true;
     }
     @Override
-    public void removeService(int i){
+    public void removeService(IService jvmService){
         try{
-            IService jvmService = jvmServices.get(i);
+            int i = jvmService.getId();
             String finalName = getName()+"-"+jvmService.getId();
             if(Config.contains(Config.getPath(System.getProperty("user.dir")+"/tmp/"+getPathName()+"/"+getName()+"/"+finalName))){
                 Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+getPathName()+"/"+getName()+"/"+finalName));
             }
 
             jvmServices.remove(i);
-            serversPortList.remove( Integer.valueOf(jvmService.getPort()));
             if(servicePort.get(jvmService.getPort()) != null && servicePort.get(jvmService.getPort()) == jvmService){
+                serversPortList.remove( Integer.valueOf(jvmService.getPort()));
                 servicePort.remove(jvmService.getPort());
             }
             if(serversPort.containsKey(finalName)){

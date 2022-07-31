@@ -486,7 +486,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
         @Override
         public JVMStartupConfig build(){
-            JVMStartupConfig j =  new JVMStartupConfig(name,pathName,true);
+            JVMStartupConfig j =  new JVMStartupConfig(pathName,name,true);
             j.setType(type);
             j.setXms(Xms);
             j.setXmx(Xmx);
