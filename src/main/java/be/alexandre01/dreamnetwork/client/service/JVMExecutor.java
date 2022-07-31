@@ -300,7 +300,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         if(getType().equals(Mods.DYNAMIC)){
             if(startup != null){
                 String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+ getExec();
-                startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
+                startup = startup.replaceAll("%java%",javaPath).replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
                 Console.print(startup,Level.FINE);
                 proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
