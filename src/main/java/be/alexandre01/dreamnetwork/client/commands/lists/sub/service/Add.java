@@ -38,7 +38,6 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
     public boolean onSubCommand(String[] args) {
         if(args[0].equalsIgnoreCase("add")){
             if(args.length >= 5){
-
                  if(args[1].equalsIgnoreCase("server")||args[1].equalsIgnoreCase("proxy")){
                      boolean proxy = args[1].equalsIgnoreCase("proxy");
                      System.out.println(args[2]);

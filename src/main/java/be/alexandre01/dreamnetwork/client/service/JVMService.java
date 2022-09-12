@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.client.service;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
@@ -11,6 +12,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import org.bouncycastle.cms.PasswordRecipientId;
 
 @Getter @Setter
 @Builder
@@ -20,6 +22,11 @@ public class JVMService implements IService {
     private Client client;
     private JVMExecutor jvmExecutor;
     private Process process;
+
+    private IJVMExecutor.Mods type;
+
+    private String xmx;
+    private String xms;
 
     private IScreen screen = null;
 
@@ -59,7 +66,6 @@ public class JVMService implements IService {
     @Override
     public synchronized void removeService() {
         jvmExecutor.removeService(this);
-
     }
 
     @Override

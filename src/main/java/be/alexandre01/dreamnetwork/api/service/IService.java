@@ -10,6 +10,9 @@ public interface IService {
 
     int getId();
     int getPort();
+    String getXmx();
+    String getXms();
+    IJVMExecutor.Mods getType();
     IClient getClient();
     IJVMExecutor getJvmExecutor();
     Process getProcess();

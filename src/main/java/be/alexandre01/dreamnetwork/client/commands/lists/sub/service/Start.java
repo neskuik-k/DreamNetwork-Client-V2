@@ -57,13 +57,40 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
                 if(mods == null){
                     return true;
                 }
-
-
                 if(!(RamArgumentsChecker.check(args[4]) && RamArgumentsChecker.check(args[5]))){
                     System.out.println(Chalk.on("[!] The RAM Argument is incorrect... try for example: 512M or 1G"));
                     return true;
                 }
                 int port = 0;
+
+
+
+                String[] options = new String[args.length - 6];
+                for(int i = 6; i < args.length; i++){
+                    options[i - 6] = args[i];
+
+                    if(args[i].equalsIgnoreCase("-port")){
+                        try {
+                            port = Integer.parseInt(args[i + 1]);
+                        }catch (Exception e){
+                            System.out.println(Chalk.on("[!] The port is incorrect... try for example: 25565").red());
+                            return true;
+                        }
+                    }
+
+
+                    if(args[i].equalsIgnoreCase("-port")){
+                        try {
+                            port = Integer.parseInt(args[i + 1]);
+                        }catch (Exception e){
+                            System.out.println(Chalk.on("[!] The port is incorrect... try for example: 25565").red());
+                            return true;
+                        }
+                    }
+
+                }
+
+
                 if(args.length > 6){
                    try {
                        port = Integer.parseInt(args[6]);
@@ -73,6 +100,8 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
                        return true;
                    }
                 }
+
+
 
                 JVMConfig jvmConfig = JVMStartupConfig.builder()
                         .name(jvmExecutor.getName())

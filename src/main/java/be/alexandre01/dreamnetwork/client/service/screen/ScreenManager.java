@@ -58,12 +58,18 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public boolean containsScreen(String s){
+        if(screenCurrentId.containsKey(s) && screenCurrentId.size() == 1){
+            s += "-"+0;
+        }
         return screens.containsKey(s);
     }
     @Override
     public void watch(String server){
         //Console.clearConsole();
         //A PATCH
+        if(screenCurrentId.containsKey(server) && screenCurrentId.size() == 1){
+            server += "-"+0;
+        }
        screens.get(server).getScreenStream().init(server,screens.get(server));
     }
 

@@ -115,10 +115,12 @@ public class AuthentificationResponse extends CoreResponse {
                         be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
                         String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
-                        proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId(),
-                                remoteAdress[0].replaceAll("/", ""),
-                                newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
+                        if(proxy != null){
+                            proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                    newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId(),
+                                    remoteAdress[0].replaceAll("/", ""),
+                                    newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
+                        }
 
                         Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
                         if(newClient.getJvmService().getScreen() == null){

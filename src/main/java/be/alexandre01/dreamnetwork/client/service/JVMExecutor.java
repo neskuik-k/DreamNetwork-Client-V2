@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.client.service;
 
+import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -46,6 +47,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter @Setter  public static Integer cache = 0;
     private ArrayList<IConfig> queue = new ArrayList<>();
     public HashMap<Integer,IService> jvmServices = new HashMap<>();
+
+    public IService staticService = null;
 
 
     public JVMExecutor(String pathName,String name, Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile) {
@@ -100,7 +103,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         if(!isConfig()) return false;
 
 
-        if(jvmConfig.getType() == Mods.STATIC && !jvmServices.isEmpty()){
+        if(jvmConfig.getType() == Mods.STATIC && staticService != null){
             Console.print(Colors.ANSI_RED()+"The server is already running",Level.WARNING);
             return false;
         }
@@ -209,11 +212,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     private boolean proceedStarting(String finalname,int servers,IConfig jvmConfig) throws IOException {
         Integer port = jvmConfig.getPort();
-        if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
+        /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
 
             return false;
-        }
+        }*/
         if(port == 0){
 
             if(!serversPortList.isEmpty()){
@@ -232,7 +235,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
 
                 // System.out.println(port);
-                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,getType());
+                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,jvmConfig.getType());
 
                 port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,jvmConfig.getType());
 
@@ -294,17 +297,30 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         Process proc = null;
+        Client client = Client.getInstance();
+        CoreServicePreProcessEvent preProcessEvent = new CoreServicePreProcessEvent(client.getDnClientAPI(),jvmConfig);
+        client.getEventsFactory().callEvent(preProcessEvent);
+
+        if(preProcessEvent.isCancelled()){
+            Console.print("The process cannot be started because the "+ preProcessEvent.getCancelledBy().getDreamyName()+ " addon cancelled the event.",Level.WARNING);
+            return false;
+        }
 
 
+        String customArgs = "";
+
+        if(preProcessEvent.getCustomArguments() != null){
+            customArgs += preProcessEvent.getCustomArguments();
+        }
         if(jvmConfig.getType().equals(Mods.DYNAMIC)){
             if(startup != null){
                 String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+ getExec();
-                startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
+                startup = startup.replace("%jar%",customArgs +  " " + jarPath).replace("%exec%",customArgs +  " " + jarPath);
                 Console.print(startup,Level.FINE);
                 proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }else {
-                String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExec() +" nogui";
+                String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" "+ customArgs +" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExec() +" nogui";
 
                 Console.print(line,Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
@@ -317,13 +333,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 if(startup != null){
                     String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmConfig.getExec();
 
-                    startup = startup.replaceAll("%jar%",jarPath).replaceAll("%exec%",jarPath);
+                    startup = startup.replaceAll("%jar%",customArgs +  " " + jarPath).replaceAll("%exec%",customArgs +  " " + jarPath);
                     Console.print(startup,Level.FINE);
                     proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()))).redirectErrorStream(true).start();
 
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 }else {
-                    String line = javaPath + " -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+ getExec()+" nogui";
+                    String line = javaPath + " -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" "+ customArgs+ " -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+ getExec()+" nogui";
                     Console.print(line,Level.FINE);
                     proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/template/"+getPathName()+"/"+getName()))).redirectErrorStream(true).start();
 
@@ -341,6 +357,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 .jvmExecutor(this)
                 .id(servers)
                 .port(port)
+                .xms(jvmConfig.getXms())
+                .xmx(jvmConfig.getXmx())
+                .type(jvmConfig.getType())
                 .build();
 
         jvmServices.put(servers,jvmService);
@@ -349,10 +368,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
         Console.print(Colors.GREEN_BOLD+"The server "+Colors.YELLOW_BOLD+finalname+Colors.GREEN_BOLD+" has just started the process",Level.INFO);
-        if(getType() == Mods.DYNAMIC){
+        if(jvmConfig.getType() == Mods.DYNAMIC){
             Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+getName().toLowerCase()+"/"+getName()+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
-        if(getType() == Mods.STATIC){
+        if(jvmConfig.getType() == Mods.STATIC){
+            System.out.println("AIE");
+            staticService = jvmService;
             Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/template/"+getName().toLowerCase())).getAbsolutePath(), Level.FINE);
         }
 
@@ -366,7 +387,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         //   connect.setServer(this);
 
 
-        Client client = Client.getInstance();
+
 
         client.getEventsFactory().callEvent(new CoreServiceStartEvent(client.getDnClientAPI(),jvmService));
         //SCREEN SYSTEM
@@ -389,6 +410,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 Config.removeDir(Config.getPath(System.getProperty("user.dir")+"/tmp/"+getPathName()+"/"+getName()+"/"+finalName));
             }
 
+            if(jvmService.getType() == Mods.STATIC){
+                System.out.println("Je supprime le service");
+                staticService = null;
+            }
             jvmServices.remove(i);
             if(servicePort.get(jvmService.getPort()) != null && servicePort.get(jvmService.getPort()) == jvmService){
                 serversPortList.remove( Integer.valueOf(jvmService.getPort()));
@@ -409,9 +434,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             if(!isProxy()){
                 be.alexandre01.dreamnetwork.client.connection.core.communication.Client proxy = Client.getInstance().getClientManager().getProxy();
-
-                proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_UNREGISTER_SERVER,
-                        finalName);
+                if(proxy != null){
+                    proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_UNREGISTER_SERVER, finalName);
+                }
             }
         }catch (Exception e){
             e.printStackTrace(Client.getInstance().formatter.prStr);

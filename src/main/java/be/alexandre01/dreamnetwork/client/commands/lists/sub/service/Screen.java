@@ -18,7 +18,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public Screen(){
         setCompletion(node("service",
                 node("screen")));
-            addCompletor("service","screen");
+            addCompletor("service","screen","%screen%");
     }
     @Override
     public boolean onSubCommand(String[] args) {
