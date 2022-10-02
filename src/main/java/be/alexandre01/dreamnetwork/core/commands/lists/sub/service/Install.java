@@ -1,8 +1,7 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxyNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -14,13 +13,10 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
-import org.jline.reader.impl.completer.NullCompleter;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
-import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Install extends SubCommandCompletor implements SubCommandExecutor {
     public Install(){
@@ -35,10 +31,10 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 create("install",
                         create("server",
                                 create(new ServersNode(),
-                                    create(versions.toArray()),
+                                    create(versions.toArray()))),
                         create("proxy",
-                                create(new ProxyNode(),
-                                    create(versions.toArray()))))))));
+                                create(new ProxiesNode(),
+                                    create(versions.toArray()))))));
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {

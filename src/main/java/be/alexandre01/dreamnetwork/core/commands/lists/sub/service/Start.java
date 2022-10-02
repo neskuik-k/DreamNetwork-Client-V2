@@ -2,8 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.AllServersNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxyNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -27,7 +26,7 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
                 create("start",
                         create("server",create(new ServersNode(),next)),
-                        create( "proxy",create(new ProxyNode(),next)))));
+                        create( "proxy",create(new ProxiesNode(),next)))));
         addCompletor("service","start","server");
         addCompletor("service","start","proxy");
 

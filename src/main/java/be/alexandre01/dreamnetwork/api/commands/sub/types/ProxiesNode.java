@@ -3,11 +3,10 @@ package be.alexandre01.dreamnetwork.api.commands.sub.types;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
-import org.apache.commons.lang.ArrayUtils;
 import org.jline.builtins.Completers;
 
-public class ProxyNode extends CustomType {
-    public ProxyNode(){
+public class ProxiesNode extends CustomType {
+    public ProxiesNode(){
         type = SubCommandCompletor.Type.SERVERS;
         JVMContainer jvmContainer = Core.getInstance().getJvmContainer();
         setCustomType(() -> {

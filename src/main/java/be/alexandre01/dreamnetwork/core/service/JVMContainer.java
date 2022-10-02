@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.types.AllServersNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxyNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -102,7 +102,7 @@ public class JVMContainer implements IContainer {
                 break;
             case PROXY:
                 jvmExecutorsProxy.put(jvmExecutor.getName(),jvmExecutor);
-                CustomType.reloadAll(ProxyNode.class, AllServersNode.class);
+                CustomType.reloadAll(ProxiesNode.class, AllServersNode.class);
                 break;
         }
 
