@@ -310,7 +310,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         String customArgs = "";
 
         if(preProcessEvent.getCustomArguments() != null){
-            customArgs += " " + preProcessEvent.getCustomArguments() + " ";
+            customArgs += preProcessEvent.getCustomArguments() + " ";
         }
         if(jvmConfig.getType().equals(Mods.DYNAMIC)){
             if(startup != null){
@@ -320,7 +320,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             }else {
-                String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+ customArgs +"-jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExec() +" nogui";
+                String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+ " " + customArgs +"-jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExec() +" nogui";
 
                 Console.print(line,Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
