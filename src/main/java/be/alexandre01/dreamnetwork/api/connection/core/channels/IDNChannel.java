@@ -1,13 +1,12 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
-import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 
 public interface IDNChannel {
     void received(AChannelPacket receivedPacket);
 
-    void setData(String key, Object object, boolean autoSend, be.alexandre01.dreamnetwork.client.connection.core.communication.Client... clients);
+    void setData(String key, Object object, boolean autoSend, be.alexandre01.dreamnetwork.core.connection.core.communication.Client... clients);
 
     void storeData(String key, Object object, IClient... clients);
 

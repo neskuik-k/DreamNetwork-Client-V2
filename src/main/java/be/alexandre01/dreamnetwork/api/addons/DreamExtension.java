@@ -1,13 +1,10 @@
 package be.alexandre01.dreamnetwork.api.addons;
 
-import be.alexandre01.dreamnetwork.api.DNClientAPI;
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
-import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.Main;
-import be.alexandre01.dreamnetwork.client.commands.lists.sub.service.Add;
+import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import lombok.Getter;
 
 import java.io.FileInputStream;
@@ -17,10 +14,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 public class DreamExtension {
-    private Client client;
+    private Core core;
 
     @Getter
-    DNClientAPI dnClientAPI;
+    DNCoreAPI dnCoreAPI;
     @Getter
     Addon addon;
 
@@ -33,16 +30,16 @@ public class DreamExtension {
     }
 
     public DreamExtension(){
-        dnClientAPI = DNClientAPI.getInstance();
+        dnCoreAPI = DNCoreAPI.getInstance();
     }
 
     public DreamExtension(Addon addon){
-        dnClientAPI = DNClientAPI.getInstance();
+        dnCoreAPI = DNCoreAPI.getInstance();
         this.addon = addon;
     }
 
-    final void load(Client client){
-        this.client = client;
+    final void load(Core core){
+        this.core = core;
         onLoad();
     }
 

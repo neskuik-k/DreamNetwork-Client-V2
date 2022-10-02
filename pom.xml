@@ -52,8 +52,8 @@
                                         <option>-dontnote</option>
                                         <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
                                         <option>-keepattributes Signature,InnerClasses,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.Launcher</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.Launcher {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.Launcher</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.Launcher {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -75,8 +75,8 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.console.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.console.** {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -85,8 +85,8 @@
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.utils.** {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.utils.** {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -194,18 +194,18 @@
                                                 <exclude>META-INF/*.SF</exclude>
                                                 <exclude>META-INF/*.DSA</exclude>
                                                 <exclude>META-INF/*.RSA</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/addons/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/cluster/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/commands/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/config/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/libraries/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/connection/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/docker/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/events/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/installer/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/rest/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/service/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/client/*.class</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/addons/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/cluster/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/commands/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/config/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/libraries/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/connection/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/docker/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/events/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/installer/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/rest/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/service/**</exclude>
+                                                <exclude>be/alexandre01/dreamnetwork/core/*.class</exclude>
                                                 <exclude>files/**</exclude>
                                             </excludes>
                                         </filter>
@@ -248,8 +248,8 @@
                                         <option>-dontnote</option>
                                         <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
                                         <option>-keepattributes Signature,SourceFile,InnerClasses,LineNumberTable,*Annotations*,LocalVariable*Table</option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.Launcher</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.Launcher {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.Launcher</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.Launcher {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -271,13 +271,13 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.console.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.console.** {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.client.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.client.utils.** {
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.utils.**</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.utils.** {
                                             <![CDATA[<methods>]]>;
                                             }
                                         </option>
@@ -327,7 +327,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <classpathPrefix>/lib/</classpathPrefix>
-                            <mainClass>be.alexandre01.dreamnetwork.client.Launcher</mainClass>
+                            <mainClass>be.alexandre01.dreamnetwork.core.Launcher</mainClass>
                             <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
                         </manifest>
                     </archive>
@@ -352,7 +352,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>be.alexandre01.dreamnetwork.client.Launcher</mainClass>
+                            <mainClass>be.alexandre01.dreamnetwork.core.Launcher</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>
@@ -448,12 +448,13 @@
             <version>5.0.1</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
         <dependency>
             <groupId>org.asynchttpclient</groupId>
             <artifactId>async-http-client</artifactId>
-            <version>2.2.0</version>
-            <scope>compile</scope>
+            <version>2.12.3</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -462,6 +463,7 @@
             <scope>compile</scope>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
         <dependency>
             <groupId>io.socket</groupId>
             <artifactId>socket.io-client</artifactId>

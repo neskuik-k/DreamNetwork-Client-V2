@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import io.netty.channel.ChannelHandlerContext;
 
 public interface IClientManager {

@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.api.installer;
 
 
-import be.alexandre01.dreamnetwork.client.installer.Installer;
+import be.alexandre01.dreamnetwork.core.installer.Installer;
 
 import java.io.File;
 import java.util.List;

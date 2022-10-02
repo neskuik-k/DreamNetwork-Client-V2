@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 
 public interface IConfig {
     public String getName();

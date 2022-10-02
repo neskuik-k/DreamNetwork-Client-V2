@@ -1,8 +1,7 @@
 package be.alexandre01.dreamnetwork.api.connection.core.players;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
-import be.alexandre01.dreamnetwork.client.connection.core.players.ServicePlayersManager;
+import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersManager;
 import lombok.Getter;
 import lombok.Setter;
 

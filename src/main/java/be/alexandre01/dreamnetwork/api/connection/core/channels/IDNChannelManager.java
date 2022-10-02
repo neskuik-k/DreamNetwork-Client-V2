@@ -1,8 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.client.connection.core.channels.DNChannel;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
 
 public interface IDNChannelManager {
     boolean hasChannel(String name);

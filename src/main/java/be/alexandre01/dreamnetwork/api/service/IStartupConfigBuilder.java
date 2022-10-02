@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service;
 
-import be.alexandre01.dreamnetwork.client.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.client.service.JVMStartupConfig;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.core.service.JVMStartupConfig;
 
 public interface IStartupConfigBuilder {
 

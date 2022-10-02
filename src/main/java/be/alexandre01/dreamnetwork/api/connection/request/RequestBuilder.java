@@ -1,14 +1,11 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
 import lombok.Getter;
-
-
-import java.util.HashMap;
 
 @Data
 public class RequestBuilder {

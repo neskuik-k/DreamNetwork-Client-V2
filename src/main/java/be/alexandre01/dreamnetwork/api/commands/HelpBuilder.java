@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.api.commands;
 
-import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.util.ArrayList;

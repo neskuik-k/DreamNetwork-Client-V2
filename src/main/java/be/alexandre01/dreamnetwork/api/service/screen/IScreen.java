@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.api.service.screen;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.IService;
-import be.alexandre01.dreamnetwork.client.service.screen.stream.ScreenStream;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenStream;
 
 import java.util.ArrayList;
 

@@ -3,9 +3,10 @@ package be.alexandre01.dreamnetwork.api.commands;
 
 
 import be.alexandre01.dreamnetwork.api.events.list.commands.CoreCommandExecuteEvent;
-import be.alexandre01.dreamnetwork.client.Client;
-import be.alexandre01.dreamnetwork.client.commands.lists.*;
-import be.alexandre01.dreamnetwork.client.console.Console;
+import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.commands.lists.*;
+import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -13,12 +14,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-import static be.alexandre01.dreamnetwork.client.console.Console.print;
+import static be.alexandre01.dreamnetwork.core.console.Console.print;
+import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class CommandReader{
     @Getter CommandsManager commands;
 
-    Client client;
+    Core core;
     @Getter Console console;
     private boolean stop = false;
 
@@ -26,6 +28,16 @@ public class CommandReader{
 
     public CommandReader(){
         commands = new CommandsManager();
+
+
+        core = Core.getInstance();
+
+        ConsoleReader.nodes.add(node("test"));
+
+
+    }
+
+    public void init(){
         commands.addCommands(new ServiceCommand("service"));
         commands.addCommands(new BundlesCommand("bundles"));
         commands.addCommands(new HelpCommand("help"));
@@ -33,10 +45,8 @@ public class CommandReader{
         commands.addCommands(new ClearCommand("clear"));
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
-        //commands.addCommands(new GuiCommand("gui"));
-
-        client = Client.getInstance();
-
+        commands.addCommands(new GuiCommand("gui"));
+        ConsoleReader.reloadCompleter();
     }
 
     public void run(Console console){
@@ -47,8 +57,8 @@ public class CommandReader{
                 public void listener(String[] args) {
                     if(args.length != 0){
                         if(args[0].length() != 0){
-                            CoreCommandExecuteEvent event = new CoreCommandExecuteEvent(client.getDnClientAPI(), args);
-                            client.getEventsFactory().callEvent(event);
+                            CoreCommandExecuteEvent event = new CoreCommandExecuteEvent(core.getDnCoreAPI(), args);
+                            core.getEventsFactory().callEvent(event);
                             if(event.isCancelled()){
                                 print("Command cancelled");
                                 return;
@@ -60,7 +70,7 @@ public class CommandReader{
 
                 @Override
                 public void consoleChange() {
-
+                    //DO NOTHING
                 }
             });
 
@@ -75,7 +85,7 @@ public class CommandReader{
             @Override
             public void run() {
                 try {
-                    Client.getInstance().formatter.getDefaultStream().write(stringToBytesASCII(str));
+                    Core.getInstance().formatter.getDefaultStream().write(stringToBytesASCII(str));
                     scheduler.shutdown();
                 } catch (IOException e) {
                     e.printStackTrace();

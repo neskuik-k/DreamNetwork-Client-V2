@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.api.connection.request;
 
 
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Data;

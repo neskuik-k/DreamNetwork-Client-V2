@@ -1,15 +1,14 @@
 package be.alexandre01.dreamnetwork.api.events.list.services;
 
-import be.alexandre01.dreamnetwork.api.DNClientAPI;
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.addons.Addon;
-import be.alexandre01.dreamnetwork.api.events.Cancellable;
 import be.alexandre01.dreamnetwork.api.events.Event;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import lombok.Getter;
 
 @Getter
 public class CoreServicePreProcessEvent extends Event  {
-    private final DNClientAPI dnClientAPI;
+    private final DNCoreAPI dnCoreAPI;
     private final IConfig iConfig;
 
     private String customArguments = null;
@@ -18,8 +17,8 @@ public class CoreServicePreProcessEvent extends Event  {
 
     Addon cancelledBy = null;
 
-    public CoreServicePreProcessEvent(DNClientAPI dnClientAPI, IConfig iConfig) {
-        this.dnClientAPI = dnClientAPI;
+    public CoreServicePreProcessEvent(DNCoreAPI dnCoreAPI, IConfig iConfig) {
+        this.dnCoreAPI = dnCoreAPI;
         this.iConfig = iConfig;
     }
 

@@ -3,9 +3,8 @@ package be.alexandre01.dreamnetwork.api.connection.core.communication;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.service.IService;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.Client;
-import be.alexandre01.dreamnetwork.client.connection.core.communication.ClientManager;
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientManager;
+import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 
@@ -19,7 +18,7 @@ public interface IClient {
 
     boolean isDevTool();
 
-    be.alexandre01.dreamnetwork.client.service.JVMContainer.JVMType getJvmType();
+    be.alexandre01.dreamnetwork.core.service.JVMContainer.JVMType getJvmType();
 
     String getInfo();
 
@@ -39,13 +38,13 @@ public interface IClient {
 
     void setDevTool(boolean isDevTool);
 
-    void setJvmType(be.alexandre01.dreamnetwork.client.service.JVMContainer.JVMType jvmType);
+    void setJvmType(be.alexandre01.dreamnetwork.core.service.JVMContainer.JVMType jvmType);
 
     void setInfo(String info);
 
     void setChannelHandlerContext(io.netty.channel.ChannelHandlerContext channelHandlerContext);
 
-    void setCoreHandler(be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler coreHandler);
+    void setCoreHandler(be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler coreHandler);
 
 
 

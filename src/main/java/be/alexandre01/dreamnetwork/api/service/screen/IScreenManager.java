@@ -1,9 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service.screen;
 
 import be.alexandre01.dreamnetwork.api.service.IService;
-import be.alexandre01.dreamnetwork.client.service.JVMService;
-import be.alexandre01.dreamnetwork.client.service.screen.Screen;
-import be.alexandre01.dreamnetwork.client.service.screen.ScreenManager;
+import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 
 public interface IScreenManager {
     static void load() {

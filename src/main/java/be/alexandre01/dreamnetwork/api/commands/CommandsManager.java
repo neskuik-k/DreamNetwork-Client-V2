@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class CommandsManager  {
 
-    private final be.alexandre01.dreamnetwork.client.commands.CommandsManager commandsManager = new be.alexandre01.dreamnetwork.client.commands.CommandsManager();
+    private final be.alexandre01.dreamnetwork.core.commands.CommandsManager commandsManager = new be.alexandre01.dreamnetwork.core.commands.CommandsManager();
 
     public CommandsManager(){
        this.commandsManager.executorList = new HashMap<>();

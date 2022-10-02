@@ -2,8 +2,7 @@ package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
-import be.alexandre01.dreamnetwork.client.connection.core.handler.CoreHandler;
-import be.alexandre01.dreamnetwork.client.utils.messages.Message;
+import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.LinkedHashMap;

@@ -3,14 +3,13 @@ package be.alexandre01.dreamnetwork.api.commands;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
-import be.alexandre01.dreamnetwork.client.console.Console;
-import be.alexandre01.dreamnetwork.client.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.client.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
-import org.jline.reader.impl.completer.StringsCompleter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,13 +54,13 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
             if(subCommandExecutor instanceof SubCommandCompletor){
                 SubCommandCompletor completor = (SubCommandCompletor) subCommandExecutor;
 
-                for(String[] subs: completor.sub){
-                    Console.print(Arrays.toString(subs), Level.FINE);
+                for(Object subs: completor.sub){
+                    Console.print(subs, Level.FINE);
                     List<Completer> completors = new ArrayList<>();
                     boolean nullComp = false;
-                    for(String sub : subs){
+                    /*for(String sub : subs){
                         completors.add(new StringsCompleter(sub));
-                    }
+                    }*/
 
 
 

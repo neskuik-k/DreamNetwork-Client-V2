@@ -1,8 +1,7 @@
 package be.alexandre01.dreamnetwork.api.events.list.commands;
 
-import be.alexandre01.dreamnetwork.api.DNClientAPI;
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.events.Cancellable;
-import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.events.Event;
 import lombok.Getter;
 
@@ -10,10 +9,10 @@ import lombok.Getter;
 public class CoreCommandExecuteEvent extends Event implements Cancellable {
     private boolean cancelled;
     private String[] args;
-    private final DNClientAPI dnClientAPI;
+    private final DNCoreAPI dnCoreAPI;
 
-    public CoreCommandExecuteEvent(DNClientAPI dnClientAPI,String[] args) {
-        this.dnClientAPI = dnClientAPI;
+    public CoreCommandExecuteEvent(DNCoreAPI dnCoreAPI, String[] args) {
+        this.dnCoreAPI = dnCoreAPI;
         this.args = args;
     }
 
