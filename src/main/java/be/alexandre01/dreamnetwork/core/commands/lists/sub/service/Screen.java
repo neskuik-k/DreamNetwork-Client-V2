@@ -83,7 +83,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
         StringBuilder sb = new StringBuilder();
         AtomicInteger i = new AtomicInteger(1);
         if(screenManager.getScreens().isEmpty()){
-            System.out.println("Il n'y a aucun screen actuellement allumé");
+            System.out.println("There is no screen currently on");
             return;
         }
         screenManager.getScreens().forEach((s, screen) -> {
@@ -99,6 +99,6 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
             i.getAndIncrement();
         });
 
-        System.out.println("Voici la liste des screens disponibles -> " + sb.toString());
+        System.out.println("Here is the list of available screens -> " + sb.toString());
     }
 }

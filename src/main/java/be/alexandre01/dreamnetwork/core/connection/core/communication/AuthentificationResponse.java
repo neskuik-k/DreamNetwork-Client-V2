@@ -96,7 +96,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
                             System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
