@@ -87,6 +87,7 @@ public class Core {
     }
 
     public void afterConstructor(){
+        
         String s = System.getProperty("ebug");
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");

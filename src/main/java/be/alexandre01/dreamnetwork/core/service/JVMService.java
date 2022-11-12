@@ -43,9 +43,6 @@ public class JVMService implements IService {
         }
     }
 
-    public synchronized void restart() {
-
-    }
 
 
 
@@ -57,6 +54,21 @@ public class JVMService implements IService {
     public void kill() {
         process.destroy();
         process.destroyForcibly();
+    }
+
+    @Override
+    public void restart(){
+        if(screen != null){
+            screen.destroy();
+        }
+
+
+        if(client != null){
+            client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
+            client.getChannelHandlerContext().close();
+        }else{
+            process.destroy();
+        }
     }
 
     @Override

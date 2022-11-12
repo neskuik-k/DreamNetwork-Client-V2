@@ -246,10 +246,6 @@ public class Installer {
             }catch (Exception e){
                 e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
             }
-
-
-
-
     }
 
 

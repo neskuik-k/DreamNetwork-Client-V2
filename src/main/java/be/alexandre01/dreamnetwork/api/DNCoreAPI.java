@@ -67,8 +67,4 @@ public class DNCoreAPI {
     public EventsFactory getEventsFactory(){
         return core.getEventsFactory();
     }
-
-
-
-
 }

@@ -17,7 +17,7 @@ public interface IService {
 
     void setScreen(IScreen screen);
     void stop();
-
+    void restart();
     void kill();
 
     void removeService();
