@@ -15,7 +15,7 @@ public class BundlesCommand extends Command {
         getHelpBuilder().setTitleUsage("How to configurate your services bundles");
         getHelpBuilder().setCmdUsage("create a bundle","create","server/proxy","[name]");
         getHelpBuilder().setCmdUsage("remove a bundle","remove","[name]");
-        getHelpBuilder().setCmdUsage("edit a bundle","edit","[name]");
+        getHelpBuilder().setCmdUsage("edit a bundle","edit","[name]", "[option]");
 
     }
 

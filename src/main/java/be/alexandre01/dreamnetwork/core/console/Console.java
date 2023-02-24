@@ -23,6 +23,7 @@ import java.util.concurrent.*;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,14 +46,13 @@ public class Console extends Thread{
     private Thread thread;
     public boolean isRunning = false;
     public boolean collapseSpace = false;
-    public String writing = Colors.CYAN+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
-    ScheduledExecutorService scheduler = null;
+    public String writing = Colors.CYAN_BOLD_BRIGHT+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN_UNDERLINED+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
         public void onKill(LineReader reader) {
             String data;
-            while ((data = reader.readLine( Colors.PURPLE_BOLD+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+            while ((data = reader.readLine( Colors.RED_BOLD_BRIGHT+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
                 if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                     System.exit(0);
                 }else {
@@ -80,7 +80,7 @@ public class Console extends Thread{
         console.isRunning = true;
         clearConsole();
         if(console.defaultPrint != null)
-            console.defaultPrint.println(Chalk.on("Vous venez de changer de console. ["+console.getName()+"]").bgWhite().black());
+            console.defaultPrint.println(Chalk.on("You have just changed console. ["+console.getName()+"]").bgWhite().black());
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
           //  stashLine();
@@ -91,19 +91,8 @@ public class Console extends Thread{
                     console.forcePrint(s.content,s.level);
                 }
             }
-            //unstashLine();
+
         }
-        if(!console.isAlive()){
-            //new Thread(console).start();
-        }
-
-
-        ScheduledExecutorService timer = Executors.newSingleThreadScheduledExecutor();
-
-    /*    timer.scheduleAtFixedRate(() -> {
-            console.write(console.writing);
-            timer.shutdown();
-        },250,1,TimeUnit.MILLISECONDS);*/
 
         console.iConsole.consoleChange();
 
@@ -126,7 +115,6 @@ public class Console extends Thread{
         if(!instances.containsKey("m:default")){
             debugPrint("Debug: "+s);
             return;
-
         }
         if(level == Level.FINE){
             fine(s);
@@ -185,25 +173,79 @@ public class Console extends Thread{
             if(!isDebug && level == Level.FINE)
                 return;
 
-            ConsoleReader.sReader.printAbove(Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s)));
+            LineReader lineReader = ConsoleReader.sReader;
+            int cols = lineReader.getTerminal().getSize().getColumns();
+            String msg = Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s));
+            msg = msg.replaceAll("\\s+$", "");
+
+            cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
+            String spaces = "";
+            //random number between cols-3 and 1
+            //SNOW
+            /*if(cols > 6){
+                int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
+
+                for (int i = 0; i < cols-random; i++) {
+                    spaces += " ";
+                }
+                spaces += Colors.WHITE+"❆";
+            }*/
+
+            ConsoleReader.sReader.printAbove(msg+spaces);
 
            // ConsoleReader.sReader.setPrompt(writing);
         }
-        if(scheduler == null){
-            //taskUnstash();
-        }
+
 
 
 
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
     public static void print(Object s){
-        ConsoleReader.sReader.printAbove(Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET())));
-    }
+        LineReader lineReader = ConsoleReader.sReader;
+        int rows = lineReader.getTerminal().getSize().getRows();
+        int cols = lineReader.getTerminal().getSize().getColumns();
+        String msg = Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET()));
+        msg = msg.replaceAll("\\s+$", "");
+        cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
+        String spaces = "";
 
+        //random number between cols-3 and 1
+        //SNOW
+        /* if(cols > 6){
+            int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
+            for (int i = 0; i < cols-random; i++) {
+                spaces += " ";
+            }
+            spaces += Colors.WHITE+"❆";
+        }*/
+        ConsoleReader.sReader.printAbove(msg+spaces);
+    }
+    public static Logger getLogger(){
+        return Logger.getGlobal();
+    }
     public static void debugPrint(Object s){
        // stashLine();
-        ConsoleReader.sReader.printAbove(s.toString());
+        LineReader lineReader = ConsoleReader.sReader;
+        int rows = lineReader.getTerminal().getSize().getRows();
+        int cols = lineReader.getTerminal().getSize().getColumns();
+        String msg = s.toString().replaceAll("\\s+$", "");
+        cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
+        String spaces = "";
+        //random number between cols-3 and 1
+        //SNOW
+        /*
+        if(cols > 6){
+            int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
+
+
+            for (int i = 0; i < cols-random; i++) {
+                spaces += " ";
+            }
+            spaces += Colors.WHITE+"❆";
+        }*/
+        lineReader.printAbove(s+spaces);
+       //lineReader.printAbove(s.toString());
        // Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
         //unstashLine();
     }

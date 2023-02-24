@@ -38,16 +38,16 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service stop proxy [name]").red());
                 return true;
             }
-            JVMContainer.JVMType type;
+         /*   JVMContainer.JVMType type;
             try {
                 type = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
             }catch (Exception e){
                 System.out.println(Chalk.on("[!] The type choosed is invalid... choose SERVER or PROXY").red());
                 return true;
-            }
+            }*/
 
             String[] processName = args[2].split("-");
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], type);
+            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], args[1]);
 
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not correct..").red());

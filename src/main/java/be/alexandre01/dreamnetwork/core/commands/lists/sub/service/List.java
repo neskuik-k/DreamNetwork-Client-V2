@@ -18,11 +18,11 @@ public class List extends SubCommandCompletor implements SubCommandExecutor {
     public boolean onSubCommand(@NonNull String[] args) {
         if(args[0].equalsIgnoreCase("list")){
             System.out.println("Services for proxy:");
-            for(IJVMExecutor executor : Core.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+            for(IJVMExecutor executor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
                 System.out.println(executor.getName());
             }
             System.out.println("Services for spigot:");
-            for(IJVMExecutor executor : Core.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+            for(IJVMExecutor executor : Core.getInstance().getJvmContainer().getServersExecutors()){
                 System.out.println(executor.getName());
             }
             return true;

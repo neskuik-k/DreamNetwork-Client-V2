@@ -11,7 +11,6 @@ import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
-import be.alexandre01.dreamnetwork.core.commands.CommandsManager;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.DNChannelManager;
@@ -133,9 +132,6 @@ public class Core {
     }
 
     public void init(){
-
-
-
         formatter = new Formatter();
         formatter.format();
         ASCIIART.sendLogo();
@@ -150,9 +146,10 @@ public class Core {
 
         System.out.println("CoreServer is starting...");
         try {
-            Thread thread = new Thread(new CoreServer(14520));
+            CoreServer coreServer;
+            Thread thread = new Thread(coreServer = new CoreServer(14520));
             thread.start();
-            console.fPrint("The CoreServer System has been started on the port 14520.",Level.INFO);
+            console.fPrint("The CoreServer System has been started on the port "+ coreServer.getPort()+".",Level.INFO);
         } catch (Exception e) {
 
             console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
@@ -168,7 +165,6 @@ public class Core {
                 fileHandler.publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
 
             }
-
         }
 
         console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
@@ -200,9 +196,9 @@ public class Core {
         });
 
         //Send CUSTOM REQUESTS TO SERVERS
-        Main.getTemplateLoading().createCustomRequestsFile();
+        Main.getBundlesLoading().createCustomRequestsFile();
 
-        this.bundleManager = new BundleManager();
+        this.bundleManager = Main.getBundleManager();
         bundleManager.init();
 
         bundleManager.onReady();

@@ -29,6 +29,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public boolean onSubCommand(String[] args) {
         ScreenManager screenManager = ScreenManager.instance;
         if(!args[0].equalsIgnoreCase("screen")){
+            System.out.println("");
             return false;
         }else {
             sendList(screenManager);
@@ -41,19 +42,10 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
         }
 
         if(args[1].equalsIgnoreCase("refresh")){
+            System.out.println("Refreshing screens...");
             System.out.println(Colors.BLUE+"Try to refresh the screens");
-            for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutorsServers.values()){
-                for (IService service : jvmExecutor.getServices()) {
-                    if(service.getScreen() == null){
-                        new be.alexandre01.dreamnetwork.core.service.screen.Screen(service);
-                        System.out.println(Colors.BLUE+" Backuping screen for service on "+jvmExecutor.getName()+"-"+service.getId()+"...");
-                    }else {
-                        System.out.println(Colors.BLUE+" Screen for service on "+jvmExecutor.getName()+"-"+service.getId()+" is already backuped + " + service.getScreen());
-                    }
-                }
 
-            }
-            for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+            for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors){
                 for (IService service : jvmExecutor.getServices()) {
                     if(service.getScreen() == null){
                         new be.alexandre01.dreamnetwork.core.service.screen.Screen(service);

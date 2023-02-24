@@ -34,6 +34,8 @@ public abstract class RequestType {
     public final static RequestInfo CORE_UNREGISTER_CHANNEL = new RequestInfo(16,"CORE_UNREGISTER_CHANNEL");
     public final static RequestInfo CORE_ASK_DATA = new RequestInfo(17,"CORE_ASK_DATA");
     public final static RequestInfo CORE_STOP_PROXY = new RequestInfo(18,"CORE_STOP_PROXY");
+
+    public final static RequestInfo CORE_RESTART_SERVER = new RequestInfo(19,"CORE_RESTART_SERVER");
     /**
      * SPIGOT REQUESTS
      */

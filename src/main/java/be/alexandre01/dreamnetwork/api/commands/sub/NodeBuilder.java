@@ -86,7 +86,7 @@ public class NodeBuilder {
         if(isHead){
             globalList = list;
         }
-       Console.fine("Build Suggestion -> " + list);
+       Console.debugPrint("Build Suggestion -> " + list);
         Completers.TreeCompleter.Node n = Completers.TreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];

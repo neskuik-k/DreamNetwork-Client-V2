@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.formatter;
 
 
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.io.PrintWriter;
@@ -30,7 +31,7 @@ public class ConciseFormatter extends Formatter {
 
             if(coloured){
             StringBuilder formatted = new StringBuilder();
-            formatted.append(Chalk.on(date.format( record.getMillis() )).white().bgCyan() );
+            formatted.append(Chalk.on(Colors.BLACK_BRIGHT_UNDERLINED+date.format( record.getMillis())+ Colors.RESET));
             formatted.append(Chalk.on(" [").blue());
 
                 appendLevel(formatted, record.getLevel() );
@@ -95,18 +96,18 @@ public class ConciseFormatter extends Formatter {
 
             if ( level == Level.INFO )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).green());
+                builder.append( Chalk.on(level.getLocalizedName()).bold().green());
             } else if ( level == Level.WARNING )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).yellow());
+                builder.append( Chalk.on(level.getLocalizedName()).bold().yellow());
             } else if ( level == Level.SEVERE )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).red());
+                builder.append( Chalk.on(level.getLocalizedName()).bold().red());
             } else if(level == Level.FINE){
-                builder.append( Chalk.on("DEBUG").bgRed().white());
+                builder.append( Chalk.on("DEBUG").bgRed().white().bold());
             }else
             {
-                builder.append( Chalk.on(level.getLocalizedName()).cyan());
+                builder.append( Chalk.on(level.getLocalizedName()).cyan().bold());
             }
 
 

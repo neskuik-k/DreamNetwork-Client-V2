@@ -38,7 +38,7 @@ public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
 
     java.util.ArrayList<ChannelHandlerContext> getAllowedCTX();
 
-    java.util.ArrayList<ChannelHandlerContext> getExternalConnection();
+    java.util.ArrayList<ChannelHandlerContext> getExternalConnections();
 
     void setHasDevUtilSoftwareAccess(boolean hasDevUtilSoftwareAccess);
 

@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.core.commands.lists.sub.service.*;
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
         super(name);
-        addSubCommand("add",new Add());
+        addSubCommand("add",new NewAdd());
         addSubCommand("stop",new Stop());
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());

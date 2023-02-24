@@ -8,36 +8,93 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import com.github.tomaslanger.chalk.Chalk;
+import lombok.Getter;
 
 import java.io.*;
 import java.util.logging.Level;
 
-public class TemplateLoading {
+public class BundlesLoading {
+    File[] directories;
+    File[] serverDirectories;
+    File[] proxyDirectories;
 
-    File[] serverDirectories = new File(Config.getPath("template/server/")).listFiles(File::isDirectory);
-    File[] proxyDirectories = new File(Config.getPath("template/proxy/")).listFiles(File::isDirectory);
-    public TemplateLoading(){
-        Main.setTemplateLoading(this);
-        System.out.println(Chalk.on("Loading templates...").underline());
+    @Getter private boolean firstLoad = false;
+    public BundlesLoading(){
+        Main.setBundlesLoading(this);
+        File file = new File("bundles");
+        if(!file.exists()){
+            firstLoad = true;
+            file.mkdir();
+        }
+        directories = new File(Config.getPath("bundles/")).listFiles(File::isDirectory);
+        serverDirectories = new File(Config.getPath("bundles/server/")).listFiles(File::isDirectory);
+        proxyDirectories = new File(Config.getPath("bundles/proxy/")).listFiles(File::isDirectory);
+        System.out.println(Chalk.on(Colors.GREEN_BOLD_BRIGHT+"Loading bundles...").underline());
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Config.createDir("template",false);
-        loadTemplate(proxyDirectories,"proxy");
-        loadTemplate(serverDirectories,"server");
+       loadBundle(directories,"",null);
+       // loadTemplate(proxyDirectories,"proxy");
+        // loadTemplate(serverDirectories,"server");
 
-        try {
-            Thread.sleep(50);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         System.out.println("\n");
 
 
         Core.getInstance().init();
+    }
+
+    public void loadBundle(File[] directories,String prefix,BundleData currentBundle){
+        if(prefix.length() != 0) Main.getBundleManager().addPath(prefix);
+        for(File file : directories){
+
+            System.out.println(Colors.PURPLE+"Loading "+Colors.CYAN_UNDERLINED+prefix+Colors.PURPLE_UNDERLINED+file.getName()+Colors.RESET);
+            //Yaml yaml = new Yaml(new Constructor(BundleInfo.class));
+            File bundleFile = new File(Config.getPath(file.getAbsolutePath()+"/this-info.yml"));
+
+            BundleInfo bundleInfo;
+
+            if(!bundleFile.exists()){
+                loadTemplate(new File[]{file},currentBundle.getName(),currentBundle);
+                continue;
+            }
+
+            bundleInfo = BundleInfo.loadFile(bundleFile);
+
+            System.out.println(bundleInfo.name);
+
+
+
+            if(bundleInfo == null){
+                continue;
+            }
+            if(bundleInfo.getServices() != null){
+                //System.out.println(bundleFileInfo.getServices());
+                if(bundleInfo.getServices().size() > 0){
+                   // System.out.println( bundleFileInfo.getServices().get(0).getServiceName());
+                }
+            }
+
+
+            BundleData bundleData = new BundleData(bundleInfo.name,bundleInfo);
+
+            Main.getBundleManager().addBundleData(bundleData);
+            BundleInfo main;
+            File[] servers = file.listFiles(File::isDirectory);
+            try {
+                Thread.sleep(50);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            loadBundle(servers,file.getName()+"/",bundleData);
+            //loadTemplate(servers,file.getName());
+        }
     }
     private void replaceFile(InputStream in,String path,String fileName){
 
@@ -50,7 +107,7 @@ public class TemplateLoading {
             e.printStackTrace();
         }
     }
-    private void loadTemplate(File[] directory, String pathName){
+    private void loadTemplate(File[] directory, String pathName, BundleData bundleData){
         File previewFile = new File(Config.getPath("preview/DreamNetwork-Plugin.jar"));
         InputStream is = null;
         boolean isPreview = false;
@@ -61,7 +118,7 @@ public class TemplateLoading {
             for(File dir : directory){
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if(Config.contains(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins")){
+                if(Config.contains(dir.getAbsolutePath()+"/"+name+"/plugins")){
                     if(isPreview){
                         System.out.println("[+] Adding preview jar plugin to template "+name+"...");
                         try {
@@ -72,19 +129,20 @@ public class TemplateLoading {
                     }else {
                         is = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
                     }
-                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar");
+                    File file = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar");
                         file.delete();
-                        replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
+                        replaceFile(is,"/bundles/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
                 }
 
-
-                IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false);
+                System.out.println(pathName + " " + name);
+                IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
+                System.out.println(jvmExecutor);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;
                 }
                 if(jvmExecutor.isConfig() && jvmExecutor.hasExecutable()){
-                    Console.debugPrint(Chalk.on("[O] Template "+ dir.getName()+" loaded !").green());
+                    Console.debugPrint(Chalk.on("-->  [O] Template "+Colors.GREEN_BOLD_BRIGHT+ dir.getName()+Colors.GREEN+" loaded !").green());
                     //Utils.templates.add(dir.getName()); <- add after
                     try {
                         Thread.sleep(250);
@@ -115,10 +173,10 @@ public class TemplateLoading {
             for (File dir : directory) {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if (Config.contains(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins")) {
-                    Config.createDir(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins/DreamNetwork");
+                if (Config.contains(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins")) {
+                    Config.createDir(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins/DreamNetwork");
                     try {
-                        requestFile.write(Config.getPath(System.getProperty("user.dir") + "/template/"+pathName+"/"+name+"/plugins/DreamNetwork"));
+                        requestFile.write(Config.getPath(System.getProperty("user.dir") + "/bundles/"+pathName+"/"+name+"/plugins/DreamNetwork"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -140,11 +198,11 @@ public class TemplateLoading {
             for (File dir : directory) {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if (Config.contains(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/plugins")) {
-                    File file = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/"+fileName);
+                if (Config.contains(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins")) {
+                    File file = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/"+fileName);
                     file.delete();
                     InputStream is = new ByteArrayInputStream(bytes);
-                    replaceFile(is,"/template/"+pathName+"/"+name+"/plugins/",fileName);
+                    replaceFile(is,"/bundles/"+pathName+"/"+name+"/plugins/",fileName);
                 }
 
             }
@@ -157,7 +215,7 @@ public class TemplateLoading {
 
 
     private void notConfigured(File dir){
-        Console.debugPrint(Chalk.on("[!] Template "+ dir.getName()+" is not yet configured !").red());
+        Console.debugPrint(Chalk.on("--> [!] Template "+Colors.RED_BOLD_BRIGHT+ dir.getName()+Colors.RED+" is not yet configured !").red());
         try {
             Thread.sleep(150);
 

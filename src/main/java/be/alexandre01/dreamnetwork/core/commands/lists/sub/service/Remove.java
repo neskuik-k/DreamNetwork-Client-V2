@@ -24,8 +24,8 @@ public class Remove extends SubCommandCompletor implements SubCommandExecutor {
             if(args.length >= 2){
                 if(args[1].equalsIgnoreCase("server")||args[1].equalsIgnoreCase("proxy")){
                     String name = args[2];
-                    if(Config.contains("template/"+args[1].toLowerCase()+"/"+name)){
-                        Config.removeDir("template/"+args[1].toLowerCase()+"/"+name);
+                    if(Config.contains("bundles/"+args[1].toLowerCase()+"/"+name)){
+                        Config.removeDir("bundles/"+args[1].toLowerCase()+"/"+name);
                         Console.print(Chalk.on("[V] This server has been deleted").blue(), Level.INFO);
                         Console.print(Chalk.on("The folder has been deleted in the 'template' folder ").blue(), Level.INFO);
                     }else {

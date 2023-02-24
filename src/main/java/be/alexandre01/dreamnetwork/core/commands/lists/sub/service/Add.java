@@ -51,6 +51,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
     @Override
     public boolean onSubCommand(String[] args) {
         if(args[0].equalsIgnoreCase("add")){
+            /*
             if(args.length >= 5){
                  if(args[1].equalsIgnoreCase("server")||args[1].equalsIgnoreCase("proxy")){
                      boolean proxy = args[1].equalsIgnoreCase("proxy");
@@ -71,12 +72,12 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
 
 
                          if(args[3].equalsIgnoreCase("STATIC")){
-                             Config.createDir("template/"+args[1]+"/"+args[2]);
+                             Config.createDir("bundles/"+args[1]+"/"+args[2]);
                              if(args.length == 7){
                                  try {
-                                     JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
+                                    JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
-                                         jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
+                                        // jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],Integer.parseInt(args[6]),proxy,true);
                                          jvmExecutor.addConfigsFiles();
                                          Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                          return true;
@@ -92,7 +93,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                                  try {
                                      JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
                                      if(jvmExecutor == null){
-                                         jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
+                                         //jvmExecutor = new JVMExecutor(args[1],args[2],JVMExecutor.Mods.STATIC,args[4],args[5],0,proxy,true);
                                          jvmExecutor.addConfigsFiles();
                                          Console.print(Colors.ANSI_GREEN()+"You have successfully configured the server!");
                                          return true;
@@ -109,7 +110,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
 
                          }else {
                              if(args[3].equalsIgnoreCase("DYNAMIC")) {
-                                 Config.createDir("template/" + args[1] + "/" + args[2]);
+                                 Config.createDir("bundles/" + args[1] + "/" + args[2]);
                                  if (args.length == 7) {
                                      try {
                                          JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2], jvmType);
@@ -160,6 +161,7 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
                      Console.print(Colors.ANSI_RED()+"[!] service add proxy [name] [DYNAMIC/STATIC] [XMS] [XMX] => add a server ", Level.INFO);
                  }
                 return true;
+                */
             }
             return false;
         }
@@ -189,6 +191,8 @@ public class Add extends SubCommandCompletor implements SubCommandExecutor {
             {
                 Runtime.getRuntime().exec("clear");
             }
+
+
         }
         catch (final Exception e)
         {

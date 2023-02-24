@@ -54,7 +54,7 @@ public class AuthentificationResponse extends CoreResponse {
 
             ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
 
-            if(!coreHandler.getExternalConnection().contains(ctx)){
+            if(!coreHandler.getExternalConnections().contains(ctx)){
                 if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
                     Console.print("HANDSHAKE", Level.FINE);
                     if (!message.contains("INFO") && !message.contains("PORT") && !message.contains("PASSWORD")) {
@@ -82,7 +82,7 @@ public class AuthentificationResponse extends CoreResponse {
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
-                        for (IJVMExecutor service : Core.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                        for (IJVMExecutor service : Core.getInstance().getJvmContainer().getServersExecutors()) {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
@@ -131,7 +131,7 @@ public class AuthentificationResponse extends CoreResponse {
                         ArrayList<String> servers = new ArrayList<>();
 
 
-                        for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutorsServers.values()) {
+                        for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()) {
                             if (!jvmExecutor.getServices().isEmpty()) {
                                 for (IService service : jvmExecutor.getServices()) {
 
@@ -210,7 +210,7 @@ public class AuthentificationResponse extends CoreResponse {
                         .build());
 
                 ArrayList<String> devServers = new ArrayList<>();
-                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutorsServers.values()){
+                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
@@ -220,7 +220,7 @@ public class AuthentificationResponse extends CoreResponse {
                 }
 
 
-                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
+                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 

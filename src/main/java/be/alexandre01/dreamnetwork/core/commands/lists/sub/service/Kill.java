@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
@@ -39,16 +40,10 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service kill proxy [name]").red());
                 return true;
             }
-            JVMContainer.JVMType type;
-            try {
-                type = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
-            }catch (Exception e){
-                System.out.println(Chalk.on("[!] The type choosed is invalid... choose SERVER or PROXY").red());
-                return true;
-            }
+            BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
 
             String[] processName = args[2].split("-");
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], type);
+            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], bundleData);
 
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not correct..").red());

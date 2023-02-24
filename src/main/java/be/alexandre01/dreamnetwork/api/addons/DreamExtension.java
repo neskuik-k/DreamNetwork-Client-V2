@@ -61,24 +61,24 @@ public class DreamExtension {
     }
 
     public void registerPluginToServers(InputStream inputStream,String fileName){
-        Main.getTemplateLoading().sendCustomsFileToServers(inputStream,fileName);
+        Main.getBundlesLoading().sendCustomsFileToServers(inputStream,fileName);
     }
 
     public void registerPluginToServers(DreamExtension dreamExtension){
         try {
-            Main.getTemplateLoading().sendCustomsFileToServers(new FileInputStream(dreamExtension.getAddon().getFile()),dreamExtension.getAddon().getFile().getName());
+            Main.getBundlesLoading().sendCustomsFileToServers(new FileInputStream(dreamExtension.getAddon().getFile()),dreamExtension.getAddon().getFile().getName());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
     public void registerPluginToProxies(InputStream inputStream,String fileName){
-        Main.getTemplateLoading().sendCustomsFileToProxies(inputStream,fileName);
+        Main.getBundlesLoading().sendCustomsFileToProxies(inputStream,fileName);
     }
 
     public void registerPluginToProxies(DreamExtension dreamExtension){
         try {
-            Main.getTemplateLoading().sendCustomsFileToProxies(new FileInputStream(dreamExtension.getAddon().getFile()),dreamExtension.getAddon().getFile().getName());
+            Main.getBundlesLoading().sendCustomsFileToProxies(new FileInputStream(dreamExtension.getAddon().getFile()),dreamExtension.getAddon().getFile().getName());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
