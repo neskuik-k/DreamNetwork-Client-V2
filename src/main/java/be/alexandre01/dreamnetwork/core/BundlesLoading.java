@@ -33,7 +33,7 @@ public class BundlesLoading {
         directories = new File(Config.getPath("bundles/")).listFiles(File::isDirectory);
         serverDirectories = new File(Config.getPath("bundles/server/")).listFiles(File::isDirectory);
         proxyDirectories = new File(Config.getPath("bundles/proxy/")).listFiles(File::isDirectory);
-        System.out.println(Chalk.on(Colors.GREEN_BOLD_BRIGHT+"Loading bundles...").underline());
+        System.out.println(Chalk.on(Colors.WHITE_BOLD_UNDERLINED+"Loading bundles...").underline());
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {

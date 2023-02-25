@@ -28,6 +28,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Console extends Thread{
+    @Getter @Setter private boolean showInput;
+
     public interface IConsole{
         public void listener(String[] args);
         public void consoleChange();
@@ -46,7 +48,7 @@ public class Console extends Thread{
     private Thread thread;
     public boolean isRunning = false;
     public boolean collapseSpace = false;
-    public String writing = Colors.CYAN_BOLD_BRIGHT+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN_UNDERLINED+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
+    @Setter public String writing = Colors.CYAN_BOLD_BRIGHT+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN_UNDERLINED+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
@@ -329,21 +331,21 @@ public class Console extends Thread{
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
             while (isRunning ){
-
-               if((data = reader.readLine(this.writing)) == null)
+                Console console = Console.getConsole(actualConsole);
+               if((data = reader.readLine(console.writing)) == null)
                     continue;
 
                 try {
-                    if(collapseSpace)
+                    if(console.collapseSpace)
                         data = data.trim().replaceAll("\\s{2,}", " ");
-                    if(data.length() != 0)
+                    if(data.length() != 0 && console.showInput)
                         out.println("=> "+ data);
                     out.flush();
 
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
                     String[] args = new String[0];
                     args = data.split(" ");
-                    Console.getConsole(actualConsole).iConsole.listener(args);
+                    console.iConsole.listener(args);
                 }catch (Exception e){
                     fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
                     for(StackTraceElement s : e.getStackTrace()){

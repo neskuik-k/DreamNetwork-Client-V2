@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
+import be.alexandre01.dreamnetwork.core.accessibility.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
@@ -81,6 +82,9 @@ public class Core {
     static {
         instance = new Core();
     }
+
+    @Getter private IntroductionConsole introConsole;
+
     public Core(){
         //JVM ARGUMENTS
     }
@@ -119,6 +123,7 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
+        introConsole = new IntroductionConsole();
 
 
         Console.load("m:stats");
