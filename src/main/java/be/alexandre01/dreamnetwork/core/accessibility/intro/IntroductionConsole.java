@@ -1,9 +1,11 @@
-package be.alexandre01.dreamnetwork.core.accessibility;
+package be.alexandre01.dreamnetwork.core.accessibility.intro;
 
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroHelp;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
@@ -30,26 +32,21 @@ import java.util.logging.Level;
 
 public class IntroductionConsole {
 
-    Console console;
+    protected Console console;
     ScheduledExecutorService executor;
 
-    public IntroductionConsole(){
-
-
-
-        console = Console.load("m:intro");
+    public IntroductionConsole(String name){
+        console = Console.load("m:intro"+name);
         console.setWriting("");
 
-        System.out.println(console.writing);
-        System.out.println(console);
+        NodeBuilder yes = new NodeBuilder(NodeBuilder.create("yes"),console);
+        NodeBuilder no = new NodeBuilder(NodeBuilder.create("no"),console);
 
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public void onKill(LineReader reader) {
-                executor.shutdown();
-                Console.setActualConsole("m:default");
-                Console nConsole = Console.getConsole("m:default");
-                nConsole.run();
+                //Shutdown other things
+                Console.getConsole("m:default").getKillListener().onKill(reader);
             }
         });
 
@@ -63,25 +60,29 @@ public class IntroductionConsole {
         console.setConsoleAction(new Console.IConsole() {
             @Override
             public void listener(String[] args) {
+                Console.clearConsole();
                 try {
                     ConsoleReader.sReader.getHistory().purge();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+
+                if(args[0].equalsIgnoreCase("yes")){
+                    new IntroHelp();
+                    Console.setActualConsole("m:introhelp");
+                }
+                if(args[0].equalsIgnoreCase("no")){
+                    Console.setActualConsole("m:default");
+                    Console nConsole = Console.getConsole("m:default");
+                    nConsole.run();
+                }
             }
 
             @Override
             public void consoleChange() {
-                console.setWriting("It is your first time you use DreamNetwork ? (Y/N) ");
-                ConsoleReader.sReader.setTailTip("yes");
-                ConsoleReader.sReader.callWidget("complete");
-                ConsoleReader.sReader.getHighlighter().highlight(ConsoleReader.sReader,"yes");
-                List<AttributedString> mainDesc = new ArrayList<>();
-                mainDesc.add(new AttributedString("yes"));
-                Map<String, CmdDesc> tailTips = new HashMap<>();
-                tailTips.put("widget", new CmdDesc(mainDesc, ArgDesc.doArgNames(Arrays.asList("[pN...]")), null));
-                TailTipWidgets tailtipWidgets = new TailTipWidgets(ConsoleReader.sReader, tailTips, 0, TailTipWidgets.TipType.TAIL_TIP);
-                tailtipWidgets.enable();
+                console.setWriting(Colors.GREEN+"It is your first time you use "+Colors.CYAN+"DreamNetwork"+Colors.GREEN+" ?" +Colors.WHITE+" Type yes or no: "+Colors.RED);
+
+                ConsoleReader.sReader.runMacro("yes");
                 try {
                     ConsoleReader.sReader.getHistory().purge();
                 } catch (IOException e) {

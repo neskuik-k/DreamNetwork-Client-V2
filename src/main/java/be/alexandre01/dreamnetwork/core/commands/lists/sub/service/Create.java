@@ -20,12 +20,12 @@ import org.jline.builtins.Completers;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
-public class NewAdd extends SubCommand {
+public class Create extends SubCommand {
 
-    public NewAdd() {
+    public Create() {
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create("service",
-                        create("add",
+                        create("create",
                                 create(new BundlesNode(false),
                                         create(Completers.AnyCompleter.INSTANCE,
                                                 create("STATIC","DYNAMIC",
@@ -35,7 +35,6 @@ public class NewAdd extends SubCommand {
     String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-"};
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
-
         if(!when(sArgs -> {
             String bundle = sArgs[1];
             String name = sArgs[2];
@@ -109,13 +108,13 @@ public class NewAdd extends SubCommand {
             Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
 
             return true;
-        },args,"add","bundle","name","type","xms","xmx","[port]","[javaversion]")){
+        },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
             System.out.println(Colors.RED+"The command cannot be executed !");
-            fail("service","add","bundle","name","type","xms","xmx","[port]","[javaversion]");
+            fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
             return true;
         };
 
-        fail("service","add","bundle","name","type","xms","xmx","[port]","[javaversion]");
+        fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
         return true;
     }
 }

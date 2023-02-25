@@ -20,6 +20,8 @@ import java.util.logging.Level;
 public class NodeBuilder {
     Completers.TreeCompleter.Node node;
 
+    Console console;
+
     List<Object> globalList;
     final Multimap<Integer,NodeContainer> containers = ArrayListMultimap.create();
     final Multimap<Object, Completers.TreeCompleter.Node> index = ArrayListMultimap.create();
@@ -35,10 +37,14 @@ public class NodeBuilder {
     }
 
 
-    public NodeBuilder(NodeContainer nodeContainer){
+    public NodeBuilder(NodeContainer nodeContainer,Console console){
+        this.console = console;
         this.nodeContainer = nodeContainer;
         node = genNode(nodeContainer,true);
         registerTo();
+    }
+    public NodeBuilder(NodeContainer nodeContainer){
+        this(nodeContainer,Console.getConsole("m:default"));
     }
 
 
@@ -86,7 +92,7 @@ public class NodeBuilder {
         if(isHead){
             globalList = list;
         }
-       Console.debugPrint("Build Suggestion -> " + list);
+       Console.fine("Build Suggestion -> " + list);
         Completers.TreeCompleter.Node n = Completers.TreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];
@@ -113,8 +119,12 @@ public class NodeBuilder {
             }
             //System.out.println(o);
         }
-        ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
-        ConsoleReader.reloadCompleter();
+        console.completorNodes.set(num, node = genNode(nodeContainer,true));
+        //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
+        if(Console.actualConsole.equals(console.name)){
+            ConsoleReader.reloadCompleter();
+        }
+        //ConsoleReader.reloadCompleter();
     }
     private void printContainers(NodeContainer nodeContainer){
         for (int i = 0; i < globalList.size(); i++) {
@@ -129,6 +139,7 @@ public class NodeBuilder {
     public void registerTo(){
         Console.fine("Register new Suggestion");
         num = ConsoleReader.nodes.size();
-        ConsoleReader.nodes.add(node);
+       // ConsoleReader.nodes.add(node);
+        console.completorNodes.add(node);
     }
 }

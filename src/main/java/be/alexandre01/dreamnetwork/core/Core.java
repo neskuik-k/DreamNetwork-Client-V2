@@ -9,7 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.accessibility.IntroductionConsole;
+import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
@@ -43,7 +43,7 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Core {
-    @Getter
+    @Getter @Setter
     boolean debug = false;
     private InputStream in;
     public Formatter formatter;
@@ -123,7 +123,7 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-        introConsole = new IntroductionConsole();
+        introConsole = new IntroductionConsole("begin");
 
 
         Console.load("m:stats");
@@ -217,7 +217,7 @@ public class Core {
 
         Main.getCommandReader().init();
 
-
+        console.reloadCompletor();
 
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);

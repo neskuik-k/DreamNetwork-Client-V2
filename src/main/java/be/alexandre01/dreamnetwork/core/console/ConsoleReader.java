@@ -1,8 +1,9 @@
 package be.alexandre01.dreamnetwork.core.console;
 
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.widgets.BlockMod;
+import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
 import org.jline.builtins.Completers;
-import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.LineReaderImpl;
@@ -53,6 +54,7 @@ public class ConsoleReader {
                     .build();
 
             sReader.unsetOpt(LineReader.Option.INSERT_TAB);;
+            new DebugMod(sReader).debugWidget();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
