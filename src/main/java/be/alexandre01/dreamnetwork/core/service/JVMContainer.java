@@ -36,8 +36,8 @@ public class JVMContainer implements IContainer {
 
     @Override
     public synchronized IJVMExecutor getJVMExecutor(String processName, String bundleData) throws NullPointerException{
-        System.out.println("getJVMExecutor");
-        System.out.println(Main.getBundleManager().getBundleDatas().keySet());
+        //System.out.println("getJVMExecutor");
+        //System.out.println(Main.getBundleManager().getBundleDatas().keySet());
         return Main.getBundleManager().getBundleDatas().get(bundleData).getExecutors().get(processName);
     }
 
@@ -50,7 +50,7 @@ public class JVMContainer implements IContainer {
         String xmx = null;
         int port = 0;
         boolean proxy = false;
-        System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
+     //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
         try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml")) {
                 if (line.startsWith("type:")) {

@@ -226,11 +226,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         File properties;
         if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
             properties = new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
-            System.out.println("wtf "+ System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
-
-            System.out.println(properties.exists());
         }else {
-               System.out.println("wtf "+ System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name));
             properties= new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name));
         }
 

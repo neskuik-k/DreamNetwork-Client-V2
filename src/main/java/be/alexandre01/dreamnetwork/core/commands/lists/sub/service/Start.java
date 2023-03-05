@@ -50,13 +50,13 @@ public class Start extends SubCommand {
             String serverName = splitPath[splitPath.length - 1];
 
             String bundlePath = serverPath.substring(0,(serverPath.length()-serverName.length())-1);
-            System.out.println(bundlePath);
+           /* System.out.println(bundlePath);
             System.out.println(serverName);
-            System.out.println("Ah");
+            System.out.println("Ah");*/
 
             IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(serverName, bundlePath);
 
-            System.out.println("jvmExecutor = " + jvmExecutor);
+            //System.out.println("jvmExecutor = " + jvmExecutor);
             if(jvmExecutor == null){
                 System.out.println(Colors.RED+"[!] The service mentionned is not configurated..");
                 fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");

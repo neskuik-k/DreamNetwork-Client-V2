@@ -67,7 +67,6 @@ public class BundlesLoading {
 
             bundleInfo = BundleInfo.loadFile(bundleFile);
 
-            System.out.println(bundleInfo.name);
 
 
 
@@ -134,9 +133,7 @@ public class BundlesLoading {
                         replaceFile(is,"/bundles/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
                 }
 
-                System.out.println(pathName + " " + name);
                 IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
-                System.out.println(jvmExecutor);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;

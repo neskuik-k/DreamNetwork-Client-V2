@@ -57,12 +57,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     public JVMExecutor(String pathName,String name, Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile,BundleData bundleData) {
         super(pathName,name,type,xms,xmx,port,proxy,updateFile);
-        System.out.println("created");
         this.bundleData = bundleData;
 
         JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
-        System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
+       // System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
     }
 
     public JVMExecutor(String pathName,String name,BundleData bundleData){
@@ -160,7 +159,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
             String finalname =  jvmConfig.getName()+"-"+servers;
-            System.out.println("finalname "+finalname);
+            //System.out.println("finalname "+finalname);
             if(jvmConfig.getType().equals(Mods.DYNAMIC)){
                 if(Config.contains("runtimes/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName())){
                     Config.removeDir("runtimes/"+jvmConfig.getPathName()+"/"+finalname+"/"+jvmConfig.getName());
@@ -222,7 +221,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     private boolean proceedStarting(String finalname,int servers,IConfig jvmConfig) throws IOException {
         Integer port = jvmConfig.getPort();
-        System.out.println("Port: "+port);
+       // System.out.println("Port: "+port);
 
         /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
@@ -250,7 +249,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,bundleData.getJvmType(),jvmConfig.getType());
 
                 port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
-                System.out.println("Changing port ! " + port);
                 if(port == null){
                     System.out.println(Colors.RED_BOLD+"The port can't be foundable for the server "+ finalname);
                     return false;
