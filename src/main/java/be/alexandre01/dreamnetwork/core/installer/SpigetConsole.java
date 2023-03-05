@@ -42,8 +42,6 @@ public class SpigetConsole {
             @Override
             public void onKill(LineReader reader) {
                 Console.setActualConsole("m:default");
-                Console nConsole = Console.getConsole("m:default");
-                nConsole.run();
             }
         });
 

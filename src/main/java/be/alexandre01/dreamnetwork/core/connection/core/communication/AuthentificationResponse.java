@@ -67,7 +67,7 @@ public class AuthentificationResponse extends CoreResponse {
                     String password = message.getString("PASSWORD");
 
                     Console.print("CREATE CLIENT", Level.FINE);
-                    be.alexandre01.dreamnetwork.core.connection.core.communication.Client newClient = Core.getInstance().getClientManager().registerClient(be.alexandre01.dreamnetwork.core.connection.core.communication.Client.builder()
+                    Client newClient = Core.getInstance().getClientManager().registerClient(Client.builder()
                             .coreHandler(coreHandler)
                             .info(info)
                             .port(port)
@@ -121,7 +121,7 @@ public class AuthentificationResponse extends CoreResponse {
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
                         }
 
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " lié à DreamNetwork");
+                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
                             System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");

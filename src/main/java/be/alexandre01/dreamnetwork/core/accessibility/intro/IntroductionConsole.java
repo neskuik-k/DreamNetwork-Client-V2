@@ -12,6 +12,7 @@ import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
 import org.jline.console.ArgDesc;
 import org.jline.console.CmdDesc;
@@ -60,7 +61,7 @@ public class IntroductionConsole {
         console.setConsoleAction(new Console.IConsole() {
             @Override
             public void listener(String[] args) {
-                Console.clearConsole();
+               clear();
                 try {
                     ConsoleReader.sReader.getHistory().purge();
                 } catch (IOException e) {
@@ -69,12 +70,10 @@ public class IntroductionConsole {
 
                 if(args[0].equalsIgnoreCase("yes")){
                     new IntroHelp();
-                    Console.setActualConsole("m:introhelp");
+                    Console.setActualConsole("m:introhelp",true,false);
                 }
                 if(args[0].equalsIgnoreCase("no")){
                     Console.setActualConsole("m:default");
-                    Console nConsole = Console.getConsole("m:default");
-                    nConsole.run();
                 }
             }
 
@@ -88,6 +87,7 @@ public class IntroductionConsole {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                clear();
 
             }
         });
@@ -103,6 +103,9 @@ public class IntroductionConsole {
         console.fPrint("- EXIT",Level.INFO);
     }
 
-
+    protected void clear(){
+        Console.clearConsole();
+        ASCIIART.sendTutorial();
+    }
 
 }

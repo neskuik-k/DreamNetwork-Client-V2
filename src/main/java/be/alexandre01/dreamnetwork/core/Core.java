@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
+import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
@@ -84,6 +85,7 @@ public class Core {
     }
 
     @Getter private IntroductionConsole introConsole;
+    @Getter private CreateTemplateConsole createTemplateConsole;
 
     public Core(){
         //JVM ARGUMENTS
@@ -119,6 +121,7 @@ public class Core {
         Console.actualConsole =  "m:default";
 
         Console.getConsole("m:default").isDebug = isDebug();
+        Console.setBlockConsole(true);
         //  Console.setActualConsole("m:default");
 
         Console.load("m:spiget");
@@ -219,10 +222,17 @@ public class Core {
 
         console.reloadCompletor();
 
+        createTemplateConsole = new CreateTemplateConsole("","","","","","0");
+
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
+        if(Main.getBundlesLoading().isFirstLoad()){
+            Console.setActualConsole("m:introbegin",true,false);
+        }
+
+        Console.setBlockConsole(false);
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

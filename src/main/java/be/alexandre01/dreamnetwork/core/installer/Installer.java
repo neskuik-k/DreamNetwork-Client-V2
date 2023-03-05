@@ -128,9 +128,6 @@ public class Installer {
 
         return false;
     }
-    public static void loadBar(){
-
-    }
     private static void install(String url, FileOutputStream stream, String name){
         install(url,stream,name,null);
     }

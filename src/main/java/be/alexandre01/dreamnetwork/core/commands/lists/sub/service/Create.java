@@ -6,8 +6,10 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
@@ -111,10 +113,24 @@ public class Create extends SubCommand {
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
             System.out.println(Colors.RED+"The command cannot be executed !");
             fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
+
+            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "0", new CreateTemplateConsole.Future() {
+                @Override
+                public void onResponse() {
+
+                }
+
+                @Override
+                public void finish() {
+                    Console.setActualConsole("m:default");
+                }
+            });
             return true;
         };
 
-        fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
+     //   fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
+
+
         return true;
     }
 }

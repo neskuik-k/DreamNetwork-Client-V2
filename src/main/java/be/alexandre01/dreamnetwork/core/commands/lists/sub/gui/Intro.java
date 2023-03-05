@@ -8,7 +8,7 @@ import lombok.NonNull;
 public class Intro extends SubCommandCompletor implements SubCommandExecutor {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
-        Console.setActualConsole("m:introbegin");
+        Console.setActualConsole("m:introbegin",true,false);
         return true;
     }
 

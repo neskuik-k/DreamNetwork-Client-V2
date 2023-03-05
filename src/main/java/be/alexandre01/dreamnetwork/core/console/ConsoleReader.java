@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.widgets.BlockMod;
 import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
 import org.jline.builtins.Completers;
+import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.LineReaderImpl;
@@ -19,11 +20,13 @@ public class ConsoleReader {
     public static LineReader sReader;
     public static Terminal terminal;
     public static List<Completers.TreeCompleter.Node> nodes = new ArrayList<>();
+
+    public static Completer completer;
     public static void init() {
 
         try {
 
-            Completers.TreeCompleter completer = new Completers.TreeCompleter(
+            completer = new Completers.TreeCompleter(
                     nodes);
 
             if(!Config.isWindows()){
@@ -62,6 +65,16 @@ public class ConsoleReader {
         }
 
 
+    }
+
+    public static void newReader(){
+        sReader = LineReaderBuilder.builder()
+                .terminal(terminal)
+                .completer(completer)
+                /*.completer(new MyCompleter())
+                .highlighter(new MyHighlighter())
+                .parser(new MyParser())*/
+                .build();
     }
 
     public static void reloadCompleter(){

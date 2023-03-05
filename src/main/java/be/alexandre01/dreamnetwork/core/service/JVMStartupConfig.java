@@ -28,7 +28,6 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
     public JVMStartupConfig( String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile){
-        System.out.println("Ah");
         this.name = name;
         this.type = type;
         this.xms = xms;
@@ -43,7 +42,6 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             exec = "Spigot.jar";
         }
 
-        System.out.println("Updating config file... ?");
 
         if(updateFile){
             updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,null);

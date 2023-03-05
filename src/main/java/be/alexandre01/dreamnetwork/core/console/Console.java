@@ -43,6 +43,8 @@ public class Console extends Thread{
     private static final HashMap<String, Console> instances = new HashMap<>();
     private static ConsoleReader consoleReader = new ConsoleReader();
     public String name;
+
+    @Setter @Getter private static boolean blockConsole = false;
     private final ArrayList<ConsoleMessage> history;
     private int historySize;
     public static String defaultConsole;
@@ -84,12 +86,14 @@ public class Console extends Thread{
         instances.put(name,c);
         return c;
     }
-    public static void setActualConsole(String name){
+    public static void setActualConsole(String name ,boolean isSilent, boolean clearConsole){
         Console console = instances.get(name);
+
         Console.actualConsole = name;
         console.isRunning = true;
-        clearConsole();
-        if(console.defaultPrint != null)
+        if(clearConsole)
+            clearConsole();
+        if(console.defaultPrint != null && !isSilent)
             console.defaultPrint.println(Chalk.on("You have just changed console. ["+console.getName()+"]").bgWhite().black());
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
@@ -106,8 +110,13 @@ public class Console extends Thread{
 
         console.iConsole.consoleChange();
         console.reloadCompletor();
+    }
 
-
+    public static void setActualConsole(String name){
+        setActualConsole(name,false,true);
+    }
+    public static void setActualConsole(String name,boolean isSilent){
+        setActualConsole(name,isSilent,true);
     }
 
     public void reloadCompletor(){
@@ -322,10 +331,10 @@ public class Console extends Thread{
     }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;
-        if(thread == null){
+       /* if(thread == null){
             thread = new Thread(this);
            // thread.start();
-        }
+        }*/
 
     }
     public IConsole getConsoleAction(){
@@ -336,6 +345,15 @@ public class Console extends Thread{
         this.name = name;
         if(Core.getInstance() != null)
             this.isDebug = Core.getInstance().isDebug();
+    }
+
+    public static void reload(){
+
+        Thread thread = Console.getConsole("m:default");
+        if(thread != null){
+            thread.interrupt();
+            thread.start();
+        }
     }
 
     @Override
@@ -349,14 +367,21 @@ public class Console extends Thread{
                 actualConsole = defaultConsole;
             }
 
+
+
             LineReader reader =  ConsoleReader.sReader;
 
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
             while (isRunning ){
                 Console console = Console.getConsole(actualConsole);
+                if(blockConsole)
+                    continue;
+
                if((data = reader.readLine(console.writing, readLineString1,maskingCallback,readLineString2)) == null)
                     continue;
+
+
 
                 if(data.length() == 0 ){
                     /*reader.getTerminal().puts(InfoCmp.Capability.carriage_return);
@@ -398,6 +423,8 @@ public class Console extends Thread{
                     }
                     }
                 }
+
+                Console.debugPrint("Console closed");
 
 
 
@@ -534,38 +561,4 @@ public class Console extends Thread{
     public interface ConsoleKillListener {
         void onKill(LineReader reader);
     }
-
-    /*  public static void stashLine() {
-        LineReader console = ConsoleReader.sReader;
-        stashed = console.getBuffer().copy();
-        try {
-            console.getOutput().write("\u001b[1G\u001b[K");
-            console.flush();
-        } catch (IOException e) {
-            // ignore
-        }
-    }
-
-    public static void unstashLine() {
-        try {
-           LineReader console = ConsoleReader.sReader;
-            console.resetPromptLine(console.getPrompt(),
-                    stashed.toString(), stashed.cursor);
-        } catch (IOException e) {
-            // ignore
-        }
-    }
-    public void taskUnstash(){
-        scheduler = Executors.newScheduledThreadPool(1);
-
-        scheduler.scheduleAtFixedRate(new Runnable() {
-            @Override
-            public void run() {
-                unstashLine();
-                scheduler.shutdown();
-                scheduler = null;
-            }
-        },50,50, TimeUnit.MILLISECONDS);
-
-    }*/
 }
