@@ -18,6 +18,8 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -36,6 +38,9 @@ import sun.misc.Unsafe;
 public class Main {
     @Getter
     public static Core instance;
+
+    @Getter @Setter
+    public static BundleManager bundleManager;
     @Getter
     private JVMContainer jvmContainer;
     @Getter
@@ -49,7 +54,7 @@ public class Main {
     @Getter
     private static CommandReader commandReader;
 
-    @Getter @Setter private static TemplateLoading templateLoading;
+    @Getter @Setter private static BundlesLoading bundlesLoading;
 
 
 
@@ -61,8 +66,9 @@ public class Main {
         Config.createDir("data");
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
+
         Console.clearConsole(System.out);
-        Config.removeDir("tmp");
+        Config.removeDir("runtimes");
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -104,7 +110,7 @@ public class Main {
                     disabling = true;
                     if(instance != null){
                         boolean isReady = false;
-                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsProxy.values()){
+                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
                             if(!jvmExecutor.getServices().isEmpty()){
                                 for(IService service : jvmExecutor.getServices()){
                                     if(service.getClient() == null){
@@ -115,15 +121,6 @@ public class Main {
 
                         }
 
-                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutorsServers.values()){
-                            if(!jvmExecutor.getServices().isEmpty()){
-                                for(IService service : jvmExecutor.getServices()){
-                                    if(service.getClient() == null){
-                                        service.kill();
-                                    }
-                                }
-                            }
-                        }
 
                         if(ConsoleReader.sReader != null){
                             History h = ConsoleReader.sReader.getHistory();
@@ -188,13 +185,15 @@ public class Main {
                 System.exit(1);
                 return;
             }
-            System.out.println(Colors.PURPLE+"Successfully authenticated !\n"+Colors.RESET);
+            System.out.println(Colors.GREEN_BOLD_BRIGHT+"Successfully authenticated !\n"+Colors.RESET);
             try {
                 Thread.sleep(250);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
 
+            ProcessHistory processHistory = new ProcessHistory();
+            processHistory.init();
 
             loadClient();
     }
@@ -208,8 +207,8 @@ public class Main {
 
         //Client.instance = instance;
 
-       
-        new TemplateLoading();
+        Main.setBundleManager(new BundleManager());
+        new BundlesLoading();
     }
     private static void disableWarning() {
         try {

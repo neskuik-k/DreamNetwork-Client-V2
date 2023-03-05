@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.core.connection.core;
 
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CorePipeline;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelOption;
@@ -11,12 +13,13 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.util.ResourceLeakDetector;
+import lombok.Getter;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class CoreServer extends Thread{
-    private int port;
+    @Getter private int port;
 
 
     public CoreServer(int port) {
@@ -40,6 +43,16 @@ public class CoreServer extends Thread{
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
             // Bind and start to accept incoming connections.
+            boolean isAvailable = PortUtils.isAvailable(port,true);
+            int defaultPort = port;
+            while (!PortUtils.isAvailable(port,true)){
+                port++;
+            }
+            if(!isAvailable){
+                System.out.println(Colors.PURPLE+ "The port "+defaultPort+" is not available, the server will use the port "+port+" instead.");
+                Console.print(Colors.RED_BOLD_BRIGHT+Colors.WHITE_BACKGROUND+"There is a chance that the network will not work properly.",Level.WARNING);
+            }
+
             ChannelFuture f = b.bind(port).sync(); // (7)
 
             // Wait until the server socket is closed.

@@ -45,6 +45,7 @@ public class EventsFactory {
 
     private void findEventCatchers(Listener listener){
         Set<Method> methods;
+
         Method[] publicMethods = listener.getClass().getMethods();
         Method[] privateMethods = listener.getClass().getDeclaredMethods();
         methods = new HashSet<Method>(publicMethods.length + privateMethods.length, 1.0F);

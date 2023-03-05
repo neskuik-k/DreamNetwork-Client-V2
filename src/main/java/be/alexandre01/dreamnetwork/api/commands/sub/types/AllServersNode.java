@@ -12,13 +12,13 @@ public class AllServersNode extends CustomType {
         JVMContainer jvmContainer = Core.getInstance().getJvmContainer();
         setCustomType(() -> {
             //Completers.TreeCompleter
-            String[] servers = jvmContainer.getJVMExecutorsServers().keySet().toArray(new String[0]);
-            String[] proxies = jvmContainer.getJVMExecutorsProxy().keySet().toArray(new String[0]);
+            String[] servers = jvmContainer.jvmExecutors.toArray(new String[0]);
+           // String[] proxies = jvmContainer.getJVMExecutorsProxy().keySet().toArray(new String[0]);
 
-            if(servers.length == 0 && proxies.length == 0){
+            if(servers.length == 0 /*&& proxies.length == 0*/){
                 return new Object[]{Completers.AnyCompleter.INSTANCE};
             }
-            return ArrayUtils.addAll(servers,proxies);
+            return servers;//ArrayUtils.addAll(servers,proxies);
         });
     }
 }

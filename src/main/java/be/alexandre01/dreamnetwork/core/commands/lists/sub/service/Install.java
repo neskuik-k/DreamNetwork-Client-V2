@@ -1,16 +1,19 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
@@ -29,11 +32,8 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
                 create("install",
-                        create("server",
+                        create(new BundlesNode(true),
                                 create(new ServersNode(),
-                                    create(versions.toArray()))),
-                        create("proxy",
-                                create(new ProxiesNode(),
                                     create(versions.toArray()))))));
     }
     @Override
@@ -48,17 +48,12 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service install proxy [name] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
                 return true;
             }
-            JVMContainer.JVMType jvmType;
-            try {
-                jvmType = JVMContainer.JVMType.valueOf(args[1].toUpperCase());
-            }catch (Exception e){
-                System.out.println(Chalk.on("[!] The type is incorrect... try PROXY or SERVER"));
-                return true;
-            }
 
 
-
-            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],jvmType);
+            BundleData bundleData = Main.getBundleManager().getBundleData(args[1]);
+            System.out.println(bundleData);
+            System.out.println(args[2]);
+            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],bundleData);
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
                 return true;

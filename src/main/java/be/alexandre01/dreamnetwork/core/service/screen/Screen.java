@@ -59,7 +59,7 @@ public class Screen extends Thread implements IScreen {
 
         if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
             String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
-            Config.removeDir("/tmp/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
+            Config.removeDir("/runtimes·/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
         }
         Core core = Core.getInstance();
         core.getEventsFactory().callEvent(new CoreScreenCreateEvent(core.getDnCoreAPI(),this));

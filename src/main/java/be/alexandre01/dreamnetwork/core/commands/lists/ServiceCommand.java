@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.core.commands.lists.sub.service.*;
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
         super(name);
-        addSubCommand("add",new Add());
+        addSubCommand("create",new Create());
         addSubCommand("stop",new Stop());
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());
@@ -17,7 +17,7 @@ public class ServiceCommand extends Command {
         addSubCommand("kill",new Kill());
 
         getHelpBuilder().setTitleUsage("How to configurate a service");
-        getHelpBuilder().setCmdUsage("add a server","add","server/proxy","[name]");
+        getHelpBuilder().setCmdUsage("create a server","create","server/proxy","[name]");
         getHelpBuilder().setCmdUsage("install a server","install","server/proxy","[name]", "[Ver.]");
         getHelpBuilder().setTitleUsage("How to run a server");
         getHelpBuilder().setCmdUsage("start a server","start","server/proxy","[name]");

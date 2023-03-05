@@ -30,7 +30,7 @@ public class BaseResponse extends CoreResponse {
     public BaseResponse(){
         this.core = Core.getInstance();
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
-            IJVMExecutor startExecutor = this.core.getJvmContainer().getJVMExecutor(message.getString("SERVERNAME"), JVMContainer.JVMType.SERVER);
+            IJVMExecutor startExecutor = this.core.getJvmContainer().getJVMExecutor(message.getString("SERVERNAME"), "main");
             if (startExecutor == null) {
                 return;
             }
@@ -39,7 +39,7 @@ public class BaseResponse extends CoreResponse {
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
-            IJVMExecutor stopExecutor = this.core.getJvmContainer().getJVMExecutor(stopServerSplitted[0], JVMContainer.JVMType.SERVER);
+            IJVMExecutor stopExecutor = this.core.getJvmContainer().getJVMExecutor(stopServerSplitted[0], "main");
             if (stopExecutor == null) {
                 return;
             }
@@ -70,8 +70,9 @@ public class BaseResponse extends CoreResponse {
             boolean b = Boolean.parseBoolean(message.getString("TYPE"));
             String[] serv = message.getString("SERVERNAME").split("-");
             String cmd = message.getString("CMD");
-
+            /*
             if (b) {
+
                 IJVMExecutor j = this.core.getJvmContainer().jvmExecutorsProxy.get(serv[0]);
                 if (j == null)
                     return;
@@ -87,7 +88,7 @@ public class BaseResponse extends CoreResponse {
                 if (jvmService.getClient() != null) {
                     jvmService.getClient().getRequestManager().sendRequest(SPIGOT_EXECUTE_COMMAND, cmd);
                 }
-            }
+            }*/
         });
 
         addRequestInterceptor(CORE_REGISTER_CHANNEL,(message, ctx, c) -> {
@@ -115,7 +116,7 @@ public class BaseResponse extends CoreResponse {
             }
 
             if (message.contains("S")) {
-                s.udpatePlayerServer(id, message.getString("S"));
+                s.udpatePlayerServer(id, message.getString("S"),message.getString("B"));
             }
         });
         addRequestInterceptor(CORE_REMOVE_PLAYER,(message, ctx, c) -> {

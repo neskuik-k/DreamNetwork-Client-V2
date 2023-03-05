@@ -6,38 +6,53 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class JVMContainer implements IContainer {
-    public volatile HashMap<String, IJVMExecutor> jvmExecutorsServers = new HashMap<>();
-    public volatile HashMap<String, IJVMExecutor> jvmExecutorsProxy = new HashMap<>();
+    public volatile ArrayList<IJVMExecutor> jvmExecutors = new ArrayList<>();
 
 
-    @Override
-    public synchronized IJVMExecutor getJVMExecutor(String processName, JVMType jvmType){
-        switch (jvmType){
-            case SERVER:
-                return jvmExecutorsServers.get(processName);
-            case PROXY:
-                return jvmExecutorsProxy.get(processName);
-        }
-        return null;
+    public Collection<IJVMExecutor> getServersExecutors() {
+        return jvmExecutors.stream().filter(ijvmExecutor -> !ijvmExecutor.isProxy()).collect(Collectors.toList());
+    }
+
+    public Collection<IJVMExecutor> getProxiesExecutors() {
+        return jvmExecutors.stream().filter(IJVMExecutor::isProxy).collect(Collectors.toList());
     }
 
 
     @Override
-    public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile) {
+    public synchronized IJVMExecutor getJVMExecutor(String processName, BundleData bundleData) {
+        return bundleData.getExecutors().get(processName);
+    }
+
+    @Override
+    public synchronized IJVMExecutor getJVMExecutor(String processName, String bundleData) throws NullPointerException{
+        //System.out.println("getJVMExecutor");
+        //System.out.println(Main.getBundleManager().getBundleDatas().keySet());
+        return Main.getBundleManager().getBundleDatas().get(bundleData).getExecutors().get(processName);
+    }
+
+
+    @Override
+    public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile,BundleData bundleData) {
         IJVMExecutor.Mods type = null;
 
         String xms = null;
         String xmx = null;
         int port = 0;
         boolean proxy = false;
-
+     //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
         try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/template/" + pathName + "/" + name + "/network.yml")) {
+            for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml")) {
                 if (line.startsWith("type:")) {
                     type = IJVMExecutor.Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
                 }
@@ -57,7 +72,7 @@ public class JVMContainer implements IContainer {
         } catch (Exception e) {
             return null;
         }
-        return (IJVMExecutor) new JVMExecutor(pathName, name, type, xms, xmx, port, proxy, updateFile);
+        return (IJVMExecutor) new JVMExecutor(pathName, name, type, xms, xmx, port, proxy, updateFile,bundleData);
     }
 
     @Override
@@ -67,10 +82,7 @@ public class JVMContainer implements IContainer {
             System.out.println("DESTROY");
             getProcess(name).destroy();
         }*/
-        if (IJVMExecutor.getStartServerList().contains(name)) {
-            IJVMExecutor.getStartServerList().remove(name);
-
-        }
+        IJVMExecutor.getStartServerList().remove(name);
         if (IJVMExecutor.getServersPort().containsKey(name)) {
             int port = IJVMExecutor.getServersPort().get(name);
             IJVMExecutor.getServersPort().put("cache-" + IJVMExecutor.getCache(), port);
@@ -78,35 +90,17 @@ public class JVMContainer implements IContainer {
         }
 
 
-        if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/tmp/" + pathName + "/" + finalName + "/" + name))) {
-            Config.removeDir(Config.getPath(System.getProperty("user.dir") + "/tmp/" + pathName + "/" + finalName + "/" + name));
+        if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + pathName + "/" + finalName + "/" + name))) {
+            Config.removeDir(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + pathName + "/" + finalName + "/" + name));
         }
     }
 
-    @Override
-    public HashMap<String, IJVMExecutor> getJVMExecutorsServers() {
-        return jvmExecutorsServers;
-    }
-
-    @Override
-    public HashMap<String, IJVMExecutor> getJVMExecutorsProxy() {
-        return jvmExecutorsProxy;
-    }
 
 
-    public synchronized void addExecutor(JVMExecutor jvmExecutor, JVMType jvmType){
-        switch (jvmType){
-            case SERVER:
-                jvmExecutorsServers.put(jvmExecutor.getName(),jvmExecutor);
-                CustomType.reloadAll(ServersNode.class, AllServersNode.class);
-                break;
-            case PROXY:
-                jvmExecutorsProxy.put(jvmExecutor.getName(),jvmExecutor);
-                CustomType.reloadAll(ProxiesNode.class, AllServersNode.class);
-                break;
-        }
 
-
+    public synchronized void addExecutor(JVMExecutor jvmExecutor, BundleData bundleData) {
+        jvmExecutors.add(jvmExecutor);
+        bundleData.getExecutors().put(jvmExecutor.getName(), jvmExecutor);
     }
 
 }

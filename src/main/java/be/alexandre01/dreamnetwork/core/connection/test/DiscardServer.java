@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.test;
 
+import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -35,6 +36,11 @@ public class DiscardServer {
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
             // Bind and start to accept incoming connections.
+            while (PortUtils.isAvailable(port,true)) {
+                port++;
+            }
+
+            System.out.println("Binding to port "+port);
             ChannelFuture f = b.bind(port).sync(); // (7)
 
             // Wait until the server socket is closed.

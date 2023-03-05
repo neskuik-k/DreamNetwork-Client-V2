@@ -8,7 +8,7 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
 
-public interface IJVMExecutor  {
+public interface IJVMExecutor {
 
 
     //LINUX ONLY
@@ -134,6 +134,8 @@ public interface IJVMExecutor  {
 
     public IConfig getConfig();
 
+    public IStartupConfig getStartupConfig();
+
     public Mods getType();
 
     public String getXms();
@@ -156,7 +158,7 @@ public interface IJVMExecutor  {
 
 
     public enum Mods {
-        STATIC("/template/"), DYNAMIC("/tmp/");
+        STATIC("/bundles/"), DYNAMIC("/runtimes/");
 
         private String path;
 

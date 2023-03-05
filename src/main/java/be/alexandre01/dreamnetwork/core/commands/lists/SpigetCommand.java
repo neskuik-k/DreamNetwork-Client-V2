@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.console.Console;
 
 
@@ -11,7 +12,8 @@ public class SpigetCommand extends Command {
 
     public SpigetCommand(String name) {
         super(name);
-        setCompletion(node("spiget"));
+        NodeBuilder nodeBuilder = new NodeBuilder(NodeBuilder.create("spiget"));
+        //setCompletion(node("spiget"));
         //setCompletions(new StringsCompleter("spiget"));
 
         commandExecutor = new CommandExecutor() {

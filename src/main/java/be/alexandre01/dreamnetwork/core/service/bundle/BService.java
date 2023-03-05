@@ -7,10 +7,16 @@ public class BService {
     private String serviceName;
     private int totalCount;
     private Integer activeCount;
+    private BundleInfo bundleInfo;
 
-    public BService(String serviceName, int totalCount,Integer activeCount) {
+
+    public BService(String serviceName, int totalCount, Integer activeCount) {
         this.serviceName = serviceName;
         this.totalCount = totalCount;
         this.activeCount = activeCount;
+    }
+
+    public BService(){
+
     }
 }

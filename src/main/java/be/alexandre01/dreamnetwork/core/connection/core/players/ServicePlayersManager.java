@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -88,11 +89,11 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     }
 
     @Override
-    public void udpatePlayerServer(int id, String server){
+    public void udpatePlayerServer(int id, String server,String bundle){
         Player player = getPlayer(id);
         String[] args = server.split("-");
 
-        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(args[0], JVMContainer.JVMType.SERVER);
+        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(args[0], Main.getBundleManager().getBundleData(bundle));
         int i;
         try {
             i = Integer.parseInt(args[1]);

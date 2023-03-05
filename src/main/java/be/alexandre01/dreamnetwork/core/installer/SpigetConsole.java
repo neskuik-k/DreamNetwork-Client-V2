@@ -3,10 +3,12 @@ package be.alexandre01.dreamnetwork.core.installer;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
 import com.github.tomaslanger.chalk.Chalk;
 import org.jline.reader.LineReader;
@@ -40,8 +42,6 @@ public class SpigetConsole {
             @Override
             public void onKill(LineReader reader) {
                 Console.setActualConsole("m:default");
-                Console nConsole = Console.getConsole("m:default");
-                nConsole.run();
             }
         });
 
@@ -339,15 +339,7 @@ public class SpigetConsole {
                             }
                             if(args[1].equalsIgnoreCase("ADD")){
                                 if(args.length > 3){
-                                    JVMContainer.JVMType jvmType;
-                                    try {
-                                        jvmType = JVMContainer.JVMType.valueOf(args[2].toUpperCase());
-                                    }catch (Exception e){
-                                        System.out.println(Chalk.on("THE TYPE IS INCORRECT... TRY PROXY OR SERVER"));
-                                        return;
-                                    }
-
-                                    if(addServer(args[3],jvmType)){
+                                    if(addServer(args[3],args[2])){
                                         console.fPrint("THE SERVER HAS BEEN ADDED!", Level.INFO);
                                         return;
                                     }
@@ -414,8 +406,9 @@ public class SpigetConsole {
 
 
     }
-    private boolean addServer(String name, JVMContainer.JVMType jvmType){
-        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(name,jvmType);
+    private boolean addServer(String name, String bundle){
+        BundleData bundleData = Main.getBundleManager().getBundleData(bundle);
+        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(name,bundleData);
         if(jvmExecutor != null){
             serverSelected.add(jvmExecutor);
             return true;

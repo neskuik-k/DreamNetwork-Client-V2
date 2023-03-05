@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.installer.enums;
 
+import be.alexandre01.dreamnetwork.api.service.IContainer;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -18,13 +20,15 @@ public enum InstallationLinks {
     PAPER_SPIGOT_1_18_2("https://api.papermc.io/v2/projects/paper/versions/1.18.2/builds/387/downloads/paper-1.18.2-387.jar","1.18.2",to(17,17)),
     PAPER_SPIGOT_1_19("https://api.papermc.io/v2/projects/paper/versions/1.19/builds/65/downloads/paper-1.19-65.jar","1.19",to(17,18)),
 
-    BUNGEECORD("https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar","BUNGEECORD",to(8,17)),
-    WATERFALL("https://api.papermc.io/v2/projects/waterfall/versions/1.19/builds/498/downloads/waterfall-1.19-498.jar","WATERFALL",to(8,17)),
-    FLAMECORD("https://www.dropbox.com/s/3hknjx4k0ezto1y/FlameCord.jar?dl=1","FLAMECORD",to(8,17));
+    BUNGEECORD("https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar","BUNGEECORD",IContainer.JVMType.PROXY,to(8,17)),
+    WATERFALL("https://api.papermc.io/v2/projects/waterfall/versions/1.19/builds/498/downloads/waterfall-1.19-498.jar","WATERFALL",IContainer.JVMType.PROXY,to(8,17));
 
     private String url;
     private String ver;
     private Integer[] javaVersion;
+
+    private IContainer.JVMType jvmType;
+
     private static HashMap<String,InstallationLinks> links = new HashMap<>();
     static {
         for (final InstallationLinks i : InstallationLinks.values()) {
@@ -32,9 +36,16 @@ public enum InstallationLinks {
         }
     }
 
-    InstallationLinks(String url,String v,Integer... javaVersion){
+    InstallationLinks(String url, String v, IContainer.JVMType jvmType, Integer... javaVersion){
         this.url = url;
         this.ver = v;
+        this.jvmType = jvmType;
+        this.javaVersion = javaVersion;
+    }
+    InstallationLinks(String url, String v,  Integer... javaVersion){
+        this.url = url;
+        this.ver = v;
+        this.jvmType = IContainer.JVMType.SERVER;
         this.javaVersion = javaVersion;
     }
 
@@ -60,4 +71,5 @@ public enum InstallationLinks {
         }
         return is.toArray(new Integer[0]);
     }
+
 }

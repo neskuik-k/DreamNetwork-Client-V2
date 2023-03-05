@@ -1,10 +1,12 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,11 +42,15 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             exec = "Spigot.jar";
         }
 
+
         if(updateFile){
             updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,null);
+            System.out.println("Updating config file... Done");
         }
+
+
         try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")){
+            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
                 if(line.startsWith("startup:")){
                     startup = line;
                     startup = startup.replace("startup:","");
@@ -71,7 +77,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                     }
                 }
             }
-            fileRootDir = new File(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/");
+            fileRootDir = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
             isConfig = true;
         }catch (IOException e){
             e.printStackTrace();
@@ -87,7 +93,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
     public void update(){
         try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")){
+            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
                 if(line.startsWith("type:")){
                     this.type = JVMExecutor.Mods.valueOf(line.replace("type:","").replaceAll(" ",""));
                 }
@@ -141,12 +147,12 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         }
     }
     @Override
-    public boolean changePort(String pathName, String finalname, int port, JVMExecutor.Mods type){
+    public boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
         String name = finalname.split("-")[0];
         String fileName;
         String checker;
         boolean proxy = false;
-        if(pathName.contains("server")){
+        if(jvmType.equals(IContainer.JVMType.SERVER)){
             fileName = "server.properties";
             checker = "server-port=";
         }else {
@@ -155,7 +161,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             checker = "host: 0.0.0.0:";
         }
         File properties;
-        if(type.equals(JVMExecutor.Mods.DYNAMIC)){
+        if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
             properties = new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
         }else {
             properties = new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName));
@@ -188,7 +194,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
             // write the new string with the replaced line OVER the same file
             FileOutputStream fileOut;
-            if(type.equals(JVMExecutor.Mods.DYNAMIC)){
+            if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
                 fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
             }else {
                 fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName));
@@ -204,11 +210,11 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     @Override
-    public Integer getCurrentPort(String pathName, String finalname, JVMExecutor.Mods type){
+    public Integer getCurrentPort(String pathName, String finalname, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
         String fileName;
         String checker;
         boolean proxy = false;
-        if(pathName.contains("server")){
+        if(jvmType == IContainer.JVMType.SERVER){
             fileName = "server.properties";
             checker = "server-port=";
         }else {
@@ -218,16 +224,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         }
         String name = finalname.split("-")[0];
         File properties;
-        if(type.equals(JVMExecutor.Mods.DYNAMIC)){
+        if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
             properties = new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
         }else {
-            String path;
-            if(proxy){
-                path = "proxy";
-            }else {
-                path = "server";
-            }
-            //   System.out.println(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name));
             properties= new File(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name));
         }
 
@@ -237,7 +236,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         try {
 
             BufferedReader file;
-            if(type.equals(JVMExecutor.Mods.DYNAMIC)){
+            if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
                 file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName)));
             }else {
                 file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName)));
@@ -265,7 +264,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             file.close();
 
             FileOutputStream fileOut;
-            if(type.equals(JVMExecutor.Mods.DYNAMIC)){
+            if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
                 fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
             }else {
                 fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName));
@@ -285,13 +284,13 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @Override
     public String getLine(String finalname){
         String name = finalname.split("-")[0];
-        File properties = new File(System.getProperty("user.dir")+ Config.getPath("/tmp/server/"+name+"/"+finalname+"/logs/latest.log"));
+        File properties = new File(System.getProperty("user.dir")+ Config.getPath("/runtimes/server/"+name+"/"+finalname+"/logs/latest.log"));
         if(!properties.exists()){
             return null;
         }
         try {
 
-            BufferedReader file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath("/tmp/server/"+name+"/"+finalname+"/logs/latest.log")));
+            BufferedReader file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath("/runtimes/server/"+name+"/"+finalname+"/logs/latest.log")));
 
             String line = null;
 
@@ -325,8 +324,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         InputStream isp = getClass().getClassLoader().getResourceAsStream("files/universal/DreamNetwork-Plugin.jar");
         try {
             assert isp != null;
-            Config.createDir(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/"+"plugins"));
-            Config.write(isp,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar")));
+            Config.createDir(Config.getPath(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"plugins"));
+            Config.write(isp,new File(Config.getPath(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar")));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -345,7 +344,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     private void updateFile(String fileName, InputStream in){
         assert in != null;
         try {
-            Config.write(in,new File(Config.getPath(System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/"+fileName)));
+            Config.write(in,new File(Config.getPath(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -361,11 +360,11 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         Console.print("PROXY>"+proxy,Level.FINE);
         Console.print("STARTUP>"+startup,Level.FINE);
         // Client.getLogger().
-        Config.createFile((System.getProperty("user.dir")+"/template/"+pathName+"/"+finalName+"/network.yml"));
+        Config.createFile((System.getProperty("user.dir")+"/bundles/"+pathName+"/"+finalName+"/network.yml"));
         String cTypeName = getLine("type");
         PrintWriter writer = null;
         try {
-            writer = new PrintWriter(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+finalName+"/network.yml"),"utf-8");
+            writer = new PrintWriter(System.getProperty("user.dir")+ Config.getPath("/bundles/"+pathName+"/"+finalName+"/network.yml"),"utf-8");
 
             //  System.out.println(type.name());
             writer.println("# "+finalName+"'s configuration of the startup -|- DreamNetwork™ "+ (new Date().getYear()+1900));
@@ -400,11 +399,11 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public long getConfigSize(){
-        return  Config.createFile((System.getProperty("user.dir")+"/template/"+pathName+"/"+name+"/network.yml")).length();
+        return  Config.createFile((System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")).length();
     }
     @Override
     public boolean hasExecutable(){
-        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name+"/"+exec))){
+        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec))){
             return true;
         }
         return false;
@@ -424,6 +423,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         private String startup;
 
         private String javaVersion;
+
 
 
 
@@ -484,7 +484,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
         @Override
-        public JVMStartupConfig build(){
+        public IStartupConfig build(){
             JVMStartupConfig j =  new JVMStartupConfig(pathName,name,true);
             j.setType(type);
             j.setXms(Xms);
@@ -495,6 +495,28 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             j.setExec(exec);
             j.setStartup(startup);
             return j;
+        }
+
+        @Override
+        public IStartupConfig buildFrom(IStartupConfig config){
+            IStartupConfig j = build();
+            if(j.getType() == null)
+                j.setType(config.getType());
+            if(j.getXms() == null)
+                j.setXms(config.getXms());
+            if(j.getXmx() == null)
+                j.setXmx(config.getXmx());
+            if(j.getPort() == 0)
+                j.setPort(config.getPort());
+            if(j.getJavaVersion() == null)
+                j.setJavaVersion(config.getJavaVersion());
+            if(j.getExec() == null)
+                j.setExec(config.getExec());
+            if(j.getStartup() == null)
+                j.setStartup(config.getStartup());
+
+            j.setProxy(config.isProxy());
+            return config;
         }
     }
 }

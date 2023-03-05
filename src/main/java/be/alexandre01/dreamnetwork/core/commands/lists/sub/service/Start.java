@@ -1,34 +1,37 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
+import be.alexandre01.dreamnetwork.api.commands.sub.*;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
+import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMConfig;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.JVMStartupConfig;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.utils.clients.RamArgumentsChecker;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
-public class Start extends SubCommandCompletor implements SubCommandExecutor {
+public class Start extends SubCommand {
     public Start(){
         NodeContainer next = create("STATIC","DYNAMIC",
                 create("1G","2G",create("1G","2G")));
 
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
                 create("start",
-                        create("server",create(new ServersNode(),next)),
-                        create( "proxy",create(new ProxiesNode(),next)))));
+                        create(new BundlesNode(true),next))));
         addCompletor("service","start","server");
         addCompletor("service","start","proxy");
+
 
     }
     @Override
@@ -37,10 +40,74 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
           return false;
         }
 
-        if(args[0].equalsIgnoreCase("start")){
+
+        if(!when(sArgs -> {
+            String serverPath = sArgs[1];
+
+
+            String[] splitPath = serverPath.split("/");
+
+            String serverName = splitPath[splitPath.length - 1];
+
+            String bundlePath = serverPath.substring(0,(serverPath.length()-serverName.length())-1);
+           /* System.out.println(bundlePath);
+            System.out.println(serverName);
+            System.out.println("Ah");*/
+
+            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(serverName, bundlePath);
+
+            //System.out.println("jvmExecutor = " + jvmExecutor);
+            if(jvmExecutor == null){
+                System.out.println(Colors.RED+"[!] The service mentionned is not configurated..");
+                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                return true;
+            }
+
+            if(sArgs.length < 3){
+                jvmExecutor.startServer();
+                return true;
+            }
+
+            JVMExecutor.Mods mods = checkMods(sArgs[2]);
+            if(mods == null){
+                System.out.println(Colors.RED+"[!] The mods argument is incorrect");
+                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                return true;
+            }
+
+            if(!(RamArgumentsChecker.check(sArgs[3]) && RamArgumentsChecker.check(sArgs[4]))){
+                System.out.println(Colors.RED+"[!] The RAM Argument is incorrect... try for example: 512M or 1G");
+                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                return true;
+            }
+
+            int port = 0;
+
+            if(sArgs.length > 5){
+                try {
+                    port = Integer.parseInt(sArgs[5]);
+                }catch (Exception e){
+                    //ignored
+                }
+            }
+
+            IStartupConfigBuilder builder = IStartupConfig.builder();
+
+            builder.type(mods).xms(sArgs[3]).xmx(sArgs[4]);
+
+            if(port != 0){
+                builder.port(port);
+            }
+
+            jvmExecutor.startServer(builder.build());
+            return true;
+        },args,"start","serverPath","[mods]","[XMS]","[XMX]","[port]")){
+            fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+            return true;
+        }
+        /*if(args[0].equalsIgnoreCase("start")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] service start server [name] (TYPE) ((XMS) (XMX)) (port)").red());
-                System.out.println(Chalk.on("[!] service start proxy [name] (TYPE) ((XMS) (XMX)) (port)").red());
+                System.out.println(Chalk.on("[!] service start bundle/server").red());
                 return true;
             }
             JVMContainer.JVMType type;
@@ -52,7 +119,7 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
             }
 
 
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(args[2], type);
+            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(args[2], "main");
 
             if(jvmExecutor == null){
                 System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
@@ -131,8 +198,8 @@ public class Start extends SubCommandCompletor implements SubCommandExecutor {
         }
 
 
-
-        return false;
+*/
+        return true;
     }
 
     public JVMExecutor.Mods checkMods(String arg){

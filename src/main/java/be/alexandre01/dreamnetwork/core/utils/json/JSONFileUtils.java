@@ -15,7 +15,7 @@ public class JSONFileUtils extends LinkedHashMap<String, Object> {
     private File indexFile;
 
     public void refreshFile(){
-        Gson gson = new GsonBuilder().disableHtmlEscaping().create();
+        Gson gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
         try {
             FileWriter f = new FileWriter(indexFile);
             gson.toJson(this,f);

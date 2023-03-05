@@ -41,7 +41,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Setter @Getter private boolean hasDevUtilSoftwareAccess = false;
     @Getter private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
     private AuthentificationResponse authResponse;
-   @Getter private ArrayList<ChannelHandlerContext> externalConnection = new ArrayList<>();
+   @Getter private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Core core;
@@ -67,7 +67,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             }
         }else {
             if(!remote.replaceAll("/","").equalsIgnoreCase("127.0.0.1")){
-                externalConnection.add(ctx);
+                externalConnections.add(ctx);
             }
         }
     }
