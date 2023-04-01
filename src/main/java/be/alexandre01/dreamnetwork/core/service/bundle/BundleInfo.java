@@ -47,9 +47,7 @@ public class BundleInfo {
             Representer representer = new Representer() {
                 @Override
                 protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
-                    // if value of property is null, ignore it.
-               //     System.out.println(propertyValue);
-                 //   System.out.println(property.getType());
+
 
                     if (BundleInfo.class.equals(property.getType())) {
                         return null;
@@ -64,8 +62,6 @@ public class BundleInfo {
             fileWriter.write(yaml.dumpAsMap(bundleInfo));
             fileWriter.flush();
             fileWriter.close();
-          //  yaml.dump(bundleFileInfo,new PrintWriter(file));
-           // System.out.println("Ecriture de .info");
 
         } catch (IOException e) {
             System.out.println("Erreur lors de l'écriture de .info");

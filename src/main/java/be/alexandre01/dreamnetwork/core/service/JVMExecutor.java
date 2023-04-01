@@ -13,10 +13,10 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
 
+import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 
+@Ignore
 public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
@@ -49,7 +50,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter @Setter  public static HashMap<Integer, IService> servicePort = new HashMap<>();
     @Getter @Setter  public static Integer cache = 0;
     private ArrayList<IConfig> queue = new ArrayList<>();
-    public HashMap<Integer,IService> jvmServices = new HashMap<>();
+    @Ignore public HashMap<Integer,IService> jvmServices = new HashMap<>();
     public BundleData bundleData;
 
     public IService staticService = null;
@@ -122,7 +123,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         if(this.getConfigSize() != getConfigSize() && !isFixedData()){
-            update();
+            readFile();
         }
 
         boolean proxy;

@@ -51,7 +51,8 @@ public class JVMContainer implements IContainer {
         int port = 0;
         boolean proxy = false;
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
-        try {
+
+        /*try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml")) {
                 if (line.startsWith("type:")) {
                     type = IJVMExecutor.Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
@@ -71,8 +72,15 @@ public class JVMContainer implements IContainer {
             }
         } catch (Exception e) {
             return null;
+        }*/
+
+        try {
+            System.out.println("INIT");
+            return new JVMExecutor(pathName, name, bundleData);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-        return (IJVMExecutor) new JVMExecutor(pathName, name, type, xms, xmx, port, proxy, updateFile,bundleData);
     }
 
     @Override

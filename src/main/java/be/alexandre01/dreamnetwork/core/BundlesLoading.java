@@ -135,9 +135,12 @@ public class BundlesLoading {
 
                 IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
                 if(jvmExecutor == null){
+                    System.out.println("NULL JVM EXECUTOR");
                     notConfigured(dir);
                     continue;
                 }
+                System.out.println("JVM IS CONIFG ?: "+jvmExecutor.isConfig());
+                System.out.println("JVM HAS EXECUTABLE ?: "+jvmExecutor.hasExecutable());
                 if(jvmExecutor.isConfig() && jvmExecutor.hasExecutable()){
                     Console.debugPrint(Chalk.on("-->  [O] Template "+Colors.GREEN_BOLD_BRIGHT+ dir.getName()+Colors.GREEN+" loaded !").green());
                     //Utils.templates.add(dir.getName()); <- add after

@@ -4,16 +4,14 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.*;
-import java.util.Date;
-import java.util.logging.Level;
-@Getter @Setter
+import java.lang.reflect.Field;
+
+@Getter @Setter @Ignore
 public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     boolean isConfig;
     long confSize = 0;
@@ -27,7 +25,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
 
-    public JVMStartupConfig( String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile){
+    public JVMStartupConfig(String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile){
+        super();
+        config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"network.yml"));
         this.name = name;
         this.type = type;
         this.xms = xms;
@@ -36,6 +36,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.proxy = proxy;
         this.pathName = pathName;
         this.fixedData = true;
+        this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
+
         if(proxy){
             exec = "BungeeCord.jar";
         }else {
@@ -77,7 +79,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                     }
                 }
             }
-            fileRootDir = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
+
             isConfig = true;
         }catch (IOException e){
             e.printStackTrace();
@@ -85,14 +87,56 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     public JVMStartupConfig(String pathName,String name,boolean isBuilded){
+        config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"/network.yml"));
         this.name = name;
         this.pathName = pathName;
+        this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
+        System.out.println("Hello world !");
         if(isBuilded) return;
-        update();
+        System.out.println("Hello world  2!");
+        readFile();
+        System.out.println("Reading config file... Done");
+        //sout all class data fields with reflection
+        Field[] fields = JVMConfig.class.getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                System.out.println(field.getName() + " = " + field.get(this));
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public void update(){
-        try {
+
+    public void readFile(){
+        JVMConfig config = read();
+
+        // Copy all data from config to this class
+        // get declaredfields and fields
+        Field[] fields = config.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Field field1 = JVMConfig.class.getDeclaredField(field.getName());
+                field1.setAccessible(true);
+                if(field1.getAnnotation(Ignore.class) != null) continue;
+                field1.set(this,field.get(config));
+                System.out.println("Setting field "+field.getName()+" to "+field.get(config));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+        /*if(startup != null){
+            while (startup.charAt(0) == ' '){
+                startup = startup.substring(1);
+            }
+            startup =  startup.replaceAll("%xms%",xms);
+            startup = startup.replaceAll("%xmx%",xmx);
+        }*/
+        exec += ".jar";
+        isConfig = true;
+       /* try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
                 if(line.startsWith("type:")){
                     this.type = JVMExecutor.Mods.valueOf(line.replace("type:","").replaceAll(" ",""));
@@ -144,7 +188,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             Console.print(Colors.ANSI_RED()+"The server in question is not yet configured",Level.SEVERE);
             isConfig = false;
             return;
-        }
+        }*/
     }
     @Override
     public boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
@@ -351,7 +395,17 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
-        Console.print("PN>"+pathName, Level.FINE);
+        this.type = type;
+        this.xms = Xms;
+        this.xmx = Xmx;
+        this.port = port;
+        this.proxy = proxy;
+        this.startup = startup;
+        this.javaVersion = javaVersion;
+        this.exec = exec;
+        this.pathName = pathName;
+        this.name = finalName;
+        /*Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
         Console.print("MODS>"+type.name(),Level.FINE);
         Console.print("XMS>"+Xms,Level.FINE);
@@ -395,7 +449,10 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             confSize = getConfigSize();
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
+        super.readFile(JVMConfig.class.cast(this));
+        confSize = getConfigSize();
+
     }
     @Override
     public long getConfigSize(){
@@ -403,6 +460,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public boolean hasExecutable(){
+        System.out.println(exec);
+        System.out.println(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec));
         if(Config.contains(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec))){
             return true;
         }

@@ -146,7 +146,7 @@ public class Core {
         ASCIIART.sendTitle();
 
 
-        Console console = Console.getConsole("m:default");
+        Console console = Console.getConsole(Console.actualConsole);
         console.defaultPrint = formatter.getDefaultStream();
         DevToolsToken devToolsToken = new DevToolsToken();
         devToolsToken.init();
@@ -159,20 +159,7 @@ public class Core {
             thread.start();
             console.fPrint("The CoreServer System has been started on the port "+ coreServer.getPort()+".",Level.INFO);
         } catch (Exception e) {
-
-            console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
-            for(StackTraceElement s : e.getStackTrace()){
-                Core.getInstance().formatter.getDefaultStream().println("----->");
-                Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,"----->"));
-                console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
-            }
-            if(Core.getInstance().isDebug()){
-                e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-            }else {
-                formatter.getDefaultStream().println("Please contact the DN developers about this error.");
-                fileHandler.publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
-
-            }
+            Console.bug(e);
         }
 
         console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);

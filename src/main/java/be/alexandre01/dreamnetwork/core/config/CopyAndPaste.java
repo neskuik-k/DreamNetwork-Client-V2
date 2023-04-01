@@ -280,7 +280,10 @@ public class CopyAndPaste extends Thread{
                                 String in = defaultLocation.getAbsolutePath();
                                 String out = defaultTargetLocation.getAbsolutePath();
 
-                                Path path = paths.get(0);
+
+                                Path path = null;
+                                if(paths.size() > 0)
+                                    path = paths.get(0);
                               //  System.out.println(">> "+path);
                                 if(path == null && !cancelled){
                                     if(b.get())

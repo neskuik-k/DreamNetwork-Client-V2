@@ -80,6 +80,11 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
                                         <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
                                             <![CDATA[<methods>]]>;

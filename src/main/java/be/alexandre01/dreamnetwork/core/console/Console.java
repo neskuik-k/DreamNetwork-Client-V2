@@ -263,6 +263,8 @@ public class Console extends Thread{
         LineReader lineReader = ConsoleReader.sReader;
         int rows = lineReader.getTerminal().getSize().getRows();
         int cols = lineReader.getTerminal().getSize().getColumns();
+        if(s == null)
+            s = "null";
         String msg = s.toString().replaceAll("\\s+$", "");
         cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
         String spaces = "";
@@ -356,6 +358,23 @@ public class Console extends Thread{
         }
     }
 
+    public static void bug(Exception e){
+        System.out.println("ERROR ON>> "+e.getMessage()+" || "+ e.getClass().getSimpleName());
+        Console console = Console.getConsole(actualConsole);
+        console.fPrint(Colors.RED+"ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName(),Level.SEVERE);
+        for(StackTraceElement s : e.getStackTrace()){
+            Core.getInstance().formatter.getDefaultStream().println("----->");
+            console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
+
+        }
+        if(Core.getInstance().isDebug()){
+            e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
+        }else {
+            Core.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
+            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
+        }
+    }
+
     @Override
     public void run() {
 
@@ -410,18 +429,8 @@ public class Console extends Thread{
                     args = data.split(" ");
                     console.iConsole.listener(args);
                 }catch (Exception e){
-                    System.out.println("ERROR ON>> "+e.getMessage()+" || "+ e.getClass().getSimpleName());
-                    fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
-                    for(StackTraceElement s : e.getStackTrace()){
-                        Core.getInstance().formatter.getDefaultStream().println("----->");
-                        fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
-                    }
-                    if(Core.getInstance().isDebug()){
-                        e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-                    }else {
-                        Core.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
-                    }
-                    }
+                    bug(e);
+                }
                 }
 
                 Console.debugPrint("Console closed");

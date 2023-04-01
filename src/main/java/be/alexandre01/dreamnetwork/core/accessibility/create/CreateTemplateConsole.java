@@ -127,6 +127,7 @@ public class CreateTemplateConsole {
                     for (String illegalChar : illegalChars) {
                         if(illegalChar.contains(args[0])){
                             errorLine = Colors.RED+"There is a bad character on the name";
+                            errorLine = Colors.RED+"There is a bad character on the name";
                             return;
                         }
                     }
