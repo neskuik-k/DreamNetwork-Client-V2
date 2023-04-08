@@ -181,7 +181,7 @@ public class CreateTemplateConsole {
                     ramNode = null;
                     console.completorNodes.clear();
                     ConsoleReader.sReader.runMacro(opt[5]);
-                    errorLine = "Type 0 to bind automatic port";
+                    errorLine = "Type 'auto' to bind automatic port";
                     console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+" port "+Colors.GREEN+" ?" +Colors.WHITE+" Type your port: "+Colors.RED);
                     return;
                 }
@@ -189,13 +189,16 @@ public class CreateTemplateConsole {
                 //PART 5
                 if(CreateTemplateConsole.this.port == null){
 
-                    if(!NumberArgumentCheck.check(args[0])){
+                    if(!NumberArgumentCheck.check(args[0]) && !args[0].equalsIgnoreCase("auto")){
                         errorLine = "Type 0 to bind automatic port | "+ Colors.RED+" Wrong port; choose a number and not "+ args[0];
                         Console.debugPrint(errorLine);
                         return;
                     }
-                    CreateTemplateConsole.this.port = Integer.parseInt(args[0]);
-
+                    if(args[0].equalsIgnoreCase("auto")){
+                        CreateTemplateConsole.this.port = 0;
+                    }else {
+                        CreateTemplateConsole.this.port = Integer.parseInt(args[0]);
+                    }
                     // BEGIN OF ADDING SERVER
                     BundleInfo bundleInfo = bundleData.getBundleInfo();
                     Console.debugPrint("Adding server "+serverName+" with "+bundleData.getName()+" bundle");
@@ -208,7 +211,6 @@ public class CreateTemplateConsole {
                     if (jvmExecutor == null) {
                         System.out.println("Creating server "+serverName+" with "+bundleInfo.getName()+" bundle");
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName);
-                        System.out.println("?");
                         jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, CreateTemplateConsole.this.mods,  CreateTemplateConsole.this.xms,  CreateTemplateConsole.this.xmx,  CreateTemplateConsole.this.port, proxy, true,bundleData);
                         jvmExecutor.addConfigsFiles();
                         Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
@@ -230,7 +232,9 @@ public class CreateTemplateConsole {
                         console.completorNodes.clear();
                         ArrayList<String> versions = new ArrayList<>();
                         for(InstallationLinks s : InstallationLinks.values()) {
-                            versions.add(s.getVer());
+                            if(s.getJvmType() == jvmExecutor.bundleData.getJvmType()){
+                                versions.add(s.getVer());
+                            }
                         }
                         new NodeBuilder(NodeBuilder.create(versions.toArray()),console);
                         console.reloadCompletor();
@@ -250,15 +254,14 @@ public class CreateTemplateConsole {
                 // PART 7
 
                 try {
-                    InstallationLinks.getInstallationLinks(args[0]);
-                    console.isRunning = false;
-                    ConsoleReader.sReader.getTerminal().flush();
-                    future.onResponse();
                     if(!tryInstall(args[0],jvmExecutor)){
                         errorLine = Colors.RED+"[!] The version is incorrect...";
                         Console.debugPrint(errorLine);
                         return;
                     }
+                    console.isRunning = false;
+                    ConsoleReader.sReader.getTerminal().flush();
+                    future.onResponse();
                 }catch (Exception e){
 
                 }
@@ -302,12 +305,14 @@ public class CreateTemplateConsole {
 
     private boolean tryInstall(String type,JVMExecutor jvmExecutor){
         InstallationLinks installationLinks;
+        if(type.isEmpty())  return false;
+
         try {
             installationLinks = InstallationLinks.getInstallationLinks(type);
         }catch (Exception e){
             return false;
         }
-
+        if(installationLinks == null) return false;
         //block console
         Console.setBlockConsole(true);
         String write = console.writing;

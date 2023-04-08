@@ -110,21 +110,27 @@ public class NodeBuilder {
 
 
     public void rebuild(){
-       Console.fine("rebuild suggestion");
-       Console.fine(globalList);
-        for (int i = 0; i < globalList.size(); i++) {
-            Object o = globalList.get(i);
-            if(o instanceof NodeContainer){
-               // printContainers((NodeContainer) o);
+        try {
+            Console.fine("rebuild suggestion");
+            Console.fine(globalList);
+            Console.fine("ICI hein");
+            for (int i = 0; i < globalList.size(); i++) {
+                Object o = globalList.get(i);
+                if(o instanceof NodeContainer){
+                    // printContainers((NodeContainer) o);
+                }
+                //System.out.println(o);
             }
-            //System.out.println(o);
+            console.completorNodes.set(num, node = genNode(nodeContainer,true));
+            //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
+            if(Console.actualConsole.equals(console.name)){
+                ConsoleReader.reloadCompleter();
+            }
+            //ConsoleReader.reloadCompleter();
+        }catch (Exception e){
+            Console.bug(e);
         }
-        console.completorNodes.set(num, node = genNode(nodeContainer,true));
-        //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
-        if(Console.actualConsole.equals(console.name)){
-            ConsoleReader.reloadCompleter();
-        }
-        //ConsoleReader.reloadCompleter();
+
     }
     private void printContainers(NodeContainer nodeContainer){
         for (int i = 0; i < globalList.size(); i++) {

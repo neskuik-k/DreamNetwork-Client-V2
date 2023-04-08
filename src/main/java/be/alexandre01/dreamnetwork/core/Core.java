@@ -209,7 +209,7 @@ public class Core {
 
         console.reloadCompletor();
 
-        createTemplateConsole = new CreateTemplateConsole("","","","","","0");
+        createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);

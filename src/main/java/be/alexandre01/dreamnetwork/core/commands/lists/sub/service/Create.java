@@ -2,7 +2,9 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -114,7 +116,7 @@ public class Create extends SubCommand {
             System.out.println(Colors.RED+"The command cannot be executed !");
             fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
 
-            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "0", new CreateTemplateConsole.Future() {
+            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
                 @Override
                 public void onResponse() {
 
@@ -122,6 +124,7 @@ public class Create extends SubCommand {
 
                 @Override
                 public void finish() {
+                    CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                     Console.setActualConsole("m:default");
                 }
             });

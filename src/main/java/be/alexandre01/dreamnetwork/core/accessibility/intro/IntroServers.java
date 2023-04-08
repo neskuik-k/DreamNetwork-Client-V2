@@ -1,6 +1,9 @@
 package be.alexandre01.dreamnetwork.core.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
@@ -35,7 +38,7 @@ public class IntroServers extends IntroductionConsole {
                 if(args[0].equalsIgnoreCase("yes")){
                     if(!hasCreatedProxy){
                         console.setWriting("");
-                        Core.getInstance().getCreateTemplateConsole().show("proxies", "proxy", "STATIC", "512M", "1024M", "0", new CreateTemplateConsole.Future() {
+                        Core.getInstance().getCreateTemplateConsole().show("proxies", "proxy", "STATIC", "512M", "1024M", "auto", new CreateTemplateConsole.Future() {
                             @Override
                             public void onResponse() {
                                 hasCreatedProxy = true;
@@ -52,11 +55,17 @@ public class IntroServers extends IntroductionConsole {
                                 //Console.reload();
                                 ConsoleReader.sReader.getTerminal().flush();
                                 ConsoleReader.sReader.getTerminal().writer().flush();
+                                 Main.getBundleManager().getBundleDatas().forEach((s, bundleData) -> {
+                                    Console.fine("Bundle name: "+bundleData.getBundleInfo().getName());
+                                     Console.fine("Bundle type: "+bundleData.getBundleInfo().getType());
+                                     Console.fine("Bundle executors: "+bundleData.getExecutors());
+                                });
+                                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
                             }
                         });
                     }else {
-                        Core.getInstance().getCreateTemplateConsole().show("main", "lobby", "STATIC", "1G", "2G", "0", new CreateTemplateConsole.Future() {
+                        Core.getInstance().getCreateTemplateConsole().show("main", "lobby", "STATIC", "1G", "2G", "auto", new CreateTemplateConsole.Future() {
                             @Override
                             public void onResponse() {
 
@@ -67,6 +76,7 @@ public class IntroServers extends IntroductionConsole {
                                 Console.clearConsole();
                                 ASCIIART.sendLogo();
                                 ASCIIART.sendTitle();
+                                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
                                 Console.setActualConsole("m:default",true,false);
                             }

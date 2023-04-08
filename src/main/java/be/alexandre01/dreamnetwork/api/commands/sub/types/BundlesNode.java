@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.api.commands.sub.types;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import org.apache.commons.lang.ArrayUtils;
@@ -11,16 +12,19 @@ import org.jline.builtins.Completers;
 public class BundlesNode extends CustomType {
 
     public BundlesNode(boolean recursive){
+
         type = SubCommandCompletor.Type.SERVERS;
         BundleManager bundleManager = Core.getInstance().getBundleManager();
         if(recursive){
             setCustomType(() -> {
                 //Completers.TreeCompleter
-
+                Console.fine("BundlesNode INIT");
                 Object[] bundles = new Object[0];
                 for(String bundle : bundleManager.getBundleDatas().keySet()){
+                    Console.fine("+Bundle : "+bundle);
                     bundles = ArrayUtils.add(bundles,bundle);
                     for(String executor : bundleManager.getBundleData(bundle).getExecutors().keySet()){
+                        Console.fine("+Executor : "+executor);
                         bundles = ArrayUtils.add(bundles,bundle+"/"+executor);
                     }
                 }

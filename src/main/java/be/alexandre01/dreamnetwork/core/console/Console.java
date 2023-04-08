@@ -166,8 +166,7 @@ public class Console extends Thread{
             return;
         }
         if(fh != null){
-            LogRecord lr = new LogRecord(Level.FINE,s.toString());
-           fh.publish(lr);
+            sendToLog(s,Level.FINE,"global");
         }
     }
     public static void print(String s, Level level,String name){
@@ -198,12 +197,12 @@ public class Console extends Thread{
      */
     public void fPrint(Object s,Level level){
         //stashLine();
+
         if(Console.actualConsole.equals(name)){
 
             //Client.getLogger().log(level,s+Colors.ANSI_RESET());
 
-            final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
-            Core.getInstance().getFileHandler().publish(new LogRecord(level,msgWithoutColorCodes));
+
             if(!isDebug && level == Level.FINE)
                 return;
 
@@ -229,10 +228,7 @@ public class Console extends Thread{
 
            // ConsoleReader.sReader.setPrompt(writing);
         }
-
-
-
-
+        sendToLog(s,level);
         refreshHistory(s + Colors.ANSI_RESET(),level);
     }
     public static void print(Object s){
@@ -243,7 +239,7 @@ public class Console extends Thread{
         msg = msg.replaceAll("\\s+$", "");
         cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
         String spaces = "";
-
+        sendToLog(s,Level.INFO,"global");
         //random number between cols-3 and 1
         //SNOW
         /* if(cols > 6){
@@ -254,6 +250,15 @@ public class Console extends Thread{
             spaces += Colors.WHITE+"❆";
         }*/
         ConsoleReader.sReader.printAbove(msg+spaces);
+    }
+
+    private void sendToLog(Object s,Level level){
+        final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
+        Core.getInstance().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
+    }
+    private static void sendToLog(Object s,Level level,String name){
+        final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
+        Core.getInstance().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
     }
     public static Logger getLogger(){
         return Logger.getGlobal();
@@ -288,27 +293,7 @@ public class Console extends Thread{
 
 
     public static void clearConsole(){
-
-
-        try
-        {
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows"))
-            {
-                new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
-            }
-            else
-            {
-                final PrintStream defaultStream = Core.getInstance().formatter.getDefaultStream();
-                defaultStream.print("\033[H\033[2J");
-                defaultStream.flush();
-            }
-        }
-        catch (final Exception ignored)
-        {
-
-        }
+        clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
 
@@ -402,6 +387,7 @@ public class Console extends Thread{
 
 
 
+                sendToLog("> : "+data,Level.INFO);
                 if(data.length() == 0 ){
                     /*reader.getTerminal().puts(InfoCmp.Capability.carriage_return);
                     reader.getTerminal().writer().println("World!");

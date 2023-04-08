@@ -11,12 +11,12 @@ public class BundlesCommand extends Command {
         addSubCommand("create",new Create());
         addSubCommand("edit",new be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles.Edit());
         addSubCommand("remove",new Remove());
+        addSubCommand("list",new be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles.List());
 
         getHelpBuilder().setTitleUsage("How to configurate your services bundles");
         getHelpBuilder().setCmdUsage("create a bundle","create","server/proxy","[name]");
         getHelpBuilder().setCmdUsage("remove a bundle","remove","[name]");
         getHelpBuilder().setCmdUsage("edit a bundle","edit","[name]", "[option]");
-
     }
 
 }

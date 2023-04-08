@@ -55,8 +55,25 @@ public class CustomType extends NodeType {
 
                 //  customType.reload();
             }
+            Console.fine("Reload " + customType.getSimpleName());
+            final int[] i = {0};
+            try {
+                nodeBuilders.forEach(nodeBuilder -> {
+                    if(nodeBuilder == null){
+                        Console.fine("NodeBuilder is null");
+                        return;
+                    }
+                    Console.fine("Find " + nodeBuilder.getClass().getSimpleName()+" "+ i[0]);
+                    nodeBuilder.rebuild();
+                    i[0]++;
+                });
+            }catch (Exception e){
+               Console.bug(e);
+            }
 
-            nodeBuilders.forEach(NodeBuilder::rebuild);
+           // nodeBuilders.forEach(NodeBuilder::rebuild);
+
+
 
         }
 
