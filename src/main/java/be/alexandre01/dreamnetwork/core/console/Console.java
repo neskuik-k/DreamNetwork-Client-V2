@@ -4,17 +4,11 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
-
-import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
-import org.jline.keymap.KeyMap;
 import org.jline.reader.*;
-import org.jline.reader.impl.SimpleMaskingCallback;
-import org.jline.utils.InfoCmp;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -136,6 +130,10 @@ public class Console extends Thread{
 
     public static Console getConsole(String name) {
         return instances.get(name);
+    }
+
+    public static Console getCurrent(){
+        return instances.get(actualConsole);
     }
 
     public static Collection<Console> getConsoles(){

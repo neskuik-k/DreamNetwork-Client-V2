@@ -119,7 +119,6 @@ public class Core {
 
         Console.defaultConsole = "m:default";
         Console.actualConsole =  "m:default";
-
         Console.getConsole("m:default").isDebug = isDebug();
         Console.setBlockConsole(true);
         //  Console.setActualConsole("m:default");

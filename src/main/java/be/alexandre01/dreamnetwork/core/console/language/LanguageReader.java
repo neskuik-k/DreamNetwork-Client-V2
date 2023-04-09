@@ -22,6 +22,7 @@ public class LanguageReader {
                 //Remove firsts spaces
                 String value = split[1].replaceFirst("^\\s+", "");
                 container.addLanguage(key, value);
+
             }
         } catch (Exception e) {
             e.printStackTrace();

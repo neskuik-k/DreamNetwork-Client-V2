@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 public class CustomType extends NodeType {
 
-    private static final Multimap<Class<? extends CustomType>,Object> customTypes = ArrayListMultimap.create();
+    @Getter private static final Multimap<Class<? extends CustomType>,Object> customTypes = ArrayListMultimap.create();
 
     private int[] index;
 

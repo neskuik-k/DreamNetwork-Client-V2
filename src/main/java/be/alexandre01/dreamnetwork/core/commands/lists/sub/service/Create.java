@@ -53,7 +53,6 @@ public class Create extends SubCommand {
                     return false;
                 }
             }
-
             if(!RamArgumentsChecker.check(xms)){
                 System.out.println("xms "+ xms+" is not valid");
                 return false;
@@ -76,8 +75,6 @@ public class Create extends SubCommand {
            }
            BundleData bundleData = Core.getInstance().getBundleManager().getBundleDatas().get(bundle.toLowerCase());
             bundleInfo = bundleData.getBundleInfo();
-
-
 
             System.out.println("Bundle = " + bundle);
 
@@ -105,11 +102,13 @@ public class Create extends SubCommand {
                 jvmExecutor = new JVMExecutor(bundle, name, mods, xms, xmx, port, proxy, true,bundleData);
                 jvmExecutor.addConfigsFiles();
                 Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 return true;
             }
             jvmExecutor.addConfigsFiles();
             jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
             Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+            CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
             return true;
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
