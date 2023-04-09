@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.utils.sockets;
 
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
@@ -7,9 +9,9 @@ import java.net.ServerSocket;
 public class PortUtils {
     public static boolean isAvailable(int port, boolean isSilent) {
         if(!isSilent)
-            System.out.println("Checking if port "+port+" is available...");
+            System.out.println(LanguageManager.getMessage("core.utils.sockets.checkingPort").replaceFirst("%var%", String.valueOf(port)));
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("Invalid start port: " + port);
+            throw new IllegalArgumentException(LanguageManager.getMessage("core.utils.sockets.invalidStartPort").replaceFirst("%var%", String.valueOf(port)));
         }
 
         ServerSocket ss = null;

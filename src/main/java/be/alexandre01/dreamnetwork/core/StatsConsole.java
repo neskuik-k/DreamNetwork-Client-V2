@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import org.jline.reader.LineReader;
 
 import java.io.PrintStream;
@@ -45,7 +46,7 @@ public class StatsConsole {
                 lineReader = ConsoleReader.sReader;
                 printStream =  Core.getInstance().formatter.getDefaultStream();
 
-                System.out.println("Console changed");
+                System.out.println(LanguageManager.getMessage("console.consoleChanged"));
                 executorService.scheduleAtFixedRate(new Runnable() {
                     @Override
                     public void run() {
@@ -63,7 +64,7 @@ public class StatsConsole {
                                 for (int j = 0; j < cols/2; j++) {
                                     line.append(" ");
                                 }
-                                line.append(Colors.CYAN_BOLD+"DreamNetwork"+ Colors.RED+" Stats");
+                                line.append(LanguageManager.getMessage("console.DNStats"));
                             }
                             if(i == rows/6-1){
                                 double usage = (Runtime.getRuntime().totalMemory()-Runtime.getRuntime().freeMemory())/(double)(1024 * 1024 * 1024);;
@@ -86,7 +87,7 @@ public class StatsConsole {
                                 for (int j = 0; j < cols/3; j++) {
                                     line.append(" ");
                                 }
-                                line.append(Colors.GREEN+"Memory ❱ ");
+                                line.append(LanguageManager.getMessage("console.stats.memory"));
                                 int calcCol = 2*cols/3-(cols/3+10);
                                 //kb to mb totalmemory
 
@@ -120,7 +121,7 @@ public class StatsConsole {
                                             line.append(Colors.WHITE_BOLD + Colors.RED_BACKGROUND).append(c);
                                             continue;
                                         }
-                                        }
+                                    }
                                 }
 
                             }

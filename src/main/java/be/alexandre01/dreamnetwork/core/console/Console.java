@@ -4,6 +4,8 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
+
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
@@ -52,17 +54,17 @@ public class Console extends Thread{
     public String readLineString1 = null;
     public String readLineString2 = null;
     public MaskingCallback maskingCallback = null;
-    @Setter public String writing = Colors.CYAN_BOLD_BRIGHT+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN_UNDERLINED+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
+    @Setter public String writing = LanguageManager.getMessage("console.dreamnetworkWriting").replaceFirst("%var%", Core.getUsername());
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
         public void onKill(LineReader reader) {
             String data;
-            while ((data = reader.readLine( Colors.RED_BOLD_BRIGHT+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+            while ((data = reader.readLine( LanguageManager.getMessage("console.askExit"))) != null){
                 if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                     System.exit(0);
                 }else {
-                    Console.debugPrint("Cancelled.");
+                    Console.debugPrint(LanguageManager.getMessage("cancelled"));
                     run();
                 }
 
@@ -88,7 +90,7 @@ public class Console extends Thread{
         if(clearConsole)
             clearConsole();
         if(console.defaultPrint != null && !isSilent)
-            console.defaultPrint.println(Chalk.on("You have just changed console. ["+console.getName()+"]").bgWhite().black());
+            console.defaultPrint.println(LanguageManager.getMessage("console.changed").replaceFirst("%var%", console.getName()));
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
           //  stashLine();
@@ -342,19 +344,19 @@ public class Console extends Thread{
     }
 
     public static void bug(Exception e){
-        System.out.println("ERROR ON>> "+e.getMessage()+" || "+ e.getClass().getSimpleName());
+        System.out.println(LanguageManager.getMessage("console.errorOn").replaceFirst("%var%", e.getMessage()).replaceFirst("%var%", e.getClass().getSimpleName()));
         Console console = Console.getConsole(actualConsole);
-        console.fPrint(Colors.RED+"ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName(),Level.SEVERE);
+        console.fPrint(LanguageManager.getMessage("console.errorCause").replaceFirst("%var%", e.getMessage()).replaceFirst("%var%", e.getClass().getSimpleName()), Level.SEVERE);
         for(StackTraceElement s : e.getStackTrace()){
             Core.getInstance().formatter.getDefaultStream().println("----->");
-            console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
+            console.fPrint(LanguageManager.getMessage("connection.request.exception.errorOn").replaceFirst("%var%", s.getClassName()).replaceFirst("%var%", s.getMethodName()).replaceFirst("%var%", String.valueOf(s.getLineNumber())), Level.SEVERE);
 
         }
         if(Core.getInstance().isDebug()){
             e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
         }else {
-            Core.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
-            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
+            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("console.contactDNDevError"));
+            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,LanguageManager.getMessage("console.contactDNDevError")));
         }
     }
 
@@ -417,7 +419,7 @@ public class Console extends Thread{
                 }
                 }
 
-                Console.debugPrint("Console closed");
+                Console.debugPrint(LanguageManager.getMessage("console.closed"));
 
 
 

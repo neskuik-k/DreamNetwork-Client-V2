@@ -23,6 +23,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
@@ -97,7 +98,7 @@ public class Core {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
-            System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
+            System.out.println(LanguageManager.getMessage("core.debugMode"));
             debug = true;
         }
 
@@ -151,17 +152,17 @@ public class Core {
         devToolsToken.init();
         Main.getCommandReader().run(console);
 
-        System.out.println("CoreServer is starting...");
+        System.out.println(LanguageManager.getMessage("core.server.starting"));
         try {
             CoreServer coreServer;
             Thread thread = new Thread(coreServer = new CoreServer(14520));
             thread.start();
-            console.fPrint("The CoreServer System has been started on the port "+ coreServer.getPort()+".",Level.INFO);
+            console.fPrint(LanguageManager.getMessage("core.server.started").replaceFirst("%var%", String.valueOf(coreServer.getPort())), Level.INFO);
         } catch (Exception e) {
             Console.bug(e);
         }
 
-        console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
+        console.fPrint(LanguageManager.getMessage("core.networkStarted"), Level.INFO);
 
 
         IScreenManager.load();
@@ -181,11 +182,11 @@ public class Core {
             try {
                 extension = (DreamExtension) c.getDeclaredConstructor(Addon.class).newInstance(addon);
                 extension.onLoad();
-                System.out.println("Addon "+addon.getDreamyName()+" has been loaded.");
+                System.out.println(LanguageManager.getMessage("core.addon.loaded").replaceFirst("%var%", addon.getDreamyName()));
                 addonsManager.registerAddon(extension);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println(addon.getDreamyName() + " is not supported");
+                System.out.println(LanguageManager.getMessage("core.addon.notSupported").replaceFirst("%var%", addon.getDreamyName()));
             }
         });
 

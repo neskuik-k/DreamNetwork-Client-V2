@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.bundle.BService;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -31,9 +32,9 @@ public class List extends SubCommand {
     public boolean onSubCommand(@NonNull String[] args) {
         boolean b = when(sArgs -> {
             for (BundleData bundleData : Main.getInstance().getBundleManager().getBundleDatas().values()){
-                System.out.println(Colors.GREEN+"Bundle name: "+bundleData.getBundleInfo().getName());
-                System.out.println(Colors.GREEN+"Bundle type: "+bundleData.getBundleInfo().getType());
-                System.out.println(Colors.GREEN+"Bundle executors: "+bundleData.getExecutors());
+                System.out.println(LanguageManager.getMessage("commands.bundle.list.bundleName").replaceFirst("%var%", bundleData.getBundleInfo().getName()));
+                System.out.println(LanguageManager.getMessage("commands.bundle.list.bundleType").replaceFirst("%var%", String.valueOf(bundleData.getBundleInfo().getType())));
+                System.out.println(LanguageManager.getMessage("commands.bundle.list.bundleExecutors").replaceFirst("%var%", String.valueOf(bundleData.getExecutors())));
             }
             return true;
         },args,"list");

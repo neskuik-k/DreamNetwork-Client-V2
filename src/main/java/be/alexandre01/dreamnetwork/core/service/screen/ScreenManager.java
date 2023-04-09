@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public void addScreen(IScreen screen){
-        System.out.println(Colors.YELLOW_BOLD+"Screen ouvert sous le nom de -> "+Colors.GREEN_BOLD+ screen.getService().getJvmExecutor().getName()+"-"+screen.getScreenId());
+        System.out.println(LanguageManager.getMessage("service.screen.opened").replaceFirst("%var%", screen.getService().getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(screen.getScreenId())));
         screens.put(screen.getScreenName(), (Screen) screen);
         screenCurrentId.put(screen.getService().getJvmExecutor().getName(),screen.getScreenId());
         //remove if available screen is taken
@@ -53,7 +54,7 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     public void remScreen(IScreen screen){
         if(screens.containsValue(screen)){
             System.out.println(screen.getService().getProcess());
-            System.out.println("Screen fermé -> "+screen.getScreenName());
+            System.out.println(LanguageManager.getMessage("service.screen.closed").replaceFirst("%var%", screen.getScreenName()));
             screens.remove(screen.getScreenName());
         }
         availableScreenIds.add(screen.getScreenId());

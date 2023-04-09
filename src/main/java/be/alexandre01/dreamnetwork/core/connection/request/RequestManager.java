@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.connection.request.*;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.core.connection.request.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -80,7 +81,7 @@ public class RequestManager implements IRequestManager {
 
     public RequestPacket sendRequest(RequestInfo requestInfo, Object... args){
        return this.sendRequest(requestInfo,new Message(),future -> {
-            Console.print("Request "+ requestInfo.name()+" sended with success!", Level.FINE);
+            Console.print(LanguageManager.getMessage("connection.request.sent").replaceFirst("%var%", requestInfo.name()), Level.FINE);
         },args);
     }
 
@@ -91,7 +92,7 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
           return this.sendRequest(requestInfo,new Message(),future -> {
-                System.out.println("Request"+ requestInfo.name()+" sended with success!");
+                System.out.println(LanguageManager.getMessage("connection.request.sent").replaceFirst("%var%", requestInfo.name()));
             },args);
 
         }
@@ -101,7 +102,7 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
             return this.sendRequest(requestInfo,message,future -> {
-                System.out.println("Request"+ requestInfo.name()+" sended with success!");
+                System.out.println(LanguageManager.getMessage("connection.request.sent").replaceFirst("%var%", requestInfo.name()));
             },args);
 
         }

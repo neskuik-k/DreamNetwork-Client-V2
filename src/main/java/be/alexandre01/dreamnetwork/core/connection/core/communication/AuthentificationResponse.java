@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
@@ -35,7 +36,7 @@ public class AuthentificationResponse extends CoreResponse {
 
     @Override
     protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client) {
-        Console.print("Requete entrente->",Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.communication.enteringRequest"),Level.FINE);
         Console.print(message,Level.FINE);
 
         if(!message.hasRequest()){
@@ -50,7 +51,7 @@ public class AuthentificationResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
             RequestInfo requestInfo = message.getRequest();
-            Console.print("REQUETE : "+ requestInfo, Level.FINE);
+            Console.print(LanguageManager.getMessage("connection.core.communication.request").replaceFirst("%var%", String.valueOf(requestInfo)), Level.FINE);
 
             ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
 
@@ -77,7 +78,7 @@ public class AuthentificationResponse extends CoreResponse {
 
 
                     if (newClient.getJvmType() == null) {
-                        Console.print(Colors.RED + "Client " + newClient.getInfo() + " not recognized and tried to connect");
+                        Console.print(LanguageManager.getMessage("connection.core.communication.unrecognizedClient").replaceFirst("%var%", newClient.getInfo()));
                         return;
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
@@ -86,7 +87,7 @@ public class AuthentificationResponse extends CoreResponse {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
-                                        System.out.println(Colors.RED + "<!>" + Colors.YELLOW + " Recovering " + Colors.PURPLE + jvmService.getJvmExecutor().getName() + "-" + jvmService.getId() + Colors.YELLOW + " on the proxy");
+                                        System.out.println(LanguageManager.getMessage("connection.core.communication.recoveringClient").replaceFirst("%var%", jvmService.getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(jvmService.getId())));
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
                                                 jvmService.getJvmExecutor().getName() + "-" + jvmService.getId(),
@@ -96,10 +97,10 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
+                        Console.print(LanguageManager.getMessage("connection.core.communication.proxyLinked").replaceFirst("%var%", newClient.getJvmService().getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(newClient.getJvmService().getId())));
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                            System.out.println(LanguageManager.getMessage("commands.service.screen.backupingService").replaceFirst("%var%", newClient.getJvmService().getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(newClient.getJvmService())));
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
@@ -121,10 +122,10 @@ public class AuthentificationResponse extends CoreResponse {
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
                         }
 
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
+                        Console.print(LanguageManager.getMessage("connection.core.communication.serverLinked").replaceFirst("%var%", newClient.getJvmService().getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(newClient.getJvmService().getId())));
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                            System.out.println(LanguageManager.getMessage("commands.service.screen.backupingService").replaceFirst("%var%", newClient.getJvmService().getJvmExecutor().getName()).replaceFirst("%var%", String.valueOf(newClient.getJvmService().getId())));
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 

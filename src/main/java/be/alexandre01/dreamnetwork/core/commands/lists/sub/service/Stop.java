@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
@@ -34,8 +35,8 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
 
         if(args[0].equalsIgnoreCase("stop")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] service stop server [name]").red());
-                System.out.println(Chalk.on("[!] service stop proxy [name]").red());
+                System.out.println(Chalk.on("[!] service stop server [" + LanguageManager.getMessage("name") + "]").red());
+                System.out.println(Chalk.on("[!] service stop proxy [" + LanguageManager.getMessage("name") + "]").red());
                 return true;
             }
          /*   JVMContainer.JVMType type;
@@ -50,7 +51,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
             IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], args[1]);
 
             if(jvmExecutor == null){
-                System.out.println(Chalk.on("[!] The service mentionned is not correct..").red());
+                System.out.println(LanguageManager.getMessage("commands.service.stop.incorrectService"));
                 return true;
             }
 
@@ -58,7 +59,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
             try {
                 sId =  Integer.parseInt(processName[1]);
             }catch (Exception e){
-                System.out.println(Chalk.on("[!] The service id is not findable").red());
+                System.out.println(LanguageManager.getMessage("commands.service.stop.idNotFound"));
                 return true;
             }
 

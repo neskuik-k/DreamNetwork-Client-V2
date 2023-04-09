@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.libraries;
 
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 
 import java.io.File;
 import java.lang.reflect.AccessibleObject;
@@ -56,7 +57,7 @@ public class LoadLibraries{
 
 
 
-                    System.out.println("loaded "+file.getName());
+                    System.out.println(LanguageManager.getMessage("libraries.loaded").replaceFirst("%var%", file.getName()));
                     System.out.println(file.toURI().toURL());
 
                 }
@@ -100,7 +101,7 @@ public class LoadLibraries{
             method.setAccessible(true); /*promote the method to public access*/
             method.invoke(urlClassLoader, url);
         } catch (Exception ex) {
-            throw new RuntimeException("Cannot load library from jar file '" + jar.getAbsolutePath() + "'. Reason: " + ex.getMessage());
+            throw new RuntimeException(LanguageManager.getMessage("libraries.cannotLoad").replaceFirst("%var%", jar.getAbsolutePath()).replaceFirst("%var%", ex.getMessage()));
         }
     }
     static void setAccessible(final AccessibleObject ao,

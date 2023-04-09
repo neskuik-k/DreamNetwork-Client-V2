@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.utils.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -30,7 +31,7 @@ public class YamlFileUtils<T> {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                System.out.println(Colors.RED+"Error while creating file "+file.getName()+Colors.RESET);
+                System.out.println(LanguageManager.getMessage("core.utils.yaml.createFileError").replaceFirst("%var%", file.getName()));
                 e.printStackTrace();
             }
         }
@@ -53,7 +54,7 @@ public class YamlFileUtils<T> {
         try {
             return yaml.load(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            System.out.println(Colors.RED+"Error while loading file "+file.getName()+Colors.RESET);
+            System.out.println(LanguageManager.getMessage("core.utils.yaml.loadFileError").replaceFirst("%var%", file.getName()));
             e.printStackTrace();
             return null;
         }
@@ -84,12 +85,12 @@ public class YamlFileUtils<T> {
                     //    System.out.println("Annotation => "+field.getAnnotation(Ignore.class));
                           if (field.getAnnotation(Ignore.class) != null){
                                 try {
-                                    System.out.println("ATTENTION !!!!!");
+                                    System.out.println(LanguageManager.getMessage("warning"));
                                     System.out.println(field.getName());
                                     System.out.println(property.getName());
                                     System.out.println(field.get(obj));
                                     if(field.getName().equals(property.getName())){
-                                        System.out.println("Ignored field : "+field.getName()+" because it's equals to "+propertyValue+"");
+                                        System.out.println(LanguageManager.getMessage("core.utils.yaml.ignoreFieldEquals").replaceFirst("%var%", field.getName()).replaceFirst("%var%", propertyValue.toString()));
                                         return null;
                                     }
                                 } catch (IllegalAccessException e) {
@@ -103,7 +104,7 @@ public class YamlFileUtils<T> {
                     }
 
                     if(!isFinded){
-                       Console.debugPrint("Ignored field : "+property.getName()+" because it's not finded in the class "+clazz.getName()+"");
+                        Console.debugPrint(LanguageManager.getMessage("core.utils.yaml.ignoreFieldNotFound").replaceFirst("%var%", property.getName()).replaceFirst("%var%", clazz.getName()));
                         return null;
                     }
                     if (obj.getClass().equals(property.getType())) {
@@ -121,7 +122,7 @@ public class YamlFileUtils<T> {
             fileWriter.close();
 
         } catch (IOException e) {
-            System.out.println("Error during the writing of the file " + file.getName());
+            System.out.println(LanguageManager.getMessage("core.utils.yaml.errorWritingFile").replaceFirst("%var%", file.getName()));
             Console.bug(e);
         }
     }

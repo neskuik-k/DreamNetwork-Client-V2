@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 
 
@@ -42,16 +43,16 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
         }
 
         if(args[1].equalsIgnoreCase("refresh")){
-            System.out.println("Refreshing screens...");
-            System.out.println(Colors.BLUE+"Try to refresh the screens");
+            System.out.println(LanguageManager.getMessage("commands.service.screen.refreshing"));
+            System.out.println(LanguageManager.getMessage("commands.service.screen.tryRefresh"));
 
             for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors){
                 for (IService service : jvmExecutor.getServices()) {
                     if(service.getScreen() == null){
                         new be.alexandre01.dreamnetwork.core.service.screen.Screen(service);
-                        System.out.println(Colors.BLUE+" Backuping screen for service on "+jvmExecutor.getName()+"-"+service.getId()+"...");
+                        System.out.println(LanguageManager.getMessage("commands.service.screen.backupingService").replaceFirst("%var%", jvmExecutor.getName()).replaceFirst("%var%", String.valueOf(service.getId())));
                     }else {
-                        System.out.println(Colors.BLUE+" Screen for service on "+jvmExecutor.getName()+"-"+service.getId()+" is already backuped + " + service.getScreen());
+                        System.out.println(LanguageManager.getMessage("commands.service.screen.alreadyBackuped").replaceFirst("%var%", jvmExecutor.getName()).replaceFirst("%var%", String.valueOf(service.getId())).replaceFirst("%var%", String.valueOf(service.getScreen())));
                     }
                 }
 
@@ -71,11 +72,11 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     private void notComplete(){
     }
     private void sendList(ScreenManager screenManager){
-        System.out.println(Colors.GREEN_BOLD + "[*] Proxy ; "+ Colors.CYAN_BOLD+"[*] Server ;");
+        System.out.println(Colors.GREEN_BOLD + "[*] Proxy ; "+ Colors.CYAN_BOLD+"[*] " + LanguageManager.getMessage("server") + " ;");
         StringBuilder sb = new StringBuilder();
         AtomicInteger i = new AtomicInteger(1);
         if(screenManager.getScreens().isEmpty()){
-            System.out.println("There is no screen currently on");
+            System.out.println(LanguageManager.getMessage("commands.service.screen.noScreen"));
             return;
         }
         screenManager.getScreens().forEach((s, screen) -> {
@@ -91,6 +92,6 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
             i.getAndIncrement();
         });
 
-        System.out.println("Here is the list of available screens -> " + sb.toString());
+        System.out.println(LanguageManager.getMessage("commands.service.screen.list").replaceFirst("%var%", sb.toString()));
     }
 }

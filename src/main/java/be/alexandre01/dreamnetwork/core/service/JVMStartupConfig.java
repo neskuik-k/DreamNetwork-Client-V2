@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
@@ -47,7 +48,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
         if(updateFile){
             updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,null);
-            System.out.println("Updating config file... Done");
+            System.out.println(LanguageManager.getMessage("service.startupConfig.updatingFile"));
         }
 
 
@@ -95,7 +96,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         if(isBuilded) return;
         System.out.println("Hello world  2!");
         readFile();
-        System.out.println("Reading config file... Done");
+        System.out.println(LanguageManager.getMessage("service.startupConfig.readingFile"));
         //sout all class data fields with reflection
         Field[] fields = JVMConfig.class.getDeclaredFields();
         for (Field field : fields) {
@@ -122,7 +123,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 field1.setAccessible(true);
                 if(field1.getAnnotation(Ignore.class) != null) continue;
                 field1.set(this,field.get(config));
-                System.out.println("Setting field "+field.getName()+" to "+field.get(config));
+                System.out.println(LanguageManager.getMessage("service.startupConfig.settingField").replaceFirst("%var%", field.getName()).replaceFirst("%var%", field.get(config).toString()));
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }
@@ -247,7 +248,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             fileOut.close();
             return true;
         } catch (Exception e) {
-            System.out.println("Problem reading file.");
+            System.out.println(LanguageManager.getMessage("service.startupConfig.readingProblem"));
             return false;
         }
 
@@ -320,7 +321,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             return port;
 
         } catch (Exception e) {
-            System.out.println("Problem reading file.");
+            System.out.println(LanguageManager.getMessage("service.startupConfig.readingProblem"));
             e.printStackTrace();
         }
         return null;
@@ -358,7 +359,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
         } catch (Exception e) {
-            System.out.println("Problem reading file.");
+            System.out.println(LanguageManager.getMessage("service.startupConfig.readingProblem"));
         }
         return null;
     }

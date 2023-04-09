@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConso
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 
 import java.io.IOException;
@@ -48,17 +49,17 @@ public class IntroServers extends IntroductionConsole {
                             @Override
                             public void finish() {
                                 clear();
-                                Console.debugPrint("One more last thing...");
-                                console.setWriting(Colors.GREEN+"Do you want help to create a Server ?  : "+Colors.RED);
+                                Console.debugPrint(LanguageManager.getMessage("introduction.servers.oneLastThing"));
+                                console.setWriting(LanguageManager.getMessage("introduction.servers.helpToCreateServer"));
                                 ConsoleReader.sReader.runMacro("yes");
 
                                 //Console.reload();
                                 ConsoleReader.sReader.getTerminal().flush();
                                 ConsoleReader.sReader.getTerminal().writer().flush();
                                  Main.getBundleManager().getBundleDatas().forEach((s, bundleData) -> {
-                                    Console.fine("Bundle name: "+bundleData.getBundleInfo().getName());
-                                     Console.fine("Bundle type: "+bundleData.getBundleInfo().getType());
-                                     Console.fine("Bundle executors: "+bundleData.getExecutors());
+                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleName").replaceFirst("%var%", bundleData.getBundleInfo().getName()));
+                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleType").replaceFirst("%var%", String.valueOf(bundleData.getBundleInfo().getType())));
+                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleExecutor").replaceFirst("%var%", String.valueOf(bundleData.getExecutors())));
                                 });
                                 CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
@@ -95,7 +96,7 @@ public class IntroServers extends IntroductionConsole {
 
                 ConsoleReader.sReader.getTerminal().writer().flush();
                 if(!hasCreatedProxy){
-                    console.setWriting(Colors.GREEN+"Do you want help to create a Proxy ?  : "+Colors.RED);
+                    console.setWriting(LanguageManager.getMessage("introduction.servers.helpToCreateProxy"));
                     ConsoleReader.sReader.runMacro("yes");
                 }else {
                    console.setWriting("");

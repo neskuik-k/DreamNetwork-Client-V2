@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
@@ -36,7 +37,7 @@ public class DNChannelManager implements IDNChannelManager {
     @Override
     public void createChannel(IDNChannel dnChannel){
         channels.put(dnChannel.getName(),dnChannel);
-        Console.print(Colors.PURPLE + "Le channel " + dnChannel.getName() + " s'est enregistré " + Colors.RESET);
+        Console.print(LanguageManager.getMessage("connection.core.channels.channelRegistered").replaceFirst("%var%", dnChannel.getName()));
     }
 
 

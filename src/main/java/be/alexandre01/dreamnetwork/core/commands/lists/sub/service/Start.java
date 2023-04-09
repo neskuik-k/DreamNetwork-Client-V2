@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMConfig;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -58,7 +59,7 @@ public class Start extends SubCommand {
 
             //System.out.println("jvmExecutor = " + jvmExecutor);
             if(jvmExecutor == null){
-                System.out.println(Colors.RED+"[!] The service mentionned is not configurated..");
+                System.out.println(LanguageManager.getMessage("commands.service.install.notConfigured"));
                 fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
                 return true;
             }
@@ -70,14 +71,14 @@ public class Start extends SubCommand {
 
             JVMExecutor.Mods mods = checkMods(sArgs[2]);
             if(mods == null){
-                System.out.println(Colors.RED+"[!] The mods argument is incorrect");
-                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                System.out.println(LanguageManager.getMessage("commands.service.start.incorrectMods"));
+                fail("service","start", "serverPath", LanguageManager.getMessage("mods") ,"[XMS]" ,"[XMX]", "[port]");
                 return true;
             }
 
             if(!(RamArgumentsChecker.check(sArgs[3]) && RamArgumentsChecker.check(sArgs[4]))){
-                System.out.println(Colors.RED+"[!] The RAM Argument is incorrect... try for example: 512M or 1G");
-                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                System.out.println(LanguageManager.getMessage("commands.service.start.incorrectRAM"));
+                fail("service","start", "serverPath", LanguageManager.getMessage("mods") ,"[XMS]" ,"[XMX]", "[port]");
                 return true;
             }
 
@@ -101,8 +102,8 @@ public class Start extends SubCommand {
 
             jvmExecutor.startServer(builder.build());
             return true;
-        },args,"start","serverPath","[mods]","[XMS]","[XMX]","[port]")){
-            fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+        },args,"start","serverPath",LanguageManager.getMessage("mods"),"[XMS]","[XMX]","[port]")){
+            fail("service","start", "serverPath", LanguageManager.getMessage("mods") ,"[XMS]" ,"[XMX]", "[port]");
             return true;
         }
         /*if(args[0].equalsIgnoreCase("start")){
@@ -207,7 +208,7 @@ public class Start extends SubCommand {
         try {
             mods = JVMExecutor.Mods.valueOf(arg.toUpperCase());
         }catch (Exception e){
-            System.out.println(Chalk.on("[!] The mods choosed is invalid... choose STATIC or DYNAMIC").red());
+            System.out.println(LanguageManager.getMessage("commands.service.start.invalidChosenMods"));
             return null;
         }
         return mods;

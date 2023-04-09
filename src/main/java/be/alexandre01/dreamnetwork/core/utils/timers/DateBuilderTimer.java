@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.utils.timers;
 
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -71,15 +73,15 @@ public class DateBuilderTimer {
         StringBuilder sb = new StringBuilder();
         if(hour > 0){
             sb.append("0"+hour+":");
-            lsb.append(hour+" heure(s)");
+            lsb.append(LanguageManager.getMessage("core.utils.timers.hour").replaceFirst("%var%", String.valueOf(hour)));
             lsb.append(" et ");
         }
         if(Integer.parseInt(minute) != 0){
-            lsb.append(minute+" minute(s)");
+            lsb.append(LanguageManager.getMessage("core.utils.timers.minute").replaceFirst("%var%", minute));
             lsb.append(" et ");
         }
 
-            lsb.append(second+" seconde(s)");
+            lsb.append(LanguageManager.getMessage("core.utils.timers.second").replaceFirst("%var%", second));
             sb.append(second);
         this.date = date;
         this.build = sb.toString();

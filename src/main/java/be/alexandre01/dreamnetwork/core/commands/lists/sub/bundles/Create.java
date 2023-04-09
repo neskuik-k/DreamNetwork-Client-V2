@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.bundle.BService;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -36,7 +37,7 @@ public class Create extends SubCommand {
 
             if(sArgs[1].endsWith("/")){
                 if(args.length < 4){
-                    System.out.println(Colors.RED+"You need to specify a type");
+                    System.out.println(LanguageManager.getMessage("commands.bundle.create.needSpecifyType"));
                     return true;
                 }
                 nArgs = new String[]{sArgs[0],sArgs[1]+sArgs[2],sArgs[3]};
@@ -45,7 +46,7 @@ public class Create extends SubCommand {
 
 
             if(!TypeArgumentChecker.check(nArgs[2])){
-                System.out.println(Colors.RED+"Type not found");
+                System.out.println(LanguageManager.getMessage("commands.bundle.create.typeNotFound"));
                 return true;
             }
             Config.createDir("bundles/"+nArgs[1]);
@@ -58,22 +59,22 @@ public class Create extends SubCommand {
 
                BundleInfo bundleInfo =  new BundleInfo(nArgs[1], IContainer.JVMType.valueOf(nArgs[2]));
                bundleInfo.getServices().add(new BService("test",1,2));
-                BundleInfo.updateFile(file, bundleInfo);
-                BundleData bundleData = new BundleData(nArgs[1],bundleInfo);
-                Main.getBundleManager().addBundleData(bundleData);
-                if(nArgs[1].endsWith("/")){
-                    Main.getBundleManager().addPath(nArgs[1]);
-                }else {
-                    Main.getBundleManager().addPath(nArgs[1]+"/");
-                }
+               BundleInfo.updateFile(file, bundleInfo);
+               BundleData bundleData = new BundleData(nArgs[1],bundleInfo);
+               Main.getBundleManager().addBundleData(bundleData);
+               if(nArgs[1].endsWith("/")){
+                   Main.getBundleManager().addPath(nArgs[1]);
+               }else {
+                   Main.getBundleManager().addPath(nArgs[1]+"/");
+               }
 
-                CustomType.reloadAll(BundlePathsNode.class);
-                CustomType.reloadAll(BundlesNode.class);
+               CustomType.reloadAll(BundlePathsNode.class);
+               CustomType.reloadAll(BundlesNode.class);
 
-                //System.out.println(yaml.dumpAsMap(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2]))));
-                System.out.println("Ecriture de this-info.yml");
+               //System.out.println(yaml.dumpAsMap(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2]))));
+               System.out.println(LanguageManager.getMessage("commands.bundle.create.writingInfo"));
             } catch (IOException e) {
-                System.out.println("Erreur lors de l'écriture de this-info.yml");
+                System.out.println(LanguageManager.getMessage("commands.bundle.create.errorWritingInfo"));
                 System.out.println(e.getMessage());
                 System.out.println(Arrays.toString(e.getStackTrace()));
                 throw new RuntimeException(e);

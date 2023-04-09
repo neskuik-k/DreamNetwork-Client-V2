@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
@@ -27,21 +28,21 @@ public class JVM extends SubCommandCompletor implements SubCommandExecutor {
 
         if(args[0].equalsIgnoreCase("jvm")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] edit jvm set [name] [Path]").red());
-                System.out.println(Chalk.on("[!] edit jvm remove [name]").red());
+                System.out.println(Chalk.on("[!] edit jvm set [" + LanguageManager.getMessage("name") + "] [" + LanguageManager.getMessage("path") + "]").red());
+                System.out.println(Chalk.on("[!] edit jvm remove [" + LanguageManager.getMessage("name") + "]").red());
                 System.out.println(Chalk.on("[!] edit jvm list").red());
                 return true;
             }
             if(args[1].equalsIgnoreCase("set")){
                 JavaIndex javaIndex = Core.getInstance().getJavaIndex();
                 if(args.length < 4){
-                    System.out.println(Chalk.on("[!] edit jvm set [name] [Path]").red());
+                    System.out.println(Chalk.on("[!] edit jvm set [" + LanguageManager.getMessage("name") + "] [Path]").red());
                     return true;
                 }
 
                 File file = new File(Config.getPath(args[3]+"/bin/java"));
                 if(!file.exists()){
-                    System.out.println(Chalk.on("[!] The java path is not valid").red());
+                    System.out.println(LanguageManager.getMessage("commands.edit.jvm.invalidJavaPath"));
                     return true;
                 }
                 javaIndex.put(args[2].toLowerCase(),args[3]);
@@ -51,11 +52,11 @@ public class JVM extends SubCommandCompletor implements SubCommandExecutor {
             if(args[1].equalsIgnoreCase("remove")){
                 JavaIndex javaIndex = Core.getInstance().getJavaIndex();
                 if(args.length < 3){
-                    System.out.println(Chalk.on("[!] edit jvm remove [name]").red());
+                    System.out.println(Chalk.on("[!] edit jvm remove [" + LanguageManager.getMessage("name") + "]").red());
                     return true;
                 }
                 if(args[2].equalsIgnoreCase("default")){
-                    System.out.println(Chalk.on("[!] You can't remove default").red());
+                    System.out.println(LanguageManager.getMessage("commands.edit.jvm.cantDeleteDefault"));
                     return true;
                 }
 

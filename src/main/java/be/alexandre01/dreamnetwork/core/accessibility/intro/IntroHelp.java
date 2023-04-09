@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 
 public class IntroHelp extends IntroductionConsole {
@@ -42,7 +43,7 @@ public class IntroHelp extends IntroductionConsole {
 
             @Override
             public void consoleChange() {
-                console.setWriting(Colors.GREEN+"You can use the command "+Colors.CYAN+"help"+Colors.GREEN+" to get help"+Colors.WHITE+" : "+Colors.RED);
+                console.setWriting(LanguageManager.getMessage("introduction.help.useCommand"));
                 ConsoleReader.sReader.runMacro("help");
                 clear();
             }

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.addons;
 
 
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -30,7 +31,7 @@ public class CustomClassLoader extends URLClassLoader {
     @Override
     public void close() {
         try {
-            System.out.println("Custom close");
+            System.out.println(LanguageManager.getMessage("addons.customClass.customClose"));
             Class clazz = java.net.URLClassLoader.class;
             Field ucp = clazz.getDeclaredField("ucp");
             ucp.setAccessible(true);
@@ -56,6 +57,6 @@ public class CustomClassLoader extends URLClassLoader {
     @Override
     protected void finalize() throws Throwable {
         super.finalize();
-        System.out.println(this.toString() + " - CL Finalized.");
+        System.out.println(LanguageManager.getMessage("addons.customClass.finalized").replaceFirst("%var%", this.toString()));
     }
 }

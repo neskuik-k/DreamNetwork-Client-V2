@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.console;
 
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.widgets.BlockMod;
 import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
@@ -82,9 +81,8 @@ public class ConsoleReader {
         Completers.TreeCompleter completer = new Completers.TreeCompleter(
                 nodes);
         LineReaderImpl reader = (LineReaderImpl) sReader;
-
-
         reader.setCompleter(completer);
     }
+
     public BufferedWriter writer;
 }

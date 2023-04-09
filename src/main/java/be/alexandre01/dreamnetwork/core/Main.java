@@ -18,6 +18,7 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import com.github.tomaslanger.chalk.Chalk;
@@ -67,6 +68,10 @@ public class Main {
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
 
+        // Start language fetching
+        if(!LanguageManager.load()){
+            // Fetch fail, can't use messages
+        }
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 
@@ -140,14 +145,14 @@ public class Main {
                         }
 
                         Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
-                        outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
+                        outputStream.println(LanguageManager.getMessage("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }else {
-                        outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
+                        outputStream.println(LanguageManager.getMessage("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -163,39 +168,39 @@ public class Main {
 
             }
         });
-            boolean l = false;
-            String keys = System.getProperty("keys");
+        boolean l = false;
+        String keys = System.getProperty("keys");
 
-            SecretFile secretFile = null;
-            try {
-                secretFile = new SecretFile();
-            if(keys == null ){
-                secretFile.init();
-            }else {
-                secretFile.init(keys);
-            }
+        SecretFile secretFile = null;
+        try {
+            secretFile = new SecretFile();
+        if(keys == null ){
+            secretFile.init();
+        }else {
+            secretFile.init(keys);
+        }
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
-                System.out.println(Colors.RED+ "The license key is invalid!");
-                secretFile.deleteSecretFile();
-                System.exit(1);
-                return;
-            }
-            System.out.println(Colors.GREEN_BOLD_BRIGHT+"Successfully authenticated !\n"+Colors.RESET);
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
+            outputStream.println(LanguageManager.getMessage("main.invalidLicenseKey"));
+            secretFile.deleteSecretFile();
+            System.exit(1);
+            return;
+        }
+        outputStream.println(LanguageManager.getMessage("main.successAuth"));
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            ProcessHistory processHistory = new ProcessHistory();
-            processHistory.init();
+        ProcessHistory processHistory = new ProcessHistory();
+        processHistory.init();
 
-            loadClient();
+        loadClient();
     }
 
     public static void loadClient(){

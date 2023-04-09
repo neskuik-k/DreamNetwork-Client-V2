@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
@@ -79,7 +80,7 @@ public class IntroductionConsole {
 
             @Override
             public void consoleChange() {
-                console.setWriting(Colors.GREEN+"It is your first time you use "+Colors.CYAN+"DreamNetwork"+Colors.GREEN+" ?" +Colors.WHITE+" Type yes or no: "+Colors.RED);
+                console.setWriting(LanguageManager.getMessage("introduction.ask.firstTime"));
 
                 ConsoleReader.sReader.runMacro("yes");
                 try {
@@ -96,9 +97,9 @@ public class IntroductionConsole {
     }
 
     private void sendHelp(){
-        console.fPrint("HELP SPIGET:",Level.INFO);
+        console.fPrint(LanguageManager.getMessage("introduction.help.spiget.helpSpiget"),Level.INFO);
         console.fPrint("- DOWNLOAD", Level.INFO);
-        console.fPrint("- SEARCH [VALUE] [NAME/TAG/AUTHORS] [PAGE]", Level.INFO);
+        console.fPrint(LanguageManager.getMessage("introduction.help.spiget.search"), Level.INFO);
         console.fPrint("- SELECT [ID/URL]",Level.INFO);
         console.fPrint("- EXIT",Level.INFO);
     }

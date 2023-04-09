@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManage
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import lombok.Getter;
 
@@ -55,7 +56,7 @@ public class DNChannel implements IDNChannel {
     public void storeData(String key, Object object, boolean autoSend, IClient... clients){
         List<IClient> c = Arrays.asList(clients);
         setData(key,object,autoSend);
-        Console.print("Object>>"+ object, Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.channels.object").replaceFirst("%var%", String.valueOf(object)));
         if(autoSend){
             ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
             Message message;

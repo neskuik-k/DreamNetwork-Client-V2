@@ -13,6 +13,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
@@ -56,8 +57,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
-        Console.print("Local ADRESS " + ctx.channel().localAddress(),Level.FINE);
-        Console.print("Remote ADRESS " + ctx.channel().remoteAddress(),Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.handler.localAddress").replaceFirst("%var%", ctx.channel().localAddress().toString()), Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.handler.remoteAddress").replaceFirst("%var%", ctx.channel().remoteAddress().toString()), Level.FINE);
 
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
@@ -74,7 +75,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void channelActive(final ChannelHandlerContext ctx) { // (1)
-        Console.print("CHANNEL ACTIVE",Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.handler.channelActive"),Level.FINE);
         Console.print(ctx.channel().remoteAddress().toString().split(":")[0],Level.FINE);
 
         if(!queue.isEmpty()){
@@ -181,7 +182,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if(clientByConnexion.get(ctx).isDevTool()){
                     name = "DEVTOOLS";
                 }
-                Console.print(Colors.RED_BOLD+ "A process '"+name+"' has just stopped.");
+                Console.print(LanguageManager.getMessage("connection.core.handler.processStopped").replaceFirst("%var%", (name!=null ? name : "null")));
                 core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(),jvmService));
             }
         }
@@ -194,7 +195,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
         //Remove Server
-        System.out.println("Remove server, client : " + client);
+        System.out.println(LanguageManager.getMessage("connection.core.handler.removeClient").replaceFirst("%var%", client.toString()));
         if(client != null){
             client.getClientManager().getDevTools().remove(client);
             if(!client.isDevTool()){
@@ -264,7 +265,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IClient client){
-        Console.print(Colors.YELLOW+"write and flush>> "+Colors.WHITE+ msg, Level.FINE);
+        Console.print(LanguageManager.getMessage("connection.core.handler.writeFlush").replaceFirst("%var%", String.valueOf(msg)));
         ChannelHandlerContext ctx = client.getChannelHandlerContext();
         Console.print(ctx, Level.FINE);
         if(ctx == null || !ctx.channel().isActive() || !queue.isEmpty()){
