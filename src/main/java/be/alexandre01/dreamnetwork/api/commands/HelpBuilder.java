@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.api.commands;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.util.ArrayList;
@@ -17,7 +16,7 @@ public class HelpBuilder {
     public HelpBuilder(String commandName) {
         this.commandName = commandName;
         sbs = new ArrayList<>();
-        sbs.add(LanguageManager.getMessage("api.commands.helpBuilder.list").replaceFirst("%var%", commandName));
+        sbs.add(Console.getFromLang("api.commands.helpBuilder.list", commandName));
     }
 
     public HelpBuilder setCmdUsage(String usage, String... sub) {

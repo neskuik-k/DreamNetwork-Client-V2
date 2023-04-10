@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.core.service.bundle;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import lombok.Data;
-import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;

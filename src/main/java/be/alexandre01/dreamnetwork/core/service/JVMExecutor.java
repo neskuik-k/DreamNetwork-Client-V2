@@ -12,7 +12,6 @@ import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
@@ -97,9 +96,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     private synchronized void startJVM(IConfig jvmConfig){
-        Console.print(LanguageManager.getMessage("service.executor.start").replaceFirst("%var%", jvmConfig.getName()), Level.FINE);
+        Console.printLang("service.executor.start", Level.FINE, jvmConfig.getName());
         if(!start(jvmConfig)){
-            Console.print(LanguageManager.getMessage("service.executor.couldNotStart"),Level.WARNING);
+            Console.printLang("service.executor.couldNotStart", Level.WARNING);
             queue.remove(jvmConfig);
 
             if(!queue.isEmpty()){
@@ -114,12 +113,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
         if(jvmConfig.getType() == Mods.STATIC && staticService != null){
-            Console.print(LanguageManager.getMessage("service.executor.alreadyRunning"),Level.WARNING);
+            Console.printLang("service.executor.alreadyRunning",Level.WARNING);
             return false;
         }
 
         if(!this.hasExecutable()){
-            Console.print(LanguageManager.getMessage("service.executor.missingExecutable").replaceFirst("%var%", getExec()));
+            Console.printLang("service.executor.missingExecutable", getExec());
             return false;
         }
 
@@ -151,7 +150,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     int num = Integer.parseInt( string.replace(getName()+"-",""));
                     servers++;
                 } catch (NumberFormatException e) {
-                    Console.print(LanguageManager.getMessage("service.executor.errorOnCreation"), Level.WARNING);
+                    Console.printLang("service.executor.errorOnCreation", Level.WARNING);
                     return false;
                 }
             }
@@ -178,7 +177,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             @Override
                             public void completed() {
                                 dateBuilderTimer.loadComplexDate();
-                                Console.print(LanguageManager.getMessage("service.executor.asyncCopy").replaceFirst("%var%", dateBuilderTimer.getLongBuild()), Level.FINE);
+                                Console.printLang("service.executor.asyncCopy", Level.FINE, dateBuilderTimer.getLongBuild());
                                 isDoneWithSucess.set(true);
                                 try {
                                     if(!proceedStarting(finalname, finalServers,jvmConfig)){
@@ -196,7 +195,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             @Override
                             public void cancelled() {
                                 dateBuilderTimer.loadComplexDate();
-                                System.out.println(LanguageManager.getMessage("service.executor.cannotAsyncCopy").replaceFirst("%var%", dateBuilderTimer.getLongBuild()));
+                                Console.printLang("service.executor.cannotAsyncCopy", dateBuilderTimer.getLongBuild());
                                 queue.remove(jvmConfig);
 
                                 if(!queue.isEmpty()){
@@ -215,7 +214,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
             return true;
         } catch (Exception e) {
-            Console.print(LanguageManager.getMessage("service.executor.couldNotStart"),Level.WARNING);
+            Console.printLang("service.executor.couldNotStart", Level.WARNING);
             e.printStackTrace();
             return false;
         }
@@ -252,7 +251,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                 port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
                 if(port == null){
-                    System.out.println(LanguageManager.getMessage("service.executor.notFoundPort").replaceFirst("%var%", finalname));
+                    Console.printLang("service.executor.notFoundPort", finalname);
                     return false;
                 }
 
@@ -267,7 +266,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     System.out.println("/bundles/"+jvmConfig.getPathName());
                     System.out.println(port);
                     if(port == null){
-                        System.out.println(LanguageManager.getMessage("service.executor.notFoundPort").replaceFirst("%var%", finalname));
+                        Console.printLang("service.executor.notFoundPort", finalname);
                         return false;
                     }
                     serversPortList.add(port);
@@ -277,7 +276,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                         port = getCurrentPort("/runtimes/"+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
                         System.out.println("/runtimes/"+jvmConfig.getPathName());
                         if (port == null) {
-                            System.out.println(LanguageManager.getMessage("service.executor.notFoundPort").replaceFirst("%var%", finalname));
+                            Console.printLang("service.executor.notFoundPort", finalname);
                             return false;
                         }
                         serversPortList.add(port);
@@ -307,7 +306,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 portsBlackList.add(port);
                 serversPort.put(finalname,port);
             }else {
-                Console.print(LanguageManager.getMessage("service.executor.portAlreadyUsed").replaceFirst("%var%", String.valueOf(port)),Level.WARNING);
+                Console.printLang("service.executor.portAlreadyUsed", Level.WARNING, port);
                 return false;
             }
         }
@@ -330,7 +329,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         core.getEventsFactory().callEvent(preProcessEvent);
 
         if(preProcessEvent.isCancelled()){
-            Console.print(LanguageManager.getMessage("service.executor.processCantStartBecauseAddon").replaceFirst("%var%", preProcessEvent.getCancelledBy().getDreamyName()), Level.WARNING);
+            Console.printLang("service.executor.processCantStartBecauseAddon", Level.WARNING, preProcessEvent.getCancelledBy().getDreamyName());
             return false;
         }
 
@@ -396,7 +395,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
-        Console.print(LanguageManager.getMessage("service.executor.serverStartProcess").replaceFirst("%var%", finalname),Level.INFO);
+        Console.printLang("service.executor.serverStartProcess", Level.INFO, finalname);
         if(jvmConfig.getType() == Mods.DYNAMIC){
             Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/runtimes/"+getName().toLowerCase()+"/"+getName()+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
@@ -492,9 +491,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
     public boolean isPortAvailable(int port) {
-        System.out.println(LanguageManager.getMessage("service.executor.checkingPort").replaceFirst("%var%", String.valueOf(port)));
+        Console.printLang("service.executor.checkingPort", port);
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException(LanguageManager.getMessage("service.executor.invalidStartPort").replaceFirst("%var%", String.valueOf(port)));
+            throw new IllegalArgumentException(Console.getFromLang("service.executor.invalidStartPort", port));
         }
 
         ServerSocket ss = null;

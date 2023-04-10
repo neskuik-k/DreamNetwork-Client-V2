@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
@@ -35,8 +35,8 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
 
         if(args[0].equalsIgnoreCase("kill")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] service kill server [" + LanguageManager.getMessage("name") + "]").red());
-                System.out.println(Chalk.on("[!] service kill proxy [" + LanguageManager.getMessage("name") + "]").red());
+                System.out.println(Chalk.on("[!] service kill server [" + Console.getFromLang("name") + "]").red());
+                System.out.println(Chalk.on("[!] service kill proxy [" + Console.getFromLang("name") + "]").red());
                 return true;
             }
             BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
@@ -45,7 +45,7 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
             IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], bundleData);
 
             if(jvmExecutor == null){
-                System.out.println(LanguageManager.getMessage("commands.service.kill.incorrectService"));
+                Console.printLang("commands.service.kill.incorrectService");
                 return true;
             }
 
@@ -53,7 +53,7 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
             try {
                 sId =  Integer.parseInt(processName[1]);
             }catch (Exception e){
-                System.out.println(LanguageManager.getMessage("commands.service.kill.serviceNotFound"));
+                Console.printLang("commands.service.kill.serviceNotFound");
                 return true;
             }
 

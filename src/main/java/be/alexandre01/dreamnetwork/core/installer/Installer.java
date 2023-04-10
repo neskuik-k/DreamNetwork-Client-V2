@@ -7,7 +7,6 @@ import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import lombok.SneakyThrows;
 import org.asynchttpclient.*;
@@ -46,7 +45,7 @@ public class Installer {
         try {
             install(installationLinks.getUrl(),stream,installationLinks.name(),iInstall);
         }catch (Exception e){
-            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("installer.incorrectLink"));
+            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.incorrectLink"));
         }
 
         return false;
@@ -99,7 +98,7 @@ public class Installer {
                 }
             });
         }catch (Exception e){
-            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("installer.installationCantBeLaunched"));
+            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.installationCantBeLaunched"));
         }
 
         return false;
@@ -124,7 +123,7 @@ public class Installer {
         try {
             install(url,stream,name);
         }catch (Exception e){
-            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("installer.installationCantBeLaunched"));
+            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.installationCantBeLaunched"));
         }
 
         return false;
@@ -140,7 +139,7 @@ public class Installer {
                 queueisAvailable = false;
                 if(iInstall != null)
                 iInstall.start();
-                Console.print(LanguageManager.getMessage("installer.startInstallation"));
+                Console.printLang("installer.startInstallation");
                 Core.getInstance().formatter.getDefaultStream().flush();
                 ListenableFuture<?> l = client.prepareGet(url).execute(new AsyncCompletionHandler<FileOutputStream>() {
                     String bar = "<->";
@@ -187,7 +186,7 @@ public class Installer {
                         for (int i = 0; i < 35; i++) {
                             space.append(" ");
                         }
-                        Core.getInstance().formatter.getDefaultStream().print(LanguageManager.getMessage("installer.progress").replaceFirst("%var%", sb.toString()).replaceFirst("%var%", String.valueOf(stream.getChannel().size()/(1024*1024))).replaceFirst("%var%", space.toString()));
+                        Core.getInstance().formatter.getDefaultStream().print(Console.getFromLang("installer.progress", sb.toString(), stream.getChannel().size()/(1024*1024), space.toString()));
                         Core.getInstance().formatter.getDefaultStream().flush();
                         return State.CONTINUE;
                     }
@@ -197,7 +196,7 @@ public class Installer {
                         try {
 
                             ConsoleReader.sReader.printAbove("\n");
-                            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("installer.completed").replaceFirst("%var%", String.valueOf(stream.getChannel().size()/1024)));
+                            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.completed").replaceFirst("%var%", String.valueOf(stream.getChannel().size()/1024)));
 
                             if(iInstall != null){
                                 iInstall.complete();
@@ -207,7 +206,7 @@ public class Installer {
                             if(!queue.isEmpty()){
                                 ContentInstaller.IInstall i = queue.get(0);
                                 queue.remove(0);
-                                Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("installer.emptyQueue"));
+                                Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.emptyQueue"));
                                 ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
                                 scheduler.scheduleAtFixedRate(new Runnable() {
                                     @Override

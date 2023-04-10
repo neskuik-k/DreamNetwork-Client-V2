@@ -6,7 +6,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeType;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.utils.Tuple;
-import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;

@@ -8,7 +8,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -43,8 +43,8 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
         if(args[0].equalsIgnoreCase("install")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] service install server [" + LanguageManager.getMessage("name") + "] [SPIGOT-VER]").red());
-                System.out.println(Chalk.on("[!] service install proxy [" + LanguageManager.getMessage("name") + "] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
+                System.out.println(Chalk.on("[!] service install server [" + Console.getConsole("name") + "] [SPIGOT-VER]").red());
+                System.out.println(Chalk.on("[!] service install proxy [" + Console.getConsole("name") + "] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
                 return true;
             }
 
@@ -54,14 +54,14 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
             System.out.println(args[2]);
             JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],bundleData);
             if(jvmExecutor == null){
-                System.out.println(LanguageManager.getMessage("commands.service.install.notConfigured"));
+                Console.printLang("commands.service.install.notConfigured");
                 return true;
             }
             InstallationLinks installationLinks;
             try {
                 installationLinks = InstallationLinks.getInstallationLinks(args[3]);
             }catch (Exception e){
-                System.out.println(LanguageManager.getMessage("commands.service.install.incorrectVersion"));
+                Console.printLang("commands.service.install.incorrectVersion");
                 return true;
             }
 
@@ -74,7 +74,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
                 @Override
                 public void complete() {
-                    System.out.println(LanguageManager.getMessage("commands.service.install.fileUpdated"));
+                    Console.printLang("commands.service.install.fileUpdated");
                     String javaVersion = "default";
                     for(Integer i : installationLinks.getJavaVersion()){
                         if(Core.getInstance().getJavaIndex().getJVersion().containsKey(i)){

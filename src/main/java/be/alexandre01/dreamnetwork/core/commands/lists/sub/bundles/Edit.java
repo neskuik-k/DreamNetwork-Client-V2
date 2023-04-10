@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import lombok.NonNull;
 
 import java.io.File;
@@ -24,14 +24,14 @@ public class Edit extends SubCommand  {
 
                     File file = new File(Config.getPath("bundles/"+oldName));
                     if(!file.exists()){
-                        System.out.println(LanguageManager.getMessage("commands.bundle.edit.dontExists").replaceFirst("%var%", oldName));
+                        Console.printLang("commands.bundle.edit.dontExists", oldName);
                         return true;
                     }
                     file.renameTo(new File(Config.getPath("bundles/"+name)));
 
                     File info = new File(Config.getPath("bundles/"+name+"/this-info.yml"));
                    // BundleFileInfo.updateFile(info,name);
-                    System.out.println(LanguageManager.getMessage("commands.bundle.edit.renamed").replaceFirst("%var%", oldName).replaceFirst("%var%", name));
+                    Console.printLang("commands.bundle.edit.renamed", oldName, name);
                     return true;
                 }
                 if(sArgs[2].equalsIgnoreCase("type")){

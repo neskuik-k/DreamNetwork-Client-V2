@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.core.addons;
 
 import be.alexandre01.dreamnetwork.api.addons.Addon;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import lombok.Getter;
 
 import org.apache.commons.io.IOUtils;
@@ -47,7 +47,7 @@ public class AddonsLoader {
         if(cacheFolder.exists()){
             boolean b =cacheFolder.delete();
             if(!b){
-                System.out.println(LanguageManager.getMessage("addons.loader.couldNotDeleteCache"));
+                Console.printLang("addons.loader.couldNotDeleteCache");
             }
         }
 
@@ -57,23 +57,23 @@ public class AddonsLoader {
             if(!dir.exists()) {
                 dir.mkdirs();
             }
-            System.out.println(LanguageManager.getMessage("addons.loading"));
+            Console.printLang("addons.loading");
             if(isDirEmpty(dir.toPath())) {
-                System.out.println(LanguageManager.getMessage("addons.emptyFolder"));
+                Console.printLang("addons.emptyFolder");
                 return;
             }
             for(File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.isDirectory())
                     continue;
 
-                System.out.println(LanguageManager.getMessage("addons.loadingAddon").replaceFirst("%var%", file.getName()));
+                Console.printLang("addons.loadingAddon", file.getName());
 
                 Addon cache = null;
                 for (Addon module : cachedAddons) {
                     System.out.println(file.toURI().toURL());
                     if (module.getUrl().toString().equals(file.toURI().toURL().toString())) {
                         cache = module;
-                        System.out.println(LanguageManager.getMessage("addons.cached").replaceFirst("%var%", String.valueOf(cache)));
+                        Console.printLang("addons.cached", cache);
                         break;
                     }
                 }

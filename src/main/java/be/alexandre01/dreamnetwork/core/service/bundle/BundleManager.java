@@ -75,7 +75,7 @@ public class BundleManager {
 
 
             if(Main.getBundlesLoading().isFirstLoad()){
-                Console.print(Colors.RED+"No bundle found !"+Colors.RESET);
+                Console.printLang("service.bundle.manager.noBundleFound");
 
 
                 //Creating bundle dir
@@ -126,7 +126,7 @@ public class BundleManager {
                 for(BService bService : bundleData.getServices()){
                     IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData);
                     if(jvmExecutor == null){
-                        Console.debugPrint(Colors.RED +"- Bundle "+ bundleData.getName()+" can't find "+ bService.getServiceName()+" service");
+                        Console.debugPrint(Console.getFromLang("service.bundle.manager.cantFindService", bundleData.getName(), bService.getServiceName()));
                         continue;
                     }
                     for (int i = 0; i < bService.getTotalCount(); i++) {

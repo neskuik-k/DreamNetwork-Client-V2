@@ -1,10 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.widgets;
 
-import static org.jline.keymap.KeyMap.alt;
-
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.LineReader;
     import org.jline.reader.Reference;
@@ -31,9 +28,9 @@ public class DebugMod extends org.jline.widget.Widgets {
                 Console.clearConsole();
 
                 if(!debug)
-                    System.out.println(LanguageManager.getMessage("debug.enabled"));
+                    Console.printLang("debug.enabled");
                 else
-                    System.out.println(LanguageManager.getMessage("debug.disabled"));
+                    Console.printLang("debug.disabled");
 
                 Console.fine("This is a debug message !");
             } catch (Exception e) {

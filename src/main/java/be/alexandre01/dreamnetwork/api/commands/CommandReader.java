@@ -7,7 +7,6 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.commands.lists.*;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.print;
+import static be.alexandre01.dreamnetwork.core.console.Console.printLang;
 import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class CommandReader{
@@ -62,7 +62,7 @@ public class CommandReader{
                             CoreCommandExecuteEvent event = new CoreCommandExecuteEvent(core.getDnCoreAPI(), args);
                             core.getEventsFactory().callEvent(event);
                             if(event.isCancelled()){
-                                print(LanguageManager.getMessage("api.commands.cancelled"));
+                                printLang("api.commands.cancelled");
                                 return;
                             }
                             commands.check(args);

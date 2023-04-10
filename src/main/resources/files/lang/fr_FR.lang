@@ -24,7 +24,7 @@ warning=ATTENTION
 
 ## Main
 
-main.shutdown=\n%purplebgbr%DreamNetwork est en train de s'arrêter, veuillez patienter...%reset%
+main.shutdown=\n%whiteul%%purplebg%DreamNetwork est en train de s'arrêter, veuillez patienter...\n%reset%
 main.invalidLicenseKey=%red%La clé de licence est invalide!
 main.successAuth=%greenbobr%Authentification Réussie !\n%reset%
 
@@ -60,7 +60,7 @@ bundle.customRequest.fileCreated= [!] Le fichier des requêtes personalisés a �
 ## Service
 service.creation.cancelCreation=%purplebobr%voulez vous arrêter la creation du service ? (y ou n) > %reset%
 service.creation.cancelCreationCancelled=Annulé.
-service.creation.ask.bundleName=%green%Quel est le %cyan%bundle %green? %white%Écrivez le nom du bundle: %red%
+service.creation.ask.bundleName=%green%Quel est le %cyan%bundle %green%? %white%Écrivez le nom du bundle: %red%
 service.creation.ask.serverName=%green%Quel est le %cyan%nom du serveur %green%? %white%Écrivez le nom du serveur: %red%
 service.creation.ask.proxyName=%green%Quel est le %cyan%nom du proxy %green%? %white%Écrivez le nom du proxy: %red%
 service.creation.ask.serverType=%green%Quel est le %cyan%type du serveur %green%? %white%Écrivez le type du serveur: %red%

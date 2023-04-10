@@ -7,7 +7,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.github.tomaslanger.chalk.Chalk;
 
 import java.util.logging.Level;
@@ -20,25 +19,26 @@ public class Remove extends SubCommandCompletor implements SubCommandExecutor {
     }
     @Override
     public boolean onSubCommand(String[] args) {
+        String nameLang = Console.getFromLang("name");
         if(args[0].equalsIgnoreCase("remove")){
             if(args.length >= 2){
                 if(args[1].equalsIgnoreCase("server")||args[1].equalsIgnoreCase("proxy")){
                     String name = args[2];
                     if(Config.contains("bundles/"+args[1].toLowerCase()+"/"+name)){
                         Config.removeDir("bundles/"+args[1].toLowerCase()+"/"+name);
-                        Console.print(LanguageManager.getMessage("commands.service.remove.deleted"), Level.INFO);
-                        Console.print(LanguageManager.getMessage("commands.service.remove.folderDeleted"), Level.INFO);
+                        Console.printLang("commands.service.remove.deleted");
+                        Console.printLang("commands.service.remove.folderDeleted");
                     }else {
-                        Console.print(LanguageManager.getMessage("commands.service.remove.nonExistentServer"), Level.WARNING);
+                        Console.printLang("commands.service.remove.nonExistentServer", Level.WARNING);
                     }
 
 
                 }else {
-                    Console.print(Chalk.on("[!] service remove server [" + LanguageManager.getMessage("name") + "] => " + LanguageManager.getMessage("commands.service.remove.removeServer")).red(), Level.INFO);
-                    Console.print(Chalk.on("[!] service remove proxy [" + LanguageManager.getMessage("name") + "] => " + LanguageManager.getMessage("commands.service.remove.removeProxy")).red(), Level.INFO);
+                    Console.print(Chalk.on("[!] service remove server [" + nameLang + "] => " + Console.getFromLang("commands.service.remove.removeServer")).red(), Level.INFO);
+                    Console.print(Chalk.on("[!] service remove proxy [" + nameLang + "] => " + Console.getFromLang("commands.service.remove.removeProxy")).red(), Level.INFO);
                 }
             }else {
-                Console.print(Chalk.on("[!] service remove server [" + LanguageManager.getMessage("name") + "] => " + LanguageManager.getMessage("commands.service.remove.removeServer")).red(), Level.INFO);
+                Console.print(Chalk.on("[!] service remove server [" + nameLang + "] => " + Console.getFromLang("commands.service.remove.removeServer")).red(), Level.INFO);
             }
             return true;
         }

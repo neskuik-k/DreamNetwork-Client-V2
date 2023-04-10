@@ -11,7 +11,6 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -48,29 +47,29 @@ public class Create extends SubCommand {
             //illegal chars
             for(String illegalChar : illegalChars){
                 if(name.contains(illegalChar)){
-                    System.out.println(LanguageManager.getMessage("commands.service.create.invalidServerName").replaceFirst("%var%", illegalChar));
+                    Console.printLang("commands.service.create.invalidServerName", illegalChar);
                     return false;
                 }
             }
 
             if(!RamArgumentsChecker.check(xms)){
-                System.out.println(LanguageManager.getMessage("commands.service.create.invalidXMS").replaceFirst("%var%", xms));
+                Console.printLang("commands.service.create.invalidXMS", xms);
                 return false;
             }
             if(!RamArgumentsChecker.check(xmx)){
-                System.out.println(LanguageManager.getMessage("commands.service.create.invalidXMX").replaceFirst("%var%", xmx));
+                Console.printLang("commands.service.create.invalidXMX", xmx);
                 return false;
             }
 
             if(!ModsArgumentChecker.check(mod)){
-                System.out.println(LanguageManager.getMessage("commands.service.create.invalidMod"));
+                Console.printLang("commands.service.create.invalidMod");
                 return false;
             }
             IJVMExecutor.Mods mods = IJVMExecutor.Mods.valueOf(mod);
             BundleInfo bundleInfo;
 
            if(!Core.getInstance().getBundleManager().getBundleDatas().containsKey(bundle.toLowerCase())) {
-               System.out.println(LanguageManager.getMessage("commands.service.create.nonExistentBundle"));
+               Console.printLang("commands.service.create.nonExistentBundle");
                return false;
            }
            BundleData bundleData = Core.getInstance().getBundleManager().getBundleDatas().get(bundle.toLowerCase());
@@ -84,13 +83,13 @@ public class Create extends SubCommand {
             int port = 0;
             if(args.length == 5){
                 if(!NumberArgumentCheck.check(sArgs[4])) {
-                    System.out.println(LanguageManager.getMessage("commands.service.create.invalidPort"));
+                    Console.printLang("commands.service.create.invalidPort");
                     return false;
                 }
                  port = Integer.parseInt(sArgs[4]);
             }
 
-            System.out.println(LanguageManager.getMessage("service.creation.addingServerOnBundle").replaceFirst("%var%", name).replaceFirst("%var%", bundle));
+            Console.printLang("service.creation.addingServerOnBundle", name, bundle);
 
             IContainer.JVMType jvmType = bundleInfo.getType();
 
@@ -98,23 +97,23 @@ public class Create extends SubCommand {
 
             JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(name, bundleData);
             if (jvmExecutor == null) {
-                System.out.println(LanguageManager.getMessage("service.creation.creatingServerOnBundle").replaceFirst("%var%", name).replaceFirst("%var%", bundle));
+                Console.printLang("service.creation.creatingServerOnBundle", name, bundle);
                 Config.createDir("bundles/"+bundle+"/"+name);
                 System.out.println("?");
                 jvmExecutor = new JVMExecutor(bundle, name, mods, xms, xmx, port, proxy, true,bundleData);
                 jvmExecutor.addConfigsFiles();
-                Console.print(LanguageManager.getMessage("service.creation.serverConfigured"));
+                Console.printLang("service.creation.serverConfigured");
                 CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 return true;
             }
             jvmExecutor.addConfigsFiles();
             jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
-            Console.print(LanguageManager.getMessage("service.creation.serverConfigured"));
+            Console.printLang("service.creation.serverConfigured");
             CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
             return true;
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
-            System.out.println(LanguageManager.getMessage("commands.cantBeExecuted"));
+            Console.printLang("commands.cantBeExecuted");
             fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
 
             Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {

@@ -59,11 +59,11 @@ public class Console extends Thread{
         @Override
         public void onKill(LineReader reader) {
             String data;
-            while ((data = reader.readLine( LanguageManager.getMessage("console.askExit"))) != null){
+            while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
                 if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                     System.exit(0);
                 }else {
-                    Console.debugPrint(LanguageManager.getMessage("cancelled"));
+                    Console.debugPrint(Console.getFromLang("cancelled"));
                     run();
                 }
 
@@ -89,7 +89,7 @@ public class Console extends Thread{
         if(clearConsole)
             clearConsole();
         if(console.defaultPrint != null && !isSilent)
-            console.defaultPrint.println(LanguageManager.getMessage("console.changed").replaceFirst("%var%", console.getName()));
+            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName()));
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
           //  stashLine();
@@ -369,19 +369,18 @@ public class Console extends Thread{
     }
 
     public static void bug(Exception e){
-        System.out.println(LanguageManager.getMessage("console.errorOn").replaceFirst("%var%", e.getMessage()).replaceFirst("%var%", e.getClass().getSimpleName()));
+        Console.printLang("console.errorOn", Level.WARNING, e.getMessage(), e.getClass().getSimpleName());
         Console console = Console.getConsole(actualConsole);
-        console.fPrint(LanguageManager.getMessage("console.errorCause").replaceFirst("%var%", e.getMessage()).replaceFirst("%var%", e.getClass().getSimpleName()), Level.SEVERE);
+        console.fPrintLang("console.errorCause", Level.SEVERE, e.getMessage(), e.getClass().getSimpleName());
         for(StackTraceElement s : e.getStackTrace()){
             Core.getInstance().formatter.getDefaultStream().println("----->");
-            console.fPrint(LanguageManager.getMessage("connection.request.exception.errorOn").replaceFirst("%var%", s.getClassName()).replaceFirst("%var%", s.getMethodName()).replaceFirst("%var%", String.valueOf(s.getLineNumber())), Level.SEVERE);
-
+            console.fPrintLang("connection.request.exception.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName(), s.getLineNumber());
         }
         if(Core.getInstance().isDebug()){
             e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
         }else {
-            Core.getInstance().formatter.getDefaultStream().println(LanguageManager.getMessage("console.contactDNDevError"));
-            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,LanguageManager.getMessage("console.contactDNDevError")));
+            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("console.contactDNDevError"));
+            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,Console.getFromLang("console.contactDNDevError")));
         }
     }
 
@@ -444,7 +443,7 @@ public class Console extends Thread{
                 }
                 }
 
-                Console.debugPrint(LanguageManager.getMessage("console.closed"));
+                Console.debugPrint(Console.getFromLang("console.closed"));
 
 
 

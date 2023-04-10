@@ -8,7 +8,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.bundle.BService;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -36,7 +36,7 @@ public class Create extends SubCommand {
 
             if(sArgs[1].endsWith("/")){
                 if(args.length < 4){
-                    System.out.println(LanguageManager.getMessage("commands.bundle.create.needSpecifyType"));
+                    Console.printLang("commands.bundle.create.needSpecifyType");
                     return true;
                 }
                 nArgs = new String[]{sArgs[0],sArgs[1]+sArgs[2],sArgs[3]};
@@ -45,7 +45,7 @@ public class Create extends SubCommand {
 
 
             if(!TypeArgumentChecker.check(nArgs[2])){
-                System.out.println(LanguageManager.getMessage("commands.bundle.create.typeNotFound"));
+                Console.printLang("commands.bundle.create.typeNotFound");
                 return true;
             }
             Config.createDir("bundles/"+nArgs[1]);
@@ -71,9 +71,9 @@ public class Create extends SubCommand {
                CustomType.reloadAll(BundlesNode.class);
 
                //System.out.println(yaml.dumpAsMap(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2]))));
-               System.out.println(LanguageManager.getMessage("commands.bundle.create.writingInfo"));
+                Console.printLang("commands.bundle.create.writingInfo");
             } catch (IOException e) {
-                System.out.println(LanguageManager.getMessage("commands.bundle.create.errorWritingInfo"));
+                Console.printLang("commands.bundle.create.errorWritingInfo");
                 System.out.println(e.getMessage());
                 System.out.println(Arrays.toString(e.getStackTrace()));
                 throw new RuntimeException(e);

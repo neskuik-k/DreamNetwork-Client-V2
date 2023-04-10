@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.core.utils.process;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
@@ -71,16 +70,16 @@ public class ProcessUtils {
         String OS = System.getProperty("os.name").toLowerCase();
         String command = null;
         if (OS.indexOf("win") >= 0) {
-            Console.fine(LanguageManager.getMessage("core.utils.process.checkAliveWindows").replaceFirst("%var%", pidStr));
+            Console.fine(Console.getFromLang("core.utils.process.checkAliveWindows", pidStr));
             command = "cmd /c tasklist /FI \"PID eq " + pidStr + "\"";
         } else {
-            Console.fine(LanguageManager.getMessage("core.utils.process.checkAliveLinuxUnix").replaceFirst("%var%", pidStr));
+            Console.fine(Console.getFromLang("core.utils.process.checkAliveLinuxUnix", pidStr));
             command = "ps -p " + pidStr;
         }
         return isProcessIdRunning(pidStr, command); // call generic implementation
     }
     private static boolean isProcessIdRunning(String pid, String command) {
-        Console.fine(LanguageManager.getMessage("core.utils.process.isRunning.command").replaceFirst("%var%", command));
+        Console.fine(Console.getFromLang("core.utils.process.isRunning.command", command));
         try {
             Runtime rt = Runtime.getRuntime();
             Process pr = rt.exec(command);
@@ -89,17 +88,17 @@ public class ProcessUtils {
             BufferedReader bReader = new BufferedReader(isReader);
             String strLine = null;
             while ((strLine= bReader.readLine()) != null) {
-                Console.fine(LanguageManager.getMessage("core.utils.process.isRunning.line").replaceFirst("%var%", strLine));
+                Console.fine(Console.getFromLang("core.utils.process.isRunning.line", strLine));
                 if (strLine.contains(pid + " ")) {
-                    Console.fine(LanguageManager.getMessage("core.utils.process.isRunning.running").replaceFirst("%var%", pid));
+                    Console.fine(Console.getFromLang("core.utils.process.isRunning.running", pid));
                     return true;
                 }
             }
-            Console.fine(LanguageManager.getMessage("core.utils.process.isRunning.notRunning").replaceFirst("%var%", pid));
+            Console.fine(Console.getFromLang("core.utils.process.isRunning.notRunning", pid));
 
             return false;
         } catch (Exception ex) {
-            Console.debugPrint(LanguageManager.getMessage("core.utils.process.isRunning.systemCommandError").replaceFirst("%var%", command));
+            Console.debugPrint(Console.getFromLang("core.utils.process.isRunning.systemCommandError", command));
             return true;
         }
     }

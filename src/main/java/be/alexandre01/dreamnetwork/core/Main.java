@@ -150,14 +150,14 @@ public class Main {
                         }
 
                         Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
-                        outputStream.println(LanguageManager.getMessage("main.shutdown"));
+                        outputStream.println(Console.getFromLang("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }else {
-                        outputStream.println(LanguageManager.getMessage("main.shutdown"));
+                        outputStream.println(Console.getFromLang("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -190,12 +190,12 @@ public class Main {
             e.printStackTrace();
         }
         if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
-            outputStream.println(LanguageManager.getMessage("main.invalidLicenseKey"));
+            outputStream.println(Console.getFromLang("main.invalidLicenseKey"));
             secretFile.deleteSecretFile();
             System.exit(1);
             return;
         }
-        outputStream.println(LanguageManager.getMessage("main.successAuth"));
+        outputStream.println(Console.getFromLang("main.successAuth"));
         try {
             Thread.sleep(250);
         } catch (InterruptedException e) {

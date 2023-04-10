@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.core.accessibility.intro;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import org.jline.reader.LineReader;
 
@@ -59,7 +58,7 @@ public class IntroductionConsole {
 
             @Override
             public void consoleChange() {
-                console.setWriting(LanguageManager.getMessage("introduction.ask.firstTime"));
+                console.setWriting(Console.getFromLang("introduction.ask.firstTime"));
 
                 ConsoleReader.sReader.runMacro("yes");
                 try {
@@ -76,9 +75,9 @@ public class IntroductionConsole {
     }
 
     private void sendHelp(){
-        console.fPrint(LanguageManager.getMessage("introduction.help.spiget.helpSpiget"),Level.INFO);
+        console.fPrintLang("introduction.help.spiget.helpSpiget");
         console.fPrint("- DOWNLOAD", Level.INFO);
-        console.fPrint(LanguageManager.getMessage("introduction.help.spiget.search"), Level.INFO);
+        console.fPrintLang("introduction.help.spiget.search");
         console.fPrint("- SELECT [ID/URL]",Level.INFO);
         console.fPrint("- EXIT",Level.INFO);
     }

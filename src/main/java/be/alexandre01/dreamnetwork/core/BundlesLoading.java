@@ -8,7 +8,6 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import lombok.Getter;
@@ -31,7 +30,7 @@ public class BundlesLoading {
         directories = new File(Config.getPath("bundles/")).listFiles(File::isDirectory);
         serverDirectories = new File(Config.getPath("bundles/server/")).listFiles(File::isDirectory);
         proxyDirectories = new File(Config.getPath("bundles/proxy/")).listFiles(File::isDirectory);
-        System.out.println(LanguageManager.getMessage("bundles.loading"));
+        System.out.println(Console.getFromLang("bundles.loading"));
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {
@@ -52,7 +51,7 @@ public class BundlesLoading {
         if(prefix.length() != 0) Main.getBundleManager().addPath(prefix);
         for(File file : directories){
 
-            System.out.println(LanguageManager.getMessage("bundle.loading").replaceFirst("%var%", prefix).replaceFirst("%var%",file.getName()));
+            System.out.println(Console.getFromLang("bundle.loading", prefix, file.getName()));
             //Yaml yaml = new Yaml(new Constructor(BundleInfo.class));
             File bundleFile = new File(Config.getPath(file.getAbsolutePath()+"/this-info.yml"));
 
@@ -98,7 +97,7 @@ public class BundlesLoading {
         try {
             assert in != null;
             Config.createDir(path,false);
-            Console.print(LanguageManager.getMessage("bundle.replaceFile.writing").replaceFirst("%var%", path).replaceFirst("%var%", fileName));
+            System.out.println(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -117,7 +116,7 @@ public class BundlesLoading {
                 //TRY TO LOAD COMPONENT
                 if(Config.contains(dir.getAbsolutePath()+"/"+name+"/plugins")){
                     if(isPreview){
-                        System.out.println(LanguageManager.getMessage("bundle.loadTemplate.addJar").replaceFirst("%var%", name));
+                        System.out.println(Console.getFromLang("bundle.loadTemplate.addJar", name));
                         try {
                             is = new FileInputStream(previewFile);
                         } catch (FileNotFoundException e) {
@@ -133,14 +132,14 @@ public class BundlesLoading {
 
                 IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
                 if(jvmExecutor == null){
-                    System.out.println(LanguageManager.getMessage("bundle.loadTemplate.nullJVM"));
+                    System.out.println(Console.getFromLang("bundle.loadTemplate.nullJVM"));
                     notConfigured(dir);
                     continue;
                 }
-                System.out.println(LanguageManager.getMessage("bundle.loadTemplate.isJVMConfig").replaceFirst("%var%", String.valueOf(jvmExecutor.isConfig())));
-                System.out.println(LanguageManager.getMessage("bundle.loadTemplate.hasJVMExecutable").replaceFirst("%var%", String.valueOf(jvmExecutor.hasExecutable())));
+                System.out.println(Console.getFromLang("bundle.loadTemplate.isJVMConfig", jvmExecutor.isConfig()));
+                System.out.println(Console.getFromLang("bundle.loadTemplate.hasJVMExecutable", jvmExecutor.hasExecutable()));
                 if(jvmExecutor.isConfig() && jvmExecutor.hasExecutable()){
-                    Console.debugPrint(LanguageManager.getMessage("bundle.loadTemplate.loaded").replaceFirst("%var%", dir.getName()));
+                    Console.debugPrint(Console.getFromLang("bundle.loadTemplate.loaded", dir.getName()));
                     //Utils.templates.add(dir.getName()); <- add after
                     try {
                         Thread.sleep(250);
@@ -157,7 +156,7 @@ public class BundlesLoading {
     public void createCustomRequestsFile(){
         createCustomRequestsFile(proxyDirectories,"proxy");
         createCustomRequestsFile(serverDirectories,"server");
-        Console.print(LanguageManager.getMessage("bundle.customRequest.fileCreated"));
+        Console.printLang("bundle.customRequest.fileCreated");
     }
 
     private void createCustomRequestsFile(File[] directory,String pathName){
@@ -213,7 +212,7 @@ public class BundlesLoading {
 
 
     private void notConfigured(File dir){
-        Console.debugPrint(LanguageManager.getMessage("bundle.notConfigured").replaceFirst("%var%", dir.getName()));
+        Console.debugPrint(Console.getFromLang("bundle.notConfigured", dir.getName()));
         try {
             Thread.sleep(150);
 

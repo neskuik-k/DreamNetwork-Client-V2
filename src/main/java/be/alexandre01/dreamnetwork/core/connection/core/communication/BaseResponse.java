@@ -13,7 +13,6 @@ import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersMa
 import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
@@ -171,7 +170,7 @@ public class BaseResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
         //Console.debugPrint(message);
-        Console.print(LanguageManager.getMessage("connection.core.communication.enteringRequest"),Level.FINE);
+        Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
         ChannelPacket receivedPacket = new ChannelPacket(message);
         IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
         if(dnChannel != null){

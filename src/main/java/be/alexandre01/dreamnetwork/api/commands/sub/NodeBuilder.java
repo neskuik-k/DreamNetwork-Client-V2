@@ -1,22 +1,15 @@
 package be.alexandre01.dreamnetwork.api.commands.sub;
 
-import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.NullNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.TextNode;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.utils.Tuple;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import lombok.Getter;
 import org.jline.builtins.Completers;
 
-
 import java.util.*;
-import java.util.logging.Level;
 
 public class NodeBuilder {
     Completers.TreeCompleter.Node node;

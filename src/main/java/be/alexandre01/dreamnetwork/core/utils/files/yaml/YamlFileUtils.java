@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.core.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -30,7 +29,7 @@ public class YamlFileUtils<T> {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                System.out.println(LanguageManager.getMessage("core.utils.yaml.createFileError").replaceFirst("%var%", file.getName()));
+                Console.printLang("core.utils.yaml.createFileError", file.getName());
                 e.printStackTrace();
             }
         }
@@ -53,7 +52,7 @@ public class YamlFileUtils<T> {
         try {
             return yaml.load(new FileInputStream(file));
         } catch (FileNotFoundException e) {
-            System.out.println(LanguageManager.getMessage("core.utils.yaml.loadFileError").replaceFirst("%var%", file.getName()));
+            Console.printLang("core.utils.yaml.loadFileError", file.getName());
             e.printStackTrace();
             return null;
         }
@@ -84,12 +83,12 @@ public class YamlFileUtils<T> {
                     //    System.out.println("Annotation => "+field.getAnnotation(Ignore.class));
                           if (field.getAnnotation(Ignore.class) != null){
                                 try {
-                                    System.out.println(LanguageManager.getMessage("warning"));
+                                    Console.printLang("warning");
                                     System.out.println(field.getName());
                                     System.out.println(property.getName());
                                     System.out.println(field.get(obj));
                                     if(field.getName().equals(property.getName())){
-                                        System.out.println(LanguageManager.getMessage("core.utils.yaml.ignoreFieldEquals").replaceFirst("%var%", field.getName()).replaceFirst("%var%", propertyValue.toString()));
+                                        Console.printLang("core.utils.yaml.ignoreFieldEquals", field.getName(), propertyValue);
                                         return null;
                                     }
                                 } catch (IllegalAccessException e) {
@@ -103,7 +102,7 @@ public class YamlFileUtils<T> {
                     }
 
                     if(!isFinded){
-                        Console.debugPrint(LanguageManager.getMessage("core.utils.yaml.ignoreFieldNotFound").replaceFirst("%var%", property.getName()).replaceFirst("%var%", clazz.getName()));
+                        Console.debugPrint(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), clazz.getName()));
                         return null;
                     }
                     if (obj.getClass().equals(property.getType())) {
@@ -121,7 +120,7 @@ public class YamlFileUtils<T> {
             fileWriter.close();
 
         } catch (IOException e) {
-            System.out.println(LanguageManager.getMessage("core.utils.yaml.errorWritingFile").replaceFirst("%var%", file.getName()));
+            Console.printLang("core.utils.yaml.errorWritingFile", file.getName());
             Console.bug(e);
         }
     }

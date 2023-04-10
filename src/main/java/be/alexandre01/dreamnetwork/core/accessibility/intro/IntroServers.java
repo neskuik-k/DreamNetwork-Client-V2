@@ -9,7 +9,6 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 
 public class IntroServers extends IntroductionConsole {
@@ -44,17 +43,17 @@ public class IntroServers extends IntroductionConsole {
                             @Override
                             public void finish() {
                                 clear();
-                                Console.debugPrint(LanguageManager.getMessage("introduction.servers.oneLastThing"));
-                                console.setWriting(LanguageManager.getMessage("introduction.servers.helpToCreateServer"));
+                                Console.debugPrint(Console.getFromLang("introduction.servers.oneLastThing"));
+                                console.setWriting(Console.getFromLang("introduction.servers.helpToCreateServer"));
                                 ConsoleReader.sReader.runMacro("yes");
 
                                 //Console.reload();
                                 ConsoleReader.sReader.getTerminal().flush();
                                 ConsoleReader.sReader.getTerminal().writer().flush();
                                  Main.getBundleManager().getBundleDatas().forEach((s, bundleData) -> {
-                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleName").replaceFirst("%var%", bundleData.getBundleInfo().getName()));
-                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleType").replaceFirst("%var%", String.valueOf(bundleData.getBundleInfo().getType())));
-                                     Console.fine(LanguageManager.getMessage("introduction.servers.finish.bundleExecutor").replaceFirst("%var%", String.valueOf(bundleData.getExecutors())));
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleName", bundleData.getBundleInfo().getName()));
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleType", bundleData.getBundleInfo().getType()));
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleExecutor", bundleData.getExecutors()));
                                 });
                                 CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
@@ -91,7 +90,7 @@ public class IntroServers extends IntroductionConsole {
 
                 ConsoleReader.sReader.getTerminal().writer().flush();
                 if(!hasCreatedProxy){
-                    console.setWriting(LanguageManager.getMessage("introduction.servers.helpToCreateProxy"));
+                    console.setWriting(Console.getFromLang("introduction.servers.helpToCreateProxy"));
                     ConsoleReader.sReader.runMacro("yes");
                 }else {
                    console.setWriting("");

@@ -22,7 +22,6 @@ import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersMa
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
@@ -95,7 +94,7 @@ public class Core {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
-            System.out.println(LanguageManager.getMessage("core.debugMode"));
+            Console.printLang("core.debugMode");
             debug = true;
         }
 
@@ -149,7 +148,7 @@ public class Core {
         devToolsToken.init();
         Main.getCommandReader().run(console);
 
-        System.out.println(LanguageManager.getMessage("core.server.starting"));
+        Console.printLang("core.server.starting");
         try {
             CoreServer coreServer;
             Thread thread = new Thread(coreServer = new CoreServer(14520));
@@ -159,7 +158,7 @@ public class Core {
             Console.bug(e);
         }
 
-        console.fPrint(LanguageManager.getMessage("core.networkStarted"), Level.INFO);
+        console.fPrintLang("core.networkStarted");
 
 
         IScreenManager.load();
@@ -179,11 +178,11 @@ public class Core {
             try {
                 extension = (DreamExtension) c.getDeclaredConstructor(Addon.class).newInstance(addon);
                 extension.onLoad();
-                System.out.println(LanguageManager.getMessage("core.addon.loaded").replaceFirst("%var%", addon.getDreamyName()));
+                console.fPrintLang("core.addon.loaded", addon.getDreamyName());
                 addonsManager.registerAddon(extension);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println(LanguageManager.getMessage("core.addon.notSupported").replaceFirst("%var%", addon.getDreamyName()));
+                console.fPrintLang("core.addon.notSupported", addon.getDreamyName());
             }
         });
 

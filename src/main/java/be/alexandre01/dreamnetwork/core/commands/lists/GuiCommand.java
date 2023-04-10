@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.core.commands.lists.sub.gui.Intro;
 import be.alexandre01.dreamnetwork.core.commands.lists.sub.gui.Stats;
-import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.console.Console;
 
 
 public class GuiCommand extends Command {
@@ -14,7 +14,7 @@ public class GuiCommand extends Command {
         addSubCommand("intro",new Intro());
 
 
-        getHelpBuilder().setTitleUsage(LanguageManager.getMessage("commands.gui.titleUsage"));
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.gui.titleUsage"));
         getHelpBuilder().setCmdUsage("stats");
     }
 }
