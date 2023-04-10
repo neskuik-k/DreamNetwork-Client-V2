@@ -203,6 +203,16 @@ commands.service.start.invalidChosenMods
 commands.service.stop.incorrectService
 commands.service.stop.idNotFound
 
+commands.hypervisor.reloading
+commands.hypervisor.specifyModule
+commands.hypervisor.reloadingCompletors
+commands.hypervisor.reloadingCompletorsDone
+commands.hypervisor.specifyCompletor
+commands.hypervisor.reloadingCompletor
+commands.hypervisor.reloadingCompletorDone
+commands.hypervisor.reloadingClass
+commands.hypervisor.completorNotFound
+
 
 connection.core.usePortInsteadOfNonAvailable
 connection.core.networkMayNotWorkCorrectly

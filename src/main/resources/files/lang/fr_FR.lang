@@ -1,0 +1,317 @@
+## Quand c'est écrit "color", c'est pour le nom complet de la couleur [en anglais] (ex: blue, red, white, ect)
+## Le code pour les couleurs entre les % sont sensibles (il ne faut pas mettre de majuscule)
+##
+## Couleur: %color%
+## Couleur Ansi: %acolor%
+## Gras: %colorbo%
+## Couleur claire: %colorbr%
+## Fond (surligné): %colorbg%
+## Souligné: %colorul%
+## Gras et claire: %colorbobr%
+## Fond (surligné) clair: %colorbgbr%
+##
+## Jaune claire souligné: %yellowbrul%
+
+lang=fr_FR
+
+name=nom
+option=option
+path=chemin
+server=serveur
+mods=modes
+cancelled=Annulé
+warning=ATTENTION
+
+## Main
+
+main.shutdown=\n%purplebgbr%DreamNetwork est en train de s'arrêter, veuillez patienter...%reset%
+main.invalidLicenseKey=%red%La clé de licence est invalide!
+main.successAuth=%greenbobr%Authentification Réussie !\n%reset%
+
+## ProcessHistory
+processHistory.killAnotherProcess=%red%Une autre instance DreameNetwork sur la machine a été arrêté - PID : %var%
+
+## Console
+console.consoleChanged=Console changée
+console.DNStats=%cyanbo%DreamNetwork %red%Stats
+console.stats.memory=%green%Mémoire ❱
+
+## Core
+core.debugMode=%greenbg%DEBUG MODE ACTIVÉ !
+core.networkStarted=%whitebg%%green%Le Network a fini de démarrer / Faites 'help' pour voir les commandes disponibles
+core.server.starting=Lancement du CoreServer...
+core.server.started=Le CoreServer a démarré sur le port %var%.
+core.addon.loaded=L'Addon %var% a bien été chargé.
+core.addon.notSupported=%var% n'est pas supporté
+
+## Bundle
+bundles.loading=%whiteboul%Chargement des bundles...
+bundle.loading=%purple%Chargement %cyanul%%var%%purpleul%%var%%reset%
+bundle.notConfigured=%red%--> [!] La maquette %redbobr%%var%%red% n'a pas été configuré !
+bundle.noBundle=%red%Il n'y a pas de bundle avec le chemin %var%
+bundle.replaceFile.writing=Ecriture du fichier: %var%/%var%
+bundle.loadTemplate.addJar=[+] Ajout d'un plugin jar de prévisualisation à la maquette %var%...
+bundle.loadTemplate.nullJVM=JVM EXECUTOR NULE
+bundle.loadTemplate.isJVMConfig=JVM CONFIGURÉE ?: %var%
+bundle.loadTemplate.hasJVMExecutable=JVM AVEC EXECUTABLE ?: %var%
+bundle.loadTemplate.loaded=%green%-->  [O] Maquette %greenbobr%%var% %green%chargée !
+bundle.customRequest.fileCreated= [!] Le fichier des requêtes personalisés a été créé !
+
+## Service
+service.creation.cancelCreation=%purplebobr%voulez vous arrêter la creation du service ? (y ou n) > %reset%
+service.creation.cancelCreationCancelled=Annulé.
+service.creation.ask.bundleName=%green%Quel est le %cyan%bundle %green? %white%Écrivez le nom du bundle: %red%
+service.creation.ask.serverName=%green%Quel est le %cyan%nom du serveur %green%? %white%Écrivez le nom du serveur: %red%
+service.creation.ask.proxyName=%green%Quel est le %cyan%nom du proxy %green%? %white%Écrivez le nom du proxy: %red%
+service.creation.ask.serverType=%green%Quel est le %cyan%type du serveur %green%? %white%Écrivez le type du serveur: %red%
+service.creation.ask.port=%green%Quel est le %cyan%port %green%? %white%Écrivez le port: %red%
+service.creation.ask.XMS=%green%Combien de %cyan%ram minimum utilisée %green%? %white%Écrivez la ram minimum utilisée: %red%
+service.creation.ask.XMX=%green%Combien de %cyan%ram maximum utilisée %green%? %white%Écrivez la ram maximum utilisée: %red%
+service.creation.ask.installServer=%white%Voulez-vous l'installer ? : %red%
+service.creation.badCharacter=%red%Le nom contient un caractère interdit
+service.creation.incorrectMods=%red%Le mode est incorrect
+service.creation.incorrectRamArgument=%red%La RAM est incorrecte
+service.creation.incorrectPort=Écrivez 'auto' pour définir un port automatique
+service.creation.wrongPort=Écrivez '0' pour définir un port automatique | %red%Mauvais port; Veuillez choisir un nombre et non pas %var%
+service.creation.addingServerOnBundle=Ajout du serveur %var% au bundle %var%
+service.creation.creatingServerOnBundle=Creation du serveur %var% dans le bundle %var%
+service.creation.serverConfigured=%agreen%Votre serveur a été configuré avec succès!
+service.creation.install.version=%white%Quelle version voulez-vous utiliser ? : Écrivez la version: %red%
+service.creation.install.incorrectVersion=%red%[!] La version entrée est incorrecte...
+service.creation.install.downloadComplete=Téléchargement terminé !
+
+service.executor.start=LancementJVM %var%
+service.executor.couldNotStart=%ared%Le serveur ne peut pas être démarré
+service.executor.alreadyRunning=%ared%Le serveur est déjà lancé
+service.executor.missingExecutable=%ared%Il manque l'éxecutable du serveur: %var%
+service.executor.errorOnCreation=Une erreur s'est produite lors de la creation du serveur
+service.executor.asyncCopy=CopiedAsync: action effectuée in %var%
+service.executor.cannotAsyncCopy=CopiedAsync Impossible: action effectuée in %var%
+service.executor.notFoundPort=%redbo%Le port du server %var% n'a pas été trouvé
+service.executor.portAlreadyUsed=Le port %var% est déjà utilisé
+service.executor.processCantStartBecauseAddon=Le processus ne peut pas démarrer car l'addon %var% annule l'évenement.
+service.executor.serverStartProcess=%greenbo%Le serveur %yellowbo%%var% %greenbo%vient de commencer le processus
+service.executor.checkingPort=Vérification de la disponibilité du port %var%...
+service.executor.invalidStartPort=Port de lancement invalide: %var%
+
+service.reader.exitValue=\n\nLa valeur de sortie de %var% est %var%
+
+service.startupConfig.updatingFile=Mise à jour du fichier de configuration... Fait
+service.startupConfig.readingFile=Lecture du fichier de configuration... Fait
+service.startupConfig.settingField=Changement du champ %var% en %var%
+service.startupConfig.readingProblem=Un problème est surevenu lors de la lecture du fichier.
+
+service.bundle.info.writingError=Une erreur est survenue lors de l'écriture du .info
+service.bundle.info.loadingError=%red%Une erreur est survenue lors du chargement du bundle %var%%reset%
+service.bundle.manager.noBundleFound=%red%Aucun bundle n'a été trouvé !%reset%
+service.bundle.manager.cantFindService=%red%- Le bundle %var% n'arrive pas à trouver le service %var%
+
+service.screen.killedHimself=Le PROCESSUS %var% s'est tué.
+service.screen.opened=%yellowbo%Une console a été ouverte sous le nom -> %greenbo%%var%-%var%
+service.screen.closed=Console fermée -> %var%
+
+## Introduction
+introduction.ask.firstTime=%green%Est-ce la première fois que vous utilisez le %cyan%DreamNetwork %green%? %white%Écrivez yes (oui) ou no (non): %red%
+introduction.help.spiget.helpSpiget=AIDE SPIGET:
+introduction.help.spiget.search=- SEARCH [VALEUR] [NOM/TAG/AUTEURS] [PAGE]
+introduction.help.useCommand=%green%Vous pouvez utiliser la commande %cyan%help %green%pour obtenir de l'aide %white%: %red%
+introduction.servers.oneLastThing=Un dernier petit détail...
+introduction.servers.helpToCreateServer=%green%Voulez-vous créer un serveur ?  : %red%
+introduction.servers.helpToCreateProxy=%green%Voulez-vous créer un Proxy ? : %red%
+introduction.servers.finish.bundleName=Nom du bundle: %var%
+introduction.servers.finish.bundleType=Type du bundle: %var%
+introduction.servers.finish.bundleExecutors=Executeurs du bundle: %var%
+
+## Addons
+addons.loader.couldNotDeleteCache=Impossible de supprimer cache.yml
+addons.loading=Chargement des addons...
+addons.emptyFolder=Les dossier addons est vide...
+addons.loadingAddon=Chargement de l'addon: %var%
+addons.cached=Mise en cache >> %var%
+addons.customClass.customClose=Fermeture customisée
+addons.customClass.finalized=%var% - CL Finalisé.
+
+## Commands
+commands.notFound=%redul%Commande introuvable. | Ecrivez 'help' pour avoir de l'aide.
+commands.cantBeExecuted=%red%La commande ne peut pas être éxecutée !
+
+commands.bundle.titleUsage=Comment configurer gérer bundles
+commands.bundle.create=créer un bundle
+commands.bundle.remove=supprimer un bundle
+commands.bundle.edit=éditer un bundle
+commands.bundle.create.needSpecifyType=%red%Vous devez spécifier un type
+commands.bundle.create.typeNotFound=%red%Le type est introuvable
+commands.bundle.create.writingInfo=Écriture du this-info.yml
+commands.bundle.create.errorWritingInfo=Une erreur est survenué lors de l'écriture du this-info.yml
+commands.bundle.edit.dontExists=Le bundle %var% n'éxiste pas
+commands.bundle.edit.renamed=%var% a été changé en %var%
+commands.bundle.list.bundleName=%green%Nom du bundle: %var%
+commands.bundle.list.bundleType=%green%Type du bundle: %var%
+commands.bundle.list.bundleExecutors=%green%Éxécuteurs du bundle: %var%
+
+commands.edit.titleUsage=Comment éditer la configuration de vos serveurs
+commands.edit.add=ajouter une JVM
+commands.edit.remove=supprimer une JVM
+commands.edit.list=liste des JVMs
+commands.edit.jvm.invalidJavaPath=%red%[!] Le java path n'est pas valide
+commands.edit.jvm.cantDeleteDefault=%red%[!] Vous ne pouvez pas supprimer 'default'
+
+commands.gui.titleUsage=Comment voir l'interface utilisateur
+
+commands.help.list=%greenul%Liste des commandes d'aide:
+commands.help.howTo.manageService=%whiteul%Comment gérer un service
+commands.help.howTo.startStopService=%whiteul%Comment démarrer ou arrêter un serveur:
+commands.help.howTo.connectConsole=%whiteul%Comment se connecter à la console:
+commands.help.howTo.removeService=%whiteul%Comment supprimer un serveur:
+commands.help.addA=ajouter un %var%
+commands.help.startA=démarrer un %var%
+commands.help.stopA=arrêter un %var%
+commands.help.connectTo=se connecter à la console d'un %var%
+commands.help.removeA=supprimer un %var%
+
+commands.service.titleUsage=Comment configurer un service
+commands.service.howTo.run=Comment lancer un serveur
+commands.service.howTo.stop=Comment arrêter un serveur
+commands.service.howTo.remove=Comment supprimer un serveur
+commands.service.howTo.list=Lister tout vos serveurs
+commands.service.create=créer un serveur
+commands.service.install=installer un serveur
+commands.service.start=démarrer un serveur
+commands.service.stop=arrêter un serveur
+commands.service.remove=supprimer un serveur
+commands.service.list=lister vos serveurs
+commands.service.create.invalidServerName=%red%Le nom du serveur est invalide, vous ne pouvez pas utiliser ces caractères -> '%var%'
+commands.service.create.invalidXMS=%var% n'est pas valide en tant que xms
+commands.service.create.invalidXMX=%var% n'est pas valide en tant que xmx
+commands.service.create.invalidMod=le mode n'est pas valide
+commands.service.create.nonExistentBundle=Bundle inéxistant
+commands.service.create.invalidPort=Port invalide
+
+commands.service.install.notConfigured=%red%[!] Le service mentionné n'est pas configuré...
+commands.service.install.incorrectVersion=%red%[!] La version est incorrecte...
+commands.service.install.fileUpdated=%green%Le fichier a été mis à jour avec succès
+
+commands.service.kill.incorrectService=%red%[!] Le service mentionné est incorrect..
+commands.service.kill.serviceNotFound=%red%[!] L'ID du service est introuvable
+
+commands.service.list.proxy=Services proxy:
+commands.service.list.spigot=Services spigot:
+
+commands.service.remove.deleted=%blue%[V] Le serveur a été supprimé
+commands.service.remove.folderDeleted=%blue%Le dossier du serveur a été supprimé du dossier 'template'
+commands.service.remove.nonExistentServer=%red%[!] Ce serveur n'éxiste pasThis server does not exist
+commands.service.remove.removeServer=supprimer un serveur
+commands.service.remove.removeProxy=supprimer un proxy
+
+commands.service.screen.refreshing=Actualisation de la console...
+commands.service.screen.tryRefresh=%blue%Tentative d'actualisation de la console
+commands.service.screen.backupingService=%blue% Récupération de la console du service %var-%var%...
+commands.service.screen.alreadyBackuped=%blue% La console du service %var%-%var% a déjà été récupéré %var%
+commands.service.screen.noScreen=Il n'y a actuellement pas de console d'allumée
+commands.service.screen.list=Voici la liste des consoles disponibles -> %var%
+
+commands.service.start.incorrectMods=%red%[!] L'argument de mode est incorrect
+commands.service.start.incorrectRAM=%red%[!] L'argument de RAM est incorrect... essayez par exemple: 512M ou 1G
+commands.service.start.invalidChosenMods=%red%[!] Le mode choisit est invalide... Choisissez STATIC ou DYNAMIC
+
+commands.service.stop.incorrectService=%red%[!] Le service mentionné n'est pas correct..
+commands.service.stop.idNotFound=%red%[!] L'ID du service est introuvable
+
+commands.hypervisor.reloading=Rechargement des commandes...
+commands.hypervisor.specifyModule=Veuillez spécifier un module à recharger
+commands.hypervisor.reloadingCompletors=Rechargement des compléteurs...
+commands.hypervisor.reloadingCompletorsDone=Rechargement des compléteurs terminé !
+commands.hypervisor.specifyCompletor=Veuillez spécifier un compléteur à recharger
+commands.hypervisor.reloadingCompletor=Rechargement du compléteur %var%...
+commands.hypervisor.reloadingCompletorDone=Rechargement du compléteur fini !
+commands.hypervisor.reloadingClass=Rechargement de %var%.class
+commands.hypervisor.completorNotFound=Compléteur introuvable
+
+## Connection
+connection.core.usePortInsteadOfNonAvailable=%purple%Le port %var% n'est pas disponible, le serveur utilisera à la place le port %var%.
+connection.core.networkMayNotWorkCorrectly=%redbobr%%whitebg%Il est possible que le Network ne fonctionne pas correctement.
+
+connection.core.channels.object=Objet>> %var%
+connection.core.channels.channelRegistered=%purple%Le cannal %var% a été enregistré%reset%
+
+connection.core.communication.enteringRequest=Requête entrante ->
+connection.core.communication.request=Requête : %var%
+connection.core.communication.unrecognizedClient=%red%Le client %var% n'a pas été reconnu et a essayé de se connecter
+connection.core.communication.recoveringClient=%red%<!> %yellow%Récupération de %purple%%var%-%var% %yellow%sur le proxy
+connection.core.communication.proxyLinked=%yellow%- %cyanbo%Le proxy %var%-%var% est maintenant lié au DreamNetwork
+connection.core.communication.serverLinked=%yellow%- %cyanbo%Le serveur %var%-%var% est maintenant lié au DreamNetwork
+connection.core.communication.distantConsoleConnected=%yellow%- %greenbo%La console distante DEVTOOL a été lié au DreamNetwork sour le nom %var% avec l'IP %var%
+
+connection.core.handler.localAddress=ADRESSE Locale: %var%
+connection.core.handler.remoteAddress=ADRESSE Distante: %var%
+connection.core.handler.channelActive=Cannal actif
+connection.core.handler.processStopped=%redbo%Le processus '%var%' a été arrêté.
+connection.core.handler.removeClient=Suppression serveur, client : %var%
+connection.core.handler.writeFlush=%yellow%Écriture et Envoi>> %white%%var%
+
+connection.request.sent=La requête %var% a été envoyé avec succès!
+connection.request.exception.requestNotFound=La requête %var% est introuvable.
+connection.request.exception.errorCause=%ared%CAUSE ERREUR>> %var% || %var%
+connection.request.exception.errorOn=ERREUR A>> %whitebg%%ablack%%var%:%var%:%var%%areset%
+
+## Debug Mod
+debug.enabled=%purple%Mode Debug %green%%whitebg%activé
+debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
+
+## Console
+console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var% %white%> %areset%
+console.askExit=%redbobr%voulez-vous quitter le DreamNetwork ? (y (oui) ou n (non)) > %reset%
+console.changed=%whitebg%%black%Vous venez de changer de console. [%var%]
+console.errorOn=%red%ERREUR A>> %var% || %var%
+console.errorCause=%red%CAUSE ERREUR>> %var% || %var%
+console.contactDNDevError=Veuillez contacter les développeurs du DreamNetwork pour leur signaler cette erreur.
+console.closed=Console fermée
+
+## Installer
+installer.incorrectLink=%red%LIEN D'INSTALLATION INCORRECT.
+installer.installationCantBeLaunched=%red%L'INSTALLATION NE PEUT PAS DÉMARRER.
+installer.startInstallation=Lancement de l'installation...
+installer.progress=Installation de %cyan%%var%%areset%   %var% [%var%mb]%var%\r
+installer.completed=\nFINI... %var%kb au total
+installer.emptyQueue=!QUEUE VIDE
+
+## Libraries
+libraries.customClass.close=Fermeture customisé
+libraries.customClass.finalized=%var% - CL Finalisé.
+
+libraries.loaded=Chargé %var%
+libraries.cannotLoad=Chargement de la librairie via l'archive jar '%var%' impossible. Raison: %var%
+
+## API
+core.api.down=%red%L'API est HORS LIGNE -> veuillez réessayer plus tard.
+core.api.licenceError=%red%Il y a un problème avec votre licence: %var%
+
+## Core Utils
+core.utils.process.checkAliveWindows=Vérification de la survie Windows du Pid: [%var%]
+core.utils.process.checkAliveLinuxUnix=Vérification de la survie Linux/UNIX du Pid: [%var%]
+core.utils.process.isRunning.command=Commande [%var%]
+core.utils.process.isRunning.line=Ligne [%var%]
+core.utils.process.isRunning.running=Le processus %var% est en cours d'éxecution
+core.utils.process.isRunning.notRunning=Le processus %var% n'est pas en cours d'éxecution
+core.utils.process.isRunning.systemCommandError=Une exception est survenue en utilisant la commande système [%var%]
+
+core.utils.sockets.checkingPort=Vérification de la disponnibilité du port %var%...
+core.utils.sockets.invalidStartPort=Le port de lancement %port% est invalide
+
+core.utils.timers.hour=%var% heure(s)
+core.utils.timers.minute=%var% minute(s)
+core.utils.timers.second=%var% seconde(s)
+
+core.utils.yaml.createFileError=%red%Une erreur est survenue lors de la création du fichier %var%%reset%
+core.utils.yaml.loadFileError=%red%Une erreur est survenue lors du chargement du fichier %var%%reset%
+core.utils.yaml.ignoreFieldEquals=Le champs %var% a été ignoré car sa valeur est égalé à %var%
+core.utils.yaml.ignoreFieldNotFound=Le champs %var% a été ignoré car il n'a pas été trouvé dans la classe %var%
+core.utils.yaml.errorWritingFile=Une erreur est survenue lors de l'écriture du fichier %var%
+
+## Utils
+utils.spiget.searchFailed=La rechercher de %var% a échoué.
+
+## API
+api.commands.invalidArguments=%ared% Arguments invalid.
+api.commands.cancelled=Commande annulée
+api.commands.helpBuilder.list=%greenul%Liste des commandes pour %var%:

@@ -115,7 +115,7 @@ service.screen.closed=Screen closes -> %var%
 ## Introduction
 introduction.ask.firstTime=%green%It is your first time you use %cyan%DreamNetwork %green%? %white%Type yes or no: %red%
 introduction.help.spiget.helpSpiget=HELP SPIGET:
-introduction.help.spiget.search=- SEARCH [VALEUR] [NOM/TAG/AUTEURS] [PAGE]
+introduction.help.spiget.search=- SEARCH [VALU] [NAME/TAG/AUTHORS] [PAGE]
 introduction.help.useCommand=%green%You can use the command %cyan%help %green%to get help %white%: %red%
 introduction.servers.oneLastThing=One more last thing...
 introduction.servers.helpToCreateServer=%green%Do you want help to create a Server ?  : %red%
@@ -208,16 +208,26 @@ commands.service.remove.removeProxy=remove a proxy
 commands.service.screen.refreshing=Refreshing screens...
 commands.service.screen.tryRefresh=%blue%Try to refresh the screens
 commands.service.screen.backupingService=%blue% Backuping screen for service on %var%-%var%...
-commands.service.screen.alreadyBackuped=%blue% Screen for service on %var%-%var% is already backuped + " %var%
+commands.service.screen.alreadyBackuped=%blue% Screen for service on %var%-%var% is already backuped %var%
 commands.service.screen.noScreen=There is no screen currently on
 commands.service.screen.list=Here is the list of available screens -> %var%
 
 commands.service.start.incorrectMods=%red%[!] The mods argument is incorrect
 commands.service.start.incorrectRAM=%red%[!] The RAM Argument is incorrect... try for example: 512M or 1G
-commands.service.start.invalidChosenMods=%red%[!] The mods choosed is invalid... choose STATIC or DYNAMIC
+commands.service.start.invalidChosenMods=%red%[!] The mods chooses is invalid... choose STATIC or DYNAMIC
 
 commands.service.stop.incorrectService=%red%[!] The service mentionned is not correct..
 commands.service.stop.idNotFound=%red%[!] The service id is not findable
+
+commands.hypervisor.reloading=Reloading commands...
+commands.hypervisor.specifyModule=Please specify a module to reload
+commands.hypervisor.reloadingCompletors=Reloading completors...
+commands.hypervisor.reloadingCompletorsDone=Reloading completors done !
+commands.hypervisor.specifyCompletor=Please specify a completor to reload
+commands.hypervisor.reloadingCompletor=Reloading completor %var%...
+commands.hypervisor.reloadingCompletorDone=Reloading completor done !
+commands.hypervisor.reloadingClass=Reloading %var%.class
+commands.hypervisor.completorNotFound=Completor not found
 
 ## Connection
 connection.core.usePortInsteadOfNonAvailable=%purple%The port %var% is not available, the server will use the port %var% instead.
@@ -287,7 +297,7 @@ core.utils.process.isRunning.running=Process %var% is running
 core.utils.process.isRunning.notRunning=Process %var% is not running
 core.utils.process.isRunning.systemCommandError=Got exception using system command [%var%]
 
-core.utils.sockets.checkingPort="Checking if port %var% is available...
+core.utils.sockets.checkingPort=Checking if port %var% is available...
 core.utils.sockets.invalidStartPort=Invalid start port: %var%
 
 core.utils.timers.hour=%var% hour(s)

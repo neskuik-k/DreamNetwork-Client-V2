@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.github.tomaslanger.chalk.Chalk;
 
 
@@ -22,29 +23,30 @@ public class HelpCommand extends Command {
         commandExecutor = new CommandExecutor() {
             @Override
             public boolean execute(String[] args) {
-                Console.print(Chalk.on("Lists of commands for help:").green().bold().underline());
+                Console.print(LanguageManager.getMessage("commands.help.list="));
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
-                Console.print(Chalk.on("How to manage a service ").underline());
+                Console.print(LanguageManager.getMessage("commands.help.howTo.manageService"));
                 Console.print("service:");
-                Console.print("service add proxy [name] | add a proxy ");
+                Console.print("service add server [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.addA").replaceFirst("%var%", LanguageManager.getMessage("server")));
+                Console.print("service add proxy [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.addA").replaceFirst("%var%", "proxy"));
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
-                Console.print(Chalk.on("How to start or stop a server: ").underline());
-                Console.print("service start server [name] | start a server ");
-                Console.print("service start proxy [name] | start a proxy ");
+                Console.print(LanguageManager.getMessage("commands.help.howTo.startStopService"));
+                Console.print("service start server [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.startA").replaceFirst("%var%", LanguageManager.getMessage("server")));
+                Console.print("service start proxy [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.startA").replaceFirst("%var%", "proxy"));
                 Console.debugPrint("");
-                Console.print("service stop server [name] | stop a server ");
-                Console.print("service stop proxy [name] | stop a proxy ");
+                Console.print("service stop server [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.stopA").replaceFirst("%var%", LanguageManager.getMessage("server")));
+                Console.print("service stop proxy [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.stopA").replaceFirst("%var%", "proxy"));
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
 
-                Console.print(Chalk.on("How to connect to the console: ").underline());
-                Console.print("service screen server [name] | connect to the server's console ");
-                Console.print("service screen proxy [name] | connect to the proxy's console ");
+                Console.print(LanguageManager.getMessage("commands.help.howTo.connectConsole"));
+                Console.print("service screen server [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.connectTo").replaceFirst("%var%", LanguageManager.getMessage("server")));
+                Console.print("service screen proxy [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.connectTo").replaceFirst("%var%", "proxy"));
 
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").yellow());
 
-                Console.print(Chalk.on("How to remove server: ").underline());
-                Console.print("service remove server [name] | remove a server ");
-                Console.print("service remove proxy [name] | remove a proxy ");
+                Console.print(LanguageManager.getMessage("commands.help.howTo.removeService"));
+                Console.print("service remove server [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.removeA").replaceFirst("%var%", LanguageManager.getMessage("server")));
+                Console.print("service remove proxy [" + LanguageManager.getMessage("name") + "] | " + LanguageManager.getMessage("commands.help.removeA").replaceFirst("%var%", "proxy"));
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
                 return true;
             }

@@ -86,7 +86,6 @@ public class LanguageManager {
         }catch (FileNotFoundException fnfe){return false;}
         for(String key : settedKeys){
             if(!messages.containsKey(key)){
-                System.out.println(key);
                 return useLanguage(actualLang);
             }
         }
