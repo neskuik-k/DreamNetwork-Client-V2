@@ -5,7 +5,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManage
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;

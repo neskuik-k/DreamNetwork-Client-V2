@@ -13,7 +13,6 @@ import com.github.tomaslanger.chalk.Chalk;
 import java.util.logging.Level;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
-import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Remove extends SubCommandCompletor implements SubCommandExecutor {
     public Remove(){

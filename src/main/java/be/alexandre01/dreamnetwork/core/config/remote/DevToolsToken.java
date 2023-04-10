@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.config.remote;
 
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.utils.json.JSONFileUtils;
+import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
 import com.google.gson.Gson;
 
 import java.io.File;

@@ -1,8 +1,8 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
-import be.alexandre01.dreamnetwork.core.utils.yaml.YamlFileUtils;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
 import lombok.Setter;
 

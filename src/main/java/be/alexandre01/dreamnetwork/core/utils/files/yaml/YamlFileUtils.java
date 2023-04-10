@@ -1,7 +1,6 @@
-package be.alexandre01.dreamnetwork.core.utils.yaml;
+package be.alexandre01.dreamnetwork.core.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;

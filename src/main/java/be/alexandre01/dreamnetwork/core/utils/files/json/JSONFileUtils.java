@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.utils.json;
+package be.alexandre01.dreamnetwork.core.utils.files.json;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

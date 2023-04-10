@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -12,7 +11,6 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
-import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.github.tomaslanger.chalk.Chalk;

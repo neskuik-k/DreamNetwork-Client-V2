@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.process;
 
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.utils.json.JSONFileUtils;
+import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
 import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
 import com.google.gson.Gson;
 import lombok.Getter;

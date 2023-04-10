@@ -1,11 +1,9 @@
 package be.alexandre01.dreamnetwork.core.console.widgets;
 
-import static org.jline.keymap.KeyMap.ctrl;
-    import static org.jline.keymap.KeyMap.alt;
+import static org.jline.keymap.KeyMap.alt;
 
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.LineReader;

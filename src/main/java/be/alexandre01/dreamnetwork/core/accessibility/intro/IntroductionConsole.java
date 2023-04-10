@@ -1,35 +1,14 @@
 package be.alexandre01.dreamnetwork.core.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroHelp;
-import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import be.alexandre01.dreamnetwork.core.installer.Installer;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
-import org.jline.console.ArgDesc;
-import org.jline.console.CmdDesc;
 import org.jline.reader.LineReader;
-import org.jline.utils.AttributedString;
-import org.jline.widget.TailTipWidgets;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.Normalizer;
-import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class IntroductionConsole {

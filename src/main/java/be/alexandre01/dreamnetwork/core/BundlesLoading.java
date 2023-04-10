@@ -8,15 +8,12 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
-import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 
 import java.io.*;
-import java.util.logging.Level;
 
 public class BundlesLoading {
     File[] directories;

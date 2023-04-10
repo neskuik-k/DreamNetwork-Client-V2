@@ -5,7 +5,7 @@ import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 

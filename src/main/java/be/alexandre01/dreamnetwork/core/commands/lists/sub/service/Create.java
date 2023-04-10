@@ -11,8 +11,6 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;

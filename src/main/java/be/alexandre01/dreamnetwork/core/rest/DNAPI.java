@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.rest;
 
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

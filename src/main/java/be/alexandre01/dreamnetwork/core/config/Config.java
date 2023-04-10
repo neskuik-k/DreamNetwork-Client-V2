@@ -67,7 +67,7 @@ public class Config {
         if (!theDir.exists()) {
             Console.print(Chalk.on("Creating the file...  "+ theDir.getName()).cyan(), Level.INFO);
             boolean result = false;
-
+            System.out.println(theDir.getAbsolutePath());
             try{
                 try {
                     theDir.createNewFile();

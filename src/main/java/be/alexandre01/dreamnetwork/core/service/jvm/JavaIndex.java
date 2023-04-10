@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.core.service.jvm;
 
 import java.util.HashMap;
 
-import be.alexandre01.dreamnetwork.core.utils.json.JSONFileUtils;
+import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
 
 import lombok.Data;
 

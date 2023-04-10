@@ -20,7 +20,6 @@ import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientMana
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
@@ -30,7 +29,6 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -41,7 +39,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Core {
@@ -157,7 +154,7 @@ public class Core {
             CoreServer coreServer;
             Thread thread = new Thread(coreServer = new CoreServer(14520));
             thread.start();
-            console.fPrint(LanguageManager.getMessage("core.server.started").replaceFirst("%var%", String.valueOf(coreServer.getPort())), Level.INFO);
+            console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {
             Console.bug(e);
         }

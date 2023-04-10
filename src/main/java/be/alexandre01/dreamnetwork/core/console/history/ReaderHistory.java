@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.history;
 
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.utils.json.JSONFileUtils;
+import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
 import com.google.gson.Gson;
 import lombok.Getter;
 

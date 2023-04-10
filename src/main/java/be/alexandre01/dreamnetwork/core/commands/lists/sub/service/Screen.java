@@ -15,7 +15,6 @@ import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
-import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public Screen(){

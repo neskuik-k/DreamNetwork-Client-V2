@@ -6,7 +6,6 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 
 public class IntroHelp extends IntroductionConsole {
 

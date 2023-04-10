@@ -6,7 +6,6 @@ import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import com.github.tomaslanger.chalk.Chalk;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
@@ -54,7 +53,7 @@ public class Console extends Thread{
     public String readLineString1 = null;
     public String readLineString2 = null;
     public MaskingCallback maskingCallback = null;
-    @Setter public String writing = LanguageManager.getMessage("console.dreamnetworkWriting").replaceFirst("%var%", Core.getUsername());
+    @Setter public String writing = Console.getFromLang("console.dreamnetworkWriting",Core.getUsername());
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
@@ -195,6 +194,16 @@ public class Console extends Thread{
     /*
     Basic Print in console
      */
+
+    public void fPrintLang(String map, Level level, Object... params){
+        if (Core.getInstance().isDebug()){
+            fPrint(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+        }
+        fPrint(LanguageManager.getMessage(map,params),level);
+    }
+    public void fPrintLang(String map, Object... params){
+        fPrintLang(map,Level.INFO,params);
+    }
     public void fPrint(Object s,Level level){
         //stashLine();
 
@@ -230,6 +239,22 @@ public class Console extends Thread{
         }
         sendToLog(s,level);
         refreshHistory(s + Colors.ANSI_RESET(),level);
+    }
+
+    public static void printLang(String map,Level level,Object... params){
+        if(Core.getInstance().isDebug()) {
+            print(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+            return;
+        }
+        print(LanguageManager.getMessage(map,params),level);
+    }
+
+    public static void printLang(String map,Object... params){
+        printLang(map,Level.INFO,params);
+    }
+
+    public static String getFromLang(String map,Object... params){
+        return LanguageManager.getMessage(map,params);
     }
     public static void print(Object s){
         LineReader lineReader = ConsoleReader.sReader;
@@ -297,7 +322,7 @@ public class Console extends Thread{
     }
     public static void clearConsole(PrintStream printStream){
 
-        try
+        /*try
         {
             final String os = System.getProperty("os.name");
 
@@ -314,7 +339,7 @@ public class Console extends Thread{
         catch (final Exception ignored)
         {
 
-        }
+        }*/
     }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;

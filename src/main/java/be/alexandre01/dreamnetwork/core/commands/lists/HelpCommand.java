@@ -7,11 +7,6 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.github.tomaslanger.chalk.Chalk;
 
-
-import java.util.logging.Level;
-
-import static org.jline.builtins.Completers.TreeCompleter.node;
-
 public class HelpCommand extends Command {
 
     public HelpCommand(String name) {

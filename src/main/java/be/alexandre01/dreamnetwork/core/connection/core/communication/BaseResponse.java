@@ -6,7 +6,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
@@ -15,7 +14,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObj
 import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;

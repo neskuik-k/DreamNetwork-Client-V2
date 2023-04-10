@@ -5,7 +5,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import org.jline.builtins.Completers;

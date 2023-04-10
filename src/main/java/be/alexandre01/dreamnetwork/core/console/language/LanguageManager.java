@@ -1,42 +1,58 @@
 package be.alexandre01.dreamnetwork.core.console.language;
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.language.factories.KeysManager;
+import be.alexandre01.dreamnetwork.core.console.language.factories.LangLoader;
 import lombok.Getter;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
 
 public class LanguageManager {
     @Getter private static final String[] availableLanguages = {"en_EN", "fr_FR", "de_DE"};
 
-    private static final File langFile = Config.createFile("lang/language.lang");
-    private static final File keysFile = Config.createFile("lang/keys");
+    private File langFile;
+    private File keysFile;
     private static HashMap<String, String> messages;
     private static List<String> settedKeys;
-    private static String actualLang = "en_EN";
+    @Getter private Language defaultLanguage;
+    private static String actualLocalName = "en_EN";
 
+    @Getter private KeysManager defaultKeysManager = new KeysManager();
 
-    public static boolean load(){
+    public boolean load(){
         Config.createDir("lang");
+        System.out.println("Je m'amuse");
+        InputStream en_EN = getInputFrom("en_EN");
+        System.out.println(en_EN);
+        LangLoader langLoader = new LangLoader(this);
+        defaultKeysManager = langLoader.loadKeys(en_EN);
+        defaultLanguage = langLoader.load(en_EN,"en_EN");
+        InputStream fr_FR = getInputFrom("fr_FR");
+        LangLoader french = new LangLoader(this);
+        defaultLanguage = french.load(fr_FR,"fr_FR");
 
-        if(!writeFile("files/lang/keys", keysFile)){return false;}
 
-        if(langFile.length() == 0L){
-            if(!writeFile("files/lang/en_EN.lang", langFile)){return false;}
-        }
-
-        return loadLanguage();
+       // return loadLanguage();
+        return true;
     }
 
-    public static boolean useLanguage(String lang){
-        if(!isLanguageAvailable(lang)){return false;}
+    private InputStream getInputFrom(String localName){
+        return LanguageManager.class.getClassLoader().getResourceAsStream("files/lang/" + localName + ".lang");
+    }
+    public static String getMessage(String key,Object... params){
+        if(Main.getLanguageManager().getDefaultLanguage().getMessages().containsKey(key)){
+            return Main.getLanguageManager().getDefaultLanguage().translateTo(key,params);
+        }
+        return "Key not found";
+    }
 
+    /*public static boolean useLanguage(String lang){
+        if(!isLanguageAvailable(lang)){return false;}
+        InputStream in = Language2Manager.class.getClassLoader().getResourceAsStream("");
 
         if(writeFile("files/lang/" + lang + ".lang", langFile)){
             actualLang = lang;
@@ -54,21 +70,20 @@ public class LanguageManager {
         return false;
     }
 
+    public void loadLanguage(String localName){
+        InputStream in = getInputFrom(localName);
+        LangLoader langLoader = new LangLoader(in);
+    }
+
     private static boolean loadLanguage(){
         messages = new HashMap<>();
         settedKeys = new ArrayList<>();
 
         try {
-            Scanner scan = new Scanner(keysFile);
-            while(scan.hasNextLine()){
-                String line = scan.nextLine();
-                if(line.equals("")){continue;}
-                settedKeys.add(line);
-            }
-
             scan = new Scanner(langFile);
             while(scan.hasNextLine()){
                 String line = scan.nextLine();
+                System.out.println(line);
                 if(line.startsWith("##") || line.equals("")){continue;}
 
                 if(line.startsWith("lang=")){
@@ -77,6 +92,7 @@ public class LanguageManager {
                 }
                 String[] info = line.split("=");
                 if(info.length != 2){
+                    System.out.println(line);
                     System.out.println(info[0]);
                     return useLanguage(actualLang);
                 }
@@ -96,7 +112,7 @@ public class LanguageManager {
         try{
             file.delete();
             file.createNewFile();
-            InputStream in = LanguageManager.class.getClassLoader().getResourceAsStream(inputStringPath);
+            InputStream in = Language2Manager.class.getClassLoader().getResourceAsStream(inputStringPath);
             Config.write(in, file);
             return true;
         }catch (IOException ioe){
@@ -106,5 +122,5 @@ public class LanguageManager {
 
     public static String getMessage(String path){
         return messages.getOrDefault(path, "INVALID PATH");
-    }
+    }*/
 }

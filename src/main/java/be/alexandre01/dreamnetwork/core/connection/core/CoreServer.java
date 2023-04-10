@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.core.connection.core;
 
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CorePipeline;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import io.netty.bootstrap.ServerBootstrap;

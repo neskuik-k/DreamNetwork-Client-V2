@@ -9,13 +9,8 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-
-import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class IntroServers extends IntroductionConsole {
 

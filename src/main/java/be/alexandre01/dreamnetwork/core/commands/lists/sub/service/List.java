@@ -9,7 +9,6 @@ import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.NonNull;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
-import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class List extends SubCommandCompletor implements SubCommandExecutor {
     public List(){

@@ -259,7 +259,7 @@ debug.enabled=%purple%Mode Debug %green%%whitebg%activé
 debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 
 ## Console
-console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var% %white%> %areset%
+console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
 console.askExit=%redbobr%voulez-vous quitter le DreamNetwork ? (y (oui) ou n (non)) > %reset%
 console.changed=%whitebg%%black%Vous venez de changer de console. [%var%]
 console.errorOn=%red%ERREUR A>> %var% || %var%
@@ -296,7 +296,7 @@ core.utils.process.isRunning.notRunning=Le processus %var% n'est pas en cours d'
 core.utils.process.isRunning.systemCommandError=Une exception est survenue en utilisant la commande système [%var%]
 
 core.utils.sockets.checkingPort=Vérification de la disponnibilité du port %var%...
-core.utils.sockets.invalidStartPort=Le port de lancement %port% est invalide
+core.utils.sockets.invalidStartPort=Le port de lancement %var% est invalide
 
 core.utils.timers.hour=%var% heure(s)
 core.utils.timers.minute=%var% minute(s)

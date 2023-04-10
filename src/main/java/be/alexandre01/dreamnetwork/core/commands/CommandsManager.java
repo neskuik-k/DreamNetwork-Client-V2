@@ -4,7 +4,6 @@ package be.alexandre01.dreamnetwork.core.commands;
 import be.alexandre01.dreamnetwork.api.commands.ICommand;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import com.github.tomaslanger.chalk.Chalk;
 
 import java.io.PrintWriter;
 import java.util.HashMap;

@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.core.connection.request.exception;
 
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import org.fusesource.jansi.Ansi;

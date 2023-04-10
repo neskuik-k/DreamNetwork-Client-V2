@@ -2,23 +2,10 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
-import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
-import be.alexandre01.dreamnetwork.core.service.bundle.BService;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
-import be.alexandre01.dreamnetwork.core.utils.clients.TypeArgumentChecker;
 import lombok.NonNull;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 

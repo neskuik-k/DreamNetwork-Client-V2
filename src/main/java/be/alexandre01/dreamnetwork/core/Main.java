@@ -57,6 +57,8 @@ public class Main {
 
     @Getter @Setter private static BundlesLoading bundlesLoading;
 
+    @Getter private static LanguageManager languageManager;
+
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -69,7 +71,10 @@ public class Main {
         readerHistory.init();
 
         // Start language fetching
-        if(!LanguageManager.load()){
+
+
+        languageManager = new LanguageManager();
+        if(!languageManager.load()){
             // Fetch fail, can't use messages
         }
         Console.clearConsole(System.out);

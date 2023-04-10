@@ -17,7 +17,7 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
 
-import be.alexandre01.dreamnetwork.core.utils.yaml.Ignore;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -313,7 +313,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
         String resourcePath = null;
         String startup = null;
-
+        Console.fine(jvmConfig.getJavaVersion());
+        Console.fine(Core.getInstance().getJavaIndex().getJMap().keySet());
+        if(!Core.getInstance().getJavaIndex().containsKey(jvmConfig.getJavaVersion())){
+            Console.print("The java version "+jvmConfig.getJavaVersion()+" is not founded",Level.WARNING);
+            return false;
+        }
         String javaPath = Core.getInstance().getJavaIndex().getJMap().get(jvmConfig.getJavaVersion()).getPath();
         if(jvmConfig.getStartup() != null){
             startup = jvmConfig.getStartup().replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmConfig.getXmx()).replaceAll("%xms%",jvmConfig.getXms());
