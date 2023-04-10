@@ -322,7 +322,7 @@ public class Console extends Thread{
     }
     public static void clearConsole(PrintStream printStream){
 
-        /*try
+        try
         {
             final String os = System.getProperty("os.name");
 
@@ -339,7 +339,7 @@ public class Console extends Thread{
         catch (final Exception ignored)
         {
 
-        }*/
+        }
     }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;
