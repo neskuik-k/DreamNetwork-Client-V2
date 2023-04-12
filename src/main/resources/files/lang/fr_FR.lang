@@ -24,7 +24,7 @@ warning=ATTENTION
 
 ## Main
 
-main.shutdown=\n%whiteul%%purplebg%DreamNetwork est en train de s'arrêter, veuillez patienter...\n%reset%
+main.shutdown=\n%whiteul%%purplebg%DreamNetwork est en train de s'arrêter, veuillez patienter...%reset%
 main.invalidLicenseKey=%red%La clé de licence est invalide!
 main.successAuth=%greenbobr%Authentification Réussie !\n%reset%
 
