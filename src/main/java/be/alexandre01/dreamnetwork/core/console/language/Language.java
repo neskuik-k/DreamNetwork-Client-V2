@@ -13,15 +13,24 @@ public class Language {
     }
 
     public static void main(String[] args) {
-        String s = "test du serveur %s sur le port %s";
+        String msg = "Installation of %cyan% %s %areset%  %s [%s mb]";
+        String bar = "[<->                              ]";
+        String space = "e";
+        String kb = "500";
         int i = 50;
         String serv = "TropBien";
-        System.out.println(String.format(s,serv,i));
+        System.out.println(String.format(msg,bar,kb,space));
     }
     public String translateTo(String map,Object... variables){
         if(variables.length == 0){
             return messages.get(map);
         }
-        return String.format(messages.get(map),variables);
+
+        String msg = messages.get(map);
+       // System.out.println("Message to encode => "+msg);
+        for (int i = 0; i < variables.length; i++) {
+            msg = msg.replace("%var"+i+"%",variables[i].toString());
+        }
+        return msg;
     }
 }

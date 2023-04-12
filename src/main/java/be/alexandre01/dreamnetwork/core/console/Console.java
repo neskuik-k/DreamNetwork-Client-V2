@@ -318,10 +318,10 @@ public class Console extends Thread{
 
 
     public static void clearConsole(){
-        clearConsole(Core.getInstance().formatter.getDefaultStream());
+        //clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-
+    /*
         try
         {
             final String os = System.getProperty("os.name");
@@ -339,7 +339,7 @@ public class Console extends Thread{
         catch (final Exception ignored)
         {
 
-        }
+        }*/
     }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;

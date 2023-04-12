@@ -16,6 +16,7 @@ import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
@@ -42,6 +43,7 @@ public class Main {
 
     @Getter @Setter
     public static BundleManager bundleManager;
+    @Getter private static GlobalSettings globalSettings;
     @Getter
     private JVMContainer jvmContainer;
     @Getter
@@ -83,8 +85,8 @@ public class Main {
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
 
-       
 
+        globalSettings = new GlobalSettings();
         //UTF8
         Chalk.setColorEnabled(true);
         System.out.println(Colors.RESET);
@@ -179,22 +181,22 @@ public class Main {
         SecretFile secretFile = null;
         try {
             secretFile = new SecretFile();
-        if(keys == null ){
-            secretFile.init();
-        }else {
-            secretFile.init(keys);
-        }
+            if(keys == null ){
+                secretFile.init();
+            }else {
+                secretFile.init(keys);
+            }
 
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
+     /*   if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
             outputStream.println(Console.getFromLang("main.invalidLicenseKey"));
             secretFile.deleteSecretFile();
             System.exit(1);
             return;
-        }
+        }*/
         outputStream.println(Console.getFromLang("main.successAuth"));
         try {
             Thread.sleep(250);

@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class BundlesLoading {
         directories = new File(Config.getPath("bundles/")).listFiles(File::isDirectory);
         serverDirectories = new File(Config.getPath("bundles/server/")).listFiles(File::isDirectory);
         proxyDirectories = new File(Config.getPath("bundles/proxy/")).listFiles(File::isDirectory);
-        System.out.println(Console.getFromLang("bundles.loading"));
+        System.out.println(Console.getFromLang("bundles.loading")+ Colors.RESET);
         try {
             Thread.sleep(50);
         } catch (InterruptedException e) {

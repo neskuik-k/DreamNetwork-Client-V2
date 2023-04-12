@@ -47,7 +47,7 @@ core.addon.loaded=Addon %var% has been loaded.
 core.addon.notSupported=%var% is not supported
 
 ## Bundle
-bundles.loading=%whiteboul%Loading bundles...
+bundles.loading=%whiteboul%Loading bundles...%reset%
 bundle.loading=%purple%Loading %cyanul%%var%%purpleul%%var%%reset%
 bundle.notConfigured=%red%--> [!] Template %redbobr%%var%%red% is not yet configured !
 bundle.noBundle=%red%There is no bundle with the path of %var%
@@ -62,7 +62,7 @@ bundle.customRequest.fileCreated= [!] Custom requests file created !
 ## Service
 service.creation.cancelCreation=%purplebobr%do you want to cancel the creation of the service ? (y or n) > %reset%
 service.creation.cancelCreationCancelled=Cancelled.
-service.creation.ask.bundleName=%green%What is the %cyan%bundle %green? %white%Type your bundlename: %red%
+service.creation.ask.bundleName=%green%What is the %cyan%bundle %green%? %white%Type your bundlename: %red%
 service.creation.ask.serverName=%green%What is the %cyan%serverName %green%? %white%Type your serverName: %red%
 service.creation.ask.proxyName=%green%What is the %cyan%proxyName %green%? %white%Type your proxyName: %red%
 service.creation.ask.serverType=%green%What is the %cyan%serverType %green%? %white%Type your type: %red%

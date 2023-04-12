@@ -70,7 +70,6 @@ public class JVMContainer implements IContainer {
         }*/
 
         try {
-            System.out.println("INIT");
             return new JVMExecutor(pathName, name, bundleData);
         }catch (Exception e){
             e.printStackTrace();

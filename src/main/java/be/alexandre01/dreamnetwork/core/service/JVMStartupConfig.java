@@ -92,11 +92,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.name = name;
         this.pathName = pathName;
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
-        System.out.println("Hello world !");
         if(isBuilded) return;
-        System.out.println("Hello world  2!");
         readFile();
-        Console.printLang("service.startupConfig.readingFile");
+        System.out.println("Reading file ! Done !");
         //sout all class data fields with reflection
         Field[] fields = JVMConfig.class.getDeclaredFields();
         for (Field field : fields) {
@@ -123,7 +121,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 field1.setAccessible(true);
                 if(field1.getAnnotation(Ignore.class) != null) continue;
                 field1.set(this,field.get(config));
-                Console.printLang("service.startupConfig.settingField", field.getName(), field.get(config));
+                //Console.printLang("service.startupConfig.settingField", field.getName(), field.get(config));
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 e.printStackTrace();
             }

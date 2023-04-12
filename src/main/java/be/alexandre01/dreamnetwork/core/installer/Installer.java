@@ -132,117 +132,117 @@ public class Installer {
         install(url,stream,name,null);
     }
     private static void install(String url, FileOutputStream stream, String name, ContentInstaller.IInstall iInstall){
-            try {
-                AsyncHttpClient client = Dsl.asyncHttpClient();
+        try {
+            AsyncHttpClient client = Dsl.asyncHttpClient();
 
-                AtomicBoolean completed = new AtomicBoolean(false);
-                queueisAvailable = false;
-                if(iInstall != null)
+            AtomicBoolean completed = new AtomicBoolean(false);
+            queueisAvailable = false;
+            if(iInstall != null)
                 iInstall.start();
-                Console.printLang("installer.startInstallation");
-                Core.getInstance().formatter.getDefaultStream().flush();
-                ListenableFuture<?> l = client.prepareGet(url).execute(new AsyncCompletionHandler<FileOutputStream>() {
-                    String bar = "<->";
-                    int space = 30;
-                    int calc = 0;
-                    int slower = 30;
-                    boolean directionRight = true;
-                    StringBuilder sb = new StringBuilder();
-                    @Override
-                    public AsyncHandler.State onBodyPartReceived(HttpResponseBodyPart bodyPart)
-                            throws Exception {
-                        stream.getChannel().write(bodyPart.getBodyByteBuffer());
+            Console.printLang("installer.startInstallation");
+            Core.getInstance().formatter.getDefaultStream().flush();
+            ListenableFuture<?> l = client.prepareGet(url).execute(new AsyncCompletionHandler<FileOutputStream>() {
+                String bar = "<->";
+                int space = 30;
+                int calc = 0;
+                int slower = 30;
+                boolean directionRight = true;
+                StringBuilder sb = new StringBuilder();
+                @Override
+                public AsyncHandler.State onBodyPartReceived(HttpResponseBodyPart bodyPart)
+                        throws Exception {
+                    stream.getChannel().write(bodyPart.getBodyByteBuffer());
 
-                        if(calc == 0 || calc % slower == 0){
-                            int currentSpace = space;
-                            sb = new StringBuilder();
-                            sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"["+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
-                            for (int i = 0; i < calc/slower; i++) {
-                                currentSpace--;
-                                sb.append(" ");
-                            }
-                            sb.append(Colors.ANSI_BLACK()+Colors.WHITE_BACKGROUND+bar+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
+                    if(calc == 0 || calc % slower == 0){
+                        int currentSpace = space;
+                        sb = new StringBuilder();
+                        sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"["+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
+                        for (int i = 0; i < calc/slower; i++) {
+                            currentSpace--;
+                            sb.append(" ");
+                        }
+                        sb.append(Colors.ANSI_BLACK()+Colors.WHITE_BACKGROUND+bar+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
 
-                            for (int i = 0; i < currentSpace; i++) {
-                                sb.append(" ");
-                            }
+                        for (int i = 0; i < currentSpace; i++) {
+                            sb.append(" ");
+                        }
 
 
-                            sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"]"+Colors.ANSI_RESET());
-                        }
-                        if(calc <= space*slower && directionRight){
-                            calc++;
-                            if(calc == space*slower){
-                                directionRight = false;
-                            }
-                        }
-                        if(calc >= 0 && !directionRight){
-                            calc--;
-                            if(calc == 0){
-                                directionRight = true;
-                            }
-                        }
-                        StringBuilder space = new StringBuilder();
-                        for (int i = 0; i < 35; i++) {
-                            space.append(" ");
-                        }
-                        Core.getInstance().formatter.getDefaultStream().print(Console.getFromLang("installer.progress", sb.toString(), stream.getChannel().size()/(1024*1024), space.toString()));
-                        Core.getInstance().formatter.getDefaultStream().flush();
-                        return State.CONTINUE;
+                        sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"]"+Colors.ANSI_RESET());
                     }
+                    if(calc <= space*slower && directionRight){
+                        calc++;
+                        if(calc == space*slower){
+                            directionRight = false;
+                        }
+                    }
+                    if(calc >= 0 && !directionRight){
+                        calc--;
+                        if(calc == 0){
+                            directionRight = true;
+                        }
+                    }
+                    StringBuilder space = new StringBuilder();
+                    for (int i = 0; i < 35; i++) {
+                        space.append(" ");
+                    }
+                    Core.getInstance().formatter.getDefaultStream().print(Console.getFromLang("installer.progress", name,sb.toString(), stream.getChannel().size()/(1024*1024), space.toString()));
+                    Core.getInstance().formatter.getDefaultStream().flush();
+                    return State.CONTINUE;
+                }
 
-                    @Override
-                    public FileOutputStream onCompleted(Response response) {
-                        try {
+                @Override
+                public FileOutputStream onCompleted(Response response) {
+                    try {
 
-                            ConsoleReader.sReader.printAbove("\n");
-                            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.completed").replaceFirst("%var%", String.valueOf(stream.getChannel().size()/1024)));
+                        ConsoleReader.sReader.printAbove("\n");
+                        Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.completed", String.valueOf(stream.getChannel().size()/1024)));
 
-                            if(iInstall != null){
-                                iInstall.complete();
-                            }
-
-
-                            if(!queue.isEmpty()){
-                                ContentInstaller.IInstall i = queue.get(0);
-                                queue.remove(0);
-                                Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.emptyQueue"));
-                                ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
-                                scheduler.scheduleAtFixedRate(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        queueisAvailable = true;
-                                        i.complete();
-                                        Core.getInstance().formatter.getDefaultStream().println(" COMP");
-                                        scheduler.shutdown();
-                                    }},1000,1,TimeUnit.MILLISECONDS);
+                        if(iInstall != null){
+                            iInstall.complete();
+                        }
 
 
-                                try {
-                                    client.close();
-                                } catch (IOException e) {
-                                    e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-                                }
-                                return stream;
-                            }
-                            queueisAvailable = true;
+                        if(!queue.isEmpty()){
+                            ContentInstaller.IInstall i = queue.get(0);
+                            queue.remove(0);
+                            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.emptyQueue"));
+                            ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+                            scheduler.scheduleAtFixedRate(new Runnable() {
+                                @Override
+                                public void run() {
+                                    queueisAvailable = true;
+                                    i.complete();
+                                    Core.getInstance().formatter.getDefaultStream().println(" COMP");
+                                    scheduler.shutdown();
+                                }},1000,1,TimeUnit.MILLISECONDS);
+
+
                             try {
-
                                 client.close();
                             } catch (IOException e) {
                                 e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
                             }
-                        }catch (Exception e){
-                            e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
                             return stream;
                         }
+                        queueisAvailable = true;
+                        try {
 
+                            client.close();
+                        } catch (IOException e) {
+                            e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
                         return stream;
                     }
-                });
-            }catch (Exception e){
-                e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-            }
+
+                    return stream;
+                }
+            });
+        }catch (Exception e){
+            e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
+        }
     }
 
 

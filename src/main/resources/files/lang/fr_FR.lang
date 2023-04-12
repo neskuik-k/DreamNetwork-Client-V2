@@ -45,15 +45,12 @@ core.addon.loaded=L'Addon %var% a bien été chargé.
 core.addon.notSupported=%var% n'est pas supporté
 
 ## Bundle
-bundles.loading=%whiteboul%Chargement des bundles...
+bundles.loading=%whiteboul%Chargement des bundles...%areset%
 bundle.loading=%purple%Chargement %cyanul%%var%%purpleul%%var%%reset%
 bundle.notConfigured=%red%--> [!] La maquette %redbobr%%var%%red% n'a pas été configuré !
 bundle.noBundle=%red%Il n'y a pas de bundle avec le chemin %var%
 bundle.replaceFile.writing=Ecriture du fichier: %var%/%var%
 bundle.loadTemplate.addJar=[+] Ajout d'un plugin jar de prévisualisation à la maquette %var%...
-bundle.loadTemplate.nullJVM=JVM EXECUTOR NULE
-bundle.loadTemplate.isJVMConfig=JVM CONFIGURÉE ?: %var%
-bundle.loadTemplate.hasJVMExecutable=JVM AVEC EXECUTABLE ?: %var%
 bundle.loadTemplate.loaded=%green%-->  [O] Maquette %greenbobr%%var% %green%chargée !
 bundle.customRequest.fileCreated= [!] Le fichier des requêtes personalisés a été créé !
 

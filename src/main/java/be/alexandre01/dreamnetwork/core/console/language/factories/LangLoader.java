@@ -37,7 +37,7 @@ public class LangLoader {
                 if(line.startsWith("##") || line.equals("")){return;}
                 String key = line.split("=")[0];
                 String value = line.split("=")[1];
-                System.out.println(key+"="+value);
+            //    System.out.println(key+"="+convert(value));
                 language.getMessages().put(key, convert(value));
             }
         });
@@ -65,6 +65,23 @@ public class LangLoader {
 
     private String convert(String line){
         for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
-        return line.replace("\\n", "\n").replace("\\r", "\r").replace("%var%","%s");
+        String newLine = line;
+        if(line.contains("%var%")){
+            newLine = "";
+            // split by %var% and replace by var+number
+            String[] split = line.split("%var%");
+
+            for(int i = 0; i < split.length; i++){
+                newLine += split[i];
+
+               // System.out.println("Split " + line + " to " + split[i]);
+                if(i != split.length-1 || line.replace(" ","").endsWith("%var%")){
+                    newLine += "%var"+i+"%";
+                }
+            }
+           // System.out.println("Converted " + line + " to " + newLine);
+            line = newLine;
+        }
+        return newLine.replace("\\n", "\n").replace("\\r", "\r");
     }
 }
