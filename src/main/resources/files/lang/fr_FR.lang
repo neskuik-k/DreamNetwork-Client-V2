@@ -223,6 +223,9 @@ commands.hypervisor.reloadingCompletor=Rechargement du compléteur %var%...
 commands.hypervisor.reloadingCompletorDone=Rechargement du compléteur fini !
 commands.hypervisor.reloadingClass=Rechargement de %var%.class
 commands.hypervisor.completorNotFound=Compléteur introuvable
+commands.hypervisor.specifyLanguage=Veuillez spécifier un language
+commands.hypervisor.languageNotFound = Language introuvable
+commands.hypervisor.languageChanged= Language changé en %var%
 
 ## Connection
 connection.core.usePortInsteadOfNonAvailable=%purple%Le port %var% n'est pas disponible, le serveur utilisera à la place le port %var%.

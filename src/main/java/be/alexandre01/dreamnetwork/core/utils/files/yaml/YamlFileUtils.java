@@ -1,9 +1,7 @@
 package be.alexandre01.dreamnetwork.core.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -18,11 +16,10 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class YamlFileUtils<T> {
 
-
+    private List<String> annotations = new ArrayList<>();
     private Class<T> clazz;
     @Getter File file;
      boolean skipNull;
@@ -50,12 +47,12 @@ public class YamlFileUtils<T> {
         return (T) loadFile(file, clazz);
     }
 
-    public void readFile(T obj){
-        readFile(file, obj,clazz,skipNull);
+    public void saveFile(T obj){
+        saveFile(file, obj,clazz,skipNull);
     }
-    public void readFile(){
+    public void saveFile(){
         System.out.println(clazz);
-        readFile(file,this,clazz,skipNull);
+        saveFile(file,this,clazz,skipNull);
     }
     public T loadFile(File file, Class<T> clazz){
       /* Representer representer = new Representer() {
@@ -89,17 +86,41 @@ public class YamlFileUtils<T> {
             return null;
         }
     }
-    public void readFile(File file, Object obj, Class<?> clazz, boolean skipNull){
+
+    public void readAndReplace(Object o){
+        Object config = read();
+
+        // Copy all data from config to this class
+        // get declaredfields and fields
+
+        Field[] fields = config.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            field.setAccessible(true);
+            try {
+                Field field1 = o.getClass().getDeclaredField(field.getName());
+                field1.setAccessible(true);
+                if(field1.getAnnotation(Ignore.class) != null) continue;
+                field1.set(this,field.get(config));
+                //Console.printLang("service.startupConfig.settingField", field.getName(), field.get(config));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void saveFile(File file, Object obj, Class<?> clazz, boolean skipNull){
         try {
 
-            file.createNewFile();
+            if(!file.exists())
+                file.createNewFile();
+
+
             Representer representer = new Representer() {
                 @Override
                 protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
 
-                    System.out.println(property.getType());
+                  /*  System.out.println(property.getType());
                     System.out.println(propertyValue);
-
+*/
 
 
                     //check if field has annotation @Ignore
@@ -113,23 +134,18 @@ public class YamlFileUtils<T> {
                     for (Field field : fields) {
                         field.setAccessible(true);
 
-                  //      System.out.println("Check => "+field.getName() );
                     //    System.out.println("Annotation => "+field.getAnnotation(Ignore.class));
                           if (field.getAnnotation(Ignore.class) != null){
-                                try {
                                    // Console.printLang("warning");
-                                    System.out.println("WARNING");
+                                    /*System.out.println("WARNING");
                                     System.out.println(field.getName());
                                     System.out.println(property.getName());
-                                    System.out.println(field.get(obj));
+                                    System.out.println(field.get(obj));*/
                                     if(field.getName().equals(property.getName())){
                                         System.out.println("IGNORED field "+field.getName()+" because it's equals to "+property.getName());
                                        // Console.printLang("core.utils.yaml.ignoreFieldEquals", field.getName(), propertyValue);
                                         return null;
                                     }
-                                } catch (IllegalAccessException e) {
-                                    e.printStackTrace();
-                                }
                             }
 
                           if(field.getName().equals(property.getName())){
@@ -149,17 +165,27 @@ public class YamlFileUtils<T> {
                     }
                 }
             };
-            Yaml yaml = new Yaml(new SafeConstructor(),representer);
+            Yaml yaml = new Yaml(new Constructor(clazz),representer);
 
             FileWriter fileWriter = new FileWriter(file);
+            if(!annotations.isEmpty()){
+                for (String annotation : annotations) {
+                    fileWriter.write(annotation);
+                }
+            }
             fileWriter.write(yaml.dumpAsMap(obj));
             fileWriter.flush();
             fileWriter.close();
+
 
         } catch (IOException e) {
             Console.printLang("core.utils.yaml.errorWritingFile", file.getName());
             Console.bug(e);
         }
+    }
+
+    public void addAnnotation(String annotation){
+        annotations.add("# "+annotation+"\n");
     }
 
 }

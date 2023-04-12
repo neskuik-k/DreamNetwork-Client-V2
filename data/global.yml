@@ -1,1 +1,4 @@
-{}
+# This is the global settings of the server
+folder: /home/alexandre01/serveur/
+language: en_EN
+port: 14521

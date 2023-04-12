@@ -123,7 +123,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         if(this.getConfigSize() != getConfigSize() && !isFixedData()){
-            readFile();
+            saveFile();
         }
 
         boolean proxy;

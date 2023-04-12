@@ -75,6 +75,9 @@ public class Main {
         // Start language fetching
 
 
+        globalSettings = new GlobalSettings();
+
+        globalSettings.loading();
         languageManager = new LanguageManager();
         if(!languageManager.load()){
             // Fetch fail, can't use messages
@@ -86,7 +89,6 @@ public class Main {
         PrintStream outputStream = System.out;
 
 
-        globalSettings = new GlobalSettings();
         //UTF8
         Chalk.setColorEnabled(true);
         System.out.println(Colors.RESET);

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.console.language.factories;
 
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
 import be.alexandre01.dreamnetwork.core.console.language.Language;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
@@ -56,7 +57,7 @@ public class LangLoader {
         }
 
         for(String key : keys){
-            System.out.println("Replacing " + key + " by default version");
+            Console.fine("Replacing " + key + " by default version");
             language.getMessages().put(key, convert(manager.getDefaultLanguage().getMessages().get(key))+" (DefaultFT)");
         }
 

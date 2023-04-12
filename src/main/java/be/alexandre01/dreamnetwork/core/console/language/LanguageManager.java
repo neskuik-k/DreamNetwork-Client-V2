@@ -8,6 +8,7 @@ import lombok.Getter;
 
 import java.io.File;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
@@ -19,35 +20,43 @@ public class LanguageManager {
     private static HashMap<String, String> messages;
     private static List<String> settedKeys;
     @Getter private Language defaultLanguage;
+    @Getter private Language actualLanguage;
     private static String actualLocalName = "en_EN";
 
     @Getter private KeysManager defaultKeysManager = new KeysManager();
 
     public boolean load(){
         Config.createDir("lang");
-        System.out.println("Je m'amuse");
         InputStream en_EN = getInputFrom("en_EN");
         System.out.println(en_EN);
         LangLoader langLoader = new LangLoader(this);
         defaultKeysManager = langLoader.loadKeys(en_EN);
         defaultLanguage = langLoader.load(en_EN,"en_EN");
-        InputStream fr_FR = getInputFrom("fr_FR");
-        LangLoader french = new LangLoader(this);
-        defaultLanguage = french.load(fr_FR,"fr_FR");
-
-
+        String lang = Main.getGlobalSettings().getLanguage();
+        loadDifferentLanguage(lang);
        // return loadLanguage();
         return true;
+    }
+
+    public void loadDifferentLanguage(String lang){
+        if(lang.equals(defaultLanguage.getLocalizedName()) || !Arrays.asList(availableLanguages).contains(lang)){
+            actualLanguage = defaultLanguage;
+            return;
+        }
+
+        InputStream searchIn = getInputFrom(lang);
+        LangLoader searchLoader = new LangLoader(this);
+        actualLanguage = searchLoader.load(searchIn,lang);
     }
 
     private InputStream getInputFrom(String localName){
         return LanguageManager.class.getClassLoader().getResourceAsStream("files/lang/" + localName + ".lang");
     }
     public static String getMessage(String key,Object... params){
-        if(Main.getLanguageManager().getDefaultLanguage().getMessages().containsKey(key)){
-            return Main.getLanguageManager().getDefaultLanguage().translateTo(key,params);
+        if(Main.getLanguageManager().getActualLanguage().getMessages().containsKey(key)){
+            return Main.getLanguageManager().getActualLanguage().translateTo(key,params);
         }
-        return "Key not found";
+        return "Key not found [ " + key + " ]";
     }
 
     /*public static boolean useLanguage(String lang){

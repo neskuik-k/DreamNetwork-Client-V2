@@ -11,7 +11,7 @@ public interface IStartupConfig extends IConfig {
     static IStartupConfigBuilder builder(){
         return new JVMStartupConfig.Builder();
     }
-    void readFile();
+    void saveFile();
 
     boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods);
 

@@ -93,7 +93,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.pathName = pathName;
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
         if(isBuilded) return;
-        readFile();
+        saveFile();
         System.out.println("Reading file ! Done !");
         //sout all class data fields with reflection
         Field[] fields = JVMConfig.class.getDeclaredFields();
@@ -108,8 +108,10 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
 
-    public void readFile(){
+    public void saveFile(){
         JVMConfig config = read();
+
+        if(config == null) return;
 
         // Copy all data from config to this class
         // get declaredfields and fields
@@ -449,7 +451,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        super.readFile(JVMConfig.class.cast(this));
+        super.saveFile(JVMConfig.class.cast(this));
         confSize = getConfigSize();
 
     }

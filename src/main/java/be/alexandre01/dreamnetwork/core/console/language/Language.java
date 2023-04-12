@@ -5,7 +5,7 @@ import lombok.Getter;
 import java.util.HashMap;
 
 public class Language {
-    private final String localizedName;
+    @Getter private final String localizedName;
     @Getter private final HashMap<String,String> messages = new HashMap<>();
 
     public Language(String localizedName) {
