@@ -26,7 +26,6 @@ public class LanguageManager {
     @Getter private KeysManager defaultKeysManager = new KeysManager();
 
     public boolean load(){
-        Config.createDir("lang");
         InputStream en_EN = getInputFrom("en_EN");
         System.out.println(en_EN);
         LangLoader langLoader = new LangLoader(this);
