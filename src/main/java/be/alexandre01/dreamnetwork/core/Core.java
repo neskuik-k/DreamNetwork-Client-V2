@@ -96,7 +96,7 @@ public class Core {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
-            Console.printLang("core.debugMode");
+            Console.printLang("Debug mode enabled");
             debug = true;
         }
 
@@ -216,9 +216,7 @@ public class Core {
         if(Main.getBundlesLoading().isFirstLoad()){
             Console.setActualConsole("m:introbegin",true,false);
         }
-
         Console.setBlockConsole(false);
-
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

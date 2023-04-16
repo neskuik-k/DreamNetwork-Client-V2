@@ -46,9 +46,14 @@ public class Client implements IClient {
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
         requestManager = new RequestManager(this);
+        System.out.println("Client : "+info);
         if (jvmType == null) {
             switch (info.split("-")[0]) {
                 case "SPIGOT":
+                    this.jvmType = JVMContainer.JVMType.SERVER;
+                    System.out.println("Spigot");
+                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
+                    break;
                 case "SPONGE":
                     this.jvmType = JVMContainer.JVMType.SERVER;
                     requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());

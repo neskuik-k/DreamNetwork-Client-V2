@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.core.console.history;
 
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import lombok.Getter;
 
@@ -13,12 +15,15 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.List;
 
 public class ReaderHistory {
     private final File tokenFile = new File(System.getProperty("user.dir")+"/data/ReaderHistory.json");
    @Getter
    private ReaderHistoryIndex readerHistoryIndex;
+
+   @Getter private static Multimap<String,String> lines = ArrayListMultimap.create();
 
     public void init(){
         if(!tokenFile.exists()){
@@ -94,17 +99,19 @@ public class ReaderHistory {
         @Override
         public Object put(String key, Object value) {
             Object k = super.put(key, value);
-            if(key.equalsIgnoreCase("history")){
+
                 if(value instanceof String){
                     String s = (String) value;
 
                     s = new String(Base64.getDecoder().decode(s));
                     for(String h : getFrom(s)){
-                        ConsoleReader.sReader.getHistory().add(h);
+                        if(key.equalsIgnoreCase("m:default")){
+                            ConsoleReader.sReader.getHistory().add(h);
+                        }
+                       lines.put(key,h);
                     }
 
                 }
-            }
             return k;
         }
     }

@@ -81,7 +81,6 @@ public class LangLoader {
                 }
             }
            // System.out.println("Converted " + line + " to " + newLine);
-            line = newLine;
         }
         return newLine.replace("\\n", "\n").replace("\\r", "\r");
     }

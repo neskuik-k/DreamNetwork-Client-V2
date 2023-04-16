@@ -3,8 +3,13 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
+import be.alexandre01.dreamnetwork.api.service.IConfig;
+import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
+import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import lombok.NonNull;
 
 import java.util.Arrays;
@@ -15,10 +20,10 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Reload extends SubCommand {
     public Reload() {
         String[] nodeClazz = CustomType.getCustomTypes().keySet().stream().map(Class::getSimpleName).toArray(String[]::new);
-        System.out.println(Arrays.toString(nodeClazz));
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create("hypervisor",
                         create("reload",
+                            create("services"),
                             create("completor",create(nodeClazz)),
                                 create("completors"))));
     }
@@ -32,7 +37,13 @@ public class Reload extends SubCommand {
                 Console.printLang("commands.hypervisor.specifyModule");
                 return true;
             }
-
+            if(sArgs[1].equalsIgnoreCase("services")){
+                System.out.println("Reloading services");
+                for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors) {
+                    IStartupConfig config = jvmExecutor.getStartupConfig();
+                    config.saveFile();
+                }
+            }
             if(sArgs[1].equalsIgnoreCase("completors")){
                 Console.printLang("commands.hypervisor.reloadingCompletors");
                 reloadNode();

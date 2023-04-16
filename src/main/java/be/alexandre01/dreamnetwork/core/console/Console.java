@@ -1,15 +1,18 @@
 package be.alexandre01.dreamnetwork.core.console;
 
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
+import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
 import org.jline.reader.*;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -33,13 +36,39 @@ public class Console extends Thread{
 
     private StringBuilder datas = new StringBuilder();
 
+
     public List<Completers.TreeCompleter.Node> completorNodes = new ArrayList<>();
     IConsole iConsole;
     private static final HashMap<String, Console> instances = new HashMap<>();
     private static ConsoleReader consoleReader = new ConsoleReader();
     public String name;
 
-    @Setter @Getter private static boolean blockConsole = false;
+    @Getter @Setter private boolean noHistory = false;
+
+    @Getter private static boolean blockConsole = false;
+
+    public static void setBlockConsole(boolean blockConsole) {
+        if(blockConsole == Console.blockConsole) return;
+
+        Console.blockConsole = blockConsole;
+        Thread thread = Console.getConsole("m:default");
+        if(blockConsole){
+            if(thread != null){
+                //thread.interrupt();
+                Console.getConsole("m:default").isRunning = false;// tell the thread to stop
+                /*try {
+                    thread.join(); // wait for the thread to stop
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }*/
+            }
+        }else {
+            Console.getConsole("m:default").isRunning = true;
+            Console.getConsole("m:default").run();
+        }
+        //reload();
+    }
+
     private final ArrayList<ConsoleMessage> history;
     private int historySize;
     public static String defaultConsole;
@@ -102,6 +131,21 @@ public class Console extends Thread{
             }
 
         }
+        try {
+            ConsoleReader.sReader.getHistory().purge();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(!console.noHistory){
+            if(ReaderHistory.getLines().containsKey(name)){
+                List<String> h = new ArrayList<>(ReaderHistory.getLines().get(name));
+                for (String s : h){
+                    ConsoleReader.sReader.getHistory().add(s);
+                }
+
+            }
+        }
+
 
         console.iConsole.consoleChange();
         console.reloadCompletor();
@@ -318,10 +362,10 @@ public class Console extends Thread{
 
 
     public static void clearConsole(){
-        //clearConsole(Core.getInstance().formatter.getDefaultStream());
+        clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-    /*
+
         try
         {
             final String os = System.getProperty("os.name");
@@ -339,7 +383,7 @@ public class Console extends Thread{
         catch (final Exception ignored)
         {
 
-        }*/
+        }
     }
     public void setConsoleAction(IConsole iConsole){
         this.iConsole = iConsole;
@@ -364,6 +408,13 @@ public class Console extends Thread{
         Thread thread = Console.getConsole("m:default");
         if(thread != null){
             thread.interrupt();
+            Console.getConsole("m:default").isRunning = false;// tell the thread to stop
+            try {
+                thread.join(); // wait for the thread to stop
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Console.getConsole("m:default").isRunning = true;
             thread.start();
         }
     }
@@ -401,30 +452,27 @@ public class Console extends Thread{
 
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
-            while (isRunning ){
+            while (isRunning){
                 Console console = Console.getConsole(actualConsole);
-                if(blockConsole)
-                    continue;
+            //    System.out.println(blockConsole);
 
+              /* if(blockConsole){
+                    continue;
+                }else {
+                    Core.getInstance().getFileHandler().publish(new LogRecord(Level.INFO, "Console Blocked: "+blockConsole+""));
+                }
+
+               // System.out.println("Line Refresh");
+                if(true){
+                    continue;
+                }*/
                if((data = reader.readLine(console.writing, readLineString1,maskingCallback,readLineString2)) == null)
                     continue;
 
 
 
                 sendToLog("> : "+data,Level.INFO);
-                if(data.length() == 0 ){
-                    /*reader.getTerminal().puts(InfoCmp.Capability.carriage_return);
-                    reader.getTerminal().writer().println("World!");
-                    reader.callWidget(LineReader.REDRAW_LINE);
-                    reader.callWidget(LineReader.REDISPLAY);
-                    reader.getTerminal().writer().flush();
-                    Console.clearConsole();
-                    //read inputstream
-                    history.forEach(entry -> {
-                        debugPrint(entry.content);
-                    });
-                    continue;*/
-                }
+
                 try {
                     if(console.collapseSpace)
                         data = data.trim().replaceAll("\\s{2,}", " ");
@@ -435,32 +483,32 @@ public class Console extends Thread{
 
 
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
+                    ReaderHistory.getLines().put(console.name, data);
                     String[] args = new String[0];
                     args = data.split(" ");
                     console.iConsole.listener(args);
                 }catch (Exception e){
                     bug(e);
                 }
-                }
-
-                Console.debugPrint(Console.getFromLang("console.closed"));
-
+            }
 
 
         }catch (UserInterruptException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (EndOfFileException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (Exception e){
+            Console.debugPrint(Console.getFromLang("console.closed"));
             e.printStackTrace();
         }
-
-
-
     }
-    public void SIG_ING(){
+    public void SIG_IGN(){
+        if(!Main.getGlobalSettings().isSIG_IGN_Handler()){
+            Console.debugPrint(Console.getFromLang("console.closed"));
+            System.exit(0);
+        }
         LineReader reader =  ConsoleReader.sReader;
 
         //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
@@ -469,10 +517,10 @@ public class Console extends Thread{
         try {
             Console.getConsole(actualConsole).killListener.onKill(reader);
         }catch (UserInterruptException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (EndOfFileException e){
-            SIG_ING();
+            SIG_IGN();
         }
 
     }
@@ -524,7 +572,7 @@ public class Console extends Thread{
             history.remove(0);
             historySize--;
         }
-        //debugPrint("history >> "+data);
+       // debugPrint("history >> "+data);
         history.add(new ConsoleMessage(data));
         historySize += data.length();
     }

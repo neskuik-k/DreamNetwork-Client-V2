@@ -18,7 +18,6 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Set extends SubCommand {
     public Set() {
         String[] nodeClazz = CustomType.getCustomTypes().keySet().stream().map(Class::getSimpleName).toArray(String[]::new);
-        System.out.println(Arrays.toString(nodeClazz));
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create("hypervisor",
                         create("set",

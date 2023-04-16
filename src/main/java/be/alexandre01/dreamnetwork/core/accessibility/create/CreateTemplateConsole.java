@@ -309,19 +309,22 @@ public class CreateTemplateConsole {
             return false;
         }
         if(installationLinks == null) return false;
-        //block console
-        Console.setBlockConsole(true);
+
+
         String write = console.writing;
+        Console.setBlockConsole(true);
         console.setWriting("");
         Installer.launchDependInstall(type, jvmExecutor.getFileRootDir(), new ContentInstaller.IInstall() {
             @Override
             public void start() {
-                ConsoleReader.terminal.pause();
+                //block console
+               // Console.setBlockConsole(true);
+                //ConsoleReader.terminal.pause();
             }
 
             @Override
             public void complete() {
-                ConsoleReader.terminal.resume();
+               // ConsoleReader.terminal.resume();
                 Console.debugPrint(Console.getFromLang("service.creation.install.downloadComplete"));
                 String javaVersion = "default";
                 for(Integer i : installationLinks.getJavaVersion()){

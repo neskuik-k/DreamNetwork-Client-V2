@@ -20,7 +20,6 @@ public class BlockMod extends org.jline.widget.Widgets {
             try {
                 String name = buffer().toString().split("\\s+")[0];
                 reader.callWidget(name);
-                System.out.println("Wow");
                 reader.getTerminal().puts(InfoCmp.Capability.carriage_return);
                 reader.getTerminal().writer().println("World!");
                 reader.callWidget(LineReader.REDRAW_LINE);

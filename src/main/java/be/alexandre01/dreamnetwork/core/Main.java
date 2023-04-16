@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -137,20 +138,27 @@ public class Main {
 
 
                         if(ConsoleReader.sReader != null){
-                            History h = ConsoleReader.sReader.getHistory();
-                            ArrayList<String> l = new ArrayList<>();
-                            for (int j = 0; j < h.size()-1; j++) {
-                                l.add(h.get(j));
-                            }
+                            for (String key : ReaderHistory.getLines().keySet()) {
+                               /* History h = ConsoleReader.sReader.getHistory();
+                                ArrayList<String> l = new ArrayList<>();
+                                for (int j = 0; j < h.size()-1; j++) {
+                                    l.add(h.get(j));
+                                }*/
+                                ArrayList<String> l = new ArrayList<>(ReaderHistory.getLines().get(key));
 
-                            List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
-                            readerHistory.getReaderHistoryIndex().put("history", Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
-                            readerHistory.getReaderHistoryIndex().refreshFile();
+                                List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
+                                readerHistory.getReaderHistoryIndex().put(key, Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
+                                readerHistory.getReaderHistoryIndex().refreshFile();
+
+                            }
                         }
                         isReady = true;
-                        if(!Config.isWindows()){
-                            String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
-                            Runtime.getRuntime().exec(defSIGKILL);
+
+                        if(getGlobalSettings().isSIG_IGN_Handler()){
+                            if(!Config.isWindows()){
+                                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                                Runtime.getRuntime().exec(defSIGKILL);
+                            }
                         }
 
                         Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);

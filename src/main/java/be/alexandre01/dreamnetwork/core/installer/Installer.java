@@ -98,6 +98,7 @@ public class Installer {
                 }
             });
         }catch (Exception e){
+            Console.setBlockConsole(false);
             Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.installationCantBeLaunched"));
         }
 

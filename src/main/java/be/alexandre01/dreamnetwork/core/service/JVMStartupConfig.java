@@ -94,17 +94,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
         if(isBuilded) return;
         saveFile();
-        System.out.println("Reading file ! Done !");
+        //System.out.println("Reading file ! Done !");
         //sout all class data fields with reflection
         Field[] fields = JVMConfig.class.getDeclaredFields();
-        for (Field field : fields) {
-            field.setAccessible(true);
-            try {
-                System.out.println(field.getName() + " = " + field.get(this));
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
 
@@ -461,8 +453,6 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public boolean hasExecutable(){
-        System.out.println(exec);
-        System.out.println(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec));
         if(Config.contains(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec))){
             return true;
         }

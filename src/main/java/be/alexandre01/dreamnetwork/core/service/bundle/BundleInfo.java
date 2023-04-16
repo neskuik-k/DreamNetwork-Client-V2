@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.service.bundle;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import com.google.gson.Gson;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
@@ -14,6 +15,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 @Getter
 public class BundleInfo {
@@ -70,9 +72,17 @@ public class BundleInfo {
     }
 
     public static BundleInfo loadFile(File file){
-        Yaml yaml = new Yaml(new Constructor(BundleInfo.class));
+        Yaml yaml = new Yaml(new SafeConstructor());
         try {
-            return yaml.load(new FileInputStream(file));
+
+            LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
+            if(map.isEmpty()){
+                return null;
+            }
+            Gson gson = new Gson();
+            BundleInfo t = gson.fromJson(gson.toJsonTree(map), BundleInfo.class);
+            //  YamlFileUtils.this.readFile();
+            return t;
         } catch (FileNotFoundException e) {
             System.out.println(Colors.RED+"Error while loading bundle "+file.getName()+Colors.RESET);
             e.printStackTrace();

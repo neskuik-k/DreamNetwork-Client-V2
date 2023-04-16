@@ -63,13 +63,13 @@ public class Start extends SubCommand {
             JVMExecutor.Mods mods = checkMods(sArgs[2]);
             if(mods == null){
                 Console.printLang("commands.service.start.incorrectMods");
-                fail("service","start", "serverPath", Console.getFromLang("mods") ,"[XMS]" ,"[XMX]", "[port]");
+                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
                 return true;
             }
 
             if(!(RamArgumentsChecker.check(sArgs[3]) && RamArgumentsChecker.check(sArgs[4]))){
                 Console.printLang("commands.service.start.incorrectRAM");
-                fail("service","start", "serverPath", Console.getFromLang("mods") ,"[XMS]" ,"[XMX]", "[port]");
+                fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
                 return true;
             }
 
@@ -93,8 +93,8 @@ public class Start extends SubCommand {
 
             jvmExecutor.startServer(builder.build());
             return true;
-        },args,"start","serverPath", Console.getFromLang("mods"),"[XMS]","[XMX]","[port]")){
-            fail("service","start", "serverPath", Console.getFromLang("mods") ,"[XMS]" ,"[XMX]", "[port]");
+        },args,"start","serverPath", "[mods]","[XMS]","[XMX]","[port]")){
+            fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
             return true;
         }
         /*if(args[0].equalsIgnoreCase("start")){

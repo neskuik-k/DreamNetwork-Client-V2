@@ -114,7 +114,7 @@ public class NodeBuilder {
                 //System.out.println(o);
             }
 
-            System.out.println(num);
+           // System.out.println(num);
             console.completorNodes.set(num, node = genNode(nodeContainer,true));
             //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
             if(Console.getCurrent() == console){

@@ -21,7 +21,7 @@ public class IntroductionConsole {
 
         NodeBuilder yes = new NodeBuilder(NodeBuilder.create("yes"),console);
         NodeBuilder no = new NodeBuilder(NodeBuilder.create("no"),console);
-
+        console.setNoHistory(true);
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public void onKill(LineReader reader) {

@@ -261,7 +261,7 @@ debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 ## Console
 console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
 console.askExit=%redbobr%voulez-vous quitter le DreamNetwork ? (y (oui) ou n (non)) > %reset%
-console.changed=%whitebg%%black%Vous venez de changer de console. [%var%]
+console.changed=%whitebg%%black%Vous venez de changer de console. [%var%] %reset%
 console.errorOn=%red%ERREUR A>> %var% || %var%
 console.errorCause=%red%CAUSE ERREUR>> %var% || %var%
 console.contactDNDevError=Veuillez contacter les développeurs du DreamNetwork pour leur signaler cette erreur.

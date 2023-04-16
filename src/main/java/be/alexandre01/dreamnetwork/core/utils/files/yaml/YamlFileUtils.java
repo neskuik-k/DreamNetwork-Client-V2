@@ -142,7 +142,7 @@ public class YamlFileUtils<T> {
                                     System.out.println(property.getName());
                                     System.out.println(field.get(obj));*/
                                     if(field.getName().equals(property.getName())){
-                                        System.out.println("IGNORED field "+field.getName()+" because it's equals to "+property.getName());
+                                        //System.out.println("IGNORED field "+field.getName()+" because it's equals to "+property.getName());
                                        // Console.printLang("core.utils.yaml.ignoreFieldEquals", field.getName(), propertyValue);
                                         return null;
                                     }
@@ -154,7 +154,7 @@ public class YamlFileUtils<T> {
                     }
 
                     if(!isFinded){
-                        Console.debugPrint(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), clazz.getName()));
+                        Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), clazz.getName()));
                         return null;
                     }
                     if (obj.getClass().equals(property.getType())) {

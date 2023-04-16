@@ -4,12 +4,15 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.widgets.BlockMod;
 import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
 import org.jline.builtins.Completers;
+import org.jline.keymap.BindingReader;
+import org.jline.keymap.KeyMap;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.impl.LineReaderImpl;
 import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
+import org.jline.utils.InfoCmp;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;

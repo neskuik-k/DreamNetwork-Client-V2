@@ -1,4 +1,5 @@
-# This is the global settings of the server
-folder: /home/alexandre01/serveur/
-language: en_EN
-port: 14521
+# This is the global settings of the server | The Dreamy Networki the best !
+SIG_IGN_Handler: true
+findAllocatedPorts: true
+language: fr_FR
+port: 14520

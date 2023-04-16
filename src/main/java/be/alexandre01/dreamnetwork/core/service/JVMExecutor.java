@@ -14,6 +14,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
+import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
 
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
@@ -233,7 +234,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
-                while (portsBlackList.contains(port) || !isPortAvailable(port)){
+                while (portsBlackList.contains(port) || !PortUtils.isAvailable(port,true)){
                     port = port + 2;
                 }
                 if(!serversPort.isEmpty()){

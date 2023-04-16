@@ -8,9 +8,12 @@ import java.io.File;
 
 @Getter @Setter
 public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
+    boolean SIG_IGN_Handler = true;
+    boolean findAllocatedPorts = true;
     int port;
     String language;
-    String folder = "/home/alexandre01/serveur/";
+
+
 
     public GlobalSettings() {
         System.out.println("Loading global settings");
@@ -19,8 +22,11 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     }
 
     public void loading(){
-        addAnnotation("This is the global settings of the server");
-        if(!super.config(new File(Config.getPath("data/global.yml")),GlobalSettings.class,true)){
+        String[] randomString = {"Better, faster, stronger", "The Dreamy Networki the best !", "If you see this message, you are the best", ":)","<3",":D","Thank you for using our hypervisor","Roblox is better than minecraft (it's joke huh)","Sadness is the opposite of happiness"};
+
+        String random = randomString[(int) (Math.random() * randomString.length)];
+        addAnnotation("This is the global settings of the server | " + random);
+        if(!super.config(new File(Config.getPath("data/Global.yml")),GlobalSettings.class,true)){
             super.saveFile(GlobalSettings.class.cast(this));
         }else {
             super.readAndReplace(this);

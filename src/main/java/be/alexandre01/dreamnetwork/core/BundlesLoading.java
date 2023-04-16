@@ -52,7 +52,7 @@ public class BundlesLoading {
         if(prefix.length() != 0) Main.getBundleManager().addPath(prefix);
         for(File file : directories){
 
-            System.out.println(Console.getFromLang("bundle.loading", prefix, file.getName()));
+
             //Yaml yaml = new Yaml(new Constructor(BundleInfo.class));
             File bundleFile = new File(Config.getPath(file.getAbsolutePath()+"/this-info.yml"));
 
@@ -62,6 +62,7 @@ public class BundlesLoading {
                 loadTemplate(new File[]{file},currentBundle.getName(),currentBundle);
                 continue;
             }
+            System.out.println(Console.getFromLang("bundle.loading", prefix,file.getName()));
 
             bundleInfo = BundleInfo.loadFile(bundleFile);
 
@@ -133,12 +134,9 @@ public class BundlesLoading {
 
                 IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
                 if(jvmExecutor == null){
-                    System.out.println(Console.getFromLang("bundle.loadTemplate.nullJVM"));
                     notConfigured(dir);
                     continue;
                 }
-                System.out.println(Console.getFromLang("bundle.loadTemplate.isJVMConfig", jvmExecutor.isConfig()));
-                System.out.println(Console.getFromLang("bundle.loadTemplate.hasJVMExecutable", jvmExecutor.hasExecutable()));
                 if(jvmExecutor.isConfig() && jvmExecutor.hasExecutable()){
                     Console.debugPrint(Console.getFromLang("bundle.loadTemplate.loaded", dir.getName()));
                     //Utils.templates.add(dir.getName()); <- add after

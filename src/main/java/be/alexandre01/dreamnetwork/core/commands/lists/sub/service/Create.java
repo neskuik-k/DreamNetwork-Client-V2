@@ -34,7 +34,7 @@ public class Create extends SubCommand {
                                                         create("1G","2G",
                                                                 create("1G","2G"))))))));
     }
-    String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-"};
+    String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-","%"};
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {

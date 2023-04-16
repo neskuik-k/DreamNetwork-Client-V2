@@ -53,9 +53,6 @@ bundle.notConfigured=%red%--> [!] Template %redbobr%%var%%red% is not yet config
 bundle.noBundle=%red%There is no bundle with the path of %var%
 bundle.replaceFile.writing=Writing file: %var%/%var%
 bundle.loadTemplate.addJar=[+] Adding preview jar plugin to template %var%...
-bundle.loadTemplate.nullJVM=NULL JVM EXECUTOR
-bundle.loadTemplate.isJVMConfig=JVM IS CONFIG ?: %var%
-bundle.loadTemplate.hasJVMExecutable=JVM HAS EXECUTABLE ?: %var%
 bundle.loadTemplate.loaded=%green%-->  [O] Template %greenbobr%%var% %green%loaded !
 bundle.customRequest.fileCreated= [!] Custom requests file created !
 

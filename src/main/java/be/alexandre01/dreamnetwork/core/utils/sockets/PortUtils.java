@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.utils.sockets;
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
 
 import java.io.IOException;
@@ -8,6 +9,9 @@ import java.net.ServerSocket;
 
 public class PortUtils {
     public static boolean isAvailable(int port, boolean isSilent) {
+        if(!Main.getGlobalSettings().isFindAllocatedPorts()){
+            return true;
+        }
         if(!isSilent)
             Console.printLang("core.utils.sockets.checkingPort", port);
         if (port < 1 || port > 65535) {

@@ -47,7 +47,10 @@ public class RequestManager implements IRequestManager {
         return request;
     }
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
-         if(!requestBuilder.getRequestData().containsKey(requestInfo)){
+       for (RequestInfo r : requestBuilder.getRequestData().keySet()){
+           System.out.println(r.name());
+        }
+        if(!requestBuilder.getRequestData().containsKey(requestInfo)){
              try {
                  throw new RequestNotFoundException(requestInfo);
              } catch (RequestNotFoundException e) {

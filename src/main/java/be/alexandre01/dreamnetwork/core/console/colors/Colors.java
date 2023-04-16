@@ -70,7 +70,15 @@ public class Colors {
     public static final String YELLOW_UNDERLINED = "\033[4;33m"; // YELLOW
     public static final String YELLOW_BRIGHT_UNDERLINE = "\033[4;93m";// YELLOW
     public static final String BLUE_UNDERLINED = "\033[4;34m";   // BLUE
-    public static final String PURPLE_UNDERLINED = "\033[4;35m"; // PURPLE
+
+    public static String PURPLE_UNDERLINED(){
+        if(isWindows){
+            return Colors.PURPLE;
+        }else {
+            return "\033[4;35m";
+        }
+    }
+    //public static final String PURPLE_UNDERLINED = "\033[4;35m"; // PURPLE
     public static final String CYAN_UNDERLINED = "\033[4;36m";   // CYAN
     public static final String WHITE_UNDERLINED = "\033[4;37m";  // WHITE
 
