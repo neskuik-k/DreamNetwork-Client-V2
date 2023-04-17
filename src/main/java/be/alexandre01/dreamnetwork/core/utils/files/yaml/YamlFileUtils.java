@@ -51,7 +51,6 @@ public class YamlFileUtils<T> {
         saveFile(file, obj,clazz,skipNull);
     }
     public void saveFile(){
-        System.out.println(clazz);
         saveFile(file,this,clazz,skipNull);
     }
     public T loadFile(File file, Class<T> clazz){

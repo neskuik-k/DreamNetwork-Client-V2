@@ -263,7 +263,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IClient client){
-        Console.printLang("connection.core.handler.writeFlush", msg);
+        Console.fineLang("connection.core.handler.writeFlush", msg);
         ChannelHandlerContext ctx = client.getChannelHandlerContext();
         Console.print(ctx, Level.FINE);
         if(ctx == null || !ctx.channel().isActive() || !queue.isEmpty()){

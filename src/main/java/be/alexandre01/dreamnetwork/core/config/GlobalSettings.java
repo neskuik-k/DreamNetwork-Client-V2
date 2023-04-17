@@ -16,7 +16,6 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
 
 
     public GlobalSettings() {
-        System.out.println("Loading global settings");
         this.port = 14520;
         this.language = "fr_FR";
     }

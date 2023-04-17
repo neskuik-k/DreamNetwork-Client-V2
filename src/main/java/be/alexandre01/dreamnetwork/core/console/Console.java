@@ -212,6 +212,9 @@ public class Console extends Thread{
             sendToLog(s,Level.FINE,"global");
         }
     }
+    public static void fineLang(String map, Object s){
+        fine(Console.getFromLang(map,s));
+    }
     public static void print(String s, Level level,String name){
 
         instances.get(name).fPrint(s + Colors.ANSI_RESET(),level);
@@ -365,7 +368,7 @@ public class Console extends Thread{
         clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-
+        System.exit(0);
         try
         {
             final String os = System.getProperty("os.name");

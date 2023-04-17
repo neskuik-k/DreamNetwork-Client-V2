@@ -9,16 +9,17 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import lombok.Getter;
 
 import java.io.*;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 public class BundlesLoading {
     File[] directories;
-    File[] serverDirectories;
-    File[] proxyDirectories;
 
     @Getter private boolean firstLoad = false;
     public BundlesLoading(){
@@ -29,8 +30,6 @@ public class BundlesLoading {
             file.mkdir();
         }
         directories = new File(Config.getPath("bundles/")).listFiles(File::isDirectory);
-        serverDirectories = new File(Config.getPath("bundles/server/")).listFiles(File::isDirectory);
-        proxyDirectories = new File(Config.getPath("bundles/proxy/")).listFiles(File::isDirectory);
         System.out.println(Console.getFromLang("bundles.loading")+ Colors.RESET);
         try {
             Thread.sleep(50);
@@ -153,12 +152,14 @@ public class BundlesLoading {
     }
 
     public void createCustomRequestsFile(){
-        createCustomRequestsFile(proxyDirectories,"proxy");
-        createCustomRequestsFile(serverDirectories,"server");
+        File[] servers = Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
+        File[] proxies =  Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
+        createCustomRequestsFile(servers);
+        createCustomRequestsFile(proxies);
         Console.printLang("bundle.customRequest.fileCreated");
     }
 
-    private void createCustomRequestsFile(File[] directory,String pathName){
+    private void createCustomRequestsFile(File[] directory){
         if(directory != null) {
             RequestFile requestFile = new RequestFile();
             for (CustomRequestInfo requestInfo : RequestType.customRequests){
@@ -169,10 +170,10 @@ public class BundlesLoading {
             for (File dir : directory) {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if (Config.contains(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins")) {
-                    Config.createDir(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins/DreamNetwork");
+                if (Config.contains( dir.getAbsolutePath() + "/plugins")) {
+                    Config.createDir( dir.getAbsolutePath()+ "/plugins/DreamNetwork");
                     try {
-                        requestFile.write(Config.getPath(System.getProperty("user.dir") + "/bundles/"+pathName+"/"+name+"/plugins/DreamNetwork"));
+                        requestFile.write(Config.getPath(dir.getAbsolutePath()+"/plugins/DreamNetwork"));
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -182,23 +183,29 @@ public class BundlesLoading {
     }
 
     public void sendCustomsFileToProxies(InputStream in,String fileName){
-        createCustomFiles(proxyDirectories,"proxy",in,fileName);
+        File[] dir;
+        Collection<IJVMExecutor> executors = Core.getInstance().getJvmContainer().getProxiesExecutors();
+        dir = executors.stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
+        createCustomFiles(dir,in,fileName);
     }
     public void sendCustomsFileToServers(InputStream in,String fileName){
-        createCustomFiles(serverDirectories,"server",in,fileName);
+        File[] dir;
+        Collection<IJVMExecutor> executors = Core.getInstance().getJvmContainer().getServersExecutors();
+        dir = executors.stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
+        createCustomFiles(dir,in,fileName);
     }
-    private void createCustomFiles(File[] directory,String pathName,InputStream in,String fileName){
+    private void createCustomFiles(File[] directory,InputStream in,String fileName){
         if(directory != null) {
             try {
             byte[] bytes = cloneInputStream(in);
             for (File dir : directory) {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if (Config.contains(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/plugins")) {
-                    File file = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/"+fileName);
+                if (Config.contains( dir.getAbsolutePath() + "/plugins")) {
+                    File file = new File(dir.getAbsolutePath()+"/plugins/"+fileName);
                     file.delete();
                     InputStream is = new ByteArrayInputStream(bytes);
-                    replaceFile(is,"/bundles/"+pathName+"/"+name+"/plugins/",fileName);
+                    replaceFile(is,dir.getAbsolutePath()+"/plugins/",fileName);
                 }
 
             }

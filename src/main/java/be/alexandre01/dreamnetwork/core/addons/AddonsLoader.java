@@ -70,7 +70,7 @@ public class AddonsLoader {
 
                 Addon cache = null;
                 for (Addon module : cachedAddons) {
-                    System.out.println(file.toURI().toURL());
+                    //System.out.println(file.toURI().toURL());
                     if (module.getUrl().toString().equals(file.toURI().toURL().toString())) {
                         cache = module;
                         Console.printLang("addons.cached", cache);

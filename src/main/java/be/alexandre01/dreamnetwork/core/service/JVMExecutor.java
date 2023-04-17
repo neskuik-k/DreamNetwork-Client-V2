@@ -439,8 +439,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
 
             if(jvmService.getType() == Mods.STATIC){
-
-                //System.out.println("Je supprime le service");
                 staticService = null;
             }
             jvmServices.remove(i);
