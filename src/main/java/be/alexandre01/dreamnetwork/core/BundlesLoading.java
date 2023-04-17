@@ -168,10 +168,9 @@ public class BundlesLoading {
             requestFile.encode();
 
             for (File dir : directory) {
-                String name = dir.getName();
                 //TRY TO LOAD COMPONENT
                 if (Config.contains( dir.getAbsolutePath() + "/plugins")) {
-                    Config.createDir( dir.getAbsolutePath()+ "/plugins/DreamNetwork");
+                    Config.createDir( dir.getAbsolutePath()+ "/plugins/DreamNetwork",false);
                     try {
                         requestFile.write(Config.getPath(dir.getAbsolutePath()+"/plugins/DreamNetwork"));
                     } catch (IOException e) {

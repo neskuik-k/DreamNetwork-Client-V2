@@ -368,7 +368,6 @@ public class Console extends Thread{
         clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-        System.exit(0);
         try
         {
             final String os = System.getProperty("os.name");

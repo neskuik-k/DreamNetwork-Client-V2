@@ -10,14 +10,11 @@ import java.io.File;
 public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean SIG_IGN_Handler = true;
     boolean findAllocatedPorts = true;
-    int port;
-    String language;
-
-
+    int port = 14520;
+    String language = "en_EN";
 
     public GlobalSettings() {
-        this.port = 14520;
-        this.language = "fr_FR";
+        // Init
     }
 
     public void loading(){

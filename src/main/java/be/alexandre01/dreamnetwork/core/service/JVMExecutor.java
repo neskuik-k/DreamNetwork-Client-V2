@@ -266,8 +266,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 if(jvmConfig.getType().equals(Mods.STATIC)){
                     // System.out.println("template/"+pathName);
                     port = getCurrentPort("/bundles/"+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
-                    System.out.println("/bundles/"+jvmConfig.getPathName());
-                    System.out.println(port);
+                    Console.fine("/bundles/"+jvmConfig.getPathName());
                     if(port == null){
                         Console.printLang("service.executor.notFoundPort", finalname);
                         return false;
@@ -277,7 +276,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }else{
                     if(jvmConfig.getType().equals(Mods.DYNAMIC)){
                         port = getCurrentPort("/runtimes/"+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
-                        System.out.println("/runtimes/"+jvmConfig.getPathName());
+                        Console.fine("/runtimes/"+jvmConfig.getPathName());
                         if (port == null) {
                             Console.printLang("service.executor.notFoundPort", finalname);
                             return false;
@@ -382,7 +381,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
 
         Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
-        System.out.println(port);
+        Console.fine(port);
         JVMService jvmService = JVMService.builder().
                 process(proc)
                 .jvmExecutor(this)

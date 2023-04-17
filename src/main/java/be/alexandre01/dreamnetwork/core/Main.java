@@ -70,19 +70,19 @@ public class Main {
         commandReader = new CommandReader();
         ConsoleReader.init();
         Config.createDir("data");
-      //  ReaderHistory readerHistory = new ReaderHistory();
-      //  readerHistory.init();
+        ReaderHistory readerHistory = new ReaderHistory();
+        readerHistory.init();
 
         // Start language fetching
 
 
-       // globalSettings = new GlobalSettings();
+       globalSettings = new GlobalSettings();
 
-       // globalSettings.loading();
-        //languageManager = new LanguageManager();
-        //if(!languageManager.load()){
+       globalSettings.loading();
+        languageManager = new LanguageManager();
+        if(!languageManager.load()){
             // Fetch fail, can't use messages
-      //  }
+        }
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 

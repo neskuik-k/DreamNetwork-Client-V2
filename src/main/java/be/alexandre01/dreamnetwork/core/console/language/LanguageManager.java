@@ -27,7 +27,6 @@ public class LanguageManager {
 
     public boolean load(){
         InputStream en_EN = getInputFrom("en_EN");
-        System.out.println(en_EN);
         LangLoader langLoader = new LangLoader(this);
         defaultKeysManager = langLoader.loadKeys(en_EN);
         defaultLanguage = langLoader.load(en_EN,"en_EN");
