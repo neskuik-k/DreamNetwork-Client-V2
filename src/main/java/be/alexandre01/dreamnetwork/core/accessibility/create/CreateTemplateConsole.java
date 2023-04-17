@@ -1,17 +1,14 @@
 package be.alexandre01.dreamnetwork.core.accessibility.create;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.edit.JVM;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -59,13 +56,13 @@ public class CreateTemplateConsole {
             public void onKill(LineReader reader) {
                 //Shutdown other things
                 String data;
-                while ((data = reader.readLine( Colors.PURPLE_BOLD_BRIGHT+"do you want to cancel the creation of the service ? (y or n) > "+Colors.RESET)) != null){
+                while ((data = reader.readLine(Console.getFromLang("service.creation.cancelCreation"))) != null){
                     if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                         killData();
                         future.onResponse();
                         future.finish();
                     }else {
-                        Console.debugPrint("Cancelled.");
+                        Console.debugPrint(Console.getFromLang("service.creation.cancelCreationCancelled"));
                     }
                     Console.getConsole("m:create").run();
                     break;
@@ -101,16 +98,16 @@ public class CreateTemplateConsole {
                     BundleData current = Core.getInstance().getBundleManager().getBundleData(args[0]);
 
                     if(current == null){
-                        errorLine = Colors.RED+"There is no bundle with the path of "+ args[0];
+                        errorLine = Console.getFromLang("bundle.noBundle", args[0]);
                         Console.debugPrint(errorLine);
                         return;
                     }
 
                     bundleData = current;
                     if(bundleData.getJvmType() == IContainer.JVMType.SERVER){
-                        console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+"serverName"+Colors.GREEN+" ?" +Colors.WHITE+" Type your serverName: "+Colors.RED);
+                        console.setWriting(Console.getFromLang("service.creation.ask.serverName"));
                     }else {
-                        console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+"proxyName"+Colors.GREEN+" ?" +Colors.WHITE+" Type your proxyName: "+Colors.RED);
+                        console.setWriting(Console.getFromLang("service.creation.ask.proxyName"));
                     }
                     errorLine = null;
                     bundleNode = null;
@@ -126,14 +123,14 @@ public class CreateTemplateConsole {
                     String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-"};
                     for (String illegalChar : illegalChars) {
                         if(illegalChar.contains(args[0])){
-                            errorLine = Colors.RED+"There is a bad character on the name";
+                            errorLine = Console.getFromLang("service.creation.badCharacter");
                             return;
                         }
                     }
 
                     serverName = args[0];
                     ConsoleReader.sReader.runMacro(opt[2]);
-                    console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+"serverType"+Colors.GREEN+" ?" +Colors.WHITE+" Type your type: "+Colors.RED);
+                    console.setWriting(Console.getFromLang("service.creation.ask.serverType"));
                     console.completorNodes.clear();
                     modsNode = new NodeBuilder(NodeBuilder.create("STATIC"),console);
                     modsNode = new NodeBuilder(NodeBuilder.create("DYNAMIC"),console);
@@ -144,7 +141,7 @@ public class CreateTemplateConsole {
                 //PART3
                 if(CreateTemplateConsole.this.mods == null){
                     if(!ModsArgumentChecker.check(args[0])){
-                        errorLine = Colors.RED+"The mods is incorrect";
+                        errorLine = Console.getFromLang("service.creation.incorrectMods");
                         Console.debugPrint(errorLine);
                         return;
                     }
@@ -154,7 +151,7 @@ public class CreateTemplateConsole {
                     modsNode = null;
                     errorLine = null;
                     console.completorNodes.clear();
-                    console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+" min ram used"+Colors.GREEN+" ?" +Colors.WHITE+" Type your xms: "+Colors.RED);
+                    console.setWriting(Console.getFromLang("service.creation.ask.XMS"));
                     ramNode = new NodeBuilder(NodeBuilder.create("512M"),console);
                     ramNode = new NodeBuilder(NodeBuilder.create("1G"),console);
                     ramNode = new NodeBuilder(NodeBuilder.create("2G"),console);
@@ -166,13 +163,13 @@ public class CreateTemplateConsole {
                 if(CreateTemplateConsole.this.xms == null || CreateTemplateConsole.this.xmx == null){
 
                     if(!RamArgumentsChecker.check(args[0])){
-                        errorLine = Colors.RED+"The RAM argument is incorrect";
+                        errorLine = Console.getFromLang("service.creation.incorrectRamArgument");
                         Console.debugPrint(errorLine);
                         return;
                     }
                     if(CreateTemplateConsole.this.xms == null){
                         CreateTemplateConsole.this.xms = args[0];
-                        console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+" max ram used"+Colors.GREEN+" ?" +Colors.WHITE+" Type your xmx: "+Colors.RED);
+                        console.setWriting(Console.getFromLang("service.creation.ask.XMX"));
                         ConsoleReader.sReader.runMacro(opt[4]);
                         return;
                     }
@@ -180,24 +177,27 @@ public class CreateTemplateConsole {
                     ramNode = null;
                     console.completorNodes.clear();
                     ConsoleReader.sReader.runMacro(opt[5]);
-                    errorLine = "Type 0 to bind automatic port";
-                    console.setWriting(Colors.GREEN+"What is the "+Colors.CYAN+" port "+Colors.GREEN+" ?" +Colors.WHITE+" Type your port: "+Colors.RED);
+                    errorLine = Console.getFromLang("service.creation.incorrectPort");
+                    console.setWriting(Console.getFromLang("service.creation.ask.port"));
                     return;
                 }
 
                 //PART 5
                 if(CreateTemplateConsole.this.port == null){
 
-                    if(!NumberArgumentCheck.check(args[0])){
-                        errorLine = "Type 0 to bind automatic port | "+ Colors.RED+" Wrong port; choose a number and not "+ args[0];
+                    if(!NumberArgumentCheck.check(args[0]) && !args[0].equalsIgnoreCase("auto")){
+                        errorLine = Console.getFromLang("service.creation.wrongPort").replaceFirst("%var%", args[0]);
                         Console.debugPrint(errorLine);
                         return;
                     }
-                    CreateTemplateConsole.this.port = Integer.parseInt(args[0]);
-
+                    if(args[0].equalsIgnoreCase("auto")){
+                        CreateTemplateConsole.this.port = 0;
+                    }else {
+                        CreateTemplateConsole.this.port = Integer.parseInt(args[0]);
+                    }
                     // BEGIN OF ADDING SERVER
                     BundleInfo bundleInfo = bundleData.getBundleInfo();
-                    Console.debugPrint("Adding server "+serverName+" with "+bundleData.getName()+" bundle");
+                    Console.debugPrint(Console.getFromLang("service.creation.addingServerOnBundle", serverName, bundleData.getName()));
 
                     IContainer.JVMType jvmType = bundleInfo.getType();
 
@@ -205,31 +205,32 @@ public class CreateTemplateConsole {
 
                     jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(serverName, bundleData);
                     if (jvmExecutor == null) {
-                        System.out.println("Creating server "+serverName+" with "+bundleInfo.getName()+" bundle");
+                        Console.printLang("service.creation.creatingServerOnBundle", serverName, bundleInfo.getName());
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName);
-                        System.out.println("?");
                         jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, CreateTemplateConsole.this.mods,  CreateTemplateConsole.this.xms,  CreateTemplateConsole.this.xmx,  CreateTemplateConsole.this.port, proxy, true,bundleData);
                         jvmExecutor.addConfigsFiles();
-                        Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+                        Console.printLang("service.creation.serverConfigured");
                     }else {
                         jvmExecutor.addConfigsFiles();
                         jvmExecutor.updateConfigFile(bundleData.getName(), serverName, CreateTemplateConsole.this.mods, CreateTemplateConsole.this.xms,  CreateTemplateConsole.this.xmx,  CreateTemplateConsole.this.port, proxy, null, null, null);
-                        Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+                        Console.printLang("service.creation.serverConfigured");
                     }
 
                     //END OF ADDING
-                    console.setWriting(Colors.WHITE+"Do you want to install it ? : "+Colors.RED);
+                    console.setWriting(Console.getFromLang("service.creation.ask.installServer"));
                     ConsoleReader.sReader.runMacro("yes");
                 }
                 //PART 6
                 if(!downloadRequest){
                     if(args[0].equalsIgnoreCase("yes")){
                         downloadRequest = true;
-                        console.setWriting(Colors.WHITE+"Which version do you want to use ? : Type the version: "+Colors.RED);
+                        console.setWriting(Console.getFromLang("service.creation.install.version"));
                         console.completorNodes.clear();
                         ArrayList<String> versions = new ArrayList<>();
                         for(InstallationLinks s : InstallationLinks.values()) {
-                            versions.add(s.getVer());
+                            if(s.getJvmType() == jvmExecutor.bundleData.getJvmType()){
+                                versions.add(s.getVer());
+                            }
                         }
                         new NodeBuilder(NodeBuilder.create(versions.toArray()),console);
                         console.reloadCompletor();
@@ -249,15 +250,14 @@ public class CreateTemplateConsole {
                 // PART 7
 
                 try {
-                    InstallationLinks.getInstallationLinks(args[0]);
-                    console.isRunning = false;
-                    ConsoleReader.sReader.getTerminal().flush();
-                    future.onResponse();
                     if(!tryInstall(args[0],jvmExecutor)){
-                        errorLine = Colors.RED+"[!] The version is incorrect...";
+                        errorLine = Console.getFromLang("service.creation.install.incorrectVersion");
                         Console.debugPrint(errorLine);
                         return;
                     }
+                    console.isRunning = false;
+                    ConsoleReader.sReader.getTerminal().flush();
+                    future.onResponse();
                 }catch (Exception e){
 
                 }
@@ -269,7 +269,7 @@ public class CreateTemplateConsole {
             @Override
             public void consoleChange() {
                 clear();
-                console.setWriting(Colors.GREEN+"What is your "+Colors.CYAN+"bundle"+Colors.GREEN+" ?" +Colors.WHITE+" Type your bundlename: "+Colors.RED);
+                console.setWriting(Console.getFromLang("service.creation.ask.bundleName"));
                 ConsoleReader.sReader.runMacro(opt[0]);
                 if(bundleNode == null){
                     bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false)),console);
@@ -301,26 +301,31 @@ public class CreateTemplateConsole {
 
     private boolean tryInstall(String type,JVMExecutor jvmExecutor){
         InstallationLinks installationLinks;
+        if(type.isEmpty())  return false;
+
         try {
             installationLinks = InstallationLinks.getInstallationLinks(type);
         }catch (Exception e){
             return false;
         }
+        if(installationLinks == null) return false;
 
-        //block console
-        Console.setBlockConsole(true);
+
         String write = console.writing;
+        Console.setBlockConsole(true);
         console.setWriting("");
         Installer.launchDependInstall(type, jvmExecutor.getFileRootDir(), new ContentInstaller.IInstall() {
             @Override
             public void start() {
-                ConsoleReader.terminal.pause();
+                //block console
+               // Console.setBlockConsole(true);
+                //ConsoleReader.terminal.pause();
             }
 
             @Override
             public void complete() {
-                ConsoleReader.terminal.resume();
-                Console.debugPrint("Download Complete !");
+               // ConsoleReader.terminal.resume();
+                Console.debugPrint(Console.getFromLang("service.creation.install.downloadComplete"));
                 String javaVersion = "default";
                 for(Integer i : installationLinks.getJavaVersion()){
                     if(Core.getInstance().getJavaIndex().getJVersion().containsKey(i)){

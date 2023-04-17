@@ -80,6 +80,16 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
                                         <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
                                             <![CDATA[<methods>]]>;
@@ -415,8 +425,6 @@
         </plugins>
     </build>
 
-
-
     <repositories>
         <repository>
             <id>jcenter</id>
@@ -544,15 +552,11 @@
             <version>5.8.2</version>
             <scope>test</scope>
         </dependency>
-
-
     </dependencies>
-
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
-
 </project>

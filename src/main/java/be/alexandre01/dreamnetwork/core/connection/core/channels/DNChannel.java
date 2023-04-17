@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.logging.Level;
 
 @Getter
 public class DNChannel implements IDNChannel {
@@ -55,7 +54,7 @@ public class DNChannel implements IDNChannel {
     public void storeData(String key, Object object, boolean autoSend, IClient... clients){
         List<IClient> c = Arrays.asList(clients);
         setData(key,object,autoSend);
-        Console.print("Object>>"+ object, Level.FINE);
+        Console.printLang("connection.core.channels.object", object);
         if(autoSend){
             ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
             Message message;

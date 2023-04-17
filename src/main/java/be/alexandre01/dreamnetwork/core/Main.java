@@ -8,6 +8,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,8 +17,10 @@ import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import com.github.tomaslanger.chalk.Chalk;
@@ -41,6 +44,7 @@ public class Main {
 
     @Getter @Setter
     public static BundleManager bundleManager;
+    @Getter private static GlobalSettings globalSettings;
     @Getter
     private JVMContainer jvmContainer;
     @Getter
@@ -56,6 +60,8 @@ public class Main {
 
     @Getter @Setter private static BundlesLoading bundlesLoading;
 
+    @Getter private static LanguageManager languageManager;
+
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -67,13 +73,22 @@ public class Main {
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
 
+        // Start language fetching
+
+
+       globalSettings = new GlobalSettings();
+
+       globalSettings.loading();
+        languageManager = new LanguageManager();
+        if(!languageManager.load()){
+            // Fetch fail, can't use messages
+        }
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
 
-       
 
         //UTF8
         Chalk.setColorEnabled(true);
@@ -123,31 +138,38 @@ public class Main {
 
 
                         if(ConsoleReader.sReader != null){
-                            History h = ConsoleReader.sReader.getHistory();
-                            ArrayList<String> l = new ArrayList<>();
-                            for (int j = 0; j < h.size()-1; j++) {
-                                l.add(h.get(j));
-                            }
+                            for (String key : ReaderHistory.getLines().keySet()) {
+                               /* History h = ConsoleReader.sReader.getHistory();
+                                ArrayList<String> l = new ArrayList<>();
+                                for (int j = 0; j < h.size()-1; j++) {
+                                    l.add(h.get(j));
+                                }*/
+                                ArrayList<String> l = new ArrayList<>(ReaderHistory.getLines().get(key));
 
-                            List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
-                            readerHistory.getReaderHistoryIndex().put("history", Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
-                            readerHistory.getReaderHistoryIndex().refreshFile();
+                                List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
+                                readerHistory.getReaderHistoryIndex().put(key, Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
+                                readerHistory.getReaderHistoryIndex().refreshFile();
+
+                            }
                         }
                         isReady = true;
-                        if(!Config.isWindows()){
-                            String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
-                            Runtime.getRuntime().exec(defSIGKILL);
+
+                        if(getGlobalSettings().isSIG_IGN_Handler()){
+                            if(!Config.isWindows()){
+                                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                                Runtime.getRuntime().exec(defSIGKILL);
+                            }
                         }
 
                         Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
-                        outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
+                        outputStream.println(Console.getFromLang("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
                     }else {
-                        outputStream.println("\n"+Chalk.on("DreamNetwork process shutdown, please wait..."+Colors.RESET).bgMagenta().bold().underline().white());
+                        outputStream.println(Console.getFromLang("main.shutdown"));
                         try {
                             Thread.sleep(2000);
                         } catch (InterruptedException e) {
@@ -163,12 +185,12 @@ public class Main {
 
             }
         });
-            boolean l = false;
-            String keys = System.getProperty("keys");
+        boolean l = false;
+        String keys = System.getProperty("keys");
 
-            SecretFile secretFile = null;
-            try {
-                secretFile = new SecretFile();
+        SecretFile secretFile = null;
+        try {
+            secretFile = new SecretFile();
             if(keys == null ){
                 secretFile.init();
             }else {
@@ -176,26 +198,26 @@ public class Main {
             }
 
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
-                System.out.println(Colors.RED+ "The license key is invalid!");
-                secretFile.deleteSecretFile();
-                System.exit(1);
-                return;
-            }
-            System.out.println(Colors.GREEN_BOLD_BRIGHT+"Successfully authenticated !\n"+Colors.RESET);
-            try {
-                Thread.sleep(250);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+     /*   if(!dnapi.hasValidLicense(secretFile.getUuid(),secretFile.getSecret())){
+            outputStream.println(Console.getFromLang("main.invalidLicenseKey"));
+            secretFile.deleteSecretFile();
+            System.exit(1);
+            return;
+        }*/
+        outputStream.println(Console.getFromLang("main.successAuth"));
+        try {
+            Thread.sleep(250);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-            ProcessHistory processHistory = new ProcessHistory();
-            processHistory.init();
+        ProcessHistory processHistory = new ProcessHistory();
+        processHistory.init();
 
-            loadClient();
+        loadClient();
     }
 
     public static void loadClient(){

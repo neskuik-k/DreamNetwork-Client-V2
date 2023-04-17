@@ -13,10 +13,11 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
+import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
 
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -36,6 +37,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 
+@Ignore
 public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
@@ -49,7 +51,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter @Setter  public static HashMap<Integer, IService> servicePort = new HashMap<>();
     @Getter @Setter  public static Integer cache = 0;
     private ArrayList<IConfig> queue = new ArrayList<>();
-    public HashMap<Integer,IService> jvmServices = new HashMap<>();
+    @Ignore public HashMap<Integer,IService> jvmServices = new HashMap<>();
     public BundleData bundleData;
 
     public IService staticService = null;
@@ -59,7 +61,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         super(pathName,name,type,xms,xmx,port,proxy,updateFile);
         this.bundleData = bundleData;
 
-        JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
+        JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
        // System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
     }
@@ -67,7 +70,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public JVMExecutor(String pathName,String name,BundleData bundleData){
         super(pathName,name,false);
         this.bundleData = bundleData;
-        JVMContainer.JVMType jvmType = ((isProxy()) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
+        JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
     }
 
@@ -95,9 +99,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     private synchronized void startJVM(IConfig jvmConfig){
-        Console.print("StartJVM "+ jvmConfig.getName(),Level.FINE);
+        Console.printLang("service.executor.start", Level.FINE, jvmConfig.getName());
         if(!start(jvmConfig)){
-            Console.print(Colors.ANSI_RED()+"The server could not be started",Level.WARNING);
+            Console.printLang("service.executor.couldNotStart", Level.WARNING);
             queue.remove(jvmConfig);
 
             if(!queue.isEmpty()){
@@ -112,17 +116,17 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
         if(jvmConfig.getType() == Mods.STATIC && staticService != null){
-            Console.print(Colors.ANSI_RED()+"The server is already running",Level.WARNING);
+            Console.printLang("service.executor.alreadyRunning",Level.WARNING);
             return false;
         }
 
         if(!this.hasExecutable()){
-            Console.print(Colors.ANSI_RED()+"The server executable is missing: "+ getExec());
+            Console.printLang("service.executor.missingExecutable", getExec());
             return false;
         }
 
         if(this.getConfigSize() != getConfigSize() && !isFixedData()){
-            update();
+            saveFile();
         }
 
         boolean proxy;
@@ -149,7 +153,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     int num = Integer.parseInt( string.replace(getName()+"-",""));
                     servers++;
                 } catch (NumberFormatException e) {
-                    Console.print("Une erreur dans la création du serveur",Level.WARNING);
+                    Console.printLang("service.executor.errorOnCreation", Level.WARNING);
                     return false;
                 }
             }
@@ -176,7 +180,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             @Override
                             public void completed() {
                                 dateBuilderTimer.loadComplexDate();
-                                Console.print("CopiedAsync: actions effectued in "+dateBuilderTimer.getLongBuild(),Level.FINE);
+                                Console.printLang("service.executor.asyncCopy", Level.FINE, dateBuilderTimer.getLongBuild());
                                 isDoneWithSucess.set(true);
                                 try {
                                     if(!proceedStarting(finalname, finalServers,jvmConfig)){
@@ -194,7 +198,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             @Override
                             public void cancelled() {
                                 dateBuilderTimer.loadComplexDate();
-                                System.out.println("Cannot CopiedAsync: actions effectued in "+dateBuilderTimer.getLongBuild());
+                                Console.printLang("service.executor.cannotAsyncCopy", dateBuilderTimer.getLongBuild());
                                 queue.remove(jvmConfig);
 
                                 if(!queue.isEmpty()){
@@ -213,7 +217,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
             return true;
         } catch (Exception e) {
-            Console.print("The server could not be started",Level.WARNING);
+            Console.printLang("service.executor.couldNotStart", Level.WARNING);
             e.printStackTrace();
             return false;
         }
@@ -232,7 +236,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
-                while (portsBlackList.contains(port) || !isPortAvailable(port)){
+                while (portsBlackList.contains(port) || !PortUtils.isAvailable(port,true)){
                     port = port + 2;
                 }
                 if(!serversPort.isEmpty()){
@@ -250,7 +254,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                 port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
                 if(port == null){
-                    System.out.println(Colors.RED_BOLD+"The port can't be foundable for the server "+ finalname);
+                    Console.printLang("service.executor.notFoundPort", finalname);
                     return false;
                 }
 
@@ -262,10 +266,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 if(jvmConfig.getType().equals(Mods.STATIC)){
                     // System.out.println("template/"+pathName);
                     port = getCurrentPort("/bundles/"+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
-                    System.out.println("/bundles/"+jvmConfig.getPathName());
-                    System.out.println(port);
+                    Console.fine("/bundles/"+jvmConfig.getPathName());
                     if(port == null){
-                        System.out.println(Colors.RED_BOLD+"The port can't be foundable for the server "+ finalname);
+                        Console.printLang("service.executor.notFoundPort", finalname);
                         return false;
                     }
                     serversPortList.add(port);
@@ -273,9 +276,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }else{
                     if(jvmConfig.getType().equals(Mods.DYNAMIC)){
                         port = getCurrentPort("/runtimes/"+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
-                        System.out.println("/runtimes/"+jvmConfig.getPathName());
+                        Console.fine("/runtimes/"+jvmConfig.getPathName());
                         if (port == null) {
-                            System.out.println(Colors.RED_BOLD + "The port can't be foundable for the server " + finalname);
+                            Console.printLang("service.executor.notFoundPort", finalname);
                             return false;
                         }
                         serversPortList.add(port);
@@ -305,13 +308,18 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 portsBlackList.add(port);
                 serversPort.put(finalname,port);
             }else {
-                Console.print("The port "+ port +" is already used",Level.WARNING);
+                Console.printLang("service.executor.portAlreadyUsed", Level.WARNING, port);
                 return false;
             }
         }
         String resourcePath = null;
         String startup = null;
-
+        Console.fine(jvmConfig.getJavaVersion());
+        Console.fine(Core.getInstance().getJavaIndex().getJMap().keySet());
+        if(!Core.getInstance().getJavaIndex().containsKey(jvmConfig.getJavaVersion())){
+            Console.print("The java version "+jvmConfig.getJavaVersion()+" is not founded",Level.WARNING);
+            return false;
+        }
         String javaPath = Core.getInstance().getJavaIndex().getJMap().get(jvmConfig.getJavaVersion()).getPath();
         if(jvmConfig.getStartup() != null){
             startup = jvmConfig.getStartup().replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmConfig.getXmx()).replaceAll("%xms%",jvmConfig.getXms());
@@ -323,7 +331,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         core.getEventsFactory().callEvent(preProcessEvent);
 
         if(preProcessEvent.isCancelled()){
-            Console.print("The process cannot be started because the "+ preProcessEvent.getCancelledBy().getDreamyName()+ " addon cancelled the event.",Level.WARNING);
+            Console.printLang("service.executor.processCantStartBecauseAddon", Level.WARNING, preProcessEvent.getCancelledBy().getDreamyName());
             return false;
         }
 
@@ -373,7 +381,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
 
         Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
-        System.out.println(port);
+        Console.fine(port);
         JVMService jvmService = JVMService.builder().
                 process(proc)
                 .jvmExecutor(this)
@@ -389,7 +397,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
         //t.start();
-        Console.print(Colors.GREEN_BOLD+"The server "+Colors.YELLOW_BOLD+finalname+Colors.GREEN_BOLD+" has just started the process",Level.INFO);
+        Console.printLang("service.executor.serverStartProcess", Level.INFO, finalname);
         if(jvmConfig.getType() == Mods.DYNAMIC){
             Console.print("Path : "+Colors.ANSI_RESET()+new File(System.getProperty("user.dir")+Config.getPath("/runtimes/"+getName().toLowerCase()+"/"+getName()+"-"+servers)).getAbsolutePath(), Level.FINE);
         }
@@ -430,8 +438,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
 
             if(jvmService.getType() == Mods.STATIC){
-
-                //System.out.println("Je supprime le service");
                 staticService = null;
             }
             jvmServices.remove(i);
@@ -485,9 +491,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
     public boolean isPortAvailable(int port) {
-        System.out.println("Checking if port "+port+" is available...");
+        Console.printLang("service.executor.checkingPort", port);
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("Invalid start port: " + port);
+            throw new IllegalArgumentException(Console.getFromLang("service.executor.invalidStartPort", port));
         }
 
         ServerSocket ss = null;

@@ -47,7 +47,7 @@ public class RequestManager implements IRequestManager {
         return request;
     }
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
-         if(!requestBuilder.getRequestData().containsKey(requestInfo)){
+        if(!requestBuilder.getRequestData().containsKey(requestInfo)){
              try {
                  throw new RequestNotFoundException(requestInfo);
              } catch (RequestNotFoundException e) {
@@ -80,8 +80,8 @@ public class RequestManager implements IRequestManager {
 
     public RequestPacket sendRequest(RequestInfo requestInfo, Object... args){
        return this.sendRequest(requestInfo,new Message(),future -> {
-            Console.print("Request "+ requestInfo.name()+" sended with success!", Level.FINE);
-        },args);
+           Console.printLang("connection.request.sent", Level.FINE, requestInfo.name());
+       },args);
     }
 
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, Object... args){
@@ -91,7 +91,7 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
           return this.sendRequest(requestInfo,new Message(),future -> {
-                System.out.println("Request"+ requestInfo.name()+" sended with success!");
+              Console.printLang("connection.request.sent", requestInfo.name());
             },args);
 
         }
@@ -101,7 +101,7 @@ public class RequestManager implements IRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args){
         if(notifiedWhenSent){
             return this.sendRequest(requestInfo,message,future -> {
-                System.out.println("Request"+ requestInfo.name()+" sended with success!");
+                Console.printLang("connection.request.sent", requestInfo.name());
             },args);
 
         }

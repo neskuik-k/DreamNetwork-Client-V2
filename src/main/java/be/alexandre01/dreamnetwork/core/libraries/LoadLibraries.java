@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.libraries;
 
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.console.Console;
 
 import java.io.File;
 import java.lang.reflect.AccessibleObject;
@@ -19,7 +20,7 @@ public class LoadLibraries{
                 dir = new File("libs");
                 if(!dir.exists())
                     return;
-            System.out.println(Thread.currentThread().getContextClassLoader());
+            //System.out.println(Thread.currentThread().getContextClassLoader());
             ArrayList<URL> urls = new ArrayList<>();
             CustomClassLoader classLoader = new CustomClassLoader(new URL[0], Main.class.getClassLoader());
 
@@ -53,11 +54,8 @@ public class LoadLibraries{
                     }*/
 
 
-
-
-
-                    System.out.println("loaded "+file.getName());
-                    System.out.println(file.toURI().toURL());
+                    Console.printLang("libraries.loaded", file.getName());
+                    //System.out.println(file.toURI().toURL());
 
                 }
 
@@ -66,7 +64,7 @@ public class LoadLibraries{
                 urls.toArray(url);*/
                 ClassLoader customClassLoader = new URLClassLoader(urls.toArray(new URL[0]));
 
-            System.out.println(Arrays.toString(urls.toArray(new URL[0])));;
+          //  System.out.println(Arrays.toString(urls.toArray(new URL[0])));;
 
          /*       Class<?> clazz = classLoader.loadClass("be.alexandre01.dreamnetwork.client.Main");
             Method method = clazz.getMethod("main", String[].class);
@@ -87,7 +85,7 @@ public class LoadLibraries{
             /*ConsoleReader consoleReader = new ConsoleReader();
             System.out.println(consoleReader);*/
 
-            System.out.println(Thread.currentThread().getContextClassLoader().getClass());
+        //    System.out.println(Thread.currentThread().getContextClassLoader().getClass());
 
         }catch (Exception e){
             e.printStackTrace();
@@ -100,7 +98,7 @@ public class LoadLibraries{
             method.setAccessible(true); /*promote the method to public access*/
             method.invoke(urlClassLoader, url);
         } catch (Exception ex) {
-            throw new RuntimeException("Cannot load library from jar file '" + jar.getAbsolutePath() + "'. Reason: " + ex.getMessage());
+            throw new RuntimeException(Console.getFromLang("libraries.cannotLoad", jar.getAbsolutePath(), ex.getMessage()));
         }
     }
     static void setAccessible(final AccessibleObject ao,
@@ -119,7 +117,7 @@ public class LoadLibraries{
 
     public static Object invokeClass(String className, Object... objects){
         Class<?> clazz = null;
-        System.out.println(className);
+
         try {
             clazz = Class.forName(className,true,classloader);
         } catch (ClassNotFoundException e) {

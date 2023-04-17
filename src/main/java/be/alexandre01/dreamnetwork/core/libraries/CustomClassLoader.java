@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.libraries;
 
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.console.Console;
 
 import java.lang.reflect.Field;
 import java.net.URL;
@@ -33,7 +34,7 @@ public class CustomClassLoader extends URLClassLoader{
         @Override
         public void close() {
             try {
-                System.out.println("Custom close");
+                Console.printLang("libraries.customClass.close");
                 Class clazz = java.net.URLClassLoader.class;
                 Field ucp = clazz.getDeclaredField("ucp");
                 ucp.setAccessible(true);
@@ -59,7 +60,7 @@ public class CustomClassLoader extends URLClassLoader{
         @Override
         protected void finalize() throws Throwable {
             super.finalize();
-            System.out.println(this.toString() + " - CL Finalized.");
+            Console.printLang("libraries.customClass.finalized", this.toString());
         }
 
 }

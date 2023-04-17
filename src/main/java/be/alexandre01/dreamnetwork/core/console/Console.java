@@ -1,19 +1,17 @@
 package be.alexandre01.dreamnetwork.core.console;
 
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
-import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
-import com.github.tomaslanger.chalk.Chalk;
+import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
-import org.jline.keymap.KeyMap;
 import org.jline.reader.*;
-import org.jline.reader.impl.SimpleMaskingCallback;
-import org.jline.utils.InfoCmp;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -38,13 +36,39 @@ public class Console extends Thread{
 
     private StringBuilder datas = new StringBuilder();
 
+
     public List<Completers.TreeCompleter.Node> completorNodes = new ArrayList<>();
     IConsole iConsole;
     private static final HashMap<String, Console> instances = new HashMap<>();
     private static ConsoleReader consoleReader = new ConsoleReader();
     public String name;
 
-    @Setter @Getter private static boolean blockConsole = false;
+    @Getter @Setter private boolean noHistory = false;
+
+    @Getter private static boolean blockConsole = false;
+
+    public static void setBlockConsole(boolean blockConsole) {
+        if(blockConsole == Console.blockConsole) return;
+
+        Console.blockConsole = blockConsole;
+        Thread thread = Console.getConsole("m:default");
+        if(blockConsole){
+            if(thread != null){
+                //thread.interrupt();
+                Console.getConsole("m:default").isRunning = false;// tell the thread to stop
+                /*try {
+                    thread.join(); // wait for the thread to stop
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }*/
+            }
+        }else {
+            Console.getConsole("m:default").isRunning = true;
+            Console.getConsole("m:default").run();
+        }
+        //reload();
+    }
+
     private final ArrayList<ConsoleMessage> history;
     private int historySize;
     public static String defaultConsole;
@@ -58,17 +82,17 @@ public class Console extends Thread{
     public String readLineString1 = null;
     public String readLineString2 = null;
     public MaskingCallback maskingCallback = null;
-    @Setter public String writing = Colors.CYAN_BOLD_BRIGHT+"Dream"+"NetworkV2"+Colors.BLACK_BACKGROUND_BRIGHT+Colors.YELLOW+"@"+Colors.CYAN_UNDERLINED+ Core.getUsername()+Colors.WHITE+" > "+Colors.ANSI_RESET();
+    @Setter public String writing = Console.getFromLang("console.dreamnetworkWriting",Core.getUsername());
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
         public void onKill(LineReader reader) {
             String data;
-            while ((data = reader.readLine( Colors.RED_BOLD_BRIGHT+"do you want to exit ? (y or n) > "+Colors.RESET)) != null){
+            while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
                 if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                     System.exit(0);
                 }else {
-                    Console.debugPrint("Cancelled.");
+                    Console.debugPrint(Console.getFromLang("cancelled"));
                     run();
                 }
 
@@ -94,7 +118,7 @@ public class Console extends Thread{
         if(clearConsole)
             clearConsole();
         if(console.defaultPrint != null && !isSilent)
-            console.defaultPrint.println(Chalk.on("You have just changed console. ["+console.getName()+"]").bgWhite().black());
+            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName()));
         if(!console.history.isEmpty()){
             List<ConsoleMessage> h = new ArrayList<>(console.history);
           //  stashLine();
@@ -107,6 +131,21 @@ public class Console extends Thread{
             }
 
         }
+        try {
+            ConsoleReader.sReader.getHistory().purge();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        if(!console.noHistory){
+            if(ReaderHistory.getLines().containsKey(name)){
+                List<String> h = new ArrayList<>(ReaderHistory.getLines().get(name));
+                for (String s : h){
+                    ConsoleReader.sReader.getHistory().add(s);
+                }
+
+            }
+        }
+
 
         console.iConsole.consoleChange();
         console.reloadCompletor();
@@ -138,6 +177,10 @@ public class Console extends Thread{
         return instances.get(name);
     }
 
+    public static Console getCurrent(){
+        return instances.get(actualConsole);
+    }
+
     public static Collection<Console> getConsoles(){
         return instances.values();
     }
@@ -166,9 +209,11 @@ public class Console extends Thread{
             return;
         }
         if(fh != null){
-            LogRecord lr = new LogRecord(Level.FINE,s.toString());
-           fh.publish(lr);
+            sendToLog(s,Level.FINE,"global");
         }
+    }
+    public static void fineLang(String map, Object s){
+        fine(Console.getFromLang(map,s));
     }
     public static void print(String s, Level level,String name){
 
@@ -196,14 +241,24 @@ public class Console extends Thread{
     /*
     Basic Print in console
      */
+
+    public void fPrintLang(String map, Level level, Object... params){
+        if (Core.getInstance().isDebug()){
+            fPrint(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+        }
+        fPrint(LanguageManager.getMessage(map,params),level);
+    }
+    public void fPrintLang(String map, Object... params){
+        fPrintLang(map,Level.INFO,params);
+    }
     public void fPrint(Object s,Level level){
         //stashLine();
+
         if(Console.actualConsole.equals(name)){
 
             //Client.getLogger().log(level,s+Colors.ANSI_RESET());
 
-            final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
-            Core.getInstance().getFileHandler().publish(new LogRecord(level,msgWithoutColorCodes));
+
             if(!isDebug && level == Level.FINE)
                 return;
 
@@ -229,11 +284,24 @@ public class Console extends Thread{
 
            // ConsoleReader.sReader.setPrompt(writing);
         }
-
-
-
-
+        sendToLog(s,level);
         refreshHistory(s + Colors.ANSI_RESET(),level);
+    }
+
+    public static void printLang(String map,Level level,Object... params){
+        if(Core.getInstance().isDebug()) {
+            print(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+            return;
+        }
+        print(LanguageManager.getMessage(map,params),level);
+    }
+
+    public static void printLang(String map,Object... params){
+        printLang(map,Level.INFO,params);
+    }
+
+    public static String getFromLang(String map,Object... params){
+        return LanguageManager.getMessage(map,params);
     }
     public static void print(Object s){
         LineReader lineReader = ConsoleReader.sReader;
@@ -243,7 +311,7 @@ public class Console extends Thread{
         msg = msg.replaceAll("\\s+$", "");
         cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
         String spaces = "";
-
+        sendToLog(s,Level.INFO,"global");
         //random number between cols-3 and 1
         //SNOW
         /* if(cols > 6){
@@ -255,6 +323,15 @@ public class Console extends Thread{
         }*/
         ConsoleReader.sReader.printAbove(msg+spaces);
     }
+
+    private void sendToLog(Object s,Level level){
+        final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
+        Core.getInstance().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
+    }
+    private static void sendToLog(Object s,Level level,String name){
+        final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
+        Core.getInstance().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
+    }
     public static Logger getLogger(){
         return Logger.getGlobal();
     }
@@ -263,6 +340,8 @@ public class Console extends Thread{
         LineReader lineReader = ConsoleReader.sReader;
         int rows = lineReader.getTerminal().getSize().getRows();
         int cols = lineReader.getTerminal().getSize().getColumns();
+        if(s == null)
+            s = "null";
         String msg = s.toString().replaceAll("\\s+$", "");
         cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
         String spaces = "";
@@ -286,30 +365,9 @@ public class Console extends Thread{
 
 
     public static void clearConsole(){
-
-
-        try
-        {
-            final String os = System.getProperty("os.name");
-
-            if (os.contains("Windows"))
-            {
-                new ProcessBuilder("cmd","/c","cls").inheritIO().start().waitFor();
-            }
-            else
-            {
-                final PrintStream defaultStream = Core.getInstance().formatter.getDefaultStream();
-                defaultStream.print("\033[H\033[2J");
-                defaultStream.flush();
-            }
-        }
-        catch (final Exception ignored)
-        {
-
-        }
+        clearConsole(Core.getInstance().formatter.getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-
         try
         {
             final String os = System.getProperty("os.name");
@@ -352,7 +410,30 @@ public class Console extends Thread{
         Thread thread = Console.getConsole("m:default");
         if(thread != null){
             thread.interrupt();
+            Console.getConsole("m:default").isRunning = false;// tell the thread to stop
+            try {
+                thread.join(); // wait for the thread to stop
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            Console.getConsole("m:default").isRunning = true;
             thread.start();
+        }
+    }
+
+    public static void bug(Exception e){
+        Console.printLang("console.errorOn", Level.WARNING, e.getMessage(), e.getClass().getSimpleName());
+        Console console = Console.getConsole(actualConsole);
+        console.fPrintLang("console.errorCause", Level.SEVERE, e.getMessage(), e.getClass().getSimpleName());
+        for(StackTraceElement s : e.getStackTrace()){
+            Core.getInstance().formatter.getDefaultStream().println("----->");
+            console.fPrintLang("connection.request.exception.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName(), s.getLineNumber());
+        }
+        if(Core.getInstance().isDebug()){
+            e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
+        }else {
+            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("console.contactDNDevError"));
+            Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,Console.getFromLang("console.contactDNDevError")));
         }
     }
 
@@ -373,29 +454,27 @@ public class Console extends Thread{
 
             PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
-            while (isRunning ){
+            while (isRunning){
                 Console console = Console.getConsole(actualConsole);
-                if(blockConsole)
-                    continue;
+            //    System.out.println(blockConsole);
 
+              /* if(blockConsole){
+                    continue;
+                }else {
+                    Core.getInstance().getFileHandler().publish(new LogRecord(Level.INFO, "Console Blocked: "+blockConsole+""));
+                }
+
+               // System.out.println("Line Refresh");
+                if(true){
+                    continue;
+                }*/
                if((data = reader.readLine(console.writing, readLineString1,maskingCallback,readLineString2)) == null)
                     continue;
 
 
 
-                if(data.length() == 0 ){
-                    /*reader.getTerminal().puts(InfoCmp.Capability.carriage_return);
-                    reader.getTerminal().writer().println("World!");
-                    reader.callWidget(LineReader.REDRAW_LINE);
-                    reader.callWidget(LineReader.REDISPLAY);
-                    reader.getTerminal().writer().flush();
-                    Console.clearConsole();
-                    //read inputstream
-                    history.forEach(entry -> {
-                        debugPrint(entry.content);
-                    });
-                    continue;*/
-                }
+                sendToLog("> : "+data,Level.INFO);
+
                 try {
                     if(console.collapseSpace)
                         data = data.trim().replaceAll("\\s{2,}", " ");
@@ -406,42 +485,32 @@ public class Console extends Thread{
 
 
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
+                    ReaderHistory.getLines().put(console.name, data);
                     String[] args = new String[0];
                     args = data.split(" ");
                     console.iConsole.listener(args);
                 }catch (Exception e){
-                    System.out.println("ERROR ON>> "+e.getMessage()+" || "+ e.getClass().getSimpleName());
-                    fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
-                    for(StackTraceElement s : e.getStackTrace()){
-                        Core.getInstance().formatter.getDefaultStream().println("----->");
-                        fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
-                    }
-                    if(Core.getInstance().isDebug()){
-                        e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-                    }else {
-                        Core.getInstance().formatter.getDefaultStream().println("Please contact the DN developpers about this error.");
-                    }
-                    }
+                    bug(e);
                 }
-
-                Console.debugPrint("Console closed");
-
+            }
 
 
         }catch (UserInterruptException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (EndOfFileException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (Exception e){
+            Console.debugPrint(Console.getFromLang("console.closed"));
             e.printStackTrace();
         }
-
-
-
     }
-    public void SIG_ING(){
+    public void SIG_IGN(){
+        if(!Main.getGlobalSettings().isSIG_IGN_Handler()){
+            Console.debugPrint(Console.getFromLang("console.closed"));
+            System.exit(0);
+        }
         LineReader reader =  ConsoleReader.sReader;
 
         //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
@@ -450,10 +519,10 @@ public class Console extends Thread{
         try {
             Console.getConsole(actualConsole).killListener.onKill(reader);
         }catch (UserInterruptException e){
-            SIG_ING();
+            SIG_IGN();
         }
         catch (EndOfFileException e){
-            SIG_ING();
+            SIG_IGN();
         }
 
     }
@@ -505,7 +574,7 @@ public class Console extends Thread{
             history.remove(0);
             historySize--;
         }
-        //debugPrint("history >> "+data);
+       // debugPrint("history >> "+data);
         history.add(new ConsoleMessage(data));
         historySize += data.length();
     }

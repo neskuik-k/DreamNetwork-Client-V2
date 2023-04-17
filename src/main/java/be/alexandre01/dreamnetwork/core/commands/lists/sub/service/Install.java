@@ -2,16 +2,15 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
-import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.github.tomaslanger.chalk.Chalk;
@@ -44,8 +43,8 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
         if(args[0].equalsIgnoreCase("install")){
             if(args.length < 2){
-                System.out.println(Chalk.on("[!] service install server [name] [SPIGOT-VER]").red());
-                System.out.println(Chalk.on("[!] service install proxy [name] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
+                System.out.println(Chalk.on("[!] service install server [" + Console.getConsole("name") + "] [SPIGOT-VER]").red());
+                System.out.println(Chalk.on("[!] service install proxy [" + Console.getConsole("name") + "] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
                 return true;
             }
 
@@ -55,14 +54,14 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
             System.out.println(args[2]);
             JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],bundleData);
             if(jvmExecutor == null){
-                System.out.println(Chalk.on("[!] The service mentionned is not configurated..").red());
+                Console.printLang("commands.service.install.notConfigured");
                 return true;
             }
             InstallationLinks installationLinks;
             try {
                 installationLinks = InstallationLinks.getInstallationLinks(args[3]);
             }catch (Exception e){
-                System.out.println("[!] The version is incorrect...");
+                Console.printLang("commands.service.install.incorrectVersion");
                 return true;
             }
 
@@ -75,7 +74,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
                 @Override
                 public void complete() {
-                    System.out.println("File Updated with Success");
+                    Console.printLang("commands.service.install.fileUpdated");
                     String javaVersion = "default";
                     for(Integer i : installationLinks.getJavaVersion()){
                         if(Core.getInstance().getJavaIndex().getJVersion().containsKey(i)){

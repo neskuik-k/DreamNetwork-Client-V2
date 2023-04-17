@@ -1,17 +1,15 @@
 package be.alexandre01.dreamnetwork.core.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-
-import java.io.IOException;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 public class IntroServers extends IntroductionConsole {
 
@@ -35,7 +33,7 @@ public class IntroServers extends IntroductionConsole {
                 if(args[0].equalsIgnoreCase("yes")){
                     if(!hasCreatedProxy){
                         console.setWriting("");
-                        Core.getInstance().getCreateTemplateConsole().show("proxies", "proxy", "STATIC", "512M", "1024M", "0", new CreateTemplateConsole.Future() {
+                        Core.getInstance().getCreateTemplateConsole().show("proxies", "proxy", "STATIC", "512M", "1024M", "auto", new CreateTemplateConsole.Future() {
                             @Override
                             public void onResponse() {
                                 hasCreatedProxy = true;
@@ -45,18 +43,24 @@ public class IntroServers extends IntroductionConsole {
                             @Override
                             public void finish() {
                                 clear();
-                                Console.debugPrint("One more last thing...");
-                                console.setWriting(Colors.GREEN+"Do you want help to create a Server ?  : "+Colors.RED);
+                                Console.debugPrint(Console.getFromLang("introduction.servers.oneLastThing"));
+                                console.setWriting(Console.getFromLang("introduction.servers.helpToCreateServer"));
                                 ConsoleReader.sReader.runMacro("yes");
 
                                 //Console.reload();
                                 ConsoleReader.sReader.getTerminal().flush();
                                 ConsoleReader.sReader.getTerminal().writer().flush();
+                                 Main.getBundleManager().getBundleDatas().forEach((s, bundleData) -> {
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleName", bundleData.getBundleInfo().getName()));
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleType", bundleData.getBundleInfo().getType()));
+                                     Console.fine(Console.getFromLang("introduction.servers.finish.bundleExecutor", bundleData.getExecutors()));
+                                });
+                                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
                             }
                         });
                     }else {
-                        Core.getInstance().getCreateTemplateConsole().show("main", "lobby", "STATIC", "1G", "2G", "0", new CreateTemplateConsole.Future() {
+                        Core.getInstance().getCreateTemplateConsole().show("main", "lobby", "STATIC", "1G", "2G", "auto", new CreateTemplateConsole.Future() {
                             @Override
                             public void onResponse() {
 
@@ -67,6 +71,7 @@ public class IntroServers extends IntroductionConsole {
                                 Console.clearConsole();
                                 ASCIIART.sendLogo();
                                 ASCIIART.sendTitle();
+                                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
                                 Console.setActualConsole("m:default",true,false);
                             }
@@ -85,7 +90,7 @@ public class IntroServers extends IntroductionConsole {
 
                 ConsoleReader.sReader.getTerminal().writer().flush();
                 if(!hasCreatedProxy){
-                    console.setWriting(Colors.GREEN+"Do you want help to create a Proxy ?  : "+Colors.RED);
+                    console.setWriting(Console.getFromLang("introduction.servers.helpToCreateProxy"));
                     ConsoleReader.sReader.runMacro("yes");
                 }else {
                    console.setWriting("");

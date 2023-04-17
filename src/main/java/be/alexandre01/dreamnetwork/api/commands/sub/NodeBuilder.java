@@ -1,21 +1,15 @@
 package be.alexandre01.dreamnetwork.api.commands.sub;
 
-import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.NullNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.TextNode;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.utils.Tuple;
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.Multimap;
-import lombok.Getter;
 import org.jline.builtins.Completers;
 
-
 import java.util.*;
-import java.util.logging.Level;
 
 public class NodeBuilder {
     Completers.TreeCompleter.Node node;
@@ -23,8 +17,6 @@ public class NodeBuilder {
     Console console;
 
     List<Object> globalList;
-    final Multimap<Integer,NodeContainer> containers = ArrayListMultimap.create();
-    final Multimap<Object, Completers.TreeCompleter.Node> index = ArrayListMultimap.create();
     int num  =0;
     HashMap<Completers.TreeCompleter.Node,Object[]> nodes = new HashMap<>();
 
@@ -71,7 +63,6 @@ public class NodeBuilder {
                 int currentSize = list.size();
 
                 list.addAll(Arrays.asList((customType.reload())));
-               // System.out.priFntln(currentSize + " " + list.size());
                 nodeContainer.getIndex().put(o,new Tuple<>(currentSize,list.size()));
 
                 continue;
@@ -110,35 +101,45 @@ public class NodeBuilder {
 
 
     public void rebuild(){
-       Console.fine("rebuild suggestion");
-       Console.fine(globalList);
-        for (int i = 0; i < globalList.size(); i++) {
-            Object o = globalList.get(i);
-            if(o instanceof NodeContainer){
-               // printContainers((NodeContainer) o);
+        try {
+            Console.fine("rebuild suggestion");
+            Console.fine(globalList);
+            Console.fine("ICI hein");
+            for (int i = 0; i < globalList.size(); i++) {
+                Object o = globalList.get(i);
+                if(o instanceof NodeContainer){
+                    printContainers((NodeContainer) o);
+
+                }
+                //System.out.println(o);
             }
-            //System.out.println(o);
+
+           // System.out.println(num);
+            console.completorNodes.set(num, node = genNode(nodeContainer,true));
+            //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
+            if(Console.getCurrent() == console){
+                ConsoleReader.reloadCompleter();
+            }
+            //Console.getCurrent().reloadCompletor();
+            //ConsoleReader.reloadCompleter();
+        }catch (Exception e){
+            Console.bug(e);
         }
-        console.completorNodes.set(num, node = genNode(nodeContainer,true));
-        //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
-        if(Console.actualConsole.equals(console.name)){
-            ConsoleReader.reloadCompleter();
-        }
-        //ConsoleReader.reloadCompleter();
+
     }
     private void printContainers(NodeContainer nodeContainer){
-        for (int i = 0; i < globalList.size(); i++) {
-            Object o = globalList.get(i);
+        for (int i = 0; i < nodeContainer.getIndex().size(); i++) {
+            Object o = nodeContainer.getList().get(i);
             if(o instanceof NodeContainer){
                 printContainers((NodeContainer) o);
                 continue;
             }
-           Console.fine(o);
+           Console.fine(Colors.RED+o);
         }
     }
     public void registerTo(){
         Console.fine("Register new Suggestion");
-        num = ConsoleReader.nodes.size();
+        num = console.completorNodes.size();
        // ConsoleReader.nodes.add(node);
         console.completorNodes.add(node);
     }

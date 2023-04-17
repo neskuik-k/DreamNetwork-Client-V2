@@ -15,6 +15,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.print;
+import static be.alexandre01.dreamnetwork.core.console.Console.printLang;
 import static org.jline.builtins.Completers.TreeCompleter.node;
 
 public class CommandReader{
@@ -46,6 +47,7 @@ public class CommandReader{
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
         commands.addCommands(new GuiCommand("gui"));
+        commands.addCommands(new HypervisorCommand("hypervisor"));
         ConsoleReader.reloadCompleter();
     }
 
@@ -60,7 +62,7 @@ public class CommandReader{
                             CoreCommandExecuteEvent event = new CoreCommandExecuteEvent(core.getDnCoreAPI(), args);
                             core.getEventsFactory().callEvent(event);
                             if(event.isCancelled()){
-                                print("Command cancelled");
+                                printLang("api.commands.cancelled");
                                 return;
                             }
                             commands.check(args);

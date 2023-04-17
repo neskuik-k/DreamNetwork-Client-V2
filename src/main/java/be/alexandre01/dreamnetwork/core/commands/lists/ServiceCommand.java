@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.core.commands.lists.sub.service.*;
+import be.alexandre01.dreamnetwork.core.console.Console;
 
 
 public class ServiceCommand extends Command {
@@ -16,17 +17,18 @@ public class ServiceCommand extends Command {
         addSubCommand("list",new List());
         addSubCommand("kill",new Kill());
 
-        getHelpBuilder().setTitleUsage("How to configurate a service");
-        getHelpBuilder().setCmdUsage("create a server","create","server/proxy","[name]");
-        getHelpBuilder().setCmdUsage("install a server","install","server/proxy","[name]", "[Ver.]");
-        getHelpBuilder().setTitleUsage("How to run a server");
-        getHelpBuilder().setCmdUsage("start a server","start","server/proxy","[name]");
-        getHelpBuilder().setTitleUsage("How to stop server");
-        getHelpBuilder().setCmdUsage("stop a server","stop","server/proxy","[name]");
-        getHelpBuilder().setTitleUsage("How to remove/delete a server");
-        getHelpBuilder().setCmdUsage("remove a server","remove","server/proxy","[name]");
-        getHelpBuilder().setTitleUsage("List all your servers");
-        getHelpBuilder().setCmdUsage("list your servers","list");
+        String nameLang = Console.getFromLang("name");
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.titleUsage"));
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.create"),"create","server/proxy","[" + nameLang + "]");
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.install"),"install","server/proxy","[" + nameLang + "]", "[Ver.]");
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.howTo.run"));
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.start"),"start","server/proxy","[" + nameLang + "]");
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.howTo.stop"));
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.stop"),"stop","server/proxy","[" + nameLang + "]");
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.howTo.remove"));
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.remove"),"remove","server/proxy","[" + nameLang + "]");
+        getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.howTo.list"));
+        getHelpBuilder().setCmdUsage(Console.getFromLang("commands.service.list"),"list");
 
     }
 

@@ -72,4 +72,7 @@ public enum InstallationLinks {
         return is.toArray(new Integer[0]);
     }
 
+    public IContainer.JVMType getJvmType() {
+        return jvmType;
+    }
 }

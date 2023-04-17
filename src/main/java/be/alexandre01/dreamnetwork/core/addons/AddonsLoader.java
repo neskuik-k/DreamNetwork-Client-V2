@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.addons;
 
 import be.alexandre01.dreamnetwork.api.addons.Addon;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import lombok.Getter;
 
 import org.apache.commons.io.IOUtils;
@@ -46,7 +47,7 @@ public class AddonsLoader {
         if(cacheFolder.exists()){
             boolean b =cacheFolder.delete();
             if(!b){
-                System.out.println("Could not delete cache.yml");
+                Console.printLang("addons.loader.couldNotDeleteCache");
             }
         }
 
@@ -56,23 +57,23 @@ public class AddonsLoader {
             if(!dir.exists()) {
                 dir.mkdirs();
             }
-            System.out.println("Loading addons...");
+            Console.printLang("addons.loading");
             if(isDirEmpty(dir.toPath())) {
-                System.out.println("The addons folder is empty. Skipping...");
+                Console.printLang("addons.emptyFolder");
                 return;
             }
             for(File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.isDirectory())
                     continue;
 
-                System.out.println("Loading addon: " + file.getName());
+                Console.printLang("addons.loadingAddon", file.getName());
 
                 Addon cache = null;
                 for (Addon module : cachedAddons) {
-                    System.out.println(file.toURI().toURL());
+                    //System.out.println(file.toURI().toURL());
                     if (module.getUrl().toString().equals(file.toURI().toURL().toString())) {
                         cache = module;
-                        System.out.println("Cached >> "+ cache);
+                        Console.printLang("addons.cached", cache);
                         break;
                     }
                 }

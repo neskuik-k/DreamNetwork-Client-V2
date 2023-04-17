@@ -1,15 +1,21 @@
 package be.alexandre01.dreamnetwork.core.utils.sockets;
 
+import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.console.Console;
+
 import java.io.IOException;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 
 public class PortUtils {
     public static boolean isAvailable(int port, boolean isSilent) {
+        if(!Main.getGlobalSettings().isFindAllocatedPorts()){
+            return true;
+        }
         if(!isSilent)
-            System.out.println("Checking if port "+port+" is available...");
+            Console.printLang("core.utils.sockets.checkingPort", port);
         if (port < 1 || port > 65535) {
-            throw new IllegalArgumentException("Invalid start port: " + port);
+            throw new IllegalArgumentException(Console.getFromLang("core.utils.sockets.invalidStartPort", port));
         }
 
         ServerSocket ss = null;

@@ -35,7 +35,7 @@ public class AuthentificationResponse extends CoreResponse {
 
     @Override
     protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client) {
-        Console.print("Requete entrente->",Level.FINE);
+        Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
         Console.print(message,Level.FINE);
 
         if(!message.hasRequest()){
@@ -50,7 +50,7 @@ public class AuthentificationResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
             RequestInfo requestInfo = message.getRequest();
-            Console.print("REQUETE : "+ requestInfo, Level.FINE);
+            Console.printLang("connection.core.communication.request", Level.FINE, requestInfo);
 
             ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
 
@@ -77,7 +77,7 @@ public class AuthentificationResponse extends CoreResponse {
 
 
                     if (newClient.getJvmType() == null) {
-                        Console.print(Colors.RED + "Client " + newClient.getInfo() + " not recognized and tried to connect");
+                        Console.printLang("connection.core.communication.unrecognizedClient", newClient.getInfo());
                         return;
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
@@ -86,7 +86,8 @@ public class AuthentificationResponse extends CoreResponse {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
-                                        System.out.println(Colors.RED + "<!>" + Colors.YELLOW + " Recovering " + Colors.PURPLE + jvmService.getJvmExecutor().getName() + "-" + jvmService.getId() + Colors.YELLOW + " on the proxy");
+
+                                        Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
                                                 jvmService.getJvmExecutor().getName() + "-" + jvmService.getId(),
@@ -96,10 +97,10 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Proxy " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
+                        Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService());
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
@@ -121,10 +122,10 @@ public class AuthentificationResponse extends CoreResponse {
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
                         }
 
-                        Console.print(Colors.YELLOW + "- " + Colors.CYAN_BOLD + "Serveur " + newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + " linked to DreamNetwork");
+                        Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            System.out.println(Colors.BLUE+" Backuping screen for service on "+newClient.getJvmService().getJvmExecutor().getName()+"-"+newClient.getJvmService().getId()+"...");
+                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
@@ -137,6 +138,7 @@ public class AuthentificationResponse extends CoreResponse {
 
                                     if (service.getClient() != null) {
                                         String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
+                                        //System.out.println(service.);
                                         service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
                                         servers.add(jvmExecutor.getName() + "-" + service.getId() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
                                     }

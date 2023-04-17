@@ -16,7 +16,7 @@ public class HelpBuilder {
     public HelpBuilder(String commandName) {
         this.commandName = commandName;
         sbs = new ArrayList<>();
-        sbs.add((Chalk.on("Lists of commands for " + commandName + ":").green().bold().underline()));
+        sbs.add(Console.getFromLang("api.commands.helpBuilder.list", commandName));
     }
 
     public HelpBuilder setCmdUsage(String usage, String... sub) {

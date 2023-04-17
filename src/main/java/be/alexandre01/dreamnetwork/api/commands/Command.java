@@ -5,7 +5,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
@@ -81,7 +80,7 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
     @Override
     public void sendHelp(){
         if(helpBuilder.getSize() <= 1){
-            Console.print(Colors.ANSI_RED()+" Invalid arguments.");
+            Console.printLang("api.commands.invalidArguments");
         }else {
             helpBuilder.build();
         }

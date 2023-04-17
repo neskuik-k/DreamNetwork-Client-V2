@@ -6,7 +6,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeType;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.utils.Tuple;
-import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 
 public class CustomType extends NodeType {
 
-    private static final Multimap<Class<? extends CustomType>,Object> customTypes = ArrayListMultimap.create();
+    @Getter private static final Multimap<Class<? extends CustomType>,Object> customTypes = ArrayListMultimap.create();
 
     private int[] index;
 
@@ -55,8 +54,25 @@ public class CustomType extends NodeType {
 
                 //  customType.reload();
             }
+            Console.fine("Reload " + customType.getSimpleName());
+            final int[] i = {0};
+            try {
+                nodeBuilders.forEach(nodeBuilder -> {
+                    if(nodeBuilder == null){
+                        Console.fine("NodeBuilder is null");
+                        return;
+                    }
+                    Console.fine("Find " + nodeBuilder.getClass().getSimpleName()+" "+ i[0]);
+                    nodeBuilder.rebuild();
+                    i[0]++;
+                });
+            }catch (Exception e){
+               Console.bug(e);
+            }
 
-            nodeBuilders.forEach(NodeBuilder::rebuild);
+           // nodeBuilders.forEach(NodeBuilder::rebuild);
+
+
 
         }
 

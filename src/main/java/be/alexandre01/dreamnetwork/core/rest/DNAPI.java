@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.core.rest;
 
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -63,12 +63,12 @@ public class DNAPI {
             return true;
         }else {
             if(response.getStatus() == 521){
-                System.out.println(Colors.RED+ "The API is DOWN -> please retry later.");
+                System.out.println(LanguageManager.getMessage("core.api.down"));
                 System.exit(1);
                 return false;
             }
             if(response.getBody().isEmpty()){
-                System.out.println(Colors.RED+ "The API is DOWN -> please retry later.");
+                System.out.println(LanguageManager.getMessage("core.api.down"));
                 System.exit(1);
                 return false;
             }
@@ -91,9 +91,9 @@ public class DNAPI {
                     sb.append(s);
                 }
 
-                System.out.println("There is an error with your license: "+sb.toString());
+                System.out.println(LanguageManager.getMessage("core.api.licenceError").replaceFirst("%var%", sb.toString()));
             }catch (Exception e){
-                System.out.println("The API is DOWN -> please retry later.");
+                System.out.println(LanguageManager.getMessage("core.api.down"));
             }
 
         }

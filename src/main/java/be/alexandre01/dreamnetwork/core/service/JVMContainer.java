@@ -1,15 +1,10 @@
 package be.alexandre01.dreamnetwork.core.service;
 
-import be.alexandre01.dreamnetwork.api.commands.sub.types.AllServersNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ProxiesNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +16,7 @@ public class JVMContainer implements IContainer {
 
 
     public Collection<IJVMExecutor> getServersExecutors() {
-        return jvmExecutors.stream().filter(ijvmExecutor -> !ijvmExecutor.isProxy()).collect(Collectors.toList());
+        return jvmExecutors.stream().filter(ijvmExecutor -> !(ijvmExecutor.isProxy())).collect(Collectors.toList());
     }
 
     public Collection<IJVMExecutor> getProxiesExecutors() {
@@ -51,7 +46,8 @@ public class JVMContainer implements IContainer {
         int port = 0;
         boolean proxy = false;
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
-        try {
+
+        /*try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml")) {
                 if (line.startsWith("type:")) {
                     type = IJVMExecutor.Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
@@ -71,8 +67,14 @@ public class JVMContainer implements IContainer {
             }
         } catch (Exception e) {
             return null;
+        }*/
+
+        try {
+            return new JVMExecutor(pathName, name, bundleData);
+        }catch (Exception e){
+            e.printStackTrace();
+            return null;
         }
-        return (IJVMExecutor) new JVMExecutor(pathName, name, type, xms, xmx, port, proxy, updateFile,bundleData);
     }
 
     @Override

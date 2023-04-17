@@ -45,7 +45,7 @@ public class Maven {
         // try to load from maven properties first
         try {
             Properties p = new Properties();
-            InputStream is = Maven.class.getResourceAsStream("/META-INF/maven/be.alexandre01.inazuma.uhc/InazumaUHC/pom.properties");
+            InputStream is = Maven.class.getResourceAsStream("/META-INF/maven/be.alexandre01.dreamnetwork/DreamNetworkV2/pom.properties");
             if (is != null) {
                 p.load(is);
                 version = p.getProperty("version", "");

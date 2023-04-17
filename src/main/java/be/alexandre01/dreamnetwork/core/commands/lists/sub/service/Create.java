@@ -2,15 +2,15 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -34,7 +34,7 @@ public class Create extends SubCommand {
                                                         create("1G","2G",
                                                                 create("1G","2G"))))))));
     }
-    String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-"};
+    String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-","%"};
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
@@ -47,29 +47,29 @@ public class Create extends SubCommand {
             //illegal chars
             for(String illegalChar : illegalChars){
                 if(name.contains(illegalChar)){
-                    System.out.println(Colors.RED+"The serverName is invalid, you can't use the character -> '"+illegalChar+"'");
+                    Console.printLang("commands.service.create.invalidServerName", illegalChar);
                     return false;
                 }
             }
 
             if(!RamArgumentsChecker.check(xms)){
-                System.out.println("xms "+ xms+" is not valid");
+                Console.printLang("commands.service.create.invalidXMS", xms);
                 return false;
             }
             if(!RamArgumentsChecker.check(xmx)){
-                System.out.println("xmx "+ xmx +" is not valid");
+                Console.printLang("commands.service.create.invalidXMX", xmx);
                 return false;
             }
 
             if(!ModsArgumentChecker.check(mod)){
-                System.out.println("mod is not valid");
+                Console.printLang("commands.service.create.invalidMod");
                 return false;
             }
             IJVMExecutor.Mods mods = IJVMExecutor.Mods.valueOf(mod);
             BundleInfo bundleInfo;
 
            if(!Core.getInstance().getBundleManager().getBundleDatas().containsKey(bundle.toLowerCase())) {
-               System.out.println("Bundle doesn't exist");
+               Console.printLang("commands.service.create.nonExistentBundle");
                return false;
            }
            BundleData bundleData = Core.getInstance().getBundleManager().getBundleDatas().get(bundle.toLowerCase());
@@ -83,13 +83,13 @@ public class Create extends SubCommand {
             int port = 0;
             if(args.length == 5){
                 if(!NumberArgumentCheck.check(sArgs[4])) {
-                    System.out.println("port is not valid");
+                    Console.printLang("commands.service.create.invalidPort");
                     return false;
                 }
                  port = Integer.parseInt(sArgs[4]);
             }
 
-            System.out.println("Adding server "+name+" with "+bundle+" bundle");
+            Console.printLang("service.creation.addingServerOnBundle", name, bundle);
 
             IContainer.JVMType jvmType = bundleInfo.getType();
 
@@ -97,24 +97,26 @@ public class Create extends SubCommand {
 
             JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(name, bundleData);
             if (jvmExecutor == null) {
-                System.out.println("Creating server "+name+" with "+bundle+" bundle");
+                Console.printLang("service.creation.creatingServerOnBundle", name, bundle);
                 Config.createDir("bundles/"+bundle+"/"+name);
                 System.out.println("?");
                 jvmExecutor = new JVMExecutor(bundle, name, mods, xms, xmx, port, proxy, true,bundleData);
                 jvmExecutor.addConfigsFiles();
-                Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+                Console.printLang("service.creation.serverConfigured");
+                CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 return true;
             }
             jvmExecutor.addConfigsFiles();
             jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
-            Console.print(Colors.ANSI_GREEN() + "You have successfully configured the server!");
+            Console.printLang("service.creation.serverConfigured");
+            CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 
             return true;
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
-            System.out.println(Colors.RED+"The command cannot be executed !");
+            Console.printLang("commands.cantBeExecuted");
             fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
 
-            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "0", new CreateTemplateConsole.Future() {
+            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
                 @Override
                 public void onResponse() {
 
@@ -122,6 +124,7 @@ public class Create extends SubCommand {
 
                 @Override
                 public void finish() {
+                    CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                     Console.setActualConsole("m:default");
                 }
             });

@@ -13,6 +13,7 @@ import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConso
 import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
+import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.DNChannelManager;
@@ -20,7 +21,6 @@ import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientMana
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.core.installer.SpigetConsole;
@@ -29,7 +29,7 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-import com.github.tomaslanger.chalk.Chalk;
+import jdk.nashorn.internal.objects.Global;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -40,7 +40,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 
 public class Core {
@@ -97,7 +96,7 @@ public class Core {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
-            System.out.println(Chalk.on("DEBUG MODE ENABLED !").bgGreen());
+            Console.printLang("Debug mode enabled");
             debug = true;
         }
 
@@ -119,7 +118,6 @@ public class Core {
 
         Console.defaultConsole = "m:default";
         Console.actualConsole =  "m:default";
-
         Console.getConsole("m:default").isDebug = isDebug();
         Console.setBlockConsole(true);
         //  Console.setActualConsole("m:default");
@@ -146,36 +144,23 @@ public class Core {
         ASCIIART.sendTitle();
 
 
-        Console console = Console.getConsole("m:default");
+        Console console = Console.getConsole(Console.actualConsole);
         console.defaultPrint = formatter.getDefaultStream();
         DevToolsToken devToolsToken = new DevToolsToken();
         devToolsToken.init();
         Main.getCommandReader().run(console);
 
-        System.out.println("CoreServer is starting...");
+        Console.printLang("core.server.starting");
         try {
             CoreServer coreServer;
             Thread thread = new Thread(coreServer = new CoreServer(14520));
             thread.start();
-            console.fPrint("The CoreServer System has been started on the port "+ coreServer.getPort()+".",Level.INFO);
+            console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {
-
-            console.fPrint(Chalk.on("ERROR CAUSE>> "+e.getMessage()+" || "+ e.getClass().getSimpleName()).red(),Level.SEVERE);
-            for(StackTraceElement s : e.getStackTrace()){
-                Core.getInstance().formatter.getDefaultStream().println("----->");
-                Core.getInstance().getFileHandler().publish(new LogRecord(Level.SEVERE,"----->"));
-                console.fPrint("ERROR ON>> "+Colors.WHITE_BACKGROUND+Colors.ANSI_BLACK()+s.getClassName()+":"+s.getMethodName()+":"+s.getLineNumber()+Colors.ANSI_RESET(),Level.SEVERE);
-            }
-            if(Core.getInstance().isDebug()){
-                e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
-            }else {
-                formatter.getDefaultStream().println("Please contact the DN developers about this error.");
-                fileHandler.publish(new LogRecord(Level.SEVERE,"Please contact the DN developers about this error."));
-
-            }
+            Console.bug(e);
         }
 
-        console.fPrint(Colors.WHITE_BACKGROUND+Colors.GREEN+"The Network has been successfully started / Do help to get the commands", Level.INFO);
+        console.fPrintLang("core.networkStarted");
 
 
         IScreenManager.load();
@@ -195,11 +180,11 @@ public class Core {
             try {
                 extension = (DreamExtension) c.getDeclaredConstructor(Addon.class).newInstance(addon);
                 extension.onLoad();
-                System.out.println("Addon "+addon.getDreamyName()+" has been loaded.");
+                console.fPrintLang("core.addon.loaded", addon.getDreamyName());
                 addonsManager.registerAddon(extension);
             } catch (Exception e) {
                 e.printStackTrace();
-                System.out.println(addon.getDreamyName() + " is not supported");
+                console.fPrintLang("core.addon.notSupported", addon.getDreamyName());
             }
         });
 
@@ -222,7 +207,7 @@ public class Core {
 
         console.reloadCompletor();
 
-        createTemplateConsole = new CreateTemplateConsole("","","","","","0");
+        createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);
@@ -231,7 +216,6 @@ public class Core {
         if(Main.getBundlesLoading().isFirstLoad()){
             Console.setActualConsole("m:introbegin",true,false);
         }
-
         Console.setBlockConsole(false);
     }
 

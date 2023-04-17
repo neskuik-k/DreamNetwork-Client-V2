@@ -70,16 +70,16 @@ public class ProcessUtils {
         String OS = System.getProperty("os.name").toLowerCase();
         String command = null;
         if (OS.indexOf("win") >= 0) {
-            Console.fine("Check alive Windows mode. Pid: ["+pidStr+"]");
+            Console.fine(Console.getFromLang("core.utils.process.checkAliveWindows", pidStr));
             command = "cmd /c tasklist /FI \"PID eq " + pidStr + "\"";
         } else {
-            Console.fine("Check alive Linux/Unix mode. Pid: ["+pidStr+"]");
+            Console.fine(Console.getFromLang("core.utils.process.checkAliveLinuxUnix", pidStr));
             command = "ps -p " + pidStr;
         }
         return isProcessIdRunning(pidStr, command); // call generic implementation
     }
     private static boolean isProcessIdRunning(String pid, String command) {
-        Console.fine("Command ["+command+"]");
+        Console.fine(Console.getFromLang("core.utils.process.isRunning.command", command));
         try {
             Runtime rt = Runtime.getRuntime();
             Process pr = rt.exec(command);
@@ -88,17 +88,17 @@ public class ProcessUtils {
             BufferedReader bReader = new BufferedReader(isReader);
             String strLine = null;
             while ((strLine= bReader.readLine()) != null) {
-                Console.fine("Line ["+strLine+"]");
+                Console.fine(Console.getFromLang("core.utils.process.isRunning.line", strLine));
                 if (strLine.contains(pid + " ")) {
-                    Console.fine("Process "+pid+" is running");
+                    Console.fine(Console.getFromLang("core.utils.process.isRunning.running", pid));
                     return true;
                 }
             }
-            Console.fine("Process "+pid+"is not running");
+            Console.fine(Console.getFromLang("core.utils.process.isRunning.notRunning", pid));
 
             return false;
         } catch (Exception ex) {
-            Console.debugPrint("Got exception using system command ["+command+"].");
+            Console.debugPrint(Console.getFromLang("core.utils.process.isRunning.systemCommandError", command));
             return true;
         }
     }

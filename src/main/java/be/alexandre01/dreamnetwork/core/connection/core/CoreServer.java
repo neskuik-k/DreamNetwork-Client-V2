@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.core.connection.core;
 
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CorePipeline;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -49,8 +48,8 @@ public class CoreServer extends Thread{
                 port++;
             }
             if(!isAvailable){
-                System.out.println(Colors.PURPLE+ "The port "+defaultPort+" is not available, the server will use the port "+port+" instead.");
-                Console.print(Colors.RED_BOLD_BRIGHT+Colors.WHITE_BACKGROUND+"There is a chance that the network will not work properly.",Level.WARNING);
+                Console.printLang("connection.core.usePortInsteadOfNonAvailable", defaultPort, port);
+                Console.printLang("connection.core.networkMayNotWorkCorrectly");
             }
 
             ChannelFuture f = b.bind(port).sync(); // (7)

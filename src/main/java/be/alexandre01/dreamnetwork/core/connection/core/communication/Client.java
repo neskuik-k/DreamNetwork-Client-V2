@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.core.connection.request.RequestManager;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.devtool.DefaultDevToolRequest;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.proxy.DefaultBungeeRequest;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.spigot.DefaultSpigotRequest;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
@@ -46,9 +47,14 @@ public class Client implements IClient {
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
         requestManager = new RequestManager(this);
+        Console.fine("Client : "+info);
         if (jvmType == null) {
             switch (info.split("-")[0]) {
                 case "SPIGOT":
+                    this.jvmType = JVMContainer.JVMType.SERVER;
+                    System.out.println("Spigot");
+                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
+                    break;
                 case "SPONGE":
                     this.jvmType = JVMContainer.JVMType.SERVER;
                     requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());

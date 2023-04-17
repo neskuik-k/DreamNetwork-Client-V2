@@ -1,34 +1,13 @@
 package be.alexandre01.dreamnetwork.core.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroHelp;
-import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.installer.Installer;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-import be.alexandre01.dreamnetwork.utils.spiget.Ressource;
-import org.jline.console.ArgDesc;
-import org.jline.console.CmdDesc;
 import org.jline.reader.LineReader;
-import org.jline.utils.AttributedString;
-import org.jline.widget.TailTipWidgets;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.text.Normalizer;
-import java.util.*;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
 public class IntroductionConsole {
@@ -42,7 +21,7 @@ public class IntroductionConsole {
 
         NodeBuilder yes = new NodeBuilder(NodeBuilder.create("yes"),console);
         NodeBuilder no = new NodeBuilder(NodeBuilder.create("no"),console);
-
+        console.setNoHistory(true);
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public void onKill(LineReader reader) {
@@ -79,7 +58,7 @@ public class IntroductionConsole {
 
             @Override
             public void consoleChange() {
-                console.setWriting(Colors.GREEN+"It is your first time you use "+Colors.CYAN+"DreamNetwork"+Colors.GREEN+" ?" +Colors.WHITE+" Type yes or no: "+Colors.RED);
+                console.setWriting(Console.getFromLang("introduction.ask.firstTime"));
 
                 ConsoleReader.sReader.runMacro("yes");
                 try {
@@ -96,9 +75,9 @@ public class IntroductionConsole {
     }
 
     private void sendHelp(){
-        console.fPrint("HELP SPIGET:",Level.INFO);
+        console.fPrintLang("introduction.help.spiget.helpSpiget");
         console.fPrint("- DOWNLOAD", Level.INFO);
-        console.fPrint("- SEARCH [VALUE] [NAME/TAG/AUTHORS] [PAGE]", Level.INFO);
+        console.fPrintLang("introduction.help.spiget.search");
         console.fPrint("- SELECT [ID/URL]",Level.INFO);
         console.fPrint("- EXIT",Level.INFO);
     }

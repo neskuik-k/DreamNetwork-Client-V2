@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.core.commands;
 
 import be.alexandre01.dreamnetwork.api.commands.ICommand;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import com.github.tomaslanger.chalk.Chalk;
 
 import java.io.PrintWriter;
 import java.util.HashMap;
@@ -30,7 +29,7 @@ public class CommandsManager {
             }
         }
         if (!hasFound) {
-            Console.print(Chalk.on("Command not found. | Type 'help' for assistance.").underline().red(), Level.WARNING);
+            Console.printLang("commands.notFound", Level.WARNING);
             PrintWriter writer = null;
         }
 

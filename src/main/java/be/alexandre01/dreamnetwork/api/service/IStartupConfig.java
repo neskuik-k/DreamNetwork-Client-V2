@@ -1,14 +1,17 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.core.service.JVMStartupConfig;
+import be.alexandre01.dreamnetwork.core.service.
+        JVMStartupConfig;
+
+import java.io.File;
 
 public interface IStartupConfig extends IConfig {
 
     static IStartupConfigBuilder builder(){
         return new JVMStartupConfig.Builder();
     }
-    void update();
+    void saveFile();
 
     boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods);
 
@@ -32,7 +35,7 @@ public interface IStartupConfig extends IConfig {
 
     void setFixedData(boolean fixedData);
 
-    void setFileRootDir(java.io.File fileRootDir);
+    File getFileRootDir();
 
     boolean isConfig();
 
@@ -42,5 +45,4 @@ public interface IStartupConfig extends IConfig {
 
     boolean isFixedData();
 
-    java.io.File getFileRootDir();
 }
