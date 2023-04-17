@@ -86,6 +86,7 @@ public class AuthentificationResponse extends CoreResponse {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
+
                                         Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
@@ -137,7 +138,7 @@ public class AuthentificationResponse extends CoreResponse {
 
                                     if (service.getClient() != null) {
                                         String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
-
+                                        System.out.println("RECOVERING CLIENT " + service.getJvmExecutor().getName() + "-" + service.getId()+"-"+service.getJvmExecutor().isProxy());
                                         //System.out.println(service.);
                                         service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
                                         servers.add(jvmExecutor.getName() + "-" + service.getId() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");

@@ -16,7 +16,7 @@ public class JVMContainer implements IContainer {
 
 
     public Collection<IJVMExecutor> getServersExecutors() {
-        return jvmExecutors.stream().filter(ijvmExecutor -> !ijvmExecutor.isProxy()).collect(Collectors.toList());
+        return jvmExecutors.stream().filter(ijvmExecutor -> !(ijvmExecutor.isProxy())).collect(Collectors.toList());
     }
 
     public Collection<IJVMExecutor> getProxiesExecutors() {

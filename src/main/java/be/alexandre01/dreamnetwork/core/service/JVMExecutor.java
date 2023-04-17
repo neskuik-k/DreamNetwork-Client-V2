@@ -61,7 +61,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         super(pathName,name,type,xms,xmx,port,proxy,updateFile);
         this.bundleData = bundleData;
 
-        JVMContainer.JVMType jvmType = ((proxy) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
+        JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
        // System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
     }
@@ -69,7 +70,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public JVMExecutor(String pathName,String name,BundleData bundleData){
         super(pathName,name,false);
         this.bundleData = bundleData;
-        JVMContainer.JVMType jvmType = ((isProxy()) ? JVMContainer.JVMType.PROXY : JVMContainer.JVMType.SERVER);
+        this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
+        JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
     }
 
