@@ -28,7 +28,7 @@ public class Create extends SubCommand {
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create("service",
                         create("create",
-                                create(new BundlesNode(false),
+                                create(new BundlesNode(false,false,false),
                                         create(Completers.AnyCompleter.INSTANCE,
                                                 create("STATIC","DYNAMIC",
                                                         create("1G","2G",

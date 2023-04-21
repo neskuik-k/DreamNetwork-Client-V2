@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.console.Console;
 
 
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 public class SpigetCommand extends Command {
 

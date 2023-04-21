@@ -11,7 +11,7 @@ import lombok.NonNull;
 
 import java.io.File;
 
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 public class JVM extends SubCommandCompletor implements SubCommandExecutor {
     public JVM(){

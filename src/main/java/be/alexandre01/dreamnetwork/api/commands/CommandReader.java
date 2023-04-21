@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.print;
 import static be.alexandre01.dreamnetwork.core.console.Console.printLang;
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 public class CommandReader{
     @Getter CommandsManager commands;

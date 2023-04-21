@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
@@ -153,6 +154,8 @@ public interface IJVMExecutor {
     public int getPort();
 
     public boolean hasExecutable();
+
+    public BundleData getBundleData();
 
 
 

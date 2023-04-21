@@ -272,7 +272,7 @@ public class CreateTemplateConsole {
                 console.setWriting(Console.getFromLang("service.creation.ask.bundleName"));
                 ConsoleReader.sReader.runMacro(opt[0]);
                 if(bundleNode == null){
-                    bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false)),console);
+                    bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false,false,false)),console);
                     console.reloadCompletor();
                 }
                 try {

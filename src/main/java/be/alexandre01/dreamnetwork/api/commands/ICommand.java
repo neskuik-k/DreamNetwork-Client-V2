@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.commands;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import lombok.Getter;
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
@@ -17,7 +18,7 @@ public abstract class ICommand {
         subCommands = new HashMap<>();
         helpBuilder = new HelpBuilder(name);
     }
-   abstract public void setCompletion(Completers.TreeCompleter.Node node);
+   abstract public void setCompletion(CustomTreeCompleter.Node node);
 
    abstract public void setAutoCompletions();
 

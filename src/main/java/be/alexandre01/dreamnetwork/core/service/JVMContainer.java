@@ -36,6 +36,16 @@ public class JVMContainer implements IContainer {
         return Main.getBundleManager().getBundleDatas().get(bundleData).getExecutors().get(processName);
     }
 
+    @Override
+    public IJVMExecutor[] getJVMExecutorsFromName(String processName) {
+        return jvmExecutors.stream().filter(ijvmExecutor -> ijvmExecutor.getName().equals(processName)).toArray(IJVMExecutor[]::new);
+    }
+
+    @Override
+    public ArrayList<IJVMExecutor> getJVMExecutors() {
+        return jvmExecutors;
+    }
+
 
     @Override
     public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile,BundleData bundleData) {

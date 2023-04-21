@@ -52,7 +52,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter @Setter  public static Integer cache = 0;
     private ArrayList<IConfig> queue = new ArrayList<>();
     @Ignore public HashMap<Integer,IService> jvmServices = new HashMap<>();
-    public BundleData bundleData;
+    @Getter public BundleData bundleData;
 
     public IService staticService = null;
 

@@ -187,6 +187,7 @@ commands.service.create.nonExistentBundle=Bundle doesn't exist
 commands.service.create.invalidPort=port is not valid
 
 commands.service.install.notConfigured=%red%[!] The service mentionned is not configurated...
+commands.service.start.multipleFound= %red%[!] Multiple servers found with this name, please precise the bundle/shortcut name instead
 commands.service.install.incorrectVersion=%red%[!] The version is incorrect...
 commands.service.install.fileUpdated=%green%File Updated with Success
 

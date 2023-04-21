@@ -31,7 +31,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
                 create("install",
-                        create(new BundlesNode(true),
+                        create(new BundlesNode(true,true,true),
                                 create(new ServersNode(),
                                     create(versions.toArray()))))));
     }

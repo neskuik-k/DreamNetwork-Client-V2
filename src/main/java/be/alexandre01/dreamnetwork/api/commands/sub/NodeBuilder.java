@@ -6,19 +6,20 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.TextNode;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import org.jline.builtins.Completers;
 
 import java.util.*;
 
 public class NodeBuilder {
-    Completers.TreeCompleter.Node node;
+    CustomTreeCompleter.Node node;
 
     Console console;
 
     List<Object> globalList;
     int num  =0;
-    HashMap<Completers.TreeCompleter.Node,Object[]> nodes = new HashMap<>();
+    HashMap<CustomTreeCompleter.Node,Object[]> nodes = new HashMap<>();
 
 
     public static NullNode EMPTYFIELD = new NullNode();
@@ -40,10 +41,10 @@ public class NodeBuilder {
     }
 
 
-    private void addNode(Completers.TreeCompleter.Node node, Object[] objects){
+    private void addNode(CustomTreeCompleter.Node node, Object[] objects){
         nodes.put(node,objects);
     }
-    public Completers.TreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead){
+    public CustomTreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead){
         final Object objects[] = nodeContainer.getObjects();
         final ArrayList<Object> list = new ArrayList<>();
         nodeContainer.setList(list);
@@ -84,7 +85,7 @@ public class NodeBuilder {
             globalList = list;
         }
        Console.fine("Build Suggestion -> " + list);
-        Completers.TreeCompleter.Node n = Completers.TreeCompleter.node(list.toArray());
+       CustomTreeCompleter.Node n = (CustomTreeCompleter.Node) CustomTreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];
             if(o instanceof CustomType){

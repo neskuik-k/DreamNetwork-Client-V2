@@ -169,7 +169,7 @@ public class Installer {
                         }
 
 
-                        sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"]"+Colors.ANSI_RESET());
+                        sb.append(Colors.RESET+Colors.ANSI_YELLOW+"]"+Colors.ANSI_RESET());
                     }
                     if(calc <= space*slower && directionRight){
                         calc++;
