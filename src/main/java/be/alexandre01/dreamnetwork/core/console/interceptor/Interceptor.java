@@ -19,6 +19,7 @@ public class Interceptor extends PrintStream{
         public void print(String s)
         {
             try {
+                if(s == null) s = "null";
                 Console.print(new String(s.getBytes(), "UTF-8"), Level.INFO);
 
             } catch (UnsupportedEncodingException e) {

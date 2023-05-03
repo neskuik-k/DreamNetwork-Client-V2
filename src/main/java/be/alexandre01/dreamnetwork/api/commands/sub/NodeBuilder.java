@@ -6,19 +6,22 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.TextNode;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import org.jline.builtins.Completers;
 
 import java.util.*;
 
 public class NodeBuilder {
-    Completers.TreeCompleter.Node node;
+    CustomTreeCompleter.Node node;
 
     Console console;
 
     List<Object> globalList;
     int num  =0;
-    HashMap<Completers.TreeCompleter.Node,Object[]> nodes = new HashMap<>();
+    HashMap<CustomTreeCompleter.Node,Object[]> nodes = new HashMap<>();
+
+    HashMap<String,Object> objects = new HashMap<>();
 
 
     public static NullNode EMPTYFIELD = new NullNode();
@@ -33,6 +36,11 @@ public class NodeBuilder {
         this.console = console;
         this.nodeContainer = nodeContainer;
         node = genNode(nodeContainer,true);
+        /*for (Map.Entry<CustomTreeCompleter.Node, Object[]> entry : nodes.entrySet()) {
+            CustomTreeCompleter.Node key = entry.getKey();
+            Object[] value = entry.getValue();
+        }*/
+
         registerTo();
     }
     public NodeBuilder(NodeContainer nodeContainer){
@@ -40,10 +48,10 @@ public class NodeBuilder {
     }
 
 
-    private void addNode(Completers.TreeCompleter.Node node, Object[] objects){
+    private void addNode(CustomTreeCompleter.Node node, Object[] objects){
         nodes.put(node,objects);
     }
-    public Completers.TreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead){
+    public CustomTreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead){
         final Object objects[] = nodeContainer.getObjects();
         final ArrayList<Object> list = new ArrayList<>();
         nodeContainer.setList(list);
@@ -52,7 +60,9 @@ public class NodeBuilder {
 
             if(o instanceof NodeContainer){
                 ((NodeContainer) o).setLinkNodeBuilder(this);
-                list.add(genNode((NodeContainer) o,false));
+                CustomTreeCompleter.Node node = genNode((NodeContainer) o,false);
+                list.add(node);
+                ((NodeContainer) o).setCandidates(node.getCandidates());
                 continue;
             }
 
@@ -84,7 +94,7 @@ public class NodeBuilder {
             globalList = list;
         }
        Console.fine("Build Suggestion -> " + list);
-        Completers.TreeCompleter.Node n = Completers.TreeCompleter.node(list.toArray());
+       CustomTreeCompleter.Node n = (CustomTreeCompleter.Node) CustomTreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];
             if(o instanceof CustomType){

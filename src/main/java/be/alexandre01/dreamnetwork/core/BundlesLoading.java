@@ -115,7 +115,8 @@ public class BundlesLoading {
             for(File dir : directory){
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if(Config.contains(dir.getAbsolutePath()+"/"+name+"/plugins")){
+                if(Config.contains(dir.getAbsolutePath()+"/plugins")){
+
                     if(isPreview){
                         System.out.println(Console.getFromLang("bundle.loadTemplate.addJar", name));
                         try {

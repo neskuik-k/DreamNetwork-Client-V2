@@ -12,12 +12,15 @@ public interface IService {
     IJVMExecutor.Mods getType();
     IClient getClient();
     IJVMExecutor getJvmExecutor();
+
+    String getFullName();
     Process getProcess();
     IScreen getScreen();
-
+    IConfig getUsedConfig();
     void setScreen(IScreen screen);
     void stop();
     void restart();
+    void restart(IConfig config);
     void kill();
 
     void removeService();

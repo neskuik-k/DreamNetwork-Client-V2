@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import lombok.NonNull;
 
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 public class Remove extends SubCommandCompletor implements SubCommandExecutor {
     public Remove(){

@@ -14,7 +14,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
         Core c = Core.getInstance();
         requestData.put(RequestType.SPIGOT_HANDSHAKE_SUCCESS,(message,client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId());
+            message.set("PROCESSNAME", client.getJvmService().getFullName());
             return message;
         });
         requestData.put(RequestType.SPIGOT_EXECUTE_COMMAND,(message,client, args) -> {
@@ -43,7 +43,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
                     IService service = p.getServer().getJvmService();
                     StringBuilder sb = new StringBuilder();
                     sb.append(p.getId()).append(";");
-                    String name = service.getJvmExecutor().getName()+"-"+service.getId();
+                    String name = service.getFullName();
 
                     sb.append(name);
                     if(!c.getServicePlayersManager().getIsRegistered().containsKey(p) || !c.getServicePlayersManager().getIsRegistered().get(p).contains(client)){

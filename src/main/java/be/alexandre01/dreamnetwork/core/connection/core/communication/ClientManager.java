@@ -35,12 +35,23 @@ public class ClientManager implements IClientManager {
             devTools.add(client);
             return client;
         }
-        clientByPort.put(client.getPort(),client);
+
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
         IService jvmService = JVMExecutor.servicePort.get(client.getPort());
-        System.out.println(client.getPort());
-        clients.put(jvmService.getJvmExecutor().getName()+"-"+ jvmService.getId(),client);
+        if(jvmService == null){
+            Console.print("A service tried to connect on the port " + client.getPort()+" but there is a problem",Level.SEVERE);
+            client.getChannelHandlerContext().channel().close();
+            return null;
+        }
+
+        clientByPort.put(client.getPort(),client);
+
+        //System.out.println(client.getPort());
+
+
+
+        clients.put(jvmService.getFullName(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
         client.setJvmService(jvmService);
         jvmService.setClient(client);

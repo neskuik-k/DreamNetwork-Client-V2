@@ -7,17 +7,18 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.screen.IScreenManager {
-   @Getter private HashMap<String,IScreen> screens;
-    @Getter private ArrayList<Integer> screenIds;
-    @Getter private ArrayList<Integer> availableScreenIds;
+   @Getter private final HashMap<String,IScreen> screens;
+    @Getter private final ArrayList<Integer> screenIds;
+    @Getter private final ArrayList<Integer> availableScreenIds;
 
-   @Getter private HashMap<String,Integer> screenCurrentId;
+   @Getter private final HashMap<String,Integer> screenCurrentId;
     public static ScreenManager instance;
 
     public ScreenManager(){
@@ -41,9 +42,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public void addScreen(IScreen screen){
-        Console.printLang("service.screen.opened", screen.getService().getJvmExecutor().getName(), screen.getScreenId());
+        Console.printLang("service.screen.opened", screen.getService().getJvmExecutor().getBundleData().getName()+"/"+screen.getService().getJvmExecutor().getName(), screen.getScreenId());
         screens.put(screen.getScreenName(), (Screen) screen);
-        screenCurrentId.put(screen.getService().getJvmExecutor().getName(),screen.getScreenId());
+        screenCurrentId.put(screen.getService().getJvmExecutor().getBundleData().getName()+"/"+screen.getService().getJvmExecutor().getName(),screen.getScreenId());
         //remove if available screen is taken
         availableScreenIds.remove(screen.getScreenId());
         screenIds.add(screen.getScreenId());
@@ -70,6 +71,7 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     @Override
     public void watch(String server){
         //Console.clearConsole();
+
         //A PATCH
         if(screenCurrentId.containsKey(server) && screenCurrentId.size() == 1){
             server += "-"+0;

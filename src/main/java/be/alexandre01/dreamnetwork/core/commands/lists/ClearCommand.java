@@ -3,8 +3,9 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
-import static org.jline.builtins.Completers.TreeCompleter.node;
+import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 
 public class ClearCommand extends Command {
@@ -23,5 +24,10 @@ public class ClearCommand extends Command {
                 }
             };
 
+    }
+
+    @Override
+    public String getBaseColor() {
+        return Colors.WHITE_BOLD_UNDERLINED;
     }
 }

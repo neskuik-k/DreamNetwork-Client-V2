@@ -43,6 +43,7 @@ core.server.starting=Lancement du CoreServer...
 core.server.started=Le CoreServer a démarré sur le port %var%.
 core.addon.loaded=L'Addon %var% a bien été chargé.
 core.addon.notSupported=%var% n'est pas supporté
+core.windowsWarning= %red%Windows a été détecté, DreamNetwork est plus stable sur les systèmes UNIX (Linux,Mac,...). Si vous avez un problème, veuillez le signaler sur le Discord.
 
 ## Bundle
 bundles.loading=%whiteboul%Chargement des bundles...%areset%
@@ -210,6 +211,8 @@ commands.service.screen.list=Voici la liste des consoles disponibles -> %var%
 commands.service.start.incorrectMods=%red%[!] L'argument de mode est incorrect
 commands.service.start.incorrectRAM=%red%[!] L'argument de RAM est incorrect... essayez par exemple: 512M ou 1G
 commands.service.start.invalidChosenMods=%red%[!] Le mode choisit est invalide... Choisissez STATIC ou DYNAMIC
+commands.service.start.notConfigured= %red%[!] Le service mentionné n'est pas configuré...
+commands.service.start.multipleFound= %red%[!] Plusieurs serveurs ont été trouvés avec le même nom, veuillez utiliser le nom du bundle/raccourcis du serveur
 
 commands.service.stop.incorrectService=%red%[!] Le service mentionné n'est pas correct..
 commands.service.stop.idNotFound=%red%[!] L'ID du service est introuvable

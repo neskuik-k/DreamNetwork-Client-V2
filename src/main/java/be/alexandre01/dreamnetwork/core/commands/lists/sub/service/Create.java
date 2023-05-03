@@ -28,7 +28,7 @@ public class Create extends SubCommand {
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create("service",
                         create("create",
-                                create(new BundlesNode(false),
+                                create(new BundlesNode(false,false,false),
                                         create(Completers.AnyCompleter.INSTANCE,
                                                 create("STATIC","DYNAMIC",
                                                         create("1G","2G",
@@ -107,6 +107,7 @@ public class Create extends SubCommand {
                 return true;
             }
             jvmExecutor.addConfigsFiles();
+
             jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
             Console.printLang("service.creation.serverConfigured");
             CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);

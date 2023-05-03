@@ -175,7 +175,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 IService jvmService = clientByConnexion.get(ctx).getJvmService();
                 String name = null;
                 if(jvmService != null){
-                    name = jvmService.getJvmExecutor().getName()+"-"+jvmService.getId();
+                    name = jvmService.getFullName();
                 }
                 if(clientByConnexion.get(ctx).isDevTool()){
                     name = "DEVTOOLS";
@@ -197,7 +197,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         if(client != null){
             client.getClientManager().getDevTools().remove(client);
             if(!client.isDevTool()){
-                String server = client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId();
+                String server = client.getJvmService().getFullName();
                 for(IClient c : Core.getInstance().getClientManager().getClients().values()){
                     if(c.getJvmType() == JVMContainer.JVMType.SERVER){
                         c.getRequestManager().sendRequest(RequestType.SPIGOT_REMOVE_SERVERS,server);

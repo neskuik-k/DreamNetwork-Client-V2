@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
 
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
+import lombok.Getter;
 
 
 import java.io.*;
@@ -17,6 +18,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -28,6 +31,7 @@ public class ScreenInReader extends Thread {
     public InputStream reader;
     private Screen screen;
 
+    @Getter private List<ReaderLine> readerLines = new ArrayList<>();
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
     public ScreenInReader(Console console, IService server, InputStream reader, Screen screen) {
@@ -77,11 +81,19 @@ public class ScreenInReader extends Thread {
                 
 
                 if(datas.length() != 0){
-                    while(data.contains("\n\n") || data.contains("\n\r")){
+                    while(data.contains("\n\n") || data.contains("\n\r") ){
                         data = data.replaceAll("\n\n","").replaceAll("\n\r","");
                     }
-                    console.printNL(data);
-                    datas.setLength(0);
+                    for (ReaderLine readerLine : readerLines) {
+                        data = readerLine.readLine(data);
+                    }
+                    if(data != null){
+                        console.printNL(data);
+                        datas.setLength(0);
+                    }else {
+                        datas.setLength(0);
+                    }
+
 
                     for(IClient client : screen.getDevToolsReading()){
                         client.getRequestManager().sendRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,data);
@@ -109,6 +121,9 @@ public class ScreenInReader extends Thread {
             Console.setActualConsole("m:default");
         }
     }
-
+    public static interface ReaderLine {
+        String readLine(String line);
     }
+
+}
 

@@ -272,7 +272,7 @@ public class CreateTemplateConsole {
                 console.setWriting(Console.getFromLang("service.creation.ask.bundleName"));
                 ConsoleReader.sReader.runMacro(opt[0]);
                 if(bundleNode == null){
-                    bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false)),console);
+                    bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false,false,false)),console);
                     console.reloadCompletor();
                 }
                 try {
@@ -333,6 +333,7 @@ public class CreateTemplateConsole {
                         break;
                     }
                 }
+                jvmExecutor.setInstallInfo(installationLinks.name());
                 jvmExecutor.updateConfigFile(jvmExecutor.getPathName(),
                         jvmExecutor.getName(),
                         jvmExecutor.getType(),
@@ -345,7 +346,7 @@ public class CreateTemplateConsole {
                         javaVersion
                 );
 
-                jvmExecutor.setExec(installationLinks.name().toLowerCase()+".jar");
+                jvmExecutor.setExecutable(installationLinks.name().toLowerCase()+".jar");
                 System.gc();
                 killData();
                 Console.clearConsole();

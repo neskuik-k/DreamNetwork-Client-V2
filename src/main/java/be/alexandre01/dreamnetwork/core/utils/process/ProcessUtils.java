@@ -1,19 +1,24 @@
 package be.alexandre01.dreamnetwork.core.utils.process;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.service.jvm.JavaVersion;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
 import sun.management.VMManagement;
 
 import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.text.NumberFormat;
 
 public class ProcessUtils {
+
     //INCLUDE JNA
     public static long getID(Process p) {
         long result = -1;
@@ -115,5 +120,45 @@ public class ProcessUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static Integer getDefaultBashJavaVersion(String java) throws Exception {
+        String[] commands = {"java", "-version"};
+        String ver = null;
+        Integer numVer = null;
+        Process proc = null;
+        try {
+            proc = new ProcessBuilder(java,"-version").start();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+      /* System.out.println(proc.waitFor());
+        if(proc.exitValue() != 0) {
+            System.out.println("Error while executing script");
+            return ver;
+        }*/
+            //InputStream stdIn = proc.getInputStream();
+       // InputStreamReader isr = new InputStreamReader(stdIn);
+        BufferedReader br = new BufferedReader(new InputStreamReader(proc.getErrorStream()));
+
+        String line = null;
+        StringBuilder sb = new StringBuilder();
+        while ((line = br.readLine()) != null){
+            if(line.contains("\"")){
+                String v =  line.split("\"")[1];
+                if(v.contains(".")){
+                    ver = v.split("\\.")[0];
+                    try {
+                        numVer = Integer.parseInt(ver);
+                    }catch (Exception e){
+                        System.out.println("Detected java version is not number");
+                        return null;
+                    }
+                }
+            }
+            sb.append(line);
+        }
+        return numVer;
     }
 }

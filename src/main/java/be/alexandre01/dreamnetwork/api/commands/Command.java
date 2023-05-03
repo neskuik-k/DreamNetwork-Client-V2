@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 
+import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import org.jline.builtins.Completers;
 import org.jline.reader.Completer;
 import org.jline.reader.LineReader;
@@ -43,7 +44,7 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
     };
 
     @Override
-    public void setCompletion(Completers.TreeCompleter.Node node){
+    public void setCompletion(CustomTreeCompleter.Node node){
         ConsoleReader.nodes.add(node);
     }
     @Override
@@ -88,6 +89,10 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
     public Command(String name){
         super(name);
     }
+
+
+
+
     @Override
     public void addSubCommand(String subCommand, SubCommandExecutor sce){
         subCommands.put(subCommand,sce);

@@ -10,6 +10,10 @@ import java.io.File;
 public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean SIG_IGN_Handler = true;
     boolean findAllocatedPorts = true;
+    boolean checkDefaultJVMVersion = true;
+    boolean checkJVMVersionOnServiceStart = true;
+    boolean rainbowText = false;
+    String username = null;
     int port = 14520;
     String language = "en_EN";
 
@@ -18,7 +22,7 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     }
 
     public void loading(){
-        String[] randomString = {"Better, faster, stronger", "The Dreamy Networki the best !", "If you see this message, you are the best", ":)","<3",":D","Thank you for using our hypervisor","Roblox is better than minecraft (it's joke huh)","Sadness is the opposite of happiness"};
+        String[] randomString = {"Better, faster, stronger", "The Dreamy Networky the best !", "If you see this message, you are the best", ":)","<3",":D","Thank you for using our hypervisor","Roblox is better than minecraft (it's joke huh)","Sadness is the opposite of happiness"};
 
         String random = randomString[(int) (Math.random() * randomString.length)];
         addAnnotation("This is the global settings of the server | " + random);

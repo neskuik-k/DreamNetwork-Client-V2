@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.core.commands.lists.sub.service.*;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
 public class ServiceCommand extends Command {
@@ -10,6 +11,7 @@ public class ServiceCommand extends Command {
         super(name);
         addSubCommand("create",new Create());
         addSubCommand("stop",new Stop());
+        addSubCommand("restart",new Restart());
         addSubCommand("remove",new Remove());
         addSubCommand("start",new Start());
         addSubCommand("install",new Install());
@@ -32,4 +34,8 @@ public class ServiceCommand extends Command {
 
     }
 
+    @Override
+    public String getBaseColor() {
+        return Colors.GREEN_BOLD;
+    }
 }

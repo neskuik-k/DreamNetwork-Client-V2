@@ -50,34 +50,35 @@ public class Create extends SubCommand {
             }
             Config.createDir("bundles/"+nArgs[1]);
             File file = new File(Config.getPath("bundles/"+nArgs[1]+"/this-info.yml"));
-            try {
-                file.createNewFile();
-               /* Yaml yaml = new Yaml(new Constructor(BundleFileInfo.class));
-                yaml.dump(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2])),new PrintWriter(file));*/
+
+            /* Yaml yaml = new Yaml(new Constructor(BundleFileInfo.class));
+               yaml.dump(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2])),new PrintWriter(file));*/
 
 
-               BundleInfo bundleInfo =  new BundleInfo(nArgs[1], IContainer.JVMType.valueOf(nArgs[2]));
-               bundleInfo.getServices().add(new BService("test",1,2));
-               BundleInfo.updateFile(file, bundleInfo);
-               BundleData bundleData = new BundleData(nArgs[1],bundleInfo);
-               Main.getBundleManager().addBundleData(bundleData);
-               if(nArgs[1].endsWith("/")){
-                   Main.getBundleManager().addPath(nArgs[1]);
-               }else {
-                   Main.getBundleManager().addPath(nArgs[1]+"/");
-               }
+            BundleInfo bundleInfo =  new BundleInfo(nArgs[1], IContainer.JVMType.valueOf(nArgs[2]));
+            //bundleInfo.getServices().add(new BService("test",1,2));
+            BundleInfo.updateFile(file, bundleInfo);
+            BundleData bundleData = new BundleData(nArgs[1],bundleInfo);
+            Main.getBundleManager().addBundleData(bundleData);
+            if(nArgs[1].endsWith("/")){
+                Main.getBundleManager().addPath(nArgs[1]);
+            }else {
+                Main.getBundleManager().addPath(nArgs[1]+"/");
+            }
 
-               CustomType.reloadAll(BundlePathsNode.class);
-               CustomType.reloadAll(BundlesNode.class);
+            CustomType.reloadAll(BundlePathsNode.class);
+            CustomType.reloadAll(BundlesNode.class);
 
-               //System.out.println(yaml.dumpAsMap(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2]))));
-                Console.printLang("commands.bundle.create.writingInfo");
+            //System.out.println(yaml.dumpAsMap(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2]))));
+            Console.printLang("commands.bundle.create.writingInfo");
+            /*try {
+
             } catch (IOException e) {
                 Console.printLang("commands.bundle.create.errorWritingInfo");
                 System.out.println(e.getMessage());
                 System.out.println(Arrays.toString(e.getStackTrace()));
                 throw new RuntimeException(e);
-            }
+            }*/
 
             if(!Config.isWindows()){
                   //Linux create symbolic link on root

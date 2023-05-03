@@ -75,7 +75,9 @@ public class AuthentificationResponse extends CoreResponse {
                             .ctx(ctx)
                             .build());
 
-
+                    if(newClient == null){
+                        return;
+                    }
                     if (newClient.getJvmType() == null) {
                         Console.printLang("connection.core.communication.unrecognizedClient", newClient.getInfo());
                         return;
@@ -90,22 +92,22 @@ public class AuthentificationResponse extends CoreResponse {
                                         Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                                jvmService.getJvmExecutor().getName() + "-" + jvmService.getId(),
+                                                jvmService.getFullName(),
                                                 remoteAdress[0].replaceAll("/", ""),
                                                 jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
                                     }
                                 }
                             }
                         }
-                        Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
+                        Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService());
+                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService());
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
                         for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {
-                            String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId();
+                            String server = newClient.getJvmService().getFullName();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
                        coreHandler.getAllowedCTX().add(ctx);
@@ -117,15 +119,15 @@ public class AuthentificationResponse extends CoreResponse {
 
                         if(proxy != null){
                             proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
-                                    newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId(),
+                                    newClient.getJvmService().getFullName(),
                                     remoteAdress[0].replaceAll("/", ""),
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
                         }
 
-                        Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
+                        Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
-                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getName(), newClient.getJvmService().getId());
+                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
@@ -137,10 +139,10 @@ public class AuthentificationResponse extends CoreResponse {
                                 for (IService service : jvmExecutor.getServices()) {
 
                                     if (service.getClient() != null) {
-                                        String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
+                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
                                         //System.out.println(service.);
                                         service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
-                                        servers.add(jvmExecutor.getName() + "-" + service.getId() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
+                                        servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
                                     }
                                 }
                             } else {
@@ -148,7 +150,7 @@ public class AuthentificationResponse extends CoreResponse {
                             }
                         }
                         for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {
-                            String server = newClient.getJvmService().getJvmExecutor().getName() + "-" + newClient.getJvmService().getId();
+                            String server = newClient.getJvmService().getFullName();
                             if (devtools != null)
                                 devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
@@ -217,7 +219,7 @@ public class AuthentificationResponse extends CoreResponse {
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
                     }
                 }
 
@@ -227,7 +229,7 @@ public class AuthentificationResponse extends CoreResponse {
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(jvmExecutor.getName()+"-"+service.getId()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
                     }
                 }
                 String str = String.join(",", devServers);

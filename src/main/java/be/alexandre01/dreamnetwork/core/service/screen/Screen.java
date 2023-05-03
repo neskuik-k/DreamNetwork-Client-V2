@@ -29,7 +29,7 @@ public class Screen extends Thread implements IScreen {
         this.history = new ArrayList<>();
         ScreenManager screenManager = ScreenManager.instance;
         screenId = screenManager.getId(service);
-        screenName = service.getJvmExecutor().getName()+"-"+screenId;
+        screenName = service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
         this.screenStream = new ScreenStream(screenName,this);
         service.setScreen(this);
         screenManager.addScreen(this);
@@ -58,8 +58,7 @@ public class Screen extends Thread implements IScreen {
 
 
         if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
-            String t = getService().getJvmExecutor().isProxy() ? "proxy" : "server";
-            Config.removeDir("/runtimes·/"+ t + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
+            Config.removeDir("/runtimes/"+ getService().getJvmExecutor().getBundleData().getName() + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
         }
         Core core = Core.getInstance();
         core.getEventsFactory().callEvent(new CoreScreenCreateEvent(core.getDnCoreAPI(),this));

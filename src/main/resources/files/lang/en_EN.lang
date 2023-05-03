@@ -45,6 +45,7 @@ core.server.starting=CoreServer is starting...
 core.server.started=The CoreServer System has been started on the port %var%.
 core.addon.loaded=Addon %var% has been loaded.
 core.addon.notSupported=%var% is not supported
+core.windowsWarning=%red%Windows has been detected, DreamNetwork is more stable on UNIX systems (Linux,Mac,...). If you have a problem, please report it on the Discord.
 
 ## Bundle
 bundles.loading=%whiteboul%Loading bundles...%reset%
@@ -212,6 +213,8 @@ commands.service.screen.list=Here is the list of available screens -> %var%
 commands.service.start.incorrectMods=%red%[!] The mods argument is incorrect
 commands.service.start.incorrectRAM=%red%[!] The RAM Argument is incorrect... try for example: 512M or 1G
 commands.service.start.invalidChosenMods=%red%[!] The mods chooses is invalid... choose STATIC or DYNAMIC
+commands.service.start.notConfigured= %red%[!] The service mentionned is not configurated...
+commands.service.start.multipleFound= %red%[!] Multiple servers found with this name, please precise the bundle/shortcut name instead
 
 commands.service.stop.incorrectService=%red%[!] The service mentionned is not correct..
 commands.service.stop.idNotFound=%red%[!] The service id is not findable
@@ -263,7 +266,7 @@ debug.disabled=%purple%Debug mode %red%%whitebg%disabled
 ## Console
 console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%white% > %areset%
 console.askExit=%redbobr%do you want to exit ? (y or n) > %reset%
-console.changed=%whitebg%%black%You have just changed console. [%var%]
+console.changed=%black%%whitebg%You have just changed console. [%var%]%reset%
 console.errorOn=%red%ERROR ON>> %var% || %var%
 console.errorCause=%red%ERROR CAUSE>> %var% || %var%
 console.contactDNDevError=Please contact the DN developpers about this error.

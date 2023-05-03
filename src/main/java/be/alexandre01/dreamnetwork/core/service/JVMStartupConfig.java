@@ -40,9 +40,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
 
         if(proxy){
-            exec = "BungeeCord.jar";
+            executable = "BungeeCord.jar";
         }else {
-            exec = "Spigot.jar";
+            executable = "Spigot.jar";
         }
 
 
@@ -65,11 +65,11 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                     startup =  startup.replaceAll("%xmx%",xmx);
                 }
                 if(line.startsWith("executable:")){
-                    exec = line;
-                    exec = exec.replace("executable:","");
-                    exec = exec+".jar";
-                    while (exec.charAt(0) == ' '){
-                        exec = exec.substring(1);
+                    executable = line;
+                    executable = executable.replace("executable:","");
+                    executable = executable +".jar";
+                    while (executable.charAt(0) == ' '){
+                        executable = executable.substring(1);
                     }
                 }
                 if(line.startsWith("java-version:")){
@@ -127,7 +127,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             startup =  startup.replaceAll("%xms%",xms);
             startup = startup.replaceAll("%xmx%",xmx);
         }*/
-        exec += ".jar";
+        executable += ".jar";
         isConfig = true;
        /* try {
             for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
@@ -395,9 +395,10 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.proxy = proxy;
         this.startup = startup;
         this.javaVersion = javaVersion;
-        this.exec = exec;
+        this.executable = exec;
         this.pathName = pathName;
         this.name = finalName;
+        System.out.println(this.installInfo);
         /*Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);
         Console.print("MODS>"+type.name(),Level.FINE);
@@ -453,7 +454,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public boolean hasExecutable(){
-        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+exec))){
+        if(Config.contains(System.getProperty("user.dir")+Config.getPath("/bundles/"+pathName+"/"+name+"/"+ executable))){
             return true;
         }
         return false;
@@ -542,7 +543,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             j.setPort(port);
             j.setProxy(proxy);
             j.setJavaVersion(javaVersion);
-            j.setExec(exec);
+            j.setExecutable(exec);
             j.setStartup(startup);
             return j;
         }
@@ -560,8 +561,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 j.setPort(config.getPort());
             if(j.getJavaVersion() == null)
                 j.setJavaVersion(config.getJavaVersion());
-            if(j.getExec() == null)
-                j.setExec(config.getExec());
+            if(j.getExecutable() == null)
+                j.setExecutable(config.getExecutable());
             if(j.getStartup() == null)
                 j.setStartup(config.getStartup());
 
