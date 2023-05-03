@@ -3,6 +3,8 @@ package be.alexandre01.dreamnetwork.core.console.language;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import lombok.Getter;
 
+import java.util.HashMap;
+
 public enum ColorsConverter {
     // ANSI
     ARESET(Colors.ANSI_RESET()),
@@ -94,8 +96,23 @@ public enum ColorsConverter {
     WHITEBOBR(Colors.WHITE_BOLD_BRIGHT),
     WHITEBGBR(Colors.WHITE_BACKGROUND_BRIGHT);
 
-
+    @Getter
+    static final HashMap<String,String> colors = new HashMap<>();
     @Getter private final String color;
+
+    static {
+        for(ColorsConverter color : ColorsConverter.values()){
+            colors.put(color.getColor(),color.toString().toUpperCase());
+        }
+    }
+
+    public static ColorsConverter getFromColor(String color){
+        if(colors.containsKey(color)){
+            System.out.println(colors.get(color));
+            return ColorsConverter.valueOf(colors.get(color));
+        }
+        return null;
+    }
     ColorsConverter(String color){
         this.color = color;
     }

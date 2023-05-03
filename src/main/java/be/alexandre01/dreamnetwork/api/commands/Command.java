@@ -89,6 +89,10 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
     public Command(String name){
         super(name);
     }
+
+
+
+
     @Override
     public void addSubCommand(String subCommand, SubCommandExecutor sce){
         subCommands.put(subCommand,sce);

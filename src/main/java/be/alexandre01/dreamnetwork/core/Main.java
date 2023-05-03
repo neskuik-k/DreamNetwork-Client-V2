@@ -20,6 +20,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
@@ -106,17 +107,26 @@ public class Main {
             Logger.getLogger("").setLevel(Level.FINE);
         }*/
 
-
-        if(Config.isWindows()){
-            Core.setUsername(username = System.getProperty("user.name"));
-        }else {
-            try {
-                Core.setUsername( username = InetAddress.getLocalHost().getHostName());
-
-            } catch (UnknownHostException e) {
+        if(Main.getGlobalSettings().getUsername() == null){
+            if(Config.isWindows()){
                 Core.setUsername(username = System.getProperty("user.name"));
-            };
+            }else {
+                try {
+                    Core.setUsername( username = InetAddress.getLocalHost().getHostName());
+
+                } catch (UnknownHostException e) {
+                    Core.setUsername(username = System.getProperty("user.name"));
+                };
+            }
+
+            Main.getGlobalSettings().setUsername(username);
+            Main.getGlobalSettings().save();
+        }else {
+            String line = Main.getGlobalSettings().getUsername();
+            for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
+            Core.setUsername(line);
         }
+
 
 
         Runtime.getRuntime().addShutdownHook(new Thread() {

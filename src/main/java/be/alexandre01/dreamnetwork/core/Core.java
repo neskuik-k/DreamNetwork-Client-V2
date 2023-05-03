@@ -13,6 +13,7 @@ import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConso
 import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
+import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreServer;
@@ -29,7 +30,7 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
-import jdk.nashorn.internal.objects.Global;
+import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -216,7 +217,25 @@ public class Core {
         if(Main.getBundlesLoading().isFirstLoad()){
             Console.setActualConsole("m:introbegin",true,false);
         }
+
+        if(Main.getGlobalSettings().isCheckDefaultJVMVersion()){
+            try {
+                Integer ver = ProcessUtils.getDefaultBashJavaVersion(javaIndex.getDefaultJava().getPath());
+                if(ver != null){
+                    System.out.println("Your default Java version is "+ ver);
+                    javaIndex.getDefaultJava().setVersion(ver);
+                }
+
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        if(Config.isWindows()){
+            Console.printLang("core.windowsWarning");
+        }
         Console.setBlockConsole(false);
+
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 
@@ -62,6 +63,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
 
         if(screenManager.containsScreen(args[1])){
             screenManager.watch(args[1]);
+            //ConsoleReader.setAutosuggestionWidgets(true);
         }else {
          sendList(screenManager);
         }

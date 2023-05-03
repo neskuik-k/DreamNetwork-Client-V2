@@ -21,6 +21,8 @@ public class NodeBuilder {
     int num  =0;
     HashMap<CustomTreeCompleter.Node,Object[]> nodes = new HashMap<>();
 
+    HashMap<String,Object> objects = new HashMap<>();
+
 
     public static NullNode EMPTYFIELD = new NullNode();
     NodeContainer nodeContainer;
@@ -34,6 +36,11 @@ public class NodeBuilder {
         this.console = console;
         this.nodeContainer = nodeContainer;
         node = genNode(nodeContainer,true);
+        /*for (Map.Entry<CustomTreeCompleter.Node, Object[]> entry : nodes.entrySet()) {
+            CustomTreeCompleter.Node key = entry.getKey();
+            Object[] value = entry.getValue();
+        }*/
+
         registerTo();
     }
     public NodeBuilder(NodeContainer nodeContainer){
@@ -53,7 +60,9 @@ public class NodeBuilder {
 
             if(o instanceof NodeContainer){
                 ((NodeContainer) o).setLinkNodeBuilder(this);
-                list.add(genNode((NodeContainer) o,false));
+                CustomTreeCompleter.Node node = genNode((NodeContainer) o,false);
+                list.add(node);
+                ((NodeContainer) o).setCandidates(node.getCandidates());
                 continue;
             }
 

@@ -52,7 +52,6 @@ public class Client implements IClient {
             switch (info.split("-")[0]) {
                 case "SPIGOT":
                     this.jvmType = JVMContainer.JVMType.SERVER;
-                    System.out.println("Spigot");
                     requestManager.getRequestBuilder().addRequestBuilder(new DefaultSpigotRequest());
                     break;
                 case "SPONGE":

@@ -1,12 +1,14 @@
 package be.alexandre01.dreamnetwork.core.service.jvm;
 
+import lombok.Setter;
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 
 public class JavaVersion {
     private String name;
     private String path;
-    private int version = -1;
+    @Setter private int version = -1;
 
     public int getVersion() {
         return version;

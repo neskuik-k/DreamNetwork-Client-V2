@@ -107,6 +107,7 @@ public class Create extends SubCommand {
                 return true;
             }
             jvmExecutor.addConfigsFiles();
+
             jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null, null);
             Console.printLang("service.creation.serverConfigured");
             CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);

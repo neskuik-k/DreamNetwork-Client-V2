@@ -23,7 +23,7 @@ public class BundleInfo {
     public String name;
     public IContainer.JVMType type;
 
-    private File file;
+    transient private File file;
 
     public BundleInfo(String name, IContainer.JVMType type){
             this.name = name;

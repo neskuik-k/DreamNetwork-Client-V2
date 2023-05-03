@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.commands;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import lombok.Getter;
 import org.jline.builtins.Completers;
@@ -26,7 +27,11 @@ public abstract class ICommand {
 
    abstract public void sendHelp();
 
-   abstract public void addSubCommand(String subCommand, SubCommandExecutor sce);
+    public String getBaseColor() {
+        return Colors.WHITE_BOLD_BRIGHT;
+    }
+
+    abstract public void addSubCommand(String subCommand, SubCommandExecutor sce);
 
    abstract public SubCommandExecutor getSubCommand(String subCommand);
 

@@ -11,7 +11,7 @@ public interface IConfig {
 
     public String getStartup();
 
-    public String getExec();
+    public String getExecutable();
 
     public String getXmx();
 
@@ -29,7 +29,7 @@ public interface IConfig {
 
     public void setStartup(String startup);
 
-    public void setExec(String exec);
+    public void setExecutable(String executable);
 
     public void setXmx(String xmx);
 
@@ -39,4 +39,6 @@ public interface IConfig {
 
     public void setPort(int port);
 
+    public String getInstallInfo();
+    public void setInstallInfo(String info);
 }

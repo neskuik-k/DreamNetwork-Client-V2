@@ -19,10 +19,10 @@ import java.util.List;
 
 public class YamlFileUtils<T> {
 
-    private List<String> annotations = new ArrayList<>();
-    private Class<T> clazz;
-    @Getter File file;
-     boolean skipNull;
+    transient private List<String> annotations = new ArrayList<>();
+    transient private Class<T> clazz;
+    transient @Getter File file;
+    transient boolean skipNull;
 
      List<String> settedFields = new ArrayList<>();
 
@@ -68,10 +68,13 @@ public class YamlFileUtils<T> {
                 }
             }
         };*/
-        Yaml yaml = new Yaml(new SafeConstructor()/*,representer*/);
+        Yaml yaml = new Yaml(new Constructor()/*,representer*/);
 
         try {
             LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
+            if(map == null){
+                return null;
+            }
             if(map.isEmpty()){
                 return null;
             }

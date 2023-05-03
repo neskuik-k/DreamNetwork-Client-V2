@@ -47,9 +47,14 @@ public class CoreServer extends Thread{
             while (!PortUtils.isAvailable(port,true)){
                 port++;
             }
+
+            /*if(!PortUtils.isAvailable(port,true)){
+                Console.printLang("connection.core.portNotAvailable", port);
+                System.exit(0);
+            }*/
             if(!isAvailable){
-                Console.printLang("connection.core.usePortInsteadOfNonAvailable", defaultPort, port);
-                Console.printLang("connection.core.networkMayNotWorkCorrectly");
+                System.out.println(Console.getFromLang("connection.core.usePortInsteadOfNonAvailable", defaultPort, port));
+                System.out.println(Console.getFromLang("connection.core.networkMayNotWorkCorrectly"));
             }
 
             ChannelFuture f = b.bind(port).sync(); // (7)

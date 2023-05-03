@@ -59,6 +59,12 @@ public class ProcessHistory {
                     if(ProcessUtils.isStillAllive(i)){
                         ProcessUtils.killProcess(i);
                         System.out.println(Colors.RED+"Killed Another DreamNetwork process on the machine - PID :"+i);
+                        try {
+                            System.out.println("Waiting to kill the process...");
+                            Thread.sleep(2000);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
 
                 }

@@ -14,11 +14,13 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     JVMExecutor.Mods type;
     String xms;
     @Getter String startup = null;
-    String exec = "exec";
+    String executable = "exec";
     @Getter String xmx;
     @Ignore @Getter String pathName;
     @Getter String javaVersion = "default";
     @Getter int port = 0;
+    String installInfo = null;
+
 
     public JVMConfig(){
 
@@ -32,13 +34,13 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
         // Empty constructor
     }
 
-    public JVMConfig(File file,String name, JVMExecutor.Mods type, String xms, String startup, String exec, String xmx, String pathName, String javaVersion, int port){
+    public JVMConfig(File file, String name, JVMExecutor.Mods type, String xms, String startup, String executable, String xmx, String pathName, String javaVersion, int port){
         config(file,JVMConfig.class,true);
         this.name = name;
         this.type = type;
         this.xms = xms;
         this.startup = startup;
-        this.exec = exec;
+        this.executable = executable;
         this.xmx = xmx;
         this.pathName = pathName;
         this.javaVersion = javaVersion;

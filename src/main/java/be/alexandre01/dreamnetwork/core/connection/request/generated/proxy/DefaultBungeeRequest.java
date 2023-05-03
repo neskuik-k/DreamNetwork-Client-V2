@@ -10,7 +10,7 @@ public class DefaultBungeeRequest extends RequestBuilder {
     public DefaultBungeeRequest() {
         requestData.put(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS,(message, client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", client.getJvmService().getJvmExecutor().getName()+"-"+client.getJvmService().getId());
+            message.set("PROCESSNAME", client.getJvmService().getFullName());
             return message;
         });
         requestData.put(RequestType.BUNGEECORD_REGISTER_SERVER,(message,client, args) -> {

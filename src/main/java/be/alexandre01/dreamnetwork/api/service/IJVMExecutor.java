@@ -143,7 +143,7 @@ public interface IJVMExecutor {
 
     public String getStartup();
 
-    public String getExec();
+    public String getExecutable();
 
     public String getXmx();
 
@@ -157,7 +157,7 @@ public interface IJVMExecutor {
 
     public BundleData getBundleData();
 
-
+    public String getFullName();
 
 
     public enum Mods {

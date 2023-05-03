@@ -82,7 +82,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             break;
                         }
                     }
-
+                    jvmExecutor.setInstallInfo(installationLinks.name());
                     jvmExecutor.updateConfigFile(jvmExecutor.getPathName(),
                             jvmExecutor.getName(),
                             jvmExecutor.getType(),
@@ -95,7 +95,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             javaVersion
                             );
 
-                    jvmExecutor.setExec(installationLinks.name().toLowerCase()+".jar");
+                    jvmExecutor.setExecutable(installationLinks.name().toLowerCase()+".jar");
                     System.gc();
                 }
             });

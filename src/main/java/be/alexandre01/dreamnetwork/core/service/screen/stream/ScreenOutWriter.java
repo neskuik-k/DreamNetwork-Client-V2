@@ -11,7 +11,7 @@ import be.alexandre01.dreamnetwork.core.service.screen.commands.ScreenExit;
 
 import java.io.*;
 
-public class ScreenOutReader {
+public class ScreenOutWriter {
     ScreenCommands commands;
     BufferedWriter writer;
     private String[] args;
@@ -19,7 +19,7 @@ public class ScreenOutReader {
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ScreenOutReader(IScreen screen, Console console){
+    public ScreenOutWriter(IScreen screen, Console console){
       //  this.consoleReader = consoleReader;
         //Console.debugPrint(consoleReader.getCompleters());
 
@@ -35,8 +35,6 @@ public class ScreenOutReader {
             e.printStackTrace();
         }*/
         commands.addCommands(new ScreenExit(screen));
-
-
     }
 
     public void run() {
@@ -45,6 +43,7 @@ public class ScreenOutReader {
             @Override
             public void listener(String[] args) {
                 //   Console.debugPrint(String.valueOf(args.length));
+                System.out.println("Console screen writing");
                 if (args.length != 0) {
                     //Console.debugPrint("capte");
                     boolean hasFound = false;
