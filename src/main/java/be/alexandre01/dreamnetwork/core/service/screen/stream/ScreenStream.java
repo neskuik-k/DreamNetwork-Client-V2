@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.BungeeCordReader;
 import org.jline.reader.LineReader;
@@ -36,9 +37,13 @@ public class ScreenStream {
         this.screen = screen;
         reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
-        if(screen.getService().getJvmExecutor().isProxy()){
-            screenInReader.getReaderLines().add(new BungeeCordReader());
+        ExecType execType = screen.getService().getJvmExecutor().getExecType();
+        if(execType != null){
+            if(execType == ExecType.BUNGEECORD){
+                screenInReader.getReaderLines().add(new BungeeCordReader());
+            }
         }
+
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
     }

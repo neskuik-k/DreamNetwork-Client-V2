@@ -45,10 +45,10 @@ public class BaseResponse extends CoreResponse {
             stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
-        addRequestInterceptor(SPIGOT_EXECUTE_COMMAND,(message, ctx, c) -> {
+        addRequestInterceptor(SERVER_EXECUTE_COMMAND,(message, ctx, c) -> {
             IClient cmdClient = this.core.getClientManager().getClient(message.getString("SERVERNAME"));
             if (cmdClient != null) {
-                cmdClient.getRequestManager().sendRequest(SPIGOT_EXECUTE_COMMAND, message.getString("CMD"));
+                cmdClient.getRequestManager().sendRequest(SERVER_EXECUTE_COMMAND, message.getString("CMD"));
             }
 
             String server = (String) message.getInRoot("RETRANS");
@@ -137,7 +137,7 @@ public class BaseResponse extends CoreResponse {
                 s.removeUpdatingClient(c);
                 if (!bo) {
                     if (type.equalsIgnoreCase("PLAYERS")) {
-                        c.getRequestManager().sendRequest(SPIGOT_UPDATE_PLAYERS, s.getPlayersMap().values().toArray());
+                        c.getRequestManager().sendRequest(SERVER_UPDATE_PLAYERS, s.getPlayersMap().values().toArray());
 
                         s.getObjects().put(c, new ServicePlayersObject(c, ServicePlayersManager.DataType.PLAYERS_LIST));
                         s.getWantToBeDirectlyInformed().add(s.getObject(c));
@@ -145,7 +145,7 @@ public class BaseResponse extends CoreResponse {
                     }
                     if (type.equalsIgnoreCase("PCOUNT")) {
                         s.getObjects().put(c, new ServicePlayersObject(c, ServicePlayersManager.DataType.PLAYERS_COUNT));
-                        c.getRequestManager().sendRequest(SPIGOT_UPDATE_PLAYERS_COUNT, s.getPlayersMap().values().toArray());
+                        c.getRequestManager().sendRequest(SERVER_UPDATE_PLAYERS_COUNT, s.getPlayersMap().values().toArray());
                         s.getWantToBeDirectlyInformed().add(s.getObject(c));
                     }
                 }

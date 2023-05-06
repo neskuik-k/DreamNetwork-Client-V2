@@ -15,6 +15,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaVersion;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.clients.IdSet;
@@ -74,6 +75,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         super(pathName,name,false);
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
+
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this,bundleData);
     }
@@ -372,7 +374,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }else {
                 String line = javaPath+" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+ " " + customArgs +"-jar " + new File(System.getProperty("user.dir")+ Config.getPath("/bundles/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+jvmConfig.getExecutable() +" nogui";
 
-                Console.print(line,Level.FINE);
+                Console.print("JavaLine > "+line,Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/runtimes/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).redirectErrorStream(true).start();
                 // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
@@ -390,7 +392,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 }else {
                     String line = javaPath + " -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+ customArgs+ " -jar "+  new File(System.getProperty("user.dir")+ Config.getPath("/bundles/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath()+"/"+ this.getExecutable()+" nogui";
-                    Console.print(line,Level.FINE);
+                    Console.print("JavaLine > "+line,Level.FINE);
                     proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/bundles/"+getPathName()+"/"+getName()))).redirectErrorStream(true).start();
 
                     // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+ exec+" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
@@ -403,6 +405,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
         Console.fine(port);
+
         JVMService jvmService = JVMService.builder().
                 process(proc)
                 .jvmExecutor(this)
@@ -484,7 +487,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             if(!isProxy()){
                 be.alexandre01.dreamnetwork.core.connection.core.communication.Client proxy = Core.getInstance().getClientManager().getProxy();
                 if(proxy != null){
-                    proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_UNREGISTER_SERVER, jvmService.getFullName());
+                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, jvmService.getFullName());
                 }
             }
         }catch (Exception e){
@@ -515,6 +518,23 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     public String getFullName() {
         return getBundleData().getName()+"/"+getName();
+    }
+
+    @Override
+    public ExecType getExecType() {
+        if(getInstallLink() == null){
+            return null;
+        }
+        return getInstallLink().getExecType();
+    }
+
+    @Override
+    public InstallationLinks getInstallLink() {
+        try {
+            return InstallationLinks.valueOf(getInstallInfo());
+        }catch (Exception e){
+            return null;
+        }
     }
 
 

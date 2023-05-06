@@ -12,27 +12,27 @@ import java.util.Arrays;
 public class DefaultSpigotRequest extends RequestBuilder {
     public DefaultSpigotRequest() {
         Core c = Core.getInstance();
-        requestData.put(RequestType.SPIGOT_HANDSHAKE_SUCCESS,(message,client, args) -> {
+        requestData.put(RequestType.SERVER_HANDSHAKE_SUCCESS,(message,client, args) -> {
             message.set("STATUS","SUCCESS");
             message.set("PROCESSNAME", client.getJvmService().getFullName());
             return message;
         });
-        requestData.put(RequestType.SPIGOT_EXECUTE_COMMAND,(message,client, args) -> {
+        requestData.put(RequestType.SERVER_EXECUTE_COMMAND,(message,client, args) -> {
             message.set("CMD", args[0]);
             return message;
         });
-        requestData.put(RequestType.SPIGOT_NEW_SERVERS,(message, client, args) -> {
+        requestData.put(RequestType.SERVER_NEW_SERVERS,(message, client, args) -> {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });
-        requestData.put(RequestType.SPIGOT_REMOVE_SERVERS,(message, client, args) -> {
+        requestData.put(RequestType.SERVER_REMOVE_SERVERS,(message, client, args) -> {
             message.set("SERVERS", Arrays.asList(args));
             return message;
         });
         requestData.put(RequestType.CORE_STOP_SERVER, ((message, client, args) -> {
             return message;
         }));
-        requestData.put(RequestType.SPIGOT_UPDATE_PLAYERS,(message, client, args) -> {
+        requestData.put(RequestType.SERVER_UPDATE_PLAYERS,(message, client, args) -> {
             ArrayList<String> s = new ArrayList<>();
             for(Object o : args){
                 if(o instanceof Player){
@@ -65,7 +65,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
         });
 
 
-        requestData.put(RequestType.SPIGOT_UNREGISTER_PLAYERS,(message, client, args) -> {
+        requestData.put(RequestType.SERVER_UNREGISTER_PLAYERS,(message, client, args) -> {
             ArrayList<Integer> s = new ArrayList<>();
 
             for(Object o : args){

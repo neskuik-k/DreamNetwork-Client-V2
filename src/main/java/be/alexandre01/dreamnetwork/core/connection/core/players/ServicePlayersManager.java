@@ -62,11 +62,11 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                 Collection<Player> pToRemove = toRemove.get(client);
 
                 if(!pToRemove.isEmpty())
-                    client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,pToRemove.toArray());
+                    client.getRequestManager().sendRequest(RequestType.SERVER_UPDATE_PLAYERS,pToRemove.toArray());
                 toRemove.removeAll(client);
 
                 if(!pToUpdate.isEmpty())
-                    client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,pToUpdate.toArray());
+                    client.getRequestManager().sendRequest(RequestType.SERVER_UPDATE_PLAYERS,pToUpdate.toArray());
                 toUpdates.removeAll(client);
             },0,time, TimeUnit.MILLISECONDS);
         }
@@ -81,7 +81,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                         sb.append(count.get(client));
                         a.add(sb.toString());
                     }
-                    client.getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS_COUNT,totalCount,a.toArray());
+                    client.getRequestManager().sendRequest(RequestType.SERVER_UPDATE_PLAYERS_COUNT,totalCount,a.toArray());
             },0,time, TimeUnit.MILLISECONDS);
         }
 
@@ -125,7 +125,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
 
                 if(!wantToBeDirectlyInformed.isEmpty()){
                     for(ServicePlayersObject c : wantToBeDirectlyInformed){
-                        c.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_UPDATE_PLAYERS,player);
+                        c.getClient().getRequestManager().sendRequest(RequestType.SERVER_UPDATE_PLAYERS,player);
                     }
                 }
 
@@ -156,7 +156,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
         playersMap.remove(id);
         services.remove(player.getServer(),player);
         for(ServicePlayersObject c : wantToBeDirectlyInformed){
-            c.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_UNREGISTER_PLAYERS,player);
+            c.getClient().getRequestManager().sendRequest(RequestType.SERVER_UNREGISTER_PLAYERS,player);
         }
         for(ServicePlayersObject c : wantToBeInformed.keySet()){
             toRemove.put(c.getClient(),player);

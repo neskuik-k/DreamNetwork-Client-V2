@@ -43,7 +43,6 @@ public class ScreenOutWriter {
             @Override
             public void listener(String[] args) {
                 //   Console.debugPrint(String.valueOf(args.length));
-                System.out.println("Console screen writing");
                 if (args.length != 0) {
                     //Console.debugPrint("capte");
                     boolean hasFound = false;
