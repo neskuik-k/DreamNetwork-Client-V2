@@ -471,6 +471,7 @@ public class Console extends Thread{
                if((data = reader.readLine(console.writing, readLineString1,maskingCallback,readLineString2)) == null)
                     continue;
 
+                console = Console.getConsole(actualConsole);
 
 
                 sendToLog("> : "+data,Level.INFO);

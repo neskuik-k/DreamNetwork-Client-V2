@@ -40,35 +40,35 @@ public abstract class RequestType {
      * SPIGOT REQUESTS
      */
 
-    public final static RequestInfo SPIGOT_AUTH = new RequestInfo(31,"SPIGOT_AUTH");
-    public final static RequestInfo SPIGOT_HANDSHAKE = new RequestInfo(32,"SPIGOT_HANDSHAKE");
-    public final static RequestInfo SPIGOT_HANDSHAKE_SUCCESS = new RequestInfo(33,"SPIGOT_HANDSHAKE_SUCCESS");
-    public final static RequestInfo SPIGOT_NEW_SERVERS = new RequestInfo(34,"SPIGOT_NEW_SERVERS");
-    public final static RequestInfo SPIGOT_REMOVE_SERVERS = new RequestInfo(35,"SPIGOT_REMOVE_SERVERS");
-    public final static RequestInfo SPIGOT_EXECUTE_COMMAND = new RequestInfo(36,"SPIGOT_EXECUTE_COMMAND");
-    public final static RequestInfo SPIGOT_LOG_MESSAGE = new RequestInfo(37,"SPIGOT_LOG_MESSAGE");
-    public final static RequestInfo SPIGOT_WARNING_MESSAGE = new RequestInfo(38,"SPIGOT_WARNING_MESSAGE");
-    public final static RequestInfo SPIGOT_ERROR_MESSAGE = new RequestInfo(39,"SPIGOT_ERROR_MESSAGE");
-    public final static RequestInfo SPIGOT_UPDATE_PLAYERS = new RequestInfo(40,"SPIGOT_UPDATE_PLAYERS");
-    public final static RequestInfo SPIGOT_UNREGISTER_PLAYERS = new RequestInfo(41,"SPIGOT_UNREGISTER_PLAYERS");
-    public final static RequestInfo SPIGOT_UPDATE_PLAYERS_COUNT = new RequestInfo(42,"SPIGOT_UPDATE_PLAYERS_COUNT");
-    public final static RequestInfo SPIGOT_UNREGISTER_PLAYERS_COUNT = new RequestInfo(43,"SPIGOT_UNREGISTER_PLAYERS_COUNT");
+    public final static RequestInfo SERVER_AUTH = new RequestInfo(31,"SERVER_AUTH");
+    public final static RequestInfo SERVER_HANDSHAKE = new RequestInfo(32,"SERVER_HANDSHAKE");
+    public final static RequestInfo SERVER_HANDSHAKE_SUCCESS = new RequestInfo(33,"SERVER_HANDSHAKE_SUCCESS");
+    public final static RequestInfo SERVER_NEW_SERVERS = new RequestInfo(34,"SERVER_NEW_SERVERS");
+    public final static RequestInfo SERVER_REMOVE_SERVERS = new RequestInfo(35,"SERVER_REMOVE_SERVERS");
+    public final static RequestInfo SERVER_EXECUTE_COMMAND = new RequestInfo(36,"SERVER_EXECUTE_COMMAND");
+    public final static RequestInfo SERVER_LOG_MESSAGE = new RequestInfo(37,"SERVER_LOG_MESSAGE");
+    public final static RequestInfo SERVER_WARNING_MESSAGE = new RequestInfo(38,"SERVER_WARNING_MESSAGE");
+    public final static RequestInfo SERVER_ERROR_MESSAGE = new RequestInfo(39,"SERVER_ERROR_MESSAGE");
+    public final static RequestInfo SERVER_UPDATE_PLAYERS = new RequestInfo(40,"SERVER_UPDATE_PLAYERS");
+    public final static RequestInfo SERVER_UNREGISTER_PLAYERS = new RequestInfo(41,"SERVER_UNREGISTER_PLAYERS");
+    public final static RequestInfo SERVER_UPDATE_PLAYERS_COUNT = new RequestInfo(42,"SERVER_UPDATE_PLAYERS_COUNT");
+    public final static RequestInfo SERVER_UNREGISTER_PLAYERS_COUNT = new RequestInfo(43,"SERVER_UNREGISTER_PLAYERS_COUNT");
 
 
     /**
      * PROXY REQUESTS
      */
 
-    public final static RequestInfo BUNGEECORD_AUTH = new RequestInfo(61,"BUNGEECORD_AUTH");
-    public final static RequestInfo BUNGEECORD_HANDSHAKE = new RequestInfo(62,"BUNGEECORD_HANDSHAKE");
-    public final static RequestInfo BUNGEECORD_HANDSHAKE_SUCCESS = new RequestInfo(63,"BUNGEECORD_HANDSHAKE_SUCCESS");
-    public final static RequestInfo BUNGEECORD_REGISTER_SERVER = new RequestInfo(64,"BUNGEECORD_REGISTER_SERVER");
-    public final static RequestInfo BUNGEECORD_UNREGISTER_SERVER = new RequestInfo(65,"BUNGEECORD_UNREGISTER_SERVER");
-    public final static RequestInfo BUNGEECORD_GET_SERVERS = new RequestInfo(66,"BUNGEECORD_GET_SERVERS");
-    public final static RequestInfo BUNGEECORD_EXECUTE_COMMAND = new RequestInfo(67,"BUNGEECORD_EXECUTE_COMMAND");
-    public final static RequestInfo BUNGEECORD_LOG_MESSAGE = new RequestInfo(68,"BUNGEECORD_LOG_MESSAGE");
-    public final static RequestInfo BUNGEECORD_WARNING_MESSAGE = new RequestInfo(69,"BUNGEECORD_WARNING_MESSAGE");
-    public final static RequestInfo  BUNGEECORD_ERROR_MESSAGE = new RequestInfo(70,"BUNGEECORD_ERROR_MESSAGE");
+    public final static RequestInfo PROXY_AUTH = new RequestInfo(61,"PROXY_AUTH");
+    public final static RequestInfo PROXY_HANDSHAKE = new RequestInfo(62,"PROXY_HANDSHAKE");
+    public final static RequestInfo PROXY_HANDSHAKE_SUCCESS = new RequestInfo(63,"PROXY_HANDSHAKE_SUCCESS");
+    public final static RequestInfo PROXY_REGISTER_SERVER = new RequestInfo(64,"PROXY_REGISTER_SERVER");
+    public final static RequestInfo PROXY_UNREGISTER_SERVER = new RequestInfo(65,"PROXY_UNREGISTER_SERVER");
+    public final static RequestInfo PROXY_GET_SERVERS = new RequestInfo(66,"PROXY_GET_SERVERS");
+    public final static RequestInfo PROXY_EXECUTE_COMMAND = new RequestInfo(67,"PROXY_EXECUTE_COMMAND");
+    public final static RequestInfo PROXY_LOG_MESSAGE = new RequestInfo(68,"PROXY_LOG_MESSAGE");
+    public final static RequestInfo PROXY_WARNING_MESSAGE = new RequestInfo(69,"PROXY_WARNING_MESSAGE");
+    public final static RequestInfo  PROXY_ERROR_MESSAGE = new RequestInfo(70,"PROXY_ERROR_MESSAGE");
 
     /*
     DEV TOOLS REQUESTS (SCREEN VIEWER)

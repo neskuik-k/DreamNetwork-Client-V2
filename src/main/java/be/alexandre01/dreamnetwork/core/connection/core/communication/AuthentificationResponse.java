@@ -83,7 +83,7 @@ public class AuthentificationResponse extends CoreResponse {
                         return;
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
-                        newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_HANDSHAKE_SUCCESS);
+                        newClient.getRequestManager().sendRequest(RequestType.PROXY_HANDSHAKE_SUCCESS);
                         for (IJVMExecutor service : Core.getInstance().getJvmContainer().getServersExecutors()) {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
@@ -91,7 +91,7 @@ public class AuthentificationResponse extends CoreResponse {
 
                                         Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
-                                        newClient.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                                        newClient.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                                 jvmService.getFullName(),
                                                 remoteAdress[0].replaceAll("/", ""),
                                                 jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
@@ -113,12 +113,12 @@ public class AuthentificationResponse extends CoreResponse {
                        coreHandler.getAllowedCTX().add(ctx);
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
-                        newClient.getRequestManager().sendRequest(RequestType.SPIGOT_HANDSHAKE_SUCCESS);
+                        newClient.getRequestManager().sendRequest(RequestType.SERVER_HANDSHAKE_SUCCESS);
                         be.alexandre01.dreamnetwork.core.connection.core.communication.Client proxy = Core.getInstance().getClientManager().getProxy();
                         String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
                         if(proxy != null){
-                            proxy.getRequestManager().sendRequest(RequestType.BUNGEECORD_REGISTER_SERVER,
+                            proxy.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                     newClient.getJvmService().getFullName(),
                                     remoteAdress[0].replaceAll("/", ""),
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
@@ -141,7 +141,7 @@ public class AuthentificationResponse extends CoreResponse {
                                     if (service.getClient() != null) {
                                         String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
                                         //System.out.println(service.);
-                                        service.getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, server);
+                                        service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
                                         servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
                                     }
                                 }
@@ -163,7 +163,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }*/
 
-                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SPIGOT_NEW_SERVERS, servers.toArray(new String[0]));
+                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, servers.toArray(new String[0]));
                        coreHandler.getAllowedCTX().add(ctx);
                     }
                     return;

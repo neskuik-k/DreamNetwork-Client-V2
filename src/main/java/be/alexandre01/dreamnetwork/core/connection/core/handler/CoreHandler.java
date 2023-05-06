@@ -200,7 +200,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 String server = client.getJvmService().getFullName();
                 for(IClient c : Core.getInstance().getClientManager().getClients().values()){
                     if(c.getJvmType() == JVMContainer.JVMType.SERVER){
-                        c.getRequestManager().sendRequest(RequestType.SPIGOT_REMOVE_SERVERS,server);
+                        c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS,server);
                     }
                 }
                 for(IClient c : Core.getInstance().getClientManager().getDevTools()){

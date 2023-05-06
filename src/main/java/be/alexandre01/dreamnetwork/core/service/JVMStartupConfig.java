@@ -5,6 +5,8 @@ import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
+import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,7 +42,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
 
         if(proxy){
-            executable = "BungeeCord.jar";
+            executable = "Proxy.jar";
         }else {
             executable = "Spigot.jar";
         }
@@ -248,16 +250,43 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
     @Override
     public Integer getCurrentPort(String pathName, String finalname, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
-        String fileName;
-        String checker;
+        String fileName = null;
+        String checker = null;
         boolean proxy = false;
         if(jvmType == IContainer.JVMType.SERVER){
             fileName = "server.properties";
             checker = "server-port=";
         }else {
-            proxy = true;
-            fileName = "config.yml";
-            checker = "host: 0.0.0.0:";
+            if(getInstallInfo() == null) {
+                System.out.println("The server executable type cannot be determined");
+                return null;
+            }
+            InstallationLinks link;
+            try {
+                link = InstallationLinks.valueOf(getInstallInfo());
+            }catch (Exception e){
+                System.out.println("The server executable type cannot be determined");
+                return null;
+            }
+
+            if(link.getExecType() == ExecType.BUNGEECORD){
+                proxy = true;
+                fileName = "config.yml";
+                checker = "host: 0.0.0.0:";
+            }
+
+            if(link.getExecType() == ExecType.VELOCITY){
+                proxy = true;
+                fileName = "velocity.toml";
+                checker = "bind = \"0.0.0.0:";
+            }
+
+            if(checker == null){
+                System.out.println("The server executable type cannot be determined");
+                return null;
+            }
+
+
         }
         String name = finalname.split("-")[0];
         File properties;
@@ -288,7 +317,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
                 if(line.contains(checker)){
 
-                    String readline = line.replace(checker,"").replaceAll(" ","");
+
+                    String readline = line.replace(checker,"").replace("\"","").replaceAll(" ","");
                     //  System.out.println(readline);
                     port = Integer.parseInt(readline);
                     //  System.out.println(port);
@@ -368,8 +398,29 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         }
 
         if(proxy){
-            updateFile("config.yml",getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml"));
-            updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/bungeecord/server-icon.png"));
+            if(getInstallInfo() == null) {
+                System.out.println("The server executable type cannot be determined");
+                return;
+            }
+
+            InstallationLinks link;
+            try {
+                link = InstallationLinks.valueOf(getInstallInfo());
+            }catch (Exception e){
+                System.out.println("The server executable type cannot be determined");
+                return;
+            }
+
+            if(link.getExecType() == ExecType.BUNGEECORD){
+                updateFile("config.yml",getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml"));
+                updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/bungeecord/server-icon.png"));
+                return;
+            }
+            if(link.getExecType() == ExecType.VELOCITY){
+                updateFile("velocity.toml",getClass().getClassLoader().getResourceAsStream("files/velocity/velocity.toml"));
+                updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/velocity/server-icon.png"));
+                return;
+            }
             return;
         }
         updateFile("eula.txt",getClass().getClassLoader().getResourceAsStream("files/spigot/eula.txt"));

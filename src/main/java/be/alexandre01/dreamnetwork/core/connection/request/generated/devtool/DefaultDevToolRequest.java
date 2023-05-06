@@ -11,7 +11,7 @@ public class DefaultDevToolRequest extends RequestBuilder {
             message.set("STATUS","SUCCESS");
             return message;
         });
-        requestData.put(RequestType.SPIGOT_EXECUTE_COMMAND,(message,client, args) -> {
+        requestData.put(RequestType.SERVER_EXECUTE_COMMAND,(message,client, args) -> {
             message.set("CMD", args[0]);
             return message;
         });

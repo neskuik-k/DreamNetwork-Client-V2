@@ -71,6 +71,19 @@ public class Client implements IClient {
                     core.getClientManager().setProxy(this);
                     requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
                     break;
+                case "VELOCITY":
+                    this.jvmType = JVMContainer.JVMType.PROXY;
+                    Core c = Core.getInstance();
+                    if (c.getClientManager().getProxy() == null) {
+                        ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+                        service.scheduleAtFixedRate(() -> {
+                            c.getBundleManager().onProxyStarted();
+                            service.shutdown();
+                        }, 3, 3, TimeUnit.SECONDS);
+                    }
+                    c.getClientManager().setProxy(this);
+                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
+                    break;
             }
         }
         if (isDevTool) {
