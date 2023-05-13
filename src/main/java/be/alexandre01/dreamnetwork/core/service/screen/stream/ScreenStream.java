@@ -40,7 +40,7 @@ public class ScreenStream {
         ExecType execType = screen.getService().getJvmExecutor().getExecType();
         if(execType != null){
             if(execType == ExecType.BUNGEECORD){
-                screenInReader.getReaderLines().add(new BungeeCordReader());
+                //screenInReader.getReaderLines().add(new BungeeCordReader());
             }
         }
 

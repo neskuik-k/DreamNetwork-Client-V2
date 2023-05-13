@@ -108,7 +108,7 @@ service.bundle.manager.cantFindService=%red%- Bundle %var% can't find %var% serv
 
 service.screen.killedHimself=The PROCESS %var% has just killed himself.
 service.screen.opened=%yellowbo%Screen opened with the name -> %greenbo%%var%-%var%
-service.screen.closed=Screen closes -> %var%
+service.screen.closed=Screen closed -> %var%
 
 ## Introduction
 introduction.ask.firstTime=%green%It is your first time you use %cyan%DreamNetwork %green%? %white%Type yes or no: %red%

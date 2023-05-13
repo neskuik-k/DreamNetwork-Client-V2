@@ -93,7 +93,7 @@ public class NodeBuilder {
         if(isHead){
             globalList = list;
         }
-       Console.fine("Build Suggestion -> " + list);
+      // Console.fine("Build Suggestion -> " + list);
        CustomTreeCompleter.Node n = (CustomTreeCompleter.Node) CustomTreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];
@@ -112,9 +112,10 @@ public class NodeBuilder {
 
     public void rebuild(){
         try {
-            Console.fine("rebuild suggestion");
-            Console.fine(globalList);
-            Console.fine("ICI hein");
+            //Console.fine("rebuild suggestion");
+
+           // log suggestions
+           // Console.fine(globalList);
             for (int i = 0; i < globalList.size(); i++) {
                 Object o = globalList.get(i);
                 if(o instanceof NodeContainer){

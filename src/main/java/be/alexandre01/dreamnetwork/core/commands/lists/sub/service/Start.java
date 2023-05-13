@@ -88,6 +88,7 @@ public class Start extends SubCommand {
             if(sArgs.length > 5){
                 try {
                     port = Integer.parseInt(sArgs[5]);
+                    System.out.println("port = " + port);
                 }catch (Exception e){
                     //ignored
                 }
@@ -95,13 +96,17 @@ public class Start extends SubCommand {
 
             IStartupConfigBuilder builder = IStartupConfig.builder();
 
+
+
             builder.type(mods).xms(sArgs[3]).xmx(sArgs[4]);
 
             if(port != 0){
+                System.out.println("port setup");
                 builder.port(port);
             }
-
-            jvmExecutor.startServer(builder.build());
+            IStartupConfig config = builder.buildFrom(jvmExecutor.getStartupConfig());
+            System.out.println("Wat "+config.getPort());
+            jvmExecutor.startServer(config);
             return true;
         },args,"start","serverPath", "[mods]","[XMS]","[XMX]","[port]")){
             fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");

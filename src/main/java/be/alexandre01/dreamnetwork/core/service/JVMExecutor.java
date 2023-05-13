@@ -231,7 +231,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     private boolean proceedStarting(String finalname,int servers,IConfig jvmConfig) throws IOException {
         Integer port = jvmConfig.getPort();
-       // System.out.println("Port: "+port);
+
+        System.out.println("Port on Exec: "+port);
 
         /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
             Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
@@ -239,7 +240,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             return false;
         }*/
         if(port == 0){
-
             if(!serversPortList.isEmpty()){
                 port = serversPortList.get(serversPortList.size()-1)+2;
                 while (portsBlackList.contains(port) || !PortUtils.isAvailable(port,true)){
@@ -256,9 +256,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
 
                 // System.out.println(port);
-                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,bundleData.getJvmType(),jvmConfig.getType());
 
-                port = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
+
+                int currentPort = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
+
+                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,currentPort,bundleData.getJvmType(),jvmConfig.getType());
                 if(port == null){
                     Console.printLang("service.executor.notFoundPort", finalname);
                     return false;
@@ -297,19 +299,16 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 for(Map.Entry<String,Integer> s : serversPort.entrySet()){
                     if(s.getKey().startsWith("cache-")){
 
+
+
                         port = serversPort.get(s.getKey());
+                        System.out.println("Changing to cache port: "+s.getKey() + ":" + port);
                         serversPort.remove(s.getKey(),s.getValue());
                         break;
                     }
                 }
-
-                if(jvmConfig.getType().equals(Mods.STATIC)){
-                    changePort("/bundles/"+jvmConfig.getPathName(),finalname,port,bundleData.getJvmType(),jvmConfig.getType());
-                }else {
-                    if(jvmConfig.getType().equals(Mods.DYNAMIC)){
-                        changePort("/runtimes/"+jvmConfig.getPathName(),finalname,port,bundleData.getJvmType(),jvmConfig.getType());
-                    }
-                }
+                int currentPort = getCurrentPort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,bundleData.getJvmType(),jvmConfig.getType());
+                changePort(jvmConfig.getType().getPath()+jvmConfig.getPathName(),finalname,port,currentPort,bundleData.getJvmType(),jvmConfig.getType());
 
                 portsBlackList.add(port);
                 serversPort.put(finalname,port);
@@ -403,7 +402,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
             }
 
-        Console.print("PROCESS ID >" + IJVMExecutor.getProcessID(proc),Level.FINE);
+        Console.fine("PROCESS ID >" + IJVMExecutor.getProcessID(proc));
         Console.fine(port);
 
         JVMService jvmService = JVMService.builder().

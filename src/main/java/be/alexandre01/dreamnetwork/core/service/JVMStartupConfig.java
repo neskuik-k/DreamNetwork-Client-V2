@@ -90,7 +90,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     public JVMStartupConfig(String pathName,String name,boolean isBuilded){
-        config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"/network.yml"));
+        config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"));
+        System.out.println(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml");
         this.name = name;
         this.pathName = pathName;
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
@@ -122,82 +123,39 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 e.printStackTrace();
             }
         }
-        /*if(startup != null){
-            while (startup.charAt(0) == ' '){
-                startup = startup.substring(1);
-            }
-            startup =  startup.replaceAll("%xms%",xms);
-            startup = startup.replaceAll("%xmx%",xmx);
-        }*/
         executable += ".jar";
         isConfig = true;
-       /* try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
-                if(line.startsWith("type:")){
-                    this.type = JVMExecutor.Mods.valueOf(line.replace("type:","").replaceAll(" ",""));
-                }
-                if(line.startsWith("xms:")){
-                    this.xms = line.replace("xms:","").replaceAll(" ","");
-                }
-                if(line.startsWith("xmx:")){
-                    this.xmx = line.replace("xmx:","").replaceAll(" ","");
-                }
-                if(line.startsWith("port:")){
-                    this.port = Integer.parseInt(line.replace("port:","").replaceAll(" ",""));
-                }
-                if(line.contains("proxy: true")){
-                    this.proxy = true;
-                }
-                if(proxy){
-                    exec = "BungeeCord.jar";
-                }else {
-                    exec = "Spigot.jar";
-                }
-
-                if(line.startsWith("startup:")){
-                    startup = line;
-                    startup = startup.replace("startup:","");
-                    while (startup.charAt(0) == ' '){
-                        startup = startup.substring(1);
-                    }
-                    startup =  startup.replaceAll("%xms%",xms);
-                    startup = startup.replaceAll("%xmx%",xmx);
-                }
-                if(line.startsWith("executable:")){
-                    exec = line;
-                    exec = exec.replace("executable:","");
-                    while (exec.charAt(0) == ' '){
-                        exec = exec.substring(1);
-                    }
-                }
-                if(line.startsWith("java-version:")){
-                    javaVersion = line;
-                    javaVersion = javaVersion.replace("java-version:","");
-                    while (javaVersion.charAt(0) == ' '){
-                        this.javaVersion = javaVersion.substring(1);
-                    }
-                }
-                isConfig = true;
-            }
-        }catch (IOException e){
-            Console.print(Colors.ANSI_RED()+"The server in question is not yet configured",Level.SEVERE);
-            isConfig = false;
-            return;
-        }*/
     }
     @Override
-    public boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
+    public boolean changePort(String pathName, String finalname, int port, int defaultPort, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
         String name = finalname.split("-")[0];
-        String fileName;
-        String checker;
+        String fileName = null;
+        String checker = null;
         boolean proxy = false;
+
         if(jvmType.equals(IContainer.JVMType.SERVER)){
             fileName = "server.properties";
             checker = "server-port=";
         }else {
-            proxy = true;
-            fileName = "files/bungeecord/config.yml";
-            checker = "host: 0.0.0.0:";
+            InstallationLinks link;
+            try {
+                link = InstallationLinks.valueOf(getInstallInfo());
+            }catch (Exception e){
+                System.out.println("The server executable type cannot be determined");
+                return false;
+            }
+
+            if(link.getExecType() == ExecType.BUNGEECORD){
+                proxy = true;
+                fileName = "config.yml";
+                checker = "host: 0.0.0.0:";
+            }
+
+            if(link.getExecType() == ExecType.VELOCITY){
+                proxy = true;
+                fileName = "velocity.toml";
+                checker = "bind = \"0.0.0.0:";
+            }
         }
         File properties;
         if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
@@ -212,21 +170,20 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         try {
             BufferedReader file;
 
-            if(type.equals(JVMExecutor.Mods.DYNAMIC)){
-                file = new BufferedReader( new FileReader(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName)));
+            file = new BufferedReader( new FileReader(properties));
 
-            }else {
-                file = new BufferedReader(new FileReader(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName)));
-            }
+            System.out.println(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName));
 
             StringBuffer inputBuffer = new StringBuffer();
             String line;
 
             while ((line = file.readLine()) != null) {
-                if(line.startsWith("server-port=")){
-                    line = "server-port= "+ port;
+                if(line.contains(checker)){
+                    Console.fine("Checking line : "+line);
+                    line = line.replace(String.valueOf(defaultPort),String.valueOf(port));
                 }
                 inputBuffer.append(line);
+
                 inputBuffer.append('\n');
             }
             file.close();
@@ -601,7 +558,14 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
         @Override
         public IStartupConfig buildFrom(IStartupConfig config){
+            name = config.getName();
+            pathName = config.getPathName();
             IStartupConfig j = build();
+            System.out.println("Aie => "+ j.getPort());
+            if(j.getName() == null)
+                j.setName(config.getName());
+            if(j.getPathName() == null)
+                j.setPathName(config.getPathName());
             if(j.getType() == null)
                 j.setType(config.getType());
             if(j.getXms() == null)
@@ -618,7 +582,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 j.setStartup(config.getStartup());
 
             j.setProxy(config.isProxy());
-            return config;
+            return j;
         }
     }
 }

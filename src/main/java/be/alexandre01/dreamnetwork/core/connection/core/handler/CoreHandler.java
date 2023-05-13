@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHandler {
 
@@ -133,6 +134,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             //ALLOWED CONNECTION
             if(allowedCTX.contains(ctx)){
                 Message message = Message.createFromJsonString(s_to_decode);
+                core.getFileHandler().publish(new LogRecord(Level.INFO, "Received message from " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + message.toString()));
                 for(CoreResponse iBasicClientResponse : responses){
                     try {
                         iBasicClientResponse.onAutoResponse(message,ctx, core.getClientManager().getClient(ctx));

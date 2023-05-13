@@ -62,7 +62,9 @@ public class CustomType extends NodeType {
                         Console.fine("NodeBuilder is null");
                         return;
                     }
-                    Console.fine("Find " + nodeBuilder.getClass().getSimpleName()+" "+ i[0]);
+
+                    //Find NodeBuilders
+                   // Console.fine("Find " + nodeBuilder.getClass().getSimpleName()+" "+ i[0]);
                     nodeBuilder.rebuild();
                     i[0]++;
                 });
