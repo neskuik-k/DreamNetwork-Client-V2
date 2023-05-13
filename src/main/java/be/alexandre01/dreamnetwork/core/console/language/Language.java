@@ -29,7 +29,13 @@ public class Language {
         String msg = messages.get(map);
        // System.out.println("Message to encode => "+msg);
         for (int i = 0; i < variables.length; i++) {
-            msg = msg.replace("%var"+i+"%",variables[i].toString());
+            String var;
+            if(variables[i] == null){
+                var = "null";
+            }else{
+                var = variables[i].toString();
+            }
+            msg = msg.replace("%var"+i+"%",var);
         }
         return msg;
     }

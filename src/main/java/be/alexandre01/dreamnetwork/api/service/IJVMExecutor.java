@@ -165,6 +165,7 @@ public interface IJVMExecutor {
     public InstallationLinks getInstallLink();
 
 
+
     public enum Mods {
         STATIC("/bundles/"), DYNAMIC("/runtimes/");
 
@@ -178,6 +179,5 @@ public interface IJVMExecutor {
         public String getPath() {
             return path;
         }
-
     }
 }

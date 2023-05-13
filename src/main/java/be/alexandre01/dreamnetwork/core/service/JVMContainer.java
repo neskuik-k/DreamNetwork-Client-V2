@@ -2,8 +2,10 @@ package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 
 import java.util.ArrayList;
@@ -40,6 +42,57 @@ public class JVMContainer implements IContainer {
     public IJVMExecutor[] getJVMExecutorsFromName(String processName) {
         return jvmExecutors.stream().filter(ijvmExecutor -> ijvmExecutor.getName().equals(processName)).toArray(IJVMExecutor[]::new);
     }
+
+    @Override
+    public IJVMExecutor tryToGetJVMExecutor(String processName) {
+        try {
+            if(processName.contains("/")){
+                String[] split = processName.split("/");
+                StringBuilder bundle = new StringBuilder();
+                for(int i = 0; i < split.length-1; i++){
+                    bundle.append(split[i]);
+                }
+                return getJVMExecutor(split[split.length-1],bundle.toString());
+            }
+            IJVMExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
+            if(jvmExecutors.length == 0){
+                return null;
+            }
+
+            if(jvmExecutors.length > 1){
+                System.out.println(Colors.RED+ "Can't identifiate JVMExecutor found for the name: "+processName+" please use the full path like:");
+                for(IJVMExecutor jvmExecutor : jvmExecutors){
+                    System.out.println(Colors.YELLOW+ "> "+jvmExecutor.getFullName());
+                }
+                return null;
+            }
+            return jvmExecutors[0];
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    @Override
+    public IService tryToGetService(String serviceName){
+        String[] split = serviceName.split("-");
+        int id;
+        try {
+            id = Integer.parseInt(split[1]);
+        }catch (Exception e){
+            System.out.println(Colors.RED+"The text -> "+ split[1]+ " is not a number");
+            return null;
+        }
+        return tryToGetService(split[0],id);
+    }
+    @Override
+    public IService tryToGetService(String processName, int id){
+        IJVMExecutor jvmExecutor = tryToGetJVMExecutor(processName);
+        if(jvmExecutor == null){
+            return null;
+        }
+        return jvmExecutor.getService(id);
+    }
+
 
     @Override
     public ArrayList<IJVMExecutor> getJVMExecutors() {
@@ -114,5 +167,6 @@ public class JVMContainer implements IContainer {
         jvmExecutors.add(jvmExecutor);
         bundleData.getExecutors().put(jvmExecutor.getName(), jvmExecutor);
     }
+
 
 }

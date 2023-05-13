@@ -24,7 +24,7 @@ public enum InstallationLinks {
     BUNGEECORD("https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar","BUNGEECORD",IContainer.JVMType.PROXY,ExecType.BUNGEECORD,to(8,20)),
     WATERFALL("https://api.papermc.io/v2/projects/waterfall/versions/1.19/builds/498/downloads/waterfall-1.19-498.jar","WATERFALL",IContainer.JVMType.PROXY,ExecType.BUNGEECORD,to(8,20)),
 
-    VELOCITY("https://api.papermc.io/v2/projects/velocity/versions/3.2.0-SNAPSHOT/builds/252/downloads/velocity-3.2.0-SNAPSHOT-252.jar","VELOCITY",IContainer.JVMType.PROXY,ExecType.VELOCITY,to(8,20));
+    VELOCITY("https://api.papermc.io/v2/projects/velocity/versions/3.2.0-SNAPSHOT/builds/252/downloads/velocity-3.2.0-SNAPSHOT-252.jar","VELOCITY",IContainer.JVMType.PROXY,ExecType.VELOCITY,to(11,20));
 
     private String url;
     private String ver;

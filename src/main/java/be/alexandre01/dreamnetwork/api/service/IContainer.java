@@ -13,6 +13,12 @@ public interface IContainer {
     ArrayList<IJVMExecutor> getJVMExecutors();
     IJVMExecutor[] getJVMExecutorsFromName(String processName);
 
+    IJVMExecutor tryToGetJVMExecutor(String processName);
+
+    IService tryToGetService(String serviceName);
+
+    IService tryToGetService(String processName, int id);
+
     public enum JVMType {
         SERVER, PROXY
     }
