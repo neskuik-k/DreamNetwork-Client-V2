@@ -16,9 +16,7 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Stop extends SubCommandCompletor implements SubCommandExecutor {
     public Stop(){
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
-                create("stop",
-                        create("server", "proxy",
-                                create(new ScreensNode())))));
+                create("stop", create(new ScreensNode()))));
         /*setCompletion(node("service",
                 node("stop",
                         node("server", "proxy"))));
@@ -45,25 +43,16 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                 return true;
             }*/
 
-            String[] processName = args[2].split("-");
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], args[1]);
 
-            if(jvmExecutor == null){
+
+            IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+
+            if(service == null){
                 Console.printLang("commands.service.stop.incorrectService");
                 return true;
             }
-
-            int sId;
-            try {
-                sId =  Integer.parseInt(processName[1]);
-            }catch (Exception e){
-                Console.printLang("commands.service.stop.idNotFound");
-                return true;
-            }
-
-            IService jvmService = jvmExecutor.getService(sId);
-            jvmService.stop();
-            jvmService.removeService();
+            service.stop();
+            service.removeService();
             return true;
         }
 

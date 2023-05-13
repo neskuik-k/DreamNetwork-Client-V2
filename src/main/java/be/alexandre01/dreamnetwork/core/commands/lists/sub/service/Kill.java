@@ -17,9 +17,7 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Kill extends SubCommandCompletor implements SubCommandExecutor {
     public Kill(){
         NodeBuilder nodeBuilder = new NodeBuilder(create("service",
-                create("kill",
-                        create("server", "proxy",
-                                create(new ScreensNode())))));
+                create("kill", create(new ScreensNode()))));
         /*setCompletion(node("service",
                 node("kill",
                         node("server", "proxy"))));
@@ -41,24 +39,14 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
             }
             BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
 
-            String[] processName = args[2].split("-");
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(processName[0], bundleData);
 
-            if(jvmExecutor == null){
+            IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+            if(service == null){
                 Console.printLang("commands.service.kill.incorrectService");
                 return true;
             }
 
-            int sId;
-            try {
-                sId =  Integer.parseInt(processName[1]);
-            }catch (Exception e){
-                Console.printLang("commands.service.kill.serviceNotFound");
-                return true;
-            }
-
-            IService jvmService = jvmExecutor.getService(sId);
-            jvmService.getProcess().destroy();
+            service.getProcess().destroy();
             return true;
         }
 
