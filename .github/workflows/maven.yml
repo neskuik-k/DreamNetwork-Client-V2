@@ -51,18 +51,6 @@ jobs:
       run: "mv target/DreamNetworkV2-${{ steps.project.outputs.version }}-prod.jar target/DreamNetwork.jar"
     - name: Creating Version.txt
       run: echo "${{ steps.project.outputs.version }}#${{github.run_number}}" > version.txt
-    - name: Pushing version.txt to CDN
-      id: push_version
-      uses: dmnemec/copy_file_to_another_repo_action@main
-      env:
-        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
-      with:
-        source_file: 'version.txt'
-        destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
-        destination_folder: 'hypervisor/builds/'
-        user_email: 'ata@taillet.net'
-        user_name: 'DreamNetBot'
-        commit_message: 'Updating version.txt -> ${{ steps.project.outputs.version }}#${{github.run_number}}.'    
     - name: Pushing DreamNetwork.jar to CDN
       id: push_directory
       uses: dmnemec/copy_file_to_another_repo_action@main
@@ -75,3 +63,16 @@ jobs:
         user_email: 'ata@taillet.net'
         user_name: 'DreamNetBot'
         commit_message: 'Pushing new build ${{ steps.project.outputs.version }}#${{github.run_number}}.'
+    - name: Pushing version.txt to CDN
+      id: push_version
+      uses: dmnemec/copy_file_to_another_repo_action@main
+      env:
+        API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+      with:
+        source_file: 'version.txt'
+        destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
+        destination_folder: 'hypervisor/builds/'
+        user_email: 'ata@taillet.net'
+        user_name: 'DreamNetBot'
+        commit_message: 'Updating version.txt -> ${{ steps.project.outputs.version }}#${{github.run_number}}.'    
+ 
