@@ -35,7 +35,7 @@ public class Language {
             }else{
                 var = variables[i].toString();
             }
-            msg = msg.replace("%var"+i+"%",variables[i].toString());
+            msg = msg.replace("%var"+i+"%",var);
         }
         return msg;
     }
