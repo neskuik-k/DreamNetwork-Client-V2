@@ -133,7 +133,25 @@ addons.customClass.finalized=%var% - CL Finalisé.
 commands.notFound=%redul%Commande introuvable. | Ecrivez 'help' pour avoir de l'aide.
 commands.cantBeExecuted=%red%La commande ne peut pas être éxecutée !
 
-commands.bundle.titleUsage=Comment configurer gérer bundles
+commands.addon.titleUsage=Comment gérer les addons
+commands.addon.installUsage=Installer un addon
+commands.addon.listInstalledUsage=Lister tous les addons installés
+commands.addon.listOfficialsUsage=Lister tous les addons officiels
+commands.addon.invalidName=%red%Cet addon n'a pas été trouvé
+commands.addon.install.completed=%green%%var% a été installé. Redémarrez le DreamNetwork pour l'utiliser
+commands.addon.install.error=%red%Une erreur a survenue, veuillez contacter les développeurs du DreamNetwork
+commands.addon.list.invalidArguments=%red%Argument Invalide. Format: addon list %yellow%<installed|officials>
+commands.addon.list.installedAddons=%green%Liste des addons installés
+commands.addon.list.noAddonInstalled=%yellow%Il n'y a pas d'addon d'installé
+commands.addon.list.officialsAddons=%green%Liste des addons officiels
+commands.addon.list.noOfficialAddon=%yellow%Il n'y a pas d'addon officiel
+commands.addon.list.name=%green%Nom: %yellowbr%
+commands.addon.list.version=%green%Version: %yellowbr%
+commands.addon.list.description=%green%Description: %yellowbr%
+commands.addon.list.author=%green%Auteur: %yellowbr%
+commands.addon.list.repositoryLink=%green%Lien du répertoire: %yellowbr%
+
+commands.bundle.titleUsage=Comment configurer et gérer vos bundles
 commands.bundle.create=créer un bundle
 commands.bundle.remove=supprimer un bundle
 commands.bundle.edit=éditer un bundle

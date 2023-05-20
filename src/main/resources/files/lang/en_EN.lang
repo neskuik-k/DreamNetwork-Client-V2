@@ -135,7 +135,25 @@ addons.customClass.finalized=%var% - CL Finalized.
 commands.notFound=%redul%Command not found. | Type 'help' for assistance.
 commands.cantBeExecuted=%red%The command cannot be executed !
 
-commands.bundle.titleUsage=How to configurate your services bundles
+commands.addon.titleUsage=How to manage addons
+commands.addon.installUsage=install an addon
+commands.addon.listInstalledUsage=list all installed addons
+commands.addon.listOfficialsUsage=list all officials addons
+commands.addon.invalidName=%red%This addon has not been found
+commands.addon.install.completed=%green%%var% has been installed. Restart the DreamNetwork for using it
+commands.addon.install.error=%red%An error occured, please contact DreamNetwork's developpers
+commands.addon.list.invalidArguments=%red%Invalid argument. Format: addon list %yellow%<installed|officials>
+commands.addon.list.installedAddons=%green%List of installed addons
+commands.addon.list.noAddonInstalled=%yellow%There is no addon installed
+commands.addon.list.officialsAddons=%green%List of officials addons
+commands.addon.list.noOfficialAddon=%yellow%There is no official addon
+commands.addon.list.name=%green%Name: %yellowbr%
+commands.addon.list.version=%green%Version: %yellowbr%
+commands.addon.list.description=%green%Description: %yellowbr%
+commands.addon.list.author=%green%Author: %yellowbr%
+commands.addon.list.repositoryLink=%green%Repository Link: %yellowbr%
+
+commands.bundle.titleUsage=How to configure your services bundles
 commands.bundle.create=create a bundle
 commands.bundle.remove=remove a bundle
 commands.bundle.edit=edit a bundle
