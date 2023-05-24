@@ -24,6 +24,7 @@ import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
+import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -63,6 +64,8 @@ public class Main {
 
     @Getter private static LanguageManager languageManager;
 
+    @Getter private static CDNFiles cdnFiles;
+
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -84,6 +87,8 @@ public class Main {
         if(!languageManager.load()){
             // Fetch fail, can't use messages
         }
+        cdnFiles = new CDNFiles();
+        cdnFiles.start();
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 

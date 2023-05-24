@@ -150,6 +150,7 @@ commands.addon.list.version=%green%Version: %yellowbr%
 commands.addon.list.description=%green%Description: %yellowbr%
 commands.addon.list.author=%green%Auteur: %yellowbr%
 commands.addon.list.repositoryLink=%green%Lien du répertoire: %yellowbr%
+commands.addon.cantGetOfficialAddon=%red%Désolé, nous ne pouvons actuellement pas récuperer la liste des addons officiels
 
 commands.bundle.titleUsage=Comment configurer et gérer vos bundles
 commands.bundle.create=créer un bundle

@@ -2,19 +2,16 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
 import lombok.NonNull;
 
 import java.io.File;
 import java.util.HashMap;
 
 public class List extends SubCommand {
-    private final HashMap<String, AddonDowloaderObject> addons;
-
     public List(){
-        addons = CDNFiles.getAddons();
         NodeBuilder nodeBuilder = new NodeBuilder(
                 NodeBuilder.create("addon", NodeBuilder.create("list", NodeBuilder.create("installed", "officials")))
         );
@@ -38,6 +35,12 @@ public class List extends SubCommand {
                 Console.printLang("commands.addon.list.installedAddons");
                 Console.print((addonsList.length != 0 ? sb.toString().subSequence(0, sb.length()-2) : Console.getFromLang("commands.addon.list.noAddonInstalled")));
             }else{
+                if(!Main.getCdnFiles().isInstanced()){
+                    Console.printLang("commands.addon.cantGetOfficialAddon");
+                    return true;
+                }
+                HashMap<String, AddonDowloaderObject> addons = Main.getCdnFiles().getAddons();
+
                 StringBuilder sb = new StringBuilder();
                 for(AddonDowloaderObject addon : addons.values()){
                     sb.append(Console.getFromLang("commands.addon.list.name")).append(addon.getName()).append("\n");

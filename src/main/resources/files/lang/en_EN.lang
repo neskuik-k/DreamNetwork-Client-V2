@@ -152,6 +152,7 @@ commands.addon.list.version=%green%Version: %yellowbr%
 commands.addon.list.description=%green%Description: %yellowbr%
 commands.addon.list.author=%green%Author: %yellowbr%
 commands.addon.list.repositoryLink=%green%Repository Link: %yellowbr%
+commands.addon.cantGetOfficialAddon=%red%Sorry, we actually can't fetch the officials addons
 
 commands.bundle.titleUsage=How to configure your services bundles
 commands.bundle.create=create a bundle
