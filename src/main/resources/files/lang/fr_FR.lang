@@ -128,6 +128,7 @@ addons.loadingAddon=Chargement de l'addon: %var%
 addons.cached=Mise en cache >> %var%
 addons.customClass.customClose=Fermeture customisée
 addons.customClass.finalized=%var% - CL Finalisé.
+addons.canUpdate=%green%Vous pouvez mettre à jour l'addon %var%. Entrez '%yellow%addon update %var%%green%' pour faire la mise à jour
 
 ## Commands
 commands.notFound=%redul%Commande introuvable. | Ecrivez 'help' pour avoir de l'aide.
@@ -135,11 +136,15 @@ commands.cantBeExecuted=%red%La commande ne peut pas être éxecutée !
 
 commands.addon.titleUsage=Comment gérer les addons
 commands.addon.installUsage=Installer un addon
+commands.addon.updateUsage=Mettre à jour un addon
 commands.addon.listInstalledUsage=Lister tous les addons installés
 commands.addon.listOfficialsUsage=Lister tous les addons officiels
 commands.addon.invalidName=%red%Cet addon n'a pas été trouvé
 commands.addon.install.completed=%green%%var% a été installé. Redémarrez le DreamNetwork pour l'utiliser
 commands.addon.install.error=%red%Une erreur a survenue, veuillez contacter les développeurs du DreamNetwork
+commands.addon.update.invalidArguments=%red%Argument Invalide. Format: addon update %yellow%<nom de l'addon|all>
+commands.addon.update.addonNotFound=%red%L'addon %var% n'a pas été trouvé
+commands.addon.update.noAddonToUpdate=%yellow%Il n'y a pas d'addon à mettre à jour
 commands.addon.list.invalidArguments=%red%Argument Invalide. Format: addon list %yellow%<installed|officials>
 commands.addon.list.installedAddons=%green%Liste des addons installés
 commands.addon.list.noAddonInstalled=%yellow%Il n'y a pas d'addon d'installé

@@ -12,4 +12,5 @@ public class AddonDowloaderObject {
     private String version;
     private String github;
     private String downloadLink;
+    private String hash;
 }
