@@ -29,6 +29,8 @@ import java.util.regex.Pattern;
 public class Console extends Thread{
     @Getter @Setter private boolean showInput;
 
+    public static Console MAIN;
+
     public interface IConsole{
         public void listener(String[] args);
         public void consoleChange();
@@ -113,6 +115,8 @@ public class Console extends Thread{
     public static void setActualConsole(String name ,boolean isSilent, boolean clearConsole){
         Console console = instances.get(name);
 
+        ConsoleReader.sReader.setPrompt(console.writing);
+
         Console.actualConsole = name;
         console.isRunning = true;
         if(clearConsole)
@@ -148,7 +152,7 @@ public class Console extends Thread{
 
 
         console.iConsole.consoleChange();
-        console.reloadCompletor();
+        console.reloadCompletors();
     }
 
     public static void setActualConsole(String name){
@@ -158,7 +162,7 @@ public class Console extends Thread{
         setActualConsole(name,isSilent,true);
     }
 
-    public void reloadCompletor(){
+    public void reloadCompletors(){
         if(completorNodes.isEmpty()){
             completorNodes.add(Completers.TreeCompleter.node(""));
         }
@@ -197,6 +201,8 @@ public class Console extends Thread{
             fine(s);
             return;
         }*/
+
+        //instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level);
         instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
 
     }
@@ -204,12 +210,13 @@ public class Console extends Thread{
     public static void fine(Object s){
 
         FileHandler fh = Core.getInstance().getFileHandler();
+        String msg = s == null ? "null": s.toString();
         if(Core.getInstance().isDebug()){
-           print(s,Level.FINE);
+           print(msg,Level.FINE);
             return;
         }
         if(fh != null){
-            sendToLog(s,Level.FINE,"global");
+            sendToLog(msg,Level.FINE,"global");
         }
     }
     public static void fineLang(String map, Object s){
@@ -305,23 +312,10 @@ public class Console extends Thread{
     }
     public static void print(Object s){
         LineReader lineReader = ConsoleReader.sReader;
-        int rows = lineReader.getTerminal().getSize().getRows();
-        int cols = lineReader.getTerminal().getSize().getColumns();
         String msg = Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET()));
         msg = msg.replaceAll("\\s+$", "");
-        cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
-        String spaces = "";
         sendToLog(s,Level.INFO,"global");
-        //random number between cols-3 and 1
-        //SNOW
-        /* if(cols > 6){
-            int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
-            for (int i = 0; i < cols-random; i++) {
-                spaces += " ";
-            }
-            spaces += Colors.WHITE+"❆";
-        }*/
-        ConsoleReader.sReader.printAbove(msg+spaces);
+        ConsoleReader.sReader.printAbove(msg);
     }
 
     private void sendToLog(Object s,Level level){

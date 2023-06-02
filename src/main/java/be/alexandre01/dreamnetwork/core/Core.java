@@ -9,12 +9,11 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
-import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.DNChannelManager;
@@ -139,10 +138,12 @@ public class Core {
     }
 
     public void init(){
+        System.out.println("init");
         formatter = new Formatter();
         formatter.format();
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
+
 
 
         Console console = Console.getConsole(Console.actualConsole);
@@ -154,7 +155,7 @@ public class Core {
         Console.printLang("core.server.starting");
         try {
             CoreServer coreServer;
-            Thread thread = new Thread(coreServer = new CoreServer(14520));
+            Thread thread = new Thread(coreServer = new CoreServer(Main.getGlobalSettings().getPort()));
             thread.start();
             console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {
@@ -206,7 +207,7 @@ public class Core {
 
         Main.getCommandReader().init();
 
-        console.reloadCompletor();
+        console.reloadCompletors();
 
         createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 

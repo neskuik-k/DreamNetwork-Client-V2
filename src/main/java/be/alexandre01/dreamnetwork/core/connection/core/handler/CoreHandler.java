@@ -41,7 +41,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Setter @Getter private boolean hasDevUtilSoftwareAccess = false;
     @Getter private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
     private AuthentificationResponse authResponse;
-   @Getter private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
+    @Getter private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Core core;
@@ -170,6 +170,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 
+        System.out.println("UNREGISTERED");
+
         //LOG
         if(allowedCTX.contains(ctx)){
             HashMap<ChannelHandlerContext, IClient> clientByConnexion = Core.getInstance().getClientManager().getClientsByConnection();
@@ -182,6 +184,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if(clientByConnexion.get(ctx).isDevTool()){
                     name = "DEVTOOLS";
                 }
+
                 Console.printLang("connection.core.handler.processStopped", name);
                 core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(),jvmService));
             }
@@ -238,11 +241,17 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         }
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Channel inactive");
+        super.channelInactive(ctx);
+    }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        System.out.println("Handler removed");
         ctx.close();
-        super.channelInactive(ctx);
+        super.handlerRemoved(ctx);
     }
 
     @Override

@@ -57,12 +57,19 @@ public class AuthentificationResponse extends CoreResponse {
             if(!coreHandler.getExternalConnections().contains(ctx)){
                 if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
                     Console.print("HANDSHAKE", Level.FINE);
-                    if (!message.contains("INFO") && !message.contains("PORT") && !message.contains("PASSWORD")) {
+                    if (!message.contains("INFO")) {
                         ctx.channel().close();
                         return;
                     }
 
+
+
                     String info = message.getString("INFO");
+                    if(info.contains("ExternalDream")){
+                        Console.print(Colors.GREEN_UNDERLINED+"ExternalDream CONNECTION DETECTED !", Level.INFO);
+                        coreHandler.getExternalConnections().add(ctx);
+                        return;
+                    }
                     int port = message.getInt("PORT");
                     String password = message.getString("PASSWORD");
 

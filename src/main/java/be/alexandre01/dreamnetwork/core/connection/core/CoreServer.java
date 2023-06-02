@@ -67,6 +67,7 @@ public class CoreServer extends Thread{
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
+            System.out.println("DreamNetwork Server closed");
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
         }

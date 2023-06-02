@@ -41,6 +41,7 @@ public class BaseResponse extends CoreResponse {
             if (stopExecutor == null) {
                 return;
             }
+            Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
             stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
             stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });

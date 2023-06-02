@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
-import be.alexandre01.dreamnetwork.core.connection.request.RequestManager;
+import be.alexandre01.dreamnetwork.core.connection.request.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.devtool.DefaultDevToolRequest;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.proxy.DefaultBungeeRequest;
 import be.alexandre01.dreamnetwork.core.connection.request.generated.spigot.DefaultSpigotRequest;
@@ -32,7 +32,7 @@ public class Client implements IClient {
     private String info;
     private ChannelHandlerContext channelHandlerContext;
 
-    private final RequestManager requestManager;
+    private final ClientRequestManager requestManager;
     private CoreHandler coreHandler;
     private IService jvmService;
     private ClientManager clientManager;
@@ -46,7 +46,7 @@ public class Client implements IClient {
         this.coreHandler = coreHandler;
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
-        requestManager = new RequestManager(this);
+        requestManager = new ClientRequestManager(this);
         Console.fine("Client : "+info);
         if (jvmType == null) {
             switch (info.split("-")[0]) {

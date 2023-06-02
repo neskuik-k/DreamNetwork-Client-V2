@@ -1,11 +1,13 @@
 package be.alexandre01.dreamnetwork.core.connection.request;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.request.*;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.core.connection.request.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
@@ -14,22 +16,31 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.logging.Level;
 
-public class RequestManager implements IRequestManager {
+public class ClientRequestManager extends AbstractRequestManager {
     @Getter
     RequestBuilder requestBuilder;
     private Client client;
+    private ChannelHandlerContext ctx;
+    private ICoreHandler handler;
+
     private HashMap<Integer, RequestPacket> requests = new HashMap<>();
 
-    public RequestManager(Client client){
+
+    public ClientRequestManager(Client client){
+        super();
         this.client = client;
+        this.ctx = client.getChannelHandlerContext();
+        this.handler = client.getCoreHandler();
         requestBuilder = new RequestBuilder();
-        requestBuilder.addRequestBuilder();
+      //  requestBuilder.addRequestBuilder();
     }
 
-    public RequestPacket sendRequest(RequestPacket request,Object... args){
-        Collection<RequestBuilder.RequestData> requestData = requestBuilder.getRequestData().get(request.getRequestInfo());
 
-        request.setClient(client);
+
+    /*public RequestPacket sendRequest(RequestPacket request,Object... args){
+        Collection<RequestBuilder.RequestData> requestData = requestBuilder.getRequestData().get(request.getRequestInfo());
+        if(client != null)
+         request.setClient(client);
         Message message = request.getMessage();
         if(requestData != null) {
             for (RequestBuilder.RequestData data : requestData) {
@@ -42,10 +53,11 @@ public class RequestManager implements IRequestManager {
             }
         }
         request.setMessage(message);
-        request.getClient().writeAndFlush(request.getMessage(),request.getListener());
+        handler.writeAndFlush(request.getMessage(),request.getListener(),client);
         requests.put(request.getRequestID(),request);
         return request;
-    }
+    }*/
+    @Override
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
         if(!requestBuilder.getRequestData().containsKey(requestInfo)){
              try {
@@ -78,36 +90,4 @@ public class RequestManager implements IRequestManager {
          //client.writeAndFlush(requestData.write(message,client,args),listener);
     }
 
-    public RequestPacket sendRequest(RequestInfo requestInfo, Object... args){
-       return this.sendRequest(requestInfo,new Message(),future -> {
-           Console.printLang("connection.request.sent", Level.FINE, requestInfo.name());
-       },args);
-    }
-
-    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, Object... args){
-        return this.sendRequest(requestInfo,message,null,args);
-    }
-
-    public RequestPacket sendRequest(RequestInfo requestInfo, boolean notifiedWhenSent, Object... args){
-        if(notifiedWhenSent){
-          return this.sendRequest(requestInfo,new Message(),future -> {
-              Console.printLang("connection.request.sent", requestInfo.name());
-            },args);
-
-        }
-       return this.sendRequest(requestInfo,new Message(),null,args);
-    }
-
-    public RequestPacket sendRequest(RequestInfo requestInfo, Message message, boolean notifiedWhenSent, Object... args){
-        if(notifiedWhenSent){
-            return this.sendRequest(requestInfo,message,future -> {
-                Console.printLang("connection.request.sent", requestInfo.name());
-            },args);
-
-        }
-        return this.sendRequest(requestInfo,message,null,args);
-    }
-    public RequestPacket getRequest(int MID){
-        return requests.get(MID);
-    }
 }
