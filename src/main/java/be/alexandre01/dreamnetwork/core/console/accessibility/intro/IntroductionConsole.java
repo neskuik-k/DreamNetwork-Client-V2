@@ -1,6 +1,7 @@
-package be.alexandre01.dreamnetwork.core.accessibility.intro;
+package be.alexandre01.dreamnetwork.core.console.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroHelp;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;

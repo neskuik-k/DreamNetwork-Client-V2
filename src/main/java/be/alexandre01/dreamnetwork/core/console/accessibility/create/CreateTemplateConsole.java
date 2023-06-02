@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.accessibility.create;
+package be.alexandre01.dreamnetwork.core.console.accessibility.create;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
@@ -114,7 +114,7 @@ public class CreateTemplateConsole {
                     ConsoleReader.sReader.runMacro(opt[1]);
 
                     console.completorNodes.clear();
-                    console.reloadCompletor();
+                    console.reloadCompletors();
                     return;
                 }
 
@@ -134,7 +134,7 @@ public class CreateTemplateConsole {
                     console.completorNodes.clear();
                     modsNode = new NodeBuilder(NodeBuilder.create("STATIC"),console);
                     modsNode = new NodeBuilder(NodeBuilder.create("DYNAMIC"),console);
-                    console.reloadCompletor();
+                    console.reloadCompletors();
                     return;
                 }
 
@@ -156,7 +156,7 @@ public class CreateTemplateConsole {
                     ramNode = new NodeBuilder(NodeBuilder.create("1G"),console);
                     ramNode = new NodeBuilder(NodeBuilder.create("2G"),console);
                     ramNode = new NodeBuilder(NodeBuilder.create("4G"),console);
-                    console.reloadCompletor();
+                    console.reloadCompletors();
                     return;
                 }
                 //PART4
@@ -233,7 +233,7 @@ public class CreateTemplateConsole {
                             }
                         }
                         new NodeBuilder(NodeBuilder.create(versions.toArray()),console);
-                        console.reloadCompletor();
+                        console.reloadCompletors();
                         clear();
                         return;
                     }
@@ -273,7 +273,7 @@ public class CreateTemplateConsole {
                 ConsoleReader.sReader.runMacro(opt[0]);
                 if(bundleNode == null){
                     bundleNode = new NodeBuilder(NodeBuilder.create(new BundlesNode(false,false,false)),console);
-                    console.reloadCompletor();
+                    console.reloadCompletors();
                 }
                 try {
                     ConsoleReader.sReader.getHistory().purge();

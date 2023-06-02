@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -38,6 +39,7 @@ public class JVMService implements IService {
     @Override
     public synchronized void stop(){
         if(screen != null){
+            Console.fine("Stop screen");
             screen.destroy();
         }
 
@@ -74,6 +76,7 @@ public class JVMService implements IService {
     @Override
     public void restart(IConfig iConfig){
         if(screen != null){
+            Console.fine("Restart screen");
             screen.destroy();
         }
 

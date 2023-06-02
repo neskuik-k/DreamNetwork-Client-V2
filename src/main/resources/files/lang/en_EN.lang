@@ -68,6 +68,8 @@ service.creation.ask.port=%green%What is the %cyan%port %green%? %white%Type you
 service.creation.ask.XMS=%green%What is the %cyan%min ram used %green%? %white%Type your xms: %red%
 service.creation.ask.XMX=%green%What is the %cyan%max ram used %green%? %white%Type your xmx: %red%
 service.creation.ask.installServer=%white%Do you want to install it ? : %red%
+service.creation.headMessage=%greenbobr%Waiting you to set up the %data% data...
+service.creation.writing=%whitebobr%Put the value here > %reset%
 service.creation.badCharacter=%red%There is a bad character on the name
 service.creation.incorrectMods=%red%The mods is incorrect
 service.creation.incorrectRamArgument=%red%The RAM argument is incorrect
@@ -79,6 +81,7 @@ service.creation.serverConfigured=%agreen%You have successfully configured the s
 service.creation.install.version=%white%Which version do you want to use ? : Type the version: %red%
 service.creation.install.incorrectVersion=%red%[!] The version is incorrect...
 service.creation.install.downloadComplete=Download Complete !
+service.creation.xmxInferiorToXms=%red%The max ram (xmx) cannot be inferior to the min ram (xms)
 
 service.executor.start=StartJVM %var%
 service.executor.couldNotStart=%ared%The server could not be started

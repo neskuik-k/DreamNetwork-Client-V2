@@ -1,9 +1,10 @@
-# This is the global settings of the server | Thank you for using our hypervisor
+# This is the global settings of the server | :D
 SIG_IGN_Handler: true
 checkDefaultJVMVersion: true
 checkJVMVersionOnServiceStart: true
 findAllocatedPorts: true
 language: en_EN
-port: 14520
+port: 14521
 rainbowText: true
+screenNameInConsoleChange: true
 username: '%red%Salut'

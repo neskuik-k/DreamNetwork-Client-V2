@@ -66,6 +66,8 @@ service.creation.ask.port=%green%Quel est le %cyan%port %green%? %white%Écrivez
 service.creation.ask.XMS=%green%Combien de %cyan%ram minimum utilisée %green%? %white%Écrivez la ram minimum utilisée: %red%
 service.creation.ask.XMX=%green%Combien de %cyan%ram maximum utilisée %green%? %white%Écrivez la ram maximum utilisée: %red%
 service.creation.ask.installServer=%white%Voulez-vous l'installer ? : %red%
+service.creation.headMessage=%green%En attente de la configuration de la donnée %data%...
+service.creation.writing=%whitebobr%Mets la valeur ici > %reset%
 service.creation.badCharacter=%red%Le nom contient un caractère interdit
 service.creation.incorrectMods=%red%Le mode est incorrect
 service.creation.incorrectRamArgument=%red%La RAM est incorrecte
@@ -77,6 +79,7 @@ service.creation.serverConfigured=%agreen%Votre serveur a été configuré avec 
 service.creation.install.version=%white%Quelle version voulez-vous utiliser ? : Écrivez la version: %red%
 service.creation.install.incorrectVersion=%red%[!] La version entrée est incorrecte...
 service.creation.install.downloadComplete=Téléchargement terminé !
+service.creation.xmxInferiorToXms=%red%La ram maximum (xmx) utilisée ne peut pas être inférieure à la ram minimum (xms) utilisée
 
 service.executor.start=LancementJVM %var%
 service.executor.couldNotStart=%ared%Le serveur ne peut pas être démarré
@@ -259,7 +262,7 @@ connection.core.usePortInsteadOfNonAvailable=%purple%Le port %var% n'est pas dis
 connection.core.networkMayNotWorkCorrectly=%redbobr%%whitebg%Il est possible que le Network ne fonctionne pas correctement.
 
 connection.core.channels.object=Objet>> %var%
-connection.core.channels.channelRegistered=%purple%Le cannal %var% a été enregistré%reset%
+connection.core.channels.channelRegistered=%purple%Le canal %var% a été enregistré%reset%
 
 connection.core.communication.enteringRequest=Requête entrante ->
 connection.core.communication.request=Requête : %var%
@@ -271,7 +274,7 @@ connection.core.communication.distantConsoleConnected=%yellow%- %greenbo%La cons
 
 connection.core.handler.localAddress=ADRESSE Locale: %var%
 connection.core.handler.remoteAddress=ADRESSE Distante: %var%
-connection.core.handler.channelActive=Cannal actif
+connection.core.handler.channelActive=Canal actif
 connection.core.handler.processStopped=%redbo%Le processus '%var%' a été arrêté.
 connection.core.handler.removeClient=Suppression serveur, client : %var%
 connection.core.handler.writeFlush=%yellow%Écriture et Envoi>> %white%%var%

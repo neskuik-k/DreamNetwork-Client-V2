@@ -24,7 +24,7 @@ import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
-import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployListLoader;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -64,8 +64,6 @@ public class Main {
 
     @Getter private static LanguageManager languageManager;
 
-    @Getter private static CDNFiles cdnFiles;
-
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
@@ -73,7 +71,7 @@ public class Main {
         System.setProperty("illegal-access", "permit");
         commandReader = new CommandReader();
         ConsoleReader.init();
-        Config.createDir("data");
+        Config.createDir("data",false);
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
 
@@ -87,8 +85,6 @@ public class Main {
         if(!languageManager.load()){
             // Fetch fail, can't use messages
         }
-        cdnFiles = new CDNFiles();
-        cdnFiles.start();
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 
@@ -236,8 +232,8 @@ public class Main {
     }
 
     public static void loadClient(){
-        Console.load("m:default").isRunning = true;
-
+        Console.MAIN = Console.load("m:default");
+        Console.MAIN.isRunning = true;
 
         instance = Core.getInstance();
         instance.afterConstructor();
@@ -245,7 +241,10 @@ public class Main {
         //Client.instance = instance;
 
         Main.setBundleManager(new BundleManager());
+        new DeployListLoader();
         new BundlesLoading();
+        Core.getInstance().init();
+
     }
     private static void disableWarning() {
         try {

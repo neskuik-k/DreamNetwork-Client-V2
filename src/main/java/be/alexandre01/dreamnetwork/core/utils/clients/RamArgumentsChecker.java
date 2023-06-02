@@ -1,5 +1,10 @@
 package be.alexandre01.dreamnetwork.core.utils.clients;
 
+import be.alexandre01.dreamnetwork.core.console.Console;
+
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+
 public class RamArgumentsChecker {
     public static boolean check(String arg){
         char[] args = arg.toCharArray();
@@ -17,5 +22,26 @@ public class RamArgumentsChecker {
         }
         return false;
     }
+
+    public RamArgumentsChecker() {
+    }
+
+    public static int getRamInMB(String arg){
+        char[] args = arg.toCharArray();
+        String value = "";
+        for (int i = 0; i < args.length; i++) {
+            if(i != args.length - 1){
+                value += args[i];
+            }
+        }
+        int ram = Integer.parseInt(value);
+        if(arg.contains("G")){
+            ram *= 1024;
+        }
+
+        return ram;
+    }
+
+
 }
 

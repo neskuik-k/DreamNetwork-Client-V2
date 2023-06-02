@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.accessibility.intro;
+package be.alexandre01.dreamnetwork.core.console.accessibility.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;

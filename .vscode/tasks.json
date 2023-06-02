@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "compile windows",
+            "label": "compile",
             "type": "shell",
             "command": "mvn -B clean install",
             "group": "build"
@@ -14,9 +14,9 @@
             "group": "build"
         },
         {
-            "label": "compile and run windows",
+            "label": "compile and run",
             "type": "shell",
-            "command": "mvn -B clean install ; java -jar .\\target\\DreamNetworkV2-1.4.0-SNAPSHOT-withShadedDependencies.jar",
+            "command": "mvn -B clean install -P Dev-1 ; java -jar target/DreamNetworkV2-1.11.0-SNAPSHOT-withShadedDependencies.jar",
             "group": "build"
         },
         {

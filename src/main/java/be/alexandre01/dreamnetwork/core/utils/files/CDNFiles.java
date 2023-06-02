@@ -19,7 +19,7 @@ public class CDNFiles extends Thread{
     private WebFileReader wfr;
     @Getter private boolean instanced = false;
 
-    @Getter private HashMap<String, AddonDowloaderObject> addons;
+    @Getter private static HashMap<String, AddonDowloaderObject> addons;
     @Getter private List<String> addonsToUpdate;
 
     @Override

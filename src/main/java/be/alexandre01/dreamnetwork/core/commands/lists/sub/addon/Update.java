@@ -12,7 +12,7 @@ public class Update extends SubCommand {
     private List<String> addonsToUpdate = null;
 
     public Update(){
-        if(Main.getCdnFiles().isInstanced()) {
+       /* if(Main.getCdnFiles().isInstanced()) {
             addonsToUpdate = Main.getCdnFiles().getAddonsToUpdate();
             addonsToUpdate.add("add");
             NodeBuilder nodeBuilder = new NodeBuilder(
@@ -20,13 +20,13 @@ public class Update extends SubCommand {
                             NodeBuilder.create("update",
                                     NodeBuilder.create(addonsToUpdate.toArray()))));
             addonsToUpdate.remove("all");
-        }
+        }*/
     }
 
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         return when(sArgs -> {
-            if(!Main.getCdnFiles().isInstanced()){
+           /* if(!Main.getCdnFiles().isInstanced()){
                 Console.printLang("commands.addon.cantGetOfficialAddon");
                 return true;
             }
@@ -63,7 +63,7 @@ public class Update extends SubCommand {
             }
             String downloadCmd = "addon install " + sArgs[1];
             Main.getCommandReader().getConsole().getConsoleAction().listener(downloadCmd.split(" "));
-            addonsToUpdate.remove(sArgs[1]);
+            addonsToUpdate.remove(sArgs[1]);*/
             return true;
         },args,"update","[" + Console.getFromLang("name") + "/all]");
     }

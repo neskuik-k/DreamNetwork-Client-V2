@@ -2,14 +2,20 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.BungeeCordReader;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.SpigotReader;
 import org.jline.reader.LineReader;
 
 
 import java.io.*;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
 public class ScreenStream {
     public IScreen screen;
@@ -26,6 +32,13 @@ public class ScreenStream {
     public ScreenStream(String name,Screen screen){
         Console.load("s:"+name);
         this.console = Console.getConsole("s:"+name);
+        if(Main.getGlobalSettings().isScreenNameInConsoleChange()){
+            String[] s = name.split("/");
+            String oneToLast = Arrays.stream(s).skip(1).reduce((first, second) -> second+"/").orElse(null);
+            String value = Colors.ANSI_CYAN+s[0]+Colors.YELLOW_BOLD+"/"+Colors.WHITE_BRIGHT+oneToLast;
+            char mask = Config.isWindows() ? (char)'*' : (char) '⬩';
+            console.setWriting(mask+" "+value+Colors.ANSI_CYAN+" > ");
+        }
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public void onKill(LineReader reader) {
@@ -36,11 +49,20 @@ public class ScreenStream {
         });
         this.screen = screen;
         reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
+
+        // read outputstream entry
+
+        //System.out.println(screen.getService().getProcess().getOutputStream().getClass());
+        //System.out.println(screen.getService().getProcess().getOutputStream().toString());
+          //new BufferedOutputStream(screen.getService().getProcess().getOutputStream());
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
         ExecType execType = screen.getService().getJvmExecutor().getExecType();
         if(execType != null){
             if(execType == ExecType.BUNGEECORD){
-                //screenInReader.getReaderLines().add(new BungeeCordReader());
+                screenInReader.getReaderLines().add(new BungeeCordReader());
+            }
+            if(execType == ExecType.SPIGOT){
+               screenInReader.getReaderLines().add(new SpigotReader());
             }
         }
 
@@ -72,8 +94,8 @@ public class ScreenStream {
         }
         screenOutWriter.run();
         Console.setActualConsole("s:"+name);
-    }
 
+    }
     public void exit(){
      //   console.destroy();
 
@@ -89,4 +111,5 @@ public class ScreenStream {
         System.setIn(oldIn);
         System.setOut(oldOut);*/
     }
+
 }

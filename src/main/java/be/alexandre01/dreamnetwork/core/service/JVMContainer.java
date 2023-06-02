@@ -102,36 +102,7 @@ public class JVMContainer implements IContainer {
 
     @Override
     public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile,BundleData bundleData) {
-        IJVMExecutor.Mods type = null;
-
-        String xms = null;
-        String xmx = null;
-        int port = 0;
-        boolean proxy = false;
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
-
-        /*try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml")) {
-                if (line.startsWith("type:")) {
-                    type = IJVMExecutor.Mods.valueOf(line.replace("type:", "").replaceAll(" ", ""));
-                }
-                if (line.startsWith("xms:")) {
-                    xms = line.replace("xms:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("xmx:")) {
-                    xmx = line.replace("xmx:", "").replaceAll(" ", "");
-                }
-                if (line.startsWith("port:")) {
-                    port = Integer.parseInt(line.replace("port:", "").replaceAll(" ", ""));
-                }
-                if (line.contains("proxy: true")) {
-                    proxy = true;
-                }
-            }
-        } catch (Exception e) {
-            return null;
-        }*/
-
         try {
             return new JVMExecutor(pathName, name, bundleData);
         }catch (Exception e){
