@@ -42,7 +42,7 @@
                                     <outjar>${project.build.finalName}-small.jar</outjar>
                                     <injarNotExistsSkip>true</injarNotExistsSkip>
                                     <libs>
-                                        <lib>${java.home}/lib/rt.jar</lib>
+                                        <lib>${maven.multiModuleProjectDirectory}/libs/rt.jar</lib>
                                     </libs>
 
                                     <options>
@@ -71,6 +71,12 @@
                                         </option>
                                         <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.language.Emoji</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.language.Emoji {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }
@@ -253,7 +259,7 @@
                                     <outjar>${project.build.finalName}-small.jar</outjar>
                                     <injarNotExistsSkip>true</injarNotExistsSkip>
                                     <libs>
-                                        <lib>${java.home}/lib/rt.jar</lib>
+                                        <lib>${maven.multiModuleProjectDirectory}/libs/rt.jar</lib>
                                     </libs>
 
                                     <options>

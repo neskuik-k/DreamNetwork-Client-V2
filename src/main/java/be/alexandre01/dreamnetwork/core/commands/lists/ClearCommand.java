@@ -12,7 +12,7 @@ public class ClearCommand extends Command {
 
     public ClearCommand(String clear) {
         super(clear);
-        NodeBuilder nodeBuilder = new NodeBuilder(NodeBuilder.create("clear"));
+        NodeBuilder nodeBuilder = new NodeBuilder(NodeBuilder.create(NodeBuilder.of("clear",getBaseColor()+"clear")));
        // setCompletion(node("clear"));
             //setCompletions(new StringsCompleter("clear"));
 
@@ -29,5 +29,10 @@ public class ClearCommand extends Command {
     @Override
     public String getBaseColor() {
         return Colors.WHITE_BOLD_UNDERLINED;
+    }
+
+    @Override
+    public String getEmoji() {
+        return Console.getEmoji("sponge");
     }
 }

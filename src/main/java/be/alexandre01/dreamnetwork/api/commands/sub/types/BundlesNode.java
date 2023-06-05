@@ -10,6 +10,8 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import org.apache.commons.lang.ArrayUtils;
 import org.jline.builtins.Completers;
 
+import java.util.Map;
+
 public class BundlesNode extends CustomType {
 
     public BundlesNode(boolean recursive,boolean withSimplifiedName,boolean withShortcutName) {
@@ -19,14 +21,20 @@ public class BundlesNode extends CustomType {
         if(recursive){
             setCustomType(() -> {
                 //Completers.TreeCompleter
-                Console.fine("BundlesNode INIT");
+               // Console.fine("BundlesNode INIT");
                 Object[] bundles = new Object[0];
                 for(String bundle : bundleManager.getBundleDatas().keySet()){
-                    Console.fine("+Bundle : "+bundle);
+                    //Console.fine("+Bundle : "+bundle);
                     //bundles = ArrayUtils.add(bundles,bundle);
-                    for(String executor : bundleManager.getBundleData(bundle).getExecutors().keySet()){
-                        Console.fine("+Executor : "+executor);
-                        bundles = ArrayUtils.add(bundles,Colors.CYAN+bundle+Colors.YELLOW_BOLD+"/"+Colors.WHITE_BOLD+executor);
+                    for(Map.Entry<String,JVMExecutor> executor : bundleManager.getBundleData(bundle).getExecutors().entrySet()){
+                        //Console.fine("+Executor : "+executor);
+                        String color;
+                        if(executor.getValue().isProxy()){
+                            color = Colors.RED;
+                        }else {
+                            color = Colors.CYAN;
+                        }
+                        bundles = ArrayUtils.add(bundles,color+bundle+Colors.YELLOW_BOLD+"/"+Colors.WHITE_BOLD_BRIGHT+executor.getKey());
                     }
                 }
                 if(withSimplifiedName){
@@ -34,7 +42,7 @@ public class BundlesNode extends CustomType {
                         if(exec.getBundleData() != null){
                             //Check if the executor is the only one with this name
                             if(Core.getInstance().getJvmContainer().getJVMExecutorsFromName(exec.getName()).length == 1){
-                                bundles = ArrayUtils.add(bundles, Colors.WHITE_BOLD_UNDERLINED+exec.getName());
+                                bundles = ArrayUtils.add(bundles, Colors.WHITE_BOLD_BRIGHT_UNDERLINED+exec.getName());
                             }
                         }
                     }

@@ -55,6 +55,10 @@ bundle.loadTemplate.addJar=[+] Ajout d'un plugin jar de prévisualisation à la 
 bundle.loadTemplate.loaded=%green%-->  [O] Maquette %greenbobr%%var% %green%chargée !
 bundle.customRequest.fileCreated= [!] Le fichier des requêtes personalisés a été créé !
 
+## Menu
+menu.cancel=Annulé.
+menu.cancelWriting=%purplebobr%voulez vous arrêter l'opération ? (y ou n) > %reset%
+
 ## Service
 service.creation.cancelCreation=%purplebobr%voulez vous arrêter la creation du service ? (y ou n) > %reset%
 service.creation.cancelCreationCancelled=Annulé.
@@ -281,8 +285,6 @@ connection.core.handler.writeFlush=%yellow%Écriture et Envoi>> %white%%var%
 
 connection.request.sent=La requête %var% a été envoyé avec succès!
 connection.request.exception.requestNotFound=La requête %var% est introuvable.
-connection.request.exception.errorCause=%ared%CAUSE ERREUR>> %var% || %var%
-connection.request.exception.errorOn=ERREUR A>> %whitebg%%ablack%%var%:%var%:%var%%areset%
 
 ## Debug Mod
 debug.enabled=%purple%Mode Debug %green%%whitebg%activé
@@ -290,10 +292,10 @@ debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 
 ## Console
 console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
-console.askExit=%redbobr%voulez-vous quitter le DreamNetwork ? (y (oui) ou n (non)) > %reset%
+console.askExit=%redbobr%voulez-vous vraiment quitter l'hyperviseur ? (y (oui) ou n (non)) > %reset%
 console.changed=%whitebg%%black%Vous venez de changer de console. [%var%] %reset%
-console.errorOn=%red%ERREUR A>> %var% || %var%
-console.errorCause=%red%CAUSE ERREUR>> %var% || %var%
+console.errorOn=↪ %redbobr%ERREUR %whitebobr%DANS %yellowbobr% >>%reset% %var% || %var%
+console.errorCause=↪ %red%CAUSE DE L'ERREUR %redbobr%>>%red% %var% || %var%
 console.contactDNDevError=Veuillez contacter les développeurs du DreamNetwork pour leur signaler cette erreur.
 console.closed=Console fermée
 

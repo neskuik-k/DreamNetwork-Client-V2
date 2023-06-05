@@ -18,6 +18,8 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     String username = null;
     int port = 14520;
     String language = "en_EN";
+    private boolean useEmoji = false;
+    private boolean emojiOnCommand= false;
 
     public GlobalSettings() {
         // Init
@@ -39,4 +41,6 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     public void save(){
         super.saveFile(GlobalSettings.class.cast(this));
     }
+
+
 }

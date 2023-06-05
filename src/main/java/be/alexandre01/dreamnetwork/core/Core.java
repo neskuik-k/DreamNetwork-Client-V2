@@ -9,7 +9,9 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroMenu;
 import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
@@ -124,7 +126,8 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-        introConsole = new IntroductionConsole("begin");
+       introConsole = new IntroductionConsole("begin");
+
 
 
         Console.load("m:stats");
@@ -138,14 +141,14 @@ public class Core {
     }
 
     public void init(){
-        System.out.println("init");
         formatter = new Formatter();
         formatter.format();
         ASCIIART.sendLogo();
         ASCIIART.sendTitle();
 
 
-
+        IntroMenu menu = new IntroMenu("m:intro");
+        menu.buildAndRun();
         Console console = Console.getConsole(Console.actualConsole);
         console.defaultPrint = formatter.getDefaultStream();
         DevToolsToken devToolsToken = new DevToolsToken();
@@ -216,14 +219,15 @@ public class Core {
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
         if(Main.getBundlesLoading().isFirstLoad()){
-            Console.setActualConsole("m:introbegin",true,false);
+            menu.show();
+           // Console.setActualConsole("m:introbegin",true,false);
         }
 
         if(Main.getGlobalSettings().isCheckDefaultJVMVersion()){
             try {
                 Integer ver = ProcessUtils.getDefaultBashJavaVersion(javaIndex.getDefaultJava().getPath());
                 if(ver != null){
-                    System.out.println("Your default Java version is "+ ver);
+                    System.out.println("Your default Java "+ Console.getEmoji("coffee","",""," ")+"version is "+ ver);
                     javaIndex.getDefaultJava().setVersion(ver);
                 }
 
@@ -235,8 +239,9 @@ public class Core {
         if(Config.isWindows()){
             Console.printLang("core.windowsWarning");
         }
-        Console.setBlockConsole(false);
 
+
+        Console.setBlockConsole(false);
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

@@ -1,0 +1,5 @@
+Credits is in the works. For now, here's a list of the libraries used in this project:
+gemoji - mislav
+jline3
+netty
+...

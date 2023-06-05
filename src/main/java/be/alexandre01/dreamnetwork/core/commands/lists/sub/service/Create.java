@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
@@ -25,9 +26,10 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Create extends SubCommand {
 
-    public Create() {
+    public Create(Command command) {
+        super(command);
         NodeBuilder nodeBuilder = new NodeBuilder(
-                create("service",
+                create(value,
                         create("create",
                                 create(new BundlesNode(false,false,false),
                                         create(Completers.AnyCompleter.INSTANCE,
@@ -117,7 +119,7 @@ public class Create extends SubCommand {
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
            // fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
             TestCreateTemplateConsole create = new TestCreateTemplateConsole("","","","","","auto");
-            create.buildAndRun("m:create");
+            create.buildAndRun("m:createTemplate");
             create.show();
         /*    Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
                 @Override

@@ -41,10 +41,10 @@ public class ScreenStream {
         }
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
-            public void onKill(LineReader reader) {
+            public boolean onKill(LineReader reader) {
                 Console.setActualConsole("m:default");
                 screen.getScreenStream().exit();
-                Console.getConsole("m:default").run();
+                return true;
             }
         });
         this.screen = screen;

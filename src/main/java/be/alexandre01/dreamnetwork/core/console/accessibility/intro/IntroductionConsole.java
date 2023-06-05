@@ -25,9 +25,9 @@ public class IntroductionConsole {
         console.setNoHistory(true);
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
-            public void onKill(LineReader reader) {
+            public boolean onKill(LineReader reader) {
                 //Shutdown other things
-                Console.getConsole("m:default").getKillListener().onKill(reader);
+                return Console.MAIN.getKillListener().onKill(reader);
             }
         });
 

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
@@ -9,6 +10,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.accessibility.install.InstallTemplateConsole;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -21,15 +23,14 @@ import java.util.ArrayList;
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Install extends SubCommandCompletor implements SubCommandExecutor {
-    public Install(){
-
-
+    public Install(Command command){
+        super(command);
         ArrayList<String> versions = new ArrayList<>();
         for(InstallationLinks s : InstallationLinks.values()) {
             versions.add(s.getVer());
         }
 
-        NodeBuilder nodeBuilder = new NodeBuilder(create("service",
+        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("install",
                         create(new BundlesNode(true,true,true),
                                 create(new ServersNode(),
@@ -37,12 +38,14 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
-        if(args.length < 1){
-          return false;
-        }
+
 
         if(args[0].equalsIgnoreCase("install")){
             if(args.length < 2){
+
+                InstallTemplateConsole i = new InstallTemplateConsole(null);
+                i.buildAndRun("m:installTemplate");
+                i.show();
                 System.out.println(Chalk.on("[!] service install server [" + Console.getConsole("name") + "] [SPIGOT-VER]").red());
                 System.out.println(Chalk.on("[!] service install proxy [" + Console.getConsole("name") + "] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
                 return true;

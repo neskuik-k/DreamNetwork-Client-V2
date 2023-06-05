@@ -46,7 +46,16 @@ public class JVMService implements IService {
 
         if(client != null){
             client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
-            client.getChannelHandlerContext().close();
+            //close with delay to let the server send the response
+            //set delay of 1 seconds without lock the thread
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                client.getChannelHandlerContext().close();
+            }).start();
         }else{
             process.destroy();
         }
@@ -86,7 +95,7 @@ public class JVMService implements IService {
         }else{
             process.destroy();
         }
-        removeService();
+        //removeService();
         getJvmExecutor().startServer(iConfig);
     }
 

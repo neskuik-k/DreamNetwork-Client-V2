@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
@@ -14,8 +15,9 @@ import lombok.NonNull;
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Restart extends SubCommandCompletor implements SubCommandExecutor {
-    public Restart(){
-        NodeBuilder nodeBuilder = new NodeBuilder(create("service",
+    public Restart(Command command){
+        super(command);
+        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("restart",
                         create("server", "proxy",
                                 create(new ScreensNode())))));

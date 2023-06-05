@@ -207,16 +207,16 @@ public class Installer {
                         if(!queue.isEmpty()){
                             ContentInstaller.IInstall i = queue.get(0);
                             queue.remove(0);
-                            Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.emptyQueue"));
+                           // Core.getInstance().formatter.getDefaultStream().println(Console.getFromLang("installer.emptyQueue"));
                             ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
                             scheduler.scheduleAtFixedRate(new Runnable() {
                                 @Override
                                 public void run() {
                                     queueisAvailable = true;
                                     i.complete();
-                                    Core.getInstance().formatter.getDefaultStream().println(" COMP");
+                                    Core.getInstance().formatter.getDefaultStream().println("SKIPPING QUEUE AND WAITING");
                                     scheduler.shutdown();
-                                }},1000,1,TimeUnit.MILLISECONDS);
+                                }},500,1,TimeUnit.MILLISECONDS);
 
 
                             try {

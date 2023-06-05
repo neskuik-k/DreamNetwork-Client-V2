@@ -30,6 +30,9 @@ public abstract class ICommand {
     public String getBaseColor() {
         return Colors.WHITE_BOLD_BRIGHT;
     }
+    public String getEmoji() {
+        return "";
+    }
 
     abstract public void addSubCommand(String subCommand, SubCommandExecutor sce);
 

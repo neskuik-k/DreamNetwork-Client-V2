@@ -33,7 +33,7 @@ public class CommandReader{
 
         core = Core.getInstance();
 
-        ConsoleReader.nodes.add(node("test"));
+        //ConsoleReader.nodes.add(node("test"));
 
 
     }

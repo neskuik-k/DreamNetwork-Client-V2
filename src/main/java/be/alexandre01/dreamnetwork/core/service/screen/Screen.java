@@ -55,9 +55,9 @@ public class Screen extends Thread implements IScreen {
         ScreenManager.instance.remScreen(this);
         screenStream.exit();
 
-        if(getService().getClient() == null){
+        /*if(getService().getClient() == null){
             getService().removeService();
-        }
+        }*/
 
 
         if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){

@@ -92,7 +92,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
         Player player = getPlayer(id);
         String[] args = server.split("-");
 
-        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(args[0], Main.getBundleManager().getBundleData(bundle));
+        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
         int i;
         try {
             i = Integer.parseInt(args[1]);

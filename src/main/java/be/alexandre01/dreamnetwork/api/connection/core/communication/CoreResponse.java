@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -25,7 +26,7 @@ public abstract class CoreResponse {
             }
             onResponse(message,ctx,client);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            Console.bug(e);
         }
     }
 

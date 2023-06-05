@@ -61,6 +61,8 @@ public class Colors {
     public static final String CYAN_BOLD = "\033[1;36m";   // CYAN
     public static final String WHITE_BOLD = "\033[1;37m";  // WHITE
     public static final String WHITE_BOLD_UNDERLINED = "\033[4;37m";
+    public static final String WHITE_BOLD_BRIGHT_UNDERLINED = "\033[4;97m";
+    public static final String WHITE_BOLD_BRIGHT = "\033[1;97m";
     // Underline
     public static final String BLACK_UNDERLINED = "\033[4;30m";  // BLACK
 
@@ -110,7 +112,7 @@ public class Colors {
     public static final String BLUE_BOLD_BRIGHT = "\033[1;94m";  // BLUE
     public static final String PURPLE_BOLD_BRIGHT = "\033[1;95m";// PURPLE
     public static final String CYAN_BOLD_BRIGHT = "\033[1;96m";  // CYAN
-    public static final String WHITE_BOLD_BRIGHT = "\033[1;97m"; // WHITE
+     // WHITE
 
     // High Intensity backgrounds
     public static final String BLACK_BACKGROUND_BRIGHT = "\033[0;100m";// BLACK

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.*;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -16,15 +17,16 @@ import java.util.Arrays;
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Start extends SubCommand {
-    public Start(){
+    public Start(Command command) {
+        super(command);
         NodeContainer next = create("STATIC","DYNAMIC",
                 create("1G","2G",create("1G","2G")));
 
-        NodeBuilder nodeBuilder = new NodeBuilder(create("service",
+        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("start",
                         create(new BundlesNode(true,true,true),next))));
-        addCompletor("service","start","server");
-        addCompletor("service","start","proxy");
+       // addCompletor("service","start","server");
+       // addCompletor("service","start","proxy");
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
@@ -66,6 +68,7 @@ public class Start extends SubCommand {
             //System.out.println("jvmExecutor = " + jvmExecutor);
 
             if(sArgs.length < 3){
+                Console.fine("Try to start");
                 jvmExecutor.startServer();
                 return true;
             }

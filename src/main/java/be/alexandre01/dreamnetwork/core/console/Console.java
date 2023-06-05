@@ -7,7 +7,9 @@ import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
+import be.alexandre01.dreamnetwork.core.console.language.Emoji;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
+import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
@@ -30,10 +32,41 @@ public class Console extends Thread{
     @Getter @Setter private boolean showInput;
 
     public static Console MAIN;
+    private final ArrayList<Overlay> overlays = new ArrayList<>();
 
     public interface IConsole{
         public void listener(String[] args);
         public void consoleChange();
+    }
+
+    public static String getEmoji(String emoji,String ifNot,String... args){
+        return Main.getLanguageManager().getEmojiManager().getEmoji(emoji,ifNot,args);
+    }
+    public static String getEmoji(String emoji, String ifNot){
+        return Main.getLanguageManager().getEmojiManager().getEmoji(emoji,ifNot);
+    }
+    public static String getEmoji(String emoji){
+        return getEmoji(emoji,"");
+    }
+    public void addOverlay(Overlay overlay,String writing){
+        if(writing != null){
+            this.writing = writing;
+        }
+        overlay.console = this;
+        overlays.add(overlay);
+    }
+
+    public void addOverlay(Overlay overlay){
+        addOverlay(overlay,null);
+    }
+
+    public abstract static class Overlay{
+        private Console console;
+        public abstract void on(String data);
+
+        public void disable(){
+            console.overlays.remove(this);
+        }
     }
 
     private StringBuilder datas = new StringBuilder();
@@ -88,23 +121,25 @@ public class Console extends Thread{
     public PrintStream defaultPrint;
     @Setter @Getter private ConsoleKillListener killListener = new ConsoleKillListener() {
         @Override
-        public void onKill(LineReader reader) {
+        public boolean onKill(LineReader reader) {
             String data;
+            ConsoleReader.getDefaultHighlighter().setEnabled(false);
             while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
                 if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                     System.exit(0);
+                    return false;
                 }else {
                     Console.debugPrint(Console.getFromLang("cancelled"));
-                    run();
+                    ConsoleReader.getDefaultHighlighter().setEnabled(true);
+                    return true;
                 }
-
-
-                break;
             }
+            return false;
         }
     };
 
     public static Console load(String name){
+        Console.fine("Loading console "+name);
         Console c = new Console(name);
         if(Core.getInstance().formatter != null){
             c.defaultPrint = Core.getInstance().formatter.getDefaultStream();
@@ -149,7 +184,11 @@ public class Console extends Thread{
 
             }
         }
-
+        if(actualConsole == name){
+            ConsoleReader.getDefaultHighlighter().setEnabled(true);
+        }else{
+            ConsoleReader.getDefaultHighlighter().setEnabled(false);
+        }
 
         console.iConsole.consoleChange();
         console.reloadCompletors();
@@ -174,6 +213,8 @@ public class Console extends Thread{
             instances.get(defaultConsole).stop();
         Console.defaultConsole = defaultConsole;
     }
+
+
 
 
 
@@ -274,20 +315,8 @@ public class Console extends Thread{
             String msg = Core.getInstance().formatter.getDefaultFormatter().format(new LogRecord(level, (String) s));
             msg = msg.replaceAll("\\s+$", "");
 
-            cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
-            String spaces = "";
-            //random number between cols-3 and 1
-            //SNOW
-            /*if(cols > 6){
-                int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
 
-                for (int i = 0; i < cols-random; i++) {
-                    spaces += " ";
-                }
-                spaces += Colors.WHITE+"❆";
-            }*/
-
-            ConsoleReader.sReader.printAbove(msg+spaces);
+            ConsoleReader.sReader.printAbove(msg);
 
            // ConsoleReader.sReader.setPrompt(writing);
         }
@@ -332,26 +361,11 @@ public class Console extends Thread{
     public static void debugPrint(Object s){
        // stashLine();
         LineReader lineReader = ConsoleReader.sReader;
-        int rows = lineReader.getTerminal().getSize().getRows();
-        int cols = lineReader.getTerminal().getSize().getColumns();
         if(s == null)
             s = "null";
         String msg = s.toString().replaceAll("\\s+$", "");
-        cols -= msg.replaceAll("\u001B\\[[;\\d]*m", "").length();
-        String spaces = "";
-        //random number between cols-3 and 1
-        //SNOW
-        /*
-        if(cols > 6){
-            int random = new Random().nextInt(cols-6 + 1 - 1) + 1;
 
-
-            for (int i = 0; i < cols-random; i++) {
-                spaces += " ";
-            }
-            spaces += Colors.WHITE+"❆";
-        }*/
-        lineReader.printAbove(s+spaces);
+        lineReader.printAbove(s.toString());
        //lineReader.printAbove(s.toString());
        // Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
         //unstashLine();
@@ -416,12 +430,16 @@ public class Console extends Thread{
     }
 
     public static void bug(Exception e){
+        if(Console.actualConsole == null){
+            e.printStackTrace();
+            return;
+        }
         Console.printLang("console.errorOn", Level.WARNING, e.getMessage(), e.getClass().getSimpleName());
         Console console = Console.getConsole(actualConsole);
-        console.fPrintLang("console.errorCause", Level.SEVERE, e.getMessage(), e.getClass().getSimpleName());
+        console.fPrintLang("console.errorCause", Level.SEVERE, e.getLocalizedMessage(), e.getClass().getSimpleName());
         for(StackTraceElement s : e.getStackTrace()){
-            Core.getInstance().formatter.getDefaultStream().println("----->");
-            console.fPrintLang("connection.request.exception.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName(), s.getLineNumber());
+            //Core.getInstance().formatter.getDefaultStream().println("----->");
+            console.fPrintLang("console.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName()+" on "+s.getFileName(), s.getLineNumber());
         }
         if(Core.getInstance().isDebug()){
             e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
@@ -478,7 +496,10 @@ public class Console extends Thread{
                     out.flush();
 
 
-
+                    if(overlays.size() > 0){
+                        overlays.get(0).on(data);
+                        continue;
+                    }
                     //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
                     ReaderHistory.getLines().put(console.name, data);
                     String[] args = new String[0];
@@ -509,10 +530,11 @@ public class Console extends Thread{
         LineReader reader =  ConsoleReader.sReader;
 
         //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
-        PrintWriter out = new PrintWriter(reader.getTerminal().writer());
+        // PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
         try {
-            Console.getConsole(actualConsole).killListener.onKill(reader);
+            if(Console.getConsole(actualConsole).killListener.onKill(reader))
+                Console.getConsole(actualConsole).run();
         }catch (UserInterruptException e){
             SIG_IGN();
         }
@@ -623,6 +645,6 @@ public class Console extends Thread{
     private static Buffer stashed;
 
     public interface ConsoleKillListener {
-        void onKill(LineReader reader);
+        boolean onKill(LineReader reader);
     }
 }

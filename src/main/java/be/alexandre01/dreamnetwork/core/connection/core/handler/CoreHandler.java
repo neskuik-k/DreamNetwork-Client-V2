@@ -170,7 +170,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 
-        System.out.println("UNREGISTERED");
+        Console.fine("UNREGISTERED");
 
         //LOG
         if(allowedCTX.contains(ctx)){
@@ -243,13 +243,13 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Channel inactive");
+        Console.fine("Channel inactive");
         super.channelInactive(ctx);
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        System.out.println("Handler removed");
+        Console.fine("Handler removed");
         ctx.close();
         super.handlerRemoved(ctx);
     }

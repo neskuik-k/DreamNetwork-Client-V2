@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.core.console.accessibility.install;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -15,10 +17,10 @@ import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import java.util.ArrayList;
 
 public class InstallTemplateConsole extends AccessibilityMenu {
-
     public InstallTemplateConsole(JVMExecutor jvmExecutor){
         super("m:installTemplate");
         if(jvmExecutor == null){
+            insertArgumentBuilder("executor", NodeBuilder.create(new BundlesNode(true,true,false)));
             addValueInput(PromptText.create("executor"), new ValueInput() {
                 @Override
                 public void onTransition(ShowInfos infos) {
@@ -39,35 +41,39 @@ public class InstallTemplateConsole extends AccessibilityMenu {
                 }
             });
         }
-        ArrayList<String> versions = new ArrayList<>();
-        for(InstallationLinks s : InstallationLinks.values()) {
-            if(s.getJvmType() == jvmExecutor.bundleData.getJvmType()){
-                versions.add(s.getVer());
-            }
-        }
-        insertArgumentBuilder("install",NodeBuilder.create(versions.toArray()));
+
+
         addValueInput(PromptText.create("install"), new ValueInput() {
+            JVMExecutor finalExec = jvmExecutor;
             @Override
             public void onTransition(ShowInfos infos) {
+                if(finalExec == null){
+                    try {
+                        finalExec = getOperation("executor").getFrom(JVMExecutor.class);
+                        if(finalExec == null){
+                            throw new Exception("executor is null");
+                        }
+                    }catch (Exception e){
+                        infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
+                    }
+                }
                 infos.writing(Colors.WHITE_BOLD_BRIGHT+ "Press "+Colors.CYAN_BOLD+"TAB"+Colors.WHITE_BOLD_BRIGHT+" to select your version > ");
+                ArrayList<String> versions = new ArrayList<>();
+                for(InstallationLinks s : InstallationLinks.values()) {
+                    if(s.getJvmType() == finalExec.bundleData.getJvmType()){
+                        versions.add(s.getVer());
+                    }
+                }
+                insertArgumentBuilder("install",NodeBuilder.create(versions.toArray()));
             }
 
             @Override
             public Operation received(PromptText value, String[] args, ShowInfos infos) {
+                if(finalExec == null){
+                    return errorAndRetry(infos);
+                }
                 try {
-                    JVMExecutor finalExec = jvmExecutor;
 
-                    if(finalExec == null){
-                        try {
-                            finalExec = getOperation("executor").getFrom(JVMExecutor.class);
-                            if(finalExec == null){
-                                throw new Exception("executor is null");
-                            }
-                        }catch (Exception e){
-                            infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
-                            return errorAndRetry(infos);
-                        }
-                    }
                     if(!tryInstall(args[0],finalExec)){
                         infos.error(Console.getFromLang("service.creation.install.incorrectVersion"));
                         return errorAndRetry(infos);

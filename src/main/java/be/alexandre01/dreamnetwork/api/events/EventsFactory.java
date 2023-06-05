@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.events;
 
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
@@ -20,7 +21,7 @@ public class EventsFactory {
       if(!methods.containsKey(event.getClass()))
           return;
 
-
+        Console.fine("Calling event "+event.getClass().getSimpleName());
         Collection<Tuple<Method,EventCatcher>> tuples = methods.get(event.getClass());
 
         tuples.forEach(tuple -> {

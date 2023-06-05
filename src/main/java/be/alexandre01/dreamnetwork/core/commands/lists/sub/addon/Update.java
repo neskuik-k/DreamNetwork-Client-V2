@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.Main;
@@ -11,7 +12,8 @@ import java.util.List;
 public class Update extends SubCommand {
     private List<String> addonsToUpdate = null;
 
-    public Update(){
+    public Update(Command command){
+        super(command);
        /* if(Main.getCdnFiles().isInstanced()) {
             addonsToUpdate = Main.getCdnFiles().getAddonsToUpdate();
             addonsToUpdate.add("add");

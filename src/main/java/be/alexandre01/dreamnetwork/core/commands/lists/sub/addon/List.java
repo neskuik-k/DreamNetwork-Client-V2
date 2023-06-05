@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
@@ -13,10 +14,11 @@ import java.util.HashMap;
 public class List extends SubCommand {
     private final HashMap<String, AddonDowloaderObject> addons;
 
-    public List(){
+    public List(Command command) {
+        super(command);
         addons = CDNFiles.getAddons();
         NodeBuilder nodeBuilder = new NodeBuilder(
-                NodeBuilder.create("addon", NodeBuilder.create("list", NodeBuilder.create("installed", "officials")))
+                NodeBuilder.create(value, NodeBuilder.create("list", NodeBuilder.create("installed", "officials")))
         );
     }
 

@@ -49,6 +49,7 @@ public class Config {
             if(notify){
                 level = Level.INFO;
             }
+
             Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), level);
             boolean result = false;
 

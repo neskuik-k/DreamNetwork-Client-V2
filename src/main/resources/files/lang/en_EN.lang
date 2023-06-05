@@ -26,7 +26,7 @@ warning=WARNING
 
 ## Main
 
-main.shutdown=\n%whiteul%%purplebg%DreamNetwork process shutdown, please wait... %reset%
+main.shutdown=\n%whiteul%%purplebg%DreamNetwork process shutdown :computer():, please wait... %reset%
 main.invalidLicenseKey=%red%The license key is invalid!
 main.successAuth=%greenbobr%Successfully authenticated !\n%reset%
 
@@ -42,7 +42,7 @@ console.stats.memory=%green%Memory ❱
 core.debugMode=%greenbg%DEBUG MODE ENABLED !
 core.networkStarted=%whitebg%%green%The Network has been successfully started / Do 'help' to get the commands
 core.server.starting=CoreServer is starting...
-core.server.started=The CoreServer System has been started on the port %var%.
+core.server.started=The CoreServer System has been started on the port %var% :globe_with_meridians():.
 core.addon.loaded=Addon %var% has been loaded.
 core.addon.notSupported=%var% is not supported
 core.windowsWarning=%red%Windows has been detected, DreamNetwork is more stable on UNIX systems (Linux,Mac,...). If you have a problem, please report it on the Discord.
@@ -56,6 +56,10 @@ bundle.replaceFile.writing=Writing file: %var%/%var%
 bundle.loadTemplate.addJar=[+] Adding preview jar plugin to template %var%...
 bundle.loadTemplate.loaded=%green%-->  [O] Template %greenbobr%%var% %green%loaded !
 bundle.customRequest.fileCreated= [!] Custom requests file created !
+
+## Menu
+menu.cancel=Cancelled.
+menu.cancelWriting=%purplebobr%Do you want to stop the operation ? (y or n) > %reset%
 
 ## Service
 service.creation.cancelCreation=%purplebobr%do you want to cancel the creation of the service ? (y or n) > %reset%
@@ -128,7 +132,7 @@ introduction.servers.finish.bundleExecutors=Bundle executors: %var%
 ## Addons
 addons.loader.couldNotDeleteCache=Could not delete cache.yml
 addons.loading=Loading addons...
-addons.emptyFolder=The addons folder is empty. Skipping...
+addons.emptyFolder=The addons folder :file_folder(): is empty. Skipping...
 addons.loadingAddon=Loading addon: %var%
 addons.cached=Cached >> %var%
 addons.customClass.customClose=Custom close
@@ -221,8 +225,8 @@ commands.service.install.fileUpdated=%green%File Updated with Success
 commands.service.kill.incorrectService=%red%[!] The service mentionned is not correct..
 commands.service.kill.serviceNotFound=%red%[!] The service id is not findable
 
-commands.service.list.proxy=Services for proxy:
-commands.service.list.spigot=Services for spigot:
+commands.service.list.proxy=Services for %red%proxy:
+commands.service.list.spigot=Services for %cyan%spigot:
 
 commands.service.remove.deleted=%blue%[V] This server has been deleted
 commands.service.remove.folderDeleted=%blue%The folder has been deleted in the 'template' folder
@@ -283,9 +287,6 @@ connection.core.handler.writeFlush=%yellow%Write and Flush>> %white%%var%
 
 connection.request.sent=Request %var% sent with success!
 connection.request.exception.requestNotFound=The request %var% isn't foundable.
-connection.request.exception.errorCause=%ared%ERROR CAUSE>> %var% || %var%
-connection.request.exception.errorOn=ERROR ON>> %whitebg%%ablack%%var%:%var%:%var%%areset%
-
 ## Debug Mod
 debug.enabled=%purple%Debug mode %green%%whitebg%enabled
 debug.disabled=%purple%Debug mode %red%%whitebg%disabled
@@ -294,8 +295,8 @@ debug.disabled=%purple%Debug mode %red%%whitebg%disabled
 console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%white% > %areset%
 console.askExit=%redbobr%do you want to exit ? (y or n) > %reset%
 console.changed=%black%%whitebg%You have just changed console. [%var%]%reset%
-console.errorOn=%red%ERROR ON>> %var% || %var%
-console.errorCause=%red%ERROR CAUSE>> %var% || %var%
+console.errorOn=↪ %redbo%ERROR %whitebobr%ON%yellowbobr% >>%reset% %var% || %var%:%var%
+console.errorCause=↪ %red%ERROR CAUSE %redbobr%>>%red% %var% || %var%:%var%
 console.contactDNDevError=Please contact the DN developpers about this error.
 console.closed=Console closed
 

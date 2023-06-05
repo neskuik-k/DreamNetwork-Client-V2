@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.widgets.BlockMod;
 import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
+import lombok.Getter;
 import org.jline.builtins.Completers;
 import org.jline.keymap.BindingReader;
 import org.jline.keymap.KeyMap;
@@ -29,6 +30,8 @@ public class ConsoleReader {
     public static Terminal terminal;
     public static List<Completers.TreeCompleter.Node> nodes = new ArrayList<>();
     private static AutosuggestionWidgets autosuggestionWidgets;
+    @Getter
+    private static ConsoleHighlighter defaultHighlighter;
     public static Completer completer;
     public static void init() {
 
@@ -66,7 +69,7 @@ public class ConsoleReader {
 
 
             sReader.unsetOpt(LineReader.Option.INSERT_TAB);
-            sReader.setHighlighter(new ConsoleHighlighter());
+
             // Create autosuggestion widgets
              autosuggestionWidgets = new AutosuggestionWidgets(sReader);
 // Enable autosuggestions
@@ -119,6 +122,10 @@ public class ConsoleReader {
 
     }
 
+    public static void initHighlighter(){
+        defaultHighlighter = new ConsoleHighlighter();
+        sReader.setHighlighter(defaultHighlighter);
+    }
     public static void newReader(){
         sReader = (LineReaderImpl) LineReaderBuilder.builder()
                 .terminal(terminal)
@@ -135,6 +142,8 @@ public class ConsoleReader {
         LineReaderImpl reader = (LineReaderImpl) sReader;
         reader.setCompleter(completer);
     }
+
+
 
     public static void setAutosuggestionWidgets(boolean bool){
         if(bool){

@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.commands;
 
 
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -19,7 +20,18 @@ import java.util.logging.Level;
 
 public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
 
+    public Object value;
 
+    public void setCompletorValue(String value,String display){
+        this.value = NodeBuilder.of(value,display);
+    }
+
+    public void setCompletorValue(String value){
+        setCompletorValue(value,value);
+    }
+    public Object getCompletorValue(){
+        return value;
+    }
     protected CommandExecutor commandExecutor = new CommandExecutor() {
         @Override
         public boolean execute(String[] args) {
@@ -38,6 +50,7 @@ public class Command extends be.alexandre01.dreamnetwork.api.commands.ICommand {
                 }
                 return true;
             }catch (Exception e){
+                Console.bug(e);
                 return true;
             }
         }

@@ -202,14 +202,14 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
                        }
 
                        @Override
-                       public Operation.OperationType accept(String value, String[] args, ShowInfos infos) {
+                       public Operation accept(String value, String[] args, ShowInfos infos) {
                            injectOperation(switchTo(new InstallTemplateConsole(jvmExecutor)));
-                           return Operation.OperationType.FINISH;
+                           return null;
                        }
 
                        @Override
-                       public Operation.OperationType refuse(String value, String[] args, ShowInfos infos) {
-                           return Operation.OperationType.FINISH;
+                       public Operation refuse(String value, String[] args, ShowInfos infos) {
+                           return null;
                        }
                    }));
        }

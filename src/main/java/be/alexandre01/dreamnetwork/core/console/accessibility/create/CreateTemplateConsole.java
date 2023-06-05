@@ -53,9 +53,12 @@ public class CreateTemplateConsole {
 
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
-            public void onKill(LineReader reader) {
+            public boolean onKill(LineReader reader) {
                 //Shutdown other things
                 String data;
+                String old = console.writing;
+                console.writing = Console.getFromLang("service.creation.cancelCreation");
+                ConsoleReader.sReader.setPrompt(console.writing);
                 while ((data = reader.readLine(Console.getFromLang("service.creation.cancelCreation"))) != null){
                     if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
                         killData();
@@ -64,9 +67,10 @@ public class CreateTemplateConsole {
                     }else {
                         Console.debugPrint(Console.getFromLang("service.creation.cancelCreationCancelled"));
                     }
-                    Console.getConsole("m:create").run();
-                    break;
+                    console.writing = old;
+                    return true;
                 }
+                return true;
             }
         });
 

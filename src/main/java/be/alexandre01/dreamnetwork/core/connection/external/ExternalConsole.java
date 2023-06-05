@@ -28,10 +28,11 @@ public class ExternalConsole  {
             while ((data = reader.readLine("Are you sure ? You gonna stop the communication between the main DreamNetwork: ")) != null) {
                 if (data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")) {
                     // stop all servers
+                    return true;
                 }
-                Console.getConsole("m:create").run();
-                break;
+                return true;
             }
+            return true;
         });
     }
 }

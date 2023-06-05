@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
@@ -19,7 +20,8 @@ import java.util.logging.Level;
 public class Install extends SubCommand {
     private final HashMap<String, AddonDowloaderObject> addons;
 
-    public Install(){
+    public Install(Command command) {
+        super(command);
         addons = CDNFiles.getAddons();
        /* NodeBuilder nodeBuilder = new NodeBuilder(
                 NodeBuilder.create("addon", NodeBuilder.create("install", NodeBuilder.create(addons.keySet().toArray())))

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -10,8 +11,9 @@ import java.io.File;
 import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
 public class Edit extends SubCommand  {
-    public Edit(){
-        setCompletion(node("bundles",
+    public Edit(Command command){
+        super(command);
+        setCompletion(node(value,
                 node("edit")));
     }
     @Override

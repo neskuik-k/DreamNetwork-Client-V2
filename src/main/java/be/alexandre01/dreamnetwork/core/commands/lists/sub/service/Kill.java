@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -15,9 +17,10 @@ import lombok.NonNull;
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Kill extends SubCommandCompletor implements SubCommandExecutor {
-    public Kill(){
-        NodeBuilder nodeBuilder = new NodeBuilder(create("service",
-                create("kill", create(new ScreensNode()))));
+    public Kill(Command command){
+        super(command);
+        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
+                create("kill", create(new ScreensNode()),create("all",create(new BundlesNode(true,true,false))))));
         /*setCompletion(node("service",
                 node("kill",
                         node("server", "proxy"))));
@@ -39,7 +42,24 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
             }
             BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
 
+            if(args[1].equalsIgnoreCase("all")){
+                if(args.length < 3){
+                    Console.printLang("commands.service.stop.incorrectService");
+                    return true;
+                }
+                IJVMExecutor exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
 
+                if(exec == null){
+                    Console.printLang("commands.service.stop.incorrectService");
+                    return true;
+                }
+
+                for(IService service : exec.getServices()){
+                    service.stop();
+                   // service.removeService();
+                }
+                return true;
+            }
             IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
             if(service == null){
                 Console.printLang("commands.service.kill.incorrectService");

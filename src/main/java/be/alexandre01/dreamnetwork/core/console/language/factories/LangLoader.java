@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.console.language.factories;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
+import be.alexandre01.dreamnetwork.core.console.language.EmojiManager;
 import be.alexandre01.dreamnetwork.core.console.language.Language;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.utils.files.FileScan;
@@ -65,6 +66,7 @@ public class LangLoader {
     }
 
     private String convert(String line){
+        line = EmojiManager.Converter.convert(line);
         for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
         String newLine = line;
         if(line.contains("%var%")){

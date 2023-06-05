@@ -50,6 +50,7 @@ public class AccessibilityMenu {
         setConsoleName(consoleName);
     }
     public void show(){
+        System.out.println("showing "+ console.name);
         currentPage = -1;
         Console.setActualConsole(console.name);
         skipToNext();
@@ -213,17 +214,19 @@ public class AccessibilityMenu {
 
             console.setKillListener(reader -> {
                 //Shutdown other things
-                String data;
-                while ((data = reader.readLine(Console.getFromLang("service.creation.cancelCreation"))) != null){
-                    if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
-                        // quit
-                        exitConsole();
-                    }else {
-                        Console.debugPrint(Console.getFromLang("service.creation.cancelCreationCancelled"));
+                console.addOverlay(new Console.Overlay() {
+                    @Override
+                    public void on(String data) {
+                        disable();
+                        if(data.equalsIgnoreCase("y") ||data.equalsIgnoreCase("yes")){
+                            // quit
+                            forceExit();
+                        }else {
+                            Console.debugPrint(Console.getFromLang("menu.cancel"));
+                        }
                     }
-                    Console.getConsole("m:create").run();
-                    break;
-                }
+                },Console.getFromLang("menu.cancelWriting"));
+                return true;
             });
         }catch (Exception e){
             Console.bug(e);
@@ -243,9 +246,7 @@ public class AccessibilityMenu {
     }
 
     public void forceExit(){
-        Console.debugPrint("ForceExit");
         Console.setBlockConsole(false);
-        Console.debugPrint("ForceExit");
         exitConsole();
         clearData();
         injectOperation(Operation.set(Operation.OperationType.FINISH));

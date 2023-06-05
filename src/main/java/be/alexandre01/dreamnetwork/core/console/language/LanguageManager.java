@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.language.factories.KeysManager;
 import be.alexandre01.dreamnetwork.core.console.language.factories.LangLoader;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
 import java.io.InputStream;
@@ -13,8 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 
 public class LanguageManager {
-    @Getter private static final String[] availableLanguages = {"en_EN", "fr_FR", "de_DE"};
-
+    @Getter private static final String[] availableLanguages = {"en_EN", "fr_FR"};
+    @Getter @Setter private EmojiManager emojiManager;
     private File langFile;
     private File keysFile;
     private static HashMap<String, String> messages;
@@ -26,6 +27,8 @@ public class LanguageManager {
     @Getter private KeysManager defaultKeysManager = new KeysManager();
 
     public boolean load(){
+        emojiManager = new EmojiManager();
+        emojiManager.load();
         InputStream en_EN = getInputFrom("en_EN");
         LangLoader langLoader = new LangLoader(this);
         defaultKeysManager = langLoader.loadKeys(en_EN);

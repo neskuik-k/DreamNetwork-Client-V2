@@ -1,26 +1,27 @@
 package be.alexandre01.dreamnetwork.core;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Base64;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
+import be.alexandre01.dreamnetwork.core.console.language.EmojiManager;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
@@ -36,6 +37,7 @@ import be.alexandre01.dreamnetwork.core.installer.SpigetConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import lombok.Getter;
 import lombok.Setter;
+import org.jline.builtins.Completers;
 import org.jline.reader.History;
 import sun.misc.Unsafe;
 
@@ -44,9 +46,11 @@ public class Main {
     @Getter
     public static Core instance;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     public static BundleManager bundleManager;
     @Getter private static GlobalSettings globalSettings;
+
     @Getter
     private JVMContainer jvmContainer;
     @Getter
@@ -69,22 +73,75 @@ public class Main {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         disableWarning();
         System.setProperty("illegal-access", "permit");
+        System.setProperty("file.encoding", "UTF-8");
+        boolean dataCreated = Config.contains("data");
+        if(!dataCreated)
+            new File(Config.getPath("data")).mkdir();
+
+        globalSettings = new GlobalSettings();
+
+        globalSettings.loading();
+        if(Main.getGlobalSettings().getUsername() == null){
+            if(Config.isWindows()){
+                Core.setUsername(username = System.getProperty("user.name"));
+            }else {
+                try {
+                    Core.setUsername( username = InetAddress.getLocalHost().getHostName());
+
+                } catch (UnknownHostException e) {
+                    Core.setUsername(username = System.getProperty("user.name"));
+                };
+            }
+
+            Main.getGlobalSettings().setUsername(username);
+            Main.getGlobalSettings().save();
+        }else {
+            String line = Main.getGlobalSettings().getUsername();
+            for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
+            Core.setUsername(line);
+        }
+        languageManager = new LanguageManager();
+
+        if(!languageManager.load()){
+            // Fetch fail, can't use messages
+        }
+
         commandReader = new CommandReader();
         ConsoleReader.init();
-        Config.createDir("data",false);
+
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
 
         // Start language fetching
 
+        if(!dataCreated){
 
-       globalSettings = new GlobalSettings();
+            ArrayList<String> languages = new ArrayList<String>();
+            Collections.addAll(languages, LanguageManager.getAvailableLanguages());
+            for(String lang : languages){
+                ConsoleReader.nodes.add(Completers.TreeCompleter.node(lang));
+            }
+            ConsoleReader.sReader.runMacro("en_EN");
+            String data;
+            ConsoleReader.reloadCompleter();
 
-       globalSettings.loading();
-        languageManager = new LanguageManager();
-        if(!languageManager.load()){
-            // Fetch fail, can't use messages
+            while((data = ConsoleReader.sReader.readLine(Colors.WHITE_BOLD_BRIGHT+"What is your language ? "+Colors.YELLOW+languages +" "+Colors.CYAN_BOLD_BRIGHT+"> ")) != null){
+                if(data.length() == 0) continue;
+                String l = data.split(" ")[0];
+                  if(languages.contains(l)){
+                      Main.getGlobalSettings().setLanguage(l);
+                      Main.getGlobalSettings().save();
+                      languageManager.loadDifferentLanguage(l);
+                      break;
+                  }
+                  Console.clearConsole(System.out);
+            }
+
         }
+
+
+
+        ConsoleReader.initHighlighter();
         Console.clearConsole(System.out);
         Config.removeDir("runtimes");
 
@@ -108,25 +165,7 @@ public class Main {
             Logger.getLogger("").setLevel(Level.FINE);
         }*/
 
-        if(Main.getGlobalSettings().getUsername() == null){
-            if(Config.isWindows()){
-                Core.setUsername(username = System.getProperty("user.name"));
-            }else {
-                try {
-                    Core.setUsername( username = InetAddress.getLocalHost().getHostName());
 
-                } catch (UnknownHostException e) {
-                    Core.setUsername(username = System.getProperty("user.name"));
-                };
-            }
-
-            Main.getGlobalSettings().setUsername(username);
-            Main.getGlobalSettings().save();
-        }else {
-            String line = Main.getGlobalSettings().getUsername();
-            for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
-            Core.setUsername(line);
-        }
 
 
 

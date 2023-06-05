@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import org.jline.builtins.Completers;
+import org.jline.reader.Candidate;
 
 import java.util.*;
 
@@ -29,6 +30,10 @@ public class NodeBuilder {
 
     public static NodeContainer create(Object... o){
         return new NodeContainer(o);
+    }
+
+    public static Candidate of(String value,String display){
+        return new Candidate(value,display,null,null,null,null,true);
     }
 
 
