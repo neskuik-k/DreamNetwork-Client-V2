@@ -297,7 +297,7 @@ debug.enabled=%purple%Mode Debug %green%%whitebg%activé
 debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 
 ## Console
-console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
+console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%:high_brightness(@):%cyanul%%var%%reset% > %areset%
 console.askExit=%redbobr%voulez-vous vraiment quitter l'hyperviseur ? (y (oui) ou n (non)) > %reset%
 console.changed=%whitebg%%black%Vous venez de changer de console. [%var%] %reset%
 console.errorOn=↪ %redbobr%ERREUR %whitebobr%DANS %yellowbobr% >>%reset% %var% || %var%:%var%
