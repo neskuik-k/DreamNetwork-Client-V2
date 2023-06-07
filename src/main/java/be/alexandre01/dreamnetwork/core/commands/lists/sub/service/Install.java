@@ -45,6 +45,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
 
                 InstallTemplateConsole i = new InstallTemplateConsole(null);
                 i.buildAndRun("m:installTemplate");
+                i.setSafeRemove(true);
                 i.show();
                 System.out.println(Chalk.on("[!] service install server [" + Console.getConsole("name") + "] [SPIGOT-VER]").red());
                 System.out.println(Chalk.on("[!] service install proxy [" + Console.getConsole("name") + "] [BUNGEECORD/FLAMECORD/WATERFALL]").red());
