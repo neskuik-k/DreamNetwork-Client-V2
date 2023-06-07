@@ -49,6 +49,7 @@ public class ConsoleHighlighter implements Highlighter {
         if (args.length == 0) {
             lineReader.getBuffer().clear();
             print(asb, s);
+
             ConsoleReader.sReader.setPrompt(Console.getCurrent().writing);
             return asb.toAttributedString();
         }
@@ -64,6 +65,7 @@ public class ConsoleHighlighter implements Highlighter {
                     if (!emoji.equalsIgnoreCase("")) {
                         emoji = emoji + " ";
                     }
+
                     ConsoleReader.sReader.setPrompt(writing+emoji);
                 }
 

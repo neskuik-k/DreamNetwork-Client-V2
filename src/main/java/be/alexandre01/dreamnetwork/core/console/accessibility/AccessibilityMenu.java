@@ -24,6 +24,11 @@ import static be.alexandre01.dreamnetwork.core.console.Console.print;
 public class AccessibilityMenu {
     @Getter protected Console console;
     String consoleName;
+
+
+    AccessibilityMenu switchedFrom;
+
+    @Setter boolean safeRemove = false;
     HashMap<String, PromptText> prompts = new HashMap<>();
     HashMap<Integer, String> pages = new HashMap<>();
     HashMap<String, Operation> values = new HashMap<>();
@@ -36,6 +41,8 @@ public class AccessibilityMenu {
 
     List<FinishCatch> finishCatches = new ArrayList<>();
 
+
+
     Operation[] operations = new Operation[0];
     ScheduledExecutorService executor;
 
@@ -46,14 +53,25 @@ public class AccessibilityMenu {
         // Ignore
     }
 
+    public void executeFinishCatches(){
+        for (FinishCatch finishCatch : finishCatches) {
+            finishCatch.onFinish();
+        }
+    }
+
     public AccessibilityMenu(String consoleName){
         setConsoleName(consoleName);
     }
+    public void show(boolean clear){
+        if(clear){
+            currentPage = -1;
+            skipToNext();
+        }
+        Console.setActualConsole(console.name,true,false);
+    }
+
     public void show(){
-        System.out.println("showing "+ console.name);
-        currentPage = -1;
-        Console.setActualConsole(console.name);
-        skipToNext();
+        show(true);
     }
 
     public void insertArgumentBuilder(String value, NodeContainer... n){
@@ -115,7 +133,9 @@ public class AccessibilityMenu {
                 Console.debugPrint(Colors.RED_UNDERLINED+info.error+Colors.RESET);
             }
         }
-        Console.debugPrint(info.headMessage.replace("%data%",currentInput));
+        if(info.headMessage != null){
+            Console.debugPrint(info.headMessage.replace("%data%",currentInput));
+        }
         if(info.writingMessage != null){
             console.setWriting(info.writingMessage);
         }
@@ -134,9 +154,10 @@ public class AccessibilityMenu {
         Console.setActualConsole(ConsolePath.Main.DEFAULT);
     }
 
-    private void playCurrentTransition(){
+    private void playCurrentTransition(boolean macro){
         PromptText text = prompts.get(currentInput);
-        if(text.macro != null){
+
+        if(text.macro != null && macro){
             ConsoleReader.sReader.runMacro(text.macro);
         }
 
@@ -175,21 +196,19 @@ public class AccessibilityMenu {
         if(consoleName != null){
             this.consoleName = consoleName;
         }
-
+        //Console.debugPrint("Building console "+this.consoleName);
         console = Console.load(this.consoleName);
         console.setNoHistory(true);
         try {
             if(currentInput == null){
                 throw new NullPointerException("No input found");
             }
-
-
-            playCurrentTransition();
+          //  playCurrentTransition(false);
             console.setConsoleAction(new Console.IConsole() {
                 @Override
                 public void listener(String[] args) {
                     StringBuilder builder = new StringBuilder();
-
+                    //Console.print("console name "+console.name);
                     for (int i = 0; i < args.length; i++) {
                         builder.append(args[i]);
                         if(i != args.length - 1){
@@ -197,11 +216,13 @@ public class AccessibilityMenu {
                         }
 
                         PromptText promptText = prompts.get(currentInput);
+                      //  Console.print(currentInput);
                         promptText.value = builder.toString();
 
                         Operation operation = promptText.input.received(promptText, args, infos.get(currentInput));
-
-                       injectOperation(operation);
+                        if(operation != null){
+                            injectOperation(operation);
+                        }
                     }
 
                 }
@@ -239,6 +260,7 @@ public class AccessibilityMenu {
         values.clear();
         infos.clear();
         arguments.clear();
+        switchedFrom = null;
         finishCatches.clear();
         currentOperation = null;
         currentPage = 0;
@@ -252,11 +274,13 @@ public class AccessibilityMenu {
         injectOperation(Operation.set(Operation.OperationType.FINISH));
     }
     public void skipToNext(){
+        Console.print("Skip to next");
         currentPage++;
+        Console.print("Skip to page "+currentPage);
         currentInput = pages.get(currentPage);
+        Console.print("Skip to input "+currentInput);
 
-
-        playCurrentTransition();
+        playCurrentTransition(true);
         redrawScreen();
         currentOperation = null;
     }
@@ -267,6 +291,7 @@ public class AccessibilityMenu {
         if(Console.isBlockConsole()){
             Console.setBlockConsole(false);
         }
+
         if(operation.type == Operation.OperationType.ACCEPTED){
             values.put(currentInput,operation);
             skipToNext();
@@ -294,20 +319,23 @@ public class AccessibilityMenu {
 
         if(operation.type == Operation.OperationType.SWITCH){
             AccessibilityMenu menu = (AccessibilityMenu) operation.returnValue;
-            menu.buildAndRun(console.name);
+            menu.buildAndRun();
+            menu.switchedFrom = this;
 
-            menu.addFinishCatch(() -> {
-                clearData();
-                exitConsole();
-            });
+            if(safeRemove){
+                menu.addFinishCatch(() -> {
+                    clearData();
+                    exitConsole();
+                });
+            }
             menu.show();
             return;
         }
 
         if(operation.type == Operation.OperationType.FINISH){
-            for (FinishCatch finishCatch : finishCatches) {
-                finishCatch.onFinish();
-            }
+            executeFinishCatches();
+            if(switchedFrom != null)
+                switchedFrom.executeFinishCatches();
             return;
         }
     }
@@ -372,8 +400,8 @@ public class AccessibilityMenu {
     @Getter
     public static class ShowInfos{
         String error = Colors.RED+"There is an error !"+Colors.RESET;
-        String headMessage = getFromLang("service.creation.headMessage");
-        String writingMessage = getFromLang("service.creation.writing");
+        String headMessage = getFromLang("menu.headMessage");
+        String writingMessage = getFromLang("menu.writing");
 
 
         public void onEnter(String s){

@@ -18,7 +18,7 @@ import java.util.ArrayList;
 
 public class InstallTemplateConsole extends AccessibilityMenu {
     public InstallTemplateConsole(JVMExecutor jvmExecutor){
-        super("m:installTemplate");
+        super("m:install");
         if(jvmExecutor == null){
             insertArgumentBuilder("executor", NodeBuilder.create(new BundlesNode(true,true,false)));
             addValueInput(PromptText.create("executor"), new ValueInput() {
@@ -57,7 +57,7 @@ public class InstallTemplateConsole extends AccessibilityMenu {
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                     }
                 }
-                infos.writing(Colors.WHITE_BOLD_BRIGHT+ "Press "+Colors.CYAN_BOLD+"TAB"+Colors.WHITE_BOLD_BRIGHT+" to select your version > ");
+                infos.writing(Console.getFromLang("service.creation.install.tab"));
                 ArrayList<String> versions = new ArrayList<>();
                 for(InstallationLinks s : InstallationLinks.values()) {
                     if(s.getJvmType() == finalExec.bundleData.getJvmType()){
@@ -142,8 +142,11 @@ public class InstallTemplateConsole extends AccessibilityMenu {
                 jvmExecutor.addConfigsFiles();
                 Console.printLang("service.creation.serverConfigured");
 
-                forceExit();
+               // forceExit();
+
+                Console.setBlockConsole(false);
                 injectOperation(Operation.set(Operation.OperationType.FINISH));
+                clearData();
             }
         });
         return true;

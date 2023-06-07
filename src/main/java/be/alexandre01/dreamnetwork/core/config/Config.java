@@ -50,7 +50,7 @@ public class Config {
                 level = Level.INFO;
             }
 
-            Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), level);
+            //Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), level);
             boolean result = false;
 
             try{
@@ -61,7 +61,7 @@ public class Config {
                 //handle it
             }
             if(result) {
-                Console.print(Chalk.on("Directory created").cyan(),level);
+                Console.printLang("console.createDir",level);
             }
         }
     }

@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.console.accessibility.AccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -120,6 +121,7 @@ public class Create extends SubCommand {
            // fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
             TestCreateTemplateConsole create = new TestCreateTemplateConsole("","","","","","auto");
             create.buildAndRun("m:createTemplate");
+            create.setSafeRemove(true);
             create.show();
         /*    Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
                 @Override

@@ -29,13 +29,13 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
     BundleData bundleData;
     int xms;
        public TestCreateTemplateConsole(String bundleName, String serverName,String mods, String ramMin, String ramMax, String port){
+           super("m:create");
            opt = new String[]{bundleName,serverName,mods,ramMin,ramMax,port};
            insertArgumentBuilder("bundleName", create(new BundlesNode(false, false,false)));
-           insertArgumentBuilder("yes1", create("yes","no"));
            addValueInput(PromptText.create("bundleName").setMacro(opt[0]), new ValueInput() {
                @Override
                public void onTransition(ShowInfos infos) {
-                     infos.onEnter("Please enter the name of the bundle");
+                   infos.onEnter(getFromLang("service.creation.ask.bundleName"));
                }
 
                @Override
@@ -83,7 +83,7 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
            addValueInput(PromptText.create("mode"), new ValueInput() {
                @Override
                public void onTransition(ShowInfos infos) {
-                     infos.onEnter("Please enter the mode of the service");
+                     infos.onEnter(getFromLang("service.creation.ask.mode"));
                         ConsoleReader.sReader.runMacro(opt[2]);
                      insertArgumentBuilder("mode", create("STATIC","DYNAMIC"));
                }
@@ -104,7 +104,7 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
            addValueInput(PromptText.create("xms"), new ValueInput() {
                @Override
                public void onTransition(ShowInfos infos) {
-                   infos.onEnter("Please enter the xms of the service");
+                   infos.onEnter(getFromLang("service.creation.ask.XMS"));
                    ConsoleReader.sReader.runMacro(opt[3]);
                    insertArgumentBuilder("xms", create(new RamNode(0)));
                }
@@ -125,7 +125,7 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
               addValueInput(PromptText.create("xmx"), new ValueInput() {
                 @Override
                 public void onTransition(ShowInfos infos) {
-                     infos.onEnter("Please enter the xmx of the service");
+                     infos.onEnter(getFromLang("service.creation.ask.XMX"));
                      //RamMode get the xms data to determine what is upper xms.
                      insertArgumentBuilder("xmx", create(new RamNode(xms)));
                      ConsoleReader.sReader.runMacro(opt[4]);
@@ -152,7 +152,7 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
               addValueInput(PromptText.create("port").setMacro(opt[5]), new ValueInput() {
                 @Override
                 public void onTransition(ShowInfos infos) {
-                     infos.onEnter("Please enter the port of the service");
+                     infos.onEnter(getFromLang("service.creation.ask.port"));
                 }
 
                 @Override
@@ -192,12 +192,10 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
                 }
               });
            addValueInput(PromptText.create("yes1")
-                           .setMacro("yes")
-                           .setSuggestions(create("yes", "no")),
-                   new AcceptOrRefuse("yes", "no", new AcceptOrRefuse.AcceptOrRefuseListener() {
+                           .setMacro(getFromLang("menu.yes")),
+                   new AcceptOrRefuse(this, new AcceptOrRefuse.AcceptOrRefuseListener() {
                        @Override
                        public void transition(ShowInfos infos) {
-                           infos.onEnter("Please enter yes or no");
                            infos.writing(getFromLang("service.creation.ask.installServer"));
                        }
 
@@ -209,15 +207,17 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
 
                        @Override
                        public Operation refuse(String value, String[] args, ShowInfos infos) {
+                           forceExit();
                            return null;
                        }
                    }));
        }
-       @Override
-       public void redrawScreen(){
-            Console.clearConsole();
+
+
+        @Override
+        public void drawInfos(){
             ASCIIART.sendAdd();
-            drawInfos();
+           super.drawInfos();
         }
 
     public interface Future{

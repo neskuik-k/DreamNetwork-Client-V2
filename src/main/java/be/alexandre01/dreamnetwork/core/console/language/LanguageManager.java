@@ -44,7 +44,10 @@ public class LanguageManager {
             actualLanguage = defaultLanguage;
             return;
         }
+        forceLoad(lang);
+    }
 
+    public void forceLoad(String lang){
         InputStream searchIn = getInputFrom(lang);
         LangLoader searchLoader = new LangLoader(this);
         actualLanguage = searchLoader.load(searchIn,lang);

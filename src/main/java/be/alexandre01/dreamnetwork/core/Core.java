@@ -218,7 +218,7 @@ public class Core {
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
-        if(Main.getBundlesLoading().isFirstLoad()){
+        if(!Main.getBundlesLoading().isFirstLoad()){
             menu.show();
            // Console.setActualConsole("m:introbegin",true,false);
         }
