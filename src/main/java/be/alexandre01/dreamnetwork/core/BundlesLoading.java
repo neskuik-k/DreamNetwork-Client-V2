@@ -26,6 +26,7 @@ public class BundlesLoading {
         Main.setBundlesLoading(this);
         File file = new File("bundles");
         if(!file.exists()){
+            System.out.println("First load");
             firstLoad = true;
             file.mkdir();
         }

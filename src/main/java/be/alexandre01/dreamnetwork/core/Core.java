@@ -126,7 +126,7 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-       introConsole = new IntroductionConsole("begin");
+      // introConsole = new IntroductionConsole("begin");
 
 
 
@@ -218,7 +218,8 @@ public class Core {
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
-        if(!Main.getBundlesLoading().isFirstLoad()){
+        if(Main.getBundlesLoading().isFirstLoad()){
+            System.out.println("menu show");
             menu.show();
            // Console.setActualConsole("m:introbegin",true,false);
         }
