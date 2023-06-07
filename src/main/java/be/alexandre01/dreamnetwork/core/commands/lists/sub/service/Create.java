@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
@@ -8,9 +9,11 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.AccessibilityMenu;
+import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.accessibility.create.TestCreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -24,9 +27,10 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Create extends SubCommand {
 
-    public Create() {
+    public Create(Command command) {
+        super(command);
         NodeBuilder nodeBuilder = new NodeBuilder(
-                create("service",
+                create(value,
                         create("create",
                                 create(new BundlesNode(false,false,false),
                                         create(Completers.AnyCompleter.INSTANCE,
@@ -114,10 +118,12 @@ public class Create extends SubCommand {
 
             return true;
         },args,"create","bundle","name","type","xms","xmx","[port]","[javaversion]")){
-            Console.printLang("commands.cantBeExecuted");
-            fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
-
-            Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
+           // fail("service","create","bundle","name","type","xms","xmx","[port]","[javaversion]");
+            TestCreateTemplateConsole create = new TestCreateTemplateConsole("","","","","","auto");
+            create.buildAndRun("m:createTemplate");
+            create.setSafeRemove(true);
+            create.show();
+        /*    Core.getInstance().getCreateTemplateConsole().show("", "", "", "", "", "auto", new CreateTemplateConsole.Future() {
                 @Override
                 public void onResponse() {
 
@@ -128,7 +134,7 @@ public class Create extends SubCommand {
                     CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                     Console.setActualConsole("m:default");
                 }
-            });
+            });*/
             return true;
         };
 

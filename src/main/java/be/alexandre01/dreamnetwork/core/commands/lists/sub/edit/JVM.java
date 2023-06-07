@@ -1,5 +1,8 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.edit;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
@@ -8,16 +11,20 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
+import org.jline.reader.Candidate;
 
 import java.io.File;
 
+
+import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.*;
 import static be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter.node;
 
-public class JVM extends SubCommandCompletor implements SubCommandExecutor {
-    public JVM(){
-        setCompletion(node("edit",
-                node("jvm",
-                        node("set","remove","list"))));
+public class JVM extends SubCommand {
+    public JVM(Command command) {
+        super(command);
+        new NodeBuilder(create(value,
+                create("jvm",
+                        create("set","remove","list"))));
 
     }
     @Override
@@ -66,7 +73,12 @@ public class JVM extends SubCommandCompletor implements SubCommandExecutor {
                 return true;
             }
             if(args[1].equalsIgnoreCase("list")){
-
+                JavaIndex javaIndex = Core.getInstance().getJavaIndex();
+                Console.print("JVM List : ");
+                for(String key : javaIndex.getJMap().keySet()){
+                    System.out.println("[" + key + "]" + " : " + javaIndex.getJMap().get(key).getPath());
+                }
+                return true;
             }
         }
 

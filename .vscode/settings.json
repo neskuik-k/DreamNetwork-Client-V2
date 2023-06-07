@@ -1,4 +1,12 @@
 {
     "java.configuration.updateBuildConfiguration": "interactive",
-    "java.saveActions.organizeImports": true
+    "java.saveActions.organizeImports": true,
+
+    
+
+    "terminal.integrated.shellIntegration.enabled": true,
+   
+
+    "terminal.integrated.defaultProfile.osx": "fuck"
+
 }

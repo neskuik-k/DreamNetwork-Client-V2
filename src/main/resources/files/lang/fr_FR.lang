@@ -55,13 +55,22 @@ bundle.loadTemplate.addJar=[+] Ajout d'un plugin jar de prévisualisation à la 
 bundle.loadTemplate.loaded=%green%-->  [O] Maquette %greenbobr%%var% %green%chargée !
 bundle.customRequest.fileCreated= [!] Le fichier des requêtes personalisés a été créé !
 
+## Menu
+menu.cancel=Annulé.
+menu.cancelWriting=%purplebobr%voulez vous arrêter l'opération ? (y ou n) > %reset%
+menu.yes=oui
+menu.no=non
+menu.ask.acceptOrRefuse=%whitebobr%Tape %var% ou %var% > %reset%
+menu.headMessage=%green%En attente de la configuration de la donnée %data%...
+menu.writing=%whitebobr%Mets la valeur ici > %reset%
+
 ## Service
 service.creation.cancelCreation=%purplebobr%voulez vous arrêter la creation du service ? (y ou n) > %reset%
 service.creation.cancelCreationCancelled=Annulé.
 service.creation.ask.bundleName=%green%Quel est le %cyan%bundle %green%? %white%Écrivez le nom du bundle: %red%
 service.creation.ask.serverName=%green%Quel est le %cyan%nom du serveur %green%? %white%Écrivez le nom du serveur: %red%
 service.creation.ask.proxyName=%green%Quel est le %cyan%nom du proxy %green%? %white%Écrivez le nom du proxy: %red%
-service.creation.ask.serverType=%green%Quel est le %cyan%type du serveur %green%? %white%Écrivez le type du serveur: %red%
+service.creation.ask.mode=%green%Quel est le %cyan%mode du serveur %green%? %white%Écrivez le type du serveur: %red%
 service.creation.ask.port=%green%Quel est le %cyan%port %green%? %white%Écrivez le port: %red%
 service.creation.ask.XMS=%green%Combien de %cyan%ram minimum utilisée %green%? %white%Écrivez la ram minimum utilisée: %red%
 service.creation.ask.XMX=%green%Combien de %cyan%ram maximum utilisée %green%? %white%Écrivez la ram maximum utilisée: %red%
@@ -76,7 +85,9 @@ service.creation.creatingServerOnBundle=Creation du serveur %var% dans le bundle
 service.creation.serverConfigured=%agreen%Votre serveur a été configuré avec succès!
 service.creation.install.version=%white%Quelle version voulez-vous utiliser ? : Écrivez la version: %red%
 service.creation.install.incorrectVersion=%red%[!] La version entrée est incorrecte...
+service.creation.install.tab=%whitebobr%Pressez %cyanbobr%TAB %whitebobr%pour voir quelles versions sont disponibles > %reset%
 service.creation.install.downloadComplete=Téléchargement terminé !
+service.creation.xmxInferiorToXms=%red%La ram maximum (xmx) utilisée ne peut pas être inférieure à la ram minimum (xms) utilisée
 
 service.executor.start=LancementJVM %var%
 service.executor.couldNotStart=%ared%Le serveur ne peut pas être démarré
@@ -88,7 +99,7 @@ service.executor.cannotAsyncCopy=CopiedAsync Impossible: action effectuée in %v
 service.executor.notFoundPort=%redbo%Le port du server %var% n'a pas été trouvé
 service.executor.portAlreadyUsed=Le port %var% est déjà utilisé
 service.executor.processCantStartBecauseAddon=Le processus ne peut pas démarrer car l'addon %var% annule l'évenement.
-service.executor.serverStartProcess=%greenbo%Le serveur %yellowbo%%var% %greenbo%vient de commencer le processus
+service.executor.serverStartProcess=%greenbo%Le serveur %yellowbo%%var% %greenbo%vient de démarrer le processus :briefcase():
 service.executor.checkingPort=Vérification de la disponibilité du port %var%...
 service.executor.invalidStartPort=Port de lancement invalide: %var%
 
@@ -104,36 +115,62 @@ service.bundle.info.loadingError=%red%Une erreur est survenue lors du chargement
 service.bundle.manager.noBundleFound=%red%Aucun bundle n'a été trouvé !%reset%
 service.bundle.manager.cantFindService=%red%- Le bundle %var% n'arrive pas à trouver le service %var%
 
-service.screen.killedHimself=Le PROCESSUS %var% s'est tué.
-service.screen.opened=%yellowbo%Une console a été ouverte sous le nom -> %greenbo%%var%-%var%
-service.screen.closed=Console fermée -> %var%
+service.screen.killedHimself=Le PROCESSUS %var% s'est tué de lui même :skull():.
+service.screen.opened=%yellowbo%Une console :desktop_computer(): a été ouverte sous le nom -> %greenbo%%var%-%var%
+service.screen.closed=Console fermée :arrow_right(->): %var%
 
-## Introduction
-introduction.ask.firstTime=%green%Est-ce la première fois que vous utilisez le %cyan%DreamNetwork %green%? %white%Écrivez yes (oui) ou no (non): %red%
-introduction.help.spiget.helpSpiget=AIDE SPIGET:
-introduction.help.spiget.search=- SEARCH [VALEUR] [NOM/TAG/AUTEURS] [PAGE]
-introduction.help.useCommand=%green%Vous pouvez utiliser la commande %cyan%help %green%pour obtenir de l'aide %white%: %red%
-introduction.servers.oneLastThing=Un dernier petit détail...
-introduction.servers.helpToCreateServer=%green%Voulez-vous créer un serveur ?  : %red%
-introduction.servers.helpToCreateProxy=%green%Voulez-vous créer un Proxy ? : %red%
-introduction.servers.finish.bundleName=Nom du bundle: %var%
-introduction.servers.finish.bundleType=Type du bundle: %var%
-introduction.servers.finish.bundleExecutors=Executeurs du bundle: %var%
+## Tutorial
+tutorial.eula.info=Vous pouvez trouver les conditions d'utilisation ici : https://account.mojang.com/documents/minecraft_eula
+tutorial.eula.ask=Acceptez-vous les conditions d'utilisation de Mojang (Minecraft EULA) et de DreamNetwork ? (accept/refuse) > %cyan%
+tutorial.eula.refused=Vous avez refusé les conditions d'utilisation de Mojang (Minecraft EULA) et de DreamNetwork
+tutorial.emoji=%whitebobr%Voyez-vous cet emoji {(🥳)}... ?
+tutorial.asking=%whitebobr%Voulez-vous voir le %cyanbobr%tutoriel %whitebobr%?
+tutorial.help=Que le tutoriel commence... la commande la plus difficile est... "%cyanHELP%reset%". Allez ! Laissez-vous tenter !\nPsst, j'ai un petit conseil, essayez votre touche tabulation pour trouver le chemin !
+tutorial.help.asking=%whitebobr%Tapez la commande souhaitée: %red%
+tutorial.help.notGood=Hmm, lisez le texte au dessus, vous devez écrire help.
+tutorial.help.tada=%greenbobr%TADAAA vous l'avez fait :tada():!
+
+tutorial.service.ask.proxy=%green%Voulez-vous créer un %red%proxy %green%?%reset%
+tutorial.service.ask.server=%green%Voulez-vous créer un %cyan%serveur %green%?%reset%
 
 ## Addons
 addons.loader.couldNotDeleteCache=Impossible de supprimer cache.yml
-addons.loading=Chargement des addons...
+addons.loading=Chargement des addons :droplet():...
 addons.emptyFolder=Les dossier addons est vide...
 addons.loadingAddon=Chargement de l'addon: %var%
 addons.cached=Mise en cache >> %var%
 addons.customClass.customClose=Fermeture customisée
 addons.customClass.finalized=%var% - CL Finalisé.
+addons.canUpdate=%green%Vous pouvez mettre à jour l'addon %var%. Entrez '%yellow%addon update %var%%green%' pour faire la mise à jour
 
 ## Commands
 commands.notFound=%redul%Commande introuvable. | Ecrivez 'help' pour avoir de l'aide.
 commands.cantBeExecuted=%red%La commande ne peut pas être éxecutée !
 
-commands.bundle.titleUsage=Comment configurer gérer bundles
+commands.addon.titleUsage=Comment gérer les addons
+commands.addon.installUsage=Installer un addon
+commands.addon.updateUsage=Mettre à jour un addon
+commands.addon.listInstalledUsage=Lister tous les addons installés
+commands.addon.listOfficialsUsage=Lister tous les addons officiels
+commands.addon.invalidName=%red%Cet addon n'a pas été trouvé
+commands.addon.install.completed=%green%%var% a été installé. Redémarrez le DreamNetwork pour l'utiliser
+commands.addon.install.error=%red%Une erreur a survenue, veuillez contacter les développeurs du DreamNetwork
+commands.addon.update.invalidArguments=%red%Argument Invalide. Format: addon update %yellow%<nom de l'addon|all>
+commands.addon.update.addonNotFound=%red%L'addon %var% n'a pas été trouvé
+commands.addon.update.noAddonToUpdate=%yellow%Il n'y a pas d'addon à mettre à jour
+commands.addon.list.invalidArguments=%red%Argument Invalide. Format: addon list %yellow%<installed|officials>
+commands.addon.list.installedAddons=%green%Liste des addons installés
+commands.addon.list.noAddonInstalled=%yellow%Il n'y a pas d'addon d'installé
+commands.addon.list.officialsAddons=%green%Liste des addons officiels
+commands.addon.list.noOfficialAddon=%yellow%Il n'y a pas d'addon officiel
+commands.addon.list.name=%green%Nom: %yellowbr%
+commands.addon.list.version=%green%Version: %yellowbr%
+commands.addon.list.description=%green%Description: %yellowbr%
+commands.addon.list.author=%green%Auteur: %yellowbr%
+commands.addon.list.repositoryLink=%green%Lien du répertoire: %yellowbr%
+commands.addon.cantGetOfficialAddon=%red%Désolé, nous ne pouvons actuellement pas récuperer la liste des addons officiels
+
+commands.bundle.titleUsage=Comment configurer et gérer vos bundles
 commands.bundle.create=créer un bundle
 commands.bundle.remove=supprimer un bundle
 commands.bundle.edit=éditer un bundle
@@ -235,27 +272,25 @@ connection.core.usePortInsteadOfNonAvailable=%purple%Le port %var% n'est pas dis
 connection.core.networkMayNotWorkCorrectly=%redbobr%%whitebg%Il est possible que le Network ne fonctionne pas correctement.
 
 connection.core.channels.object=Objet>> %var%
-connection.core.channels.channelRegistered=%purple%Le cannal %var% a été enregistré%reset%
+connection.core.channels.channelRegistered=%purple%Le canal %var% a été enregistré%reset%
 
 connection.core.communication.enteringRequest=Requête entrante ->
 connection.core.communication.request=Requête : %var%
 connection.core.communication.unrecognizedClient=%red%Le client %var% n'a pas été reconnu et a essayé de se connecter
-connection.core.communication.recoveringClient=%red%<!> %yellow%Récupération de %purple%%var%-%var% %yellow%sur le proxy
-connection.core.communication.proxyLinked=%yellow%- %cyanbo%Le proxy %var%-%var% est maintenant lié au DreamNetwork
-connection.core.communication.serverLinked=%yellow%- %cyanbo%Le serveur %var%-%var% est maintenant lié au DreamNetwork
+connection.core.communication.recoveringClient=%red%<:warning(!):> %yellow%Récupération de %purple%%var%-%var% %yellow%sur le proxy
+connection.core.communication.proxyLinked=%yellow%- %cyanbo%Le proxy %var%-%var% :cloud(): est maintenant lié au DreamNetwork :link():
+connection.core.communication.serverLinked=%yellow%- %cyanbo%Le serveur %var%-%var% :potable_water(): est maintenant lié au DreamNetwork :link():
 connection.core.communication.distantConsoleConnected=%yellow%- %greenbo%La console distante DEVTOOL a été lié au DreamNetwork sour le nom %var% avec l'IP %var%
 
 connection.core.handler.localAddress=ADRESSE Locale: %var%
 connection.core.handler.remoteAddress=ADRESSE Distante: %var%
-connection.core.handler.channelActive=Cannal actif
+connection.core.handler.channelActive=Canal actif
 connection.core.handler.processStopped=%redbo%Le processus '%var%' a été arrêté.
 connection.core.handler.removeClient=Suppression serveur, client : %var%
 connection.core.handler.writeFlush=%yellow%Écriture et Envoi>> %white%%var%
 
 connection.request.sent=La requête %var% a été envoyé avec succès!
 connection.request.exception.requestNotFound=La requête %var% est introuvable.
-connection.request.exception.errorCause=%ared%CAUSE ERREUR>> %var% || %var%
-connection.request.exception.errorOn=ERREUR A>> %whitebg%%ablack%%var%:%var%:%var%%areset%
 
 ## Debug Mod
 debug.enabled=%purple%Mode Debug %green%%whitebg%activé
@@ -263,13 +298,13 @@ debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 
 ## Console
 console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
-console.askExit=%redbobr%voulez-vous quitter le DreamNetwork ? (y (oui) ou n (non)) > %reset%
+console.askExit=%redbobr%voulez-vous vraiment quitter l'hyperviseur ? (y (oui) ou n (non)) > %reset%
 console.changed=%whitebg%%black%Vous venez de changer de console. [%var%] %reset%
-console.errorOn=%red%ERREUR A>> %var% || %var%
-console.errorCause=%red%CAUSE ERREUR>> %var% || %var%
+console.errorOn=↪ %redbobr%ERREUR %whitebobr%DANS %yellowbobr% >>%reset% %var% || %var%:%var%
+console.errorCause=↪ %red%CAUSE DE L'ERREUR %redbobr%>>%red% %var% || %var%:%var%
 console.contactDNDevError=Veuillez contacter les développeurs du DreamNetwork pour leur signaler cette erreur.
 console.closed=Console fermée
-
+console.createDir = %cyanbobr% Dossier "%var%" créé :open_file_folder():
 ## Installer
 installer.incorrectLink=%red%LIEN D'INSTALLATION INCORRECT.
 installer.installationCantBeLaunched=%red%L'INSTALLATION NE PEUT PAS DÉMARRER.

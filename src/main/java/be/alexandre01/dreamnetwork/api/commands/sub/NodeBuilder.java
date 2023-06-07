@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 import org.jline.builtins.Completers;
+import org.jline.reader.Candidate;
 
 import java.util.*;
 
@@ -29,6 +30,10 @@ public class NodeBuilder {
 
     public static NodeContainer create(Object... o){
         return new NodeContainer(o);
+    }
+
+    public static Candidate of(String value,String display){
+        return new Candidate(value,display,null,null,null,null,true);
     }
 
 
@@ -93,7 +98,7 @@ public class NodeBuilder {
         if(isHead){
             globalList = list;
         }
-       Console.fine("Build Suggestion -> " + list);
+      // Console.fine("Build Suggestion -> " + list);
        CustomTreeCompleter.Node n = (CustomTreeCompleter.Node) CustomTreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
             Object o = objects[i];
@@ -112,9 +117,10 @@ public class NodeBuilder {
 
     public void rebuild(){
         try {
-            Console.fine("rebuild suggestion");
-            Console.fine(globalList);
-            Console.fine("ICI hein");
+            //Console.fine("rebuild suggestion");
+
+           // log suggestions
+           // Console.fine(globalList);
             for (int i = 0; i < globalList.size(); i++) {
                 Object o = globalList.get(i);
                 if(o instanceof NodeContainer){

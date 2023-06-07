@@ -68,7 +68,7 @@ public class YamlFileUtils<T> {
                 }
             }
         };*/
-        Yaml yaml = new Yaml(new Constructor()/*,representer*/);
+        Yaml yaml = new Yaml(new Constructor(),new CustomRepresenter(skipNull,clazz,null)/*,representer*/);
 
         try {
             LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
@@ -116,57 +116,7 @@ public class YamlFileUtils<T> {
                 file.createNewFile();
 
 
-            Representer representer = new Representer() {
-                @Override
-                protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
-
-                  /*  System.out.println(property.getType());
-                    System.out.println(propertyValue);
-*/
-
-
-                    //check if field has annotation @Ignore
-
-
-                    if(propertyValue == null && skipNull){
-                        return null;
-                    }
-                    Field[] fields = clazz.getDeclaredFields();
-                    boolean isFinded = false;
-                    for (Field field : fields) {
-                        field.setAccessible(true);
-
-                    //    System.out.println("Annotation => "+field.getAnnotation(Ignore.class));
-                          if (field.getAnnotation(Ignore.class) != null){
-                                   // Console.printLang("warning");
-                                    /*System.out.println("WARNING");
-                                    System.out.println(field.getName());
-                                    System.out.println(property.getName());
-                                    System.out.println(field.get(obj));*/
-                                    if(field.getName().equals(property.getName())){
-                                        //System.out.println("IGNORED field "+field.getName()+" because it's equals to "+property.getName());
-                                       // Console.printLang("core.utils.yaml.ignoreFieldEquals", field.getName(), propertyValue);
-                                        return null;
-                                    }
-                            }
-
-                          if(field.getName().equals(property.getName())){
-                              isFinded = true;
-                          }
-                    }
-
-                    if(!isFinded){
-                        Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), clazz.getName()));
-                        return null;
-                    }
-                    if (obj.getClass().equals(property.getType())) {
-                        return null;
-                    }
-                    else {
-                        return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
-                    }
-                }
-            };
+            Representer representer = new CustomRepresenter(skipNull,clazz,obj);
             Yaml yaml = new Yaml(new Constructor(clazz),representer);
 
             FileWriter fileWriter = new FileWriter(file);

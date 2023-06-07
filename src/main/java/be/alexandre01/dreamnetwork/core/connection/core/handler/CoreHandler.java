@@ -30,6 +30,7 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
+import java.util.logging.LogRecord;
 
 public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHandler {
 
@@ -40,7 +41,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Setter @Getter private boolean hasDevUtilSoftwareAccess = false;
     @Getter private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
     private AuthentificationResponse authResponse;
-   @Getter private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
+    @Getter private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
     //A PATCH
     private HashMap<Message, Tuple<Channel,GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Core core;
@@ -133,6 +134,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             //ALLOWED CONNECTION
             if(allowedCTX.contains(ctx)){
                 Message message = Message.createFromJsonString(s_to_decode);
+                core.getFileHandler().publish(new LogRecord(Level.INFO, "Received message from " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + message.toString()));
                 for(CoreResponse iBasicClientResponse : responses){
                     try {
                         iBasicClientResponse.onAutoResponse(message,ctx, core.getClientManager().getClient(ctx));
@@ -168,6 +170,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
 
+        Console.fine("UNREGISTERED");
+
         //LOG
         if(allowedCTX.contains(ctx)){
             HashMap<ChannelHandlerContext, IClient> clientByConnexion = Core.getInstance().getClientManager().getClientsByConnection();
@@ -180,6 +184,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if(clientByConnexion.get(ctx).isDevTool()){
                     name = "DEVTOOLS";
                 }
+
                 Console.printLang("connection.core.handler.processStopped", name);
                 core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(),jvmService));
             }
@@ -236,11 +241,17 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         }
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        Console.fine("Channel inactive");
+        super.channelInactive(ctx);
+    }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        Console.fine("Handler removed");
         ctx.close();
-        super.channelInactive(ctx);
+        super.handlerRemoved(ctx);
     }
 
     @Override

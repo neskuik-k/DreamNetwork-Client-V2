@@ -21,9 +21,10 @@ public class StatsConsole {
         console.writing = "- ";
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
-            public void onKill(LineReader reader) {
+            public boolean onKill(LineReader reader) {
                 Console.setActualConsole("m:default");
                 executorService.shutdown();
+                return true;
             }
         });
 

@@ -10,7 +10,7 @@ public class HelpCommand extends Command {
 
     public HelpCommand(String name) {
         super(name);
-        NodeBuilder nodeBuilder = new NodeBuilder(NodeBuilder.create("help"));
+        NodeBuilder nodeBuilder = new NodeBuilder(NodeBuilder.create(NodeBuilder.of("help",getBaseColor()+"help "+ Console.getEmoji("thinking"))));
         //setCompletion(node("help"));
         //setCompletions(new StringsCompleter("help"));
 
@@ -48,6 +48,10 @@ public class HelpCommand extends Command {
                 return true;
             }
         };
+    }
+    @Override
+    public String getEmoji() {
+        return Console.getEmoji("thinking");
     }
 
 }

@@ -12,15 +12,13 @@ public class RequestNotFoundException extends Exception{
         if(Ansi.isEnabled()){
             Core.getLogger().severe(Console.getFromLang("connection.request.exception.errorCause", getMessage(), getClass().getSimpleName()));
             for(StackTraceElement s : getStackTrace()){
-                Core.getInstance().formatter.getDefaultStream().println("----->");
-                Core.getLogger().severe(Console.getFromLang("connection.request.exception.errorOn", s.getClassName(), s.getMethodName(), s.getLineNumber()));
+                Core.getLogger().severe(Console.getFromLang("console.errorOn", s.getClassName(), s.getMethodName(), s.getLineNumber()));
             }
             return;
         }
-        Core.getLogger().severe(Console.getFromLang("connection.request.exception.errorCause", getMessage(), getClass().getSimpleName()));
+        Core.getLogger().severe(Console.getFromLang("console.errorCause", getMessage(), getClass().getSimpleName()));
         for(StackTraceElement s : getStackTrace()){
-            Core.getInstance().formatter.getDefaultStream().println("----->");
-            Core.getLogger().severe(Console.getFromLang("connection.request.exception.errorOn", s.getClassName(), s.getMethodName(), s.getLineNumber()));
+            Core.getLogger().severe(Console.getFromLang("console.errorOn", s.getClassName(), s.getMethodName(), s.getLineNumber()));
         }
 
     }

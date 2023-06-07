@@ -38,6 +38,11 @@ public class ClientManager implements IClientManager {
 
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
+        if(JVMExecutor.servicePort.isEmpty()){
+            Console.print("A service tried to connect on the port " + client.getPort()+" but there is a problem (ARRAY EMPTY)",Level.SEVERE);
+            client.getChannelHandlerContext().channel().close();
+            return null;
+        }
         IService jvmService = JVMExecutor.servicePort.get(client.getPort());
         if(jvmService == null){
             Console.print("A service tried to connect on the port " + client.getPort()+" but there is a problem",Level.SEVERE);

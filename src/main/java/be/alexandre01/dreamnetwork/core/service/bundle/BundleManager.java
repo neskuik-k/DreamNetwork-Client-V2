@@ -79,8 +79,8 @@ public class BundleManager {
 
 
                 //Creating bundle dir
-                Config.createDir("bundles/main");
-                Config.createDir("bundles/proxies");
+                Config.createDir("bundles/main",false);
+                Config.createDir("bundles/proxies",false);
                 File mainFile,proxyFile;
                 mainFile = new File("bundles/main/this-info.yml");
                 proxyFile = new File("bundles/proxies/this-info.yml");

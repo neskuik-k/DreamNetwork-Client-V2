@@ -57,10 +57,15 @@ public class ScreenInReader extends Thread {
         InputStream err = process.getErrorStream();
         this.isRunning = true;
         ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
+
+
         service.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                if(!process.isAlive()){
+               // System.out.println(process.getOutputStream().getClass());
+                //System.out.println(process.getOutputStream().toString());
+               if(!process.isAlive()){
+                    Console.fine("The PROCESS cannot be read anymore.");
                     screen.destroy();
                     isRunning = false;
                 }
@@ -84,10 +89,23 @@ public class ScreenInReader extends Thread {
                     while(data.contains("\n\n") || data.contains("\n\r") ){
                         data = data.replaceAll("\n\n","").replaceAll("\n\r","");
                     }
-                    for (ReaderLine readerLine : readerLines) {
-                        data = readerLine.readLine(data);
+                    String[] args = data.split("\n");
+                    StringBuilder sb = new StringBuilder();
+
+                    for (int i = 0; i < args.length; i++) {
+                        String arg = args[i];
+                        for (ReaderLine readerLine : readerLines) {
+                            arg = readerLine.readLine(arg);
+                            if(arg == null){
+                                continue;
+                            }
+                            sb.append(arg);
+                            if(i != args.length-1)
+                                sb.append("\n");
+                        }
                     }
-                    if(data != null){
+                    data = sb.toString();
+                    if(data.toString() != null){
                         console.printNL(data);
                         datas.setLength(0);
                     }else {

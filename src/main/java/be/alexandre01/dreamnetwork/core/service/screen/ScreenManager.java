@@ -49,11 +49,11 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
         availableScreenIds.remove(screen.getScreenId());
         screenIds.add(screen.getScreenId());
         CustomType.reloadAll(ScreensNode.class);
+
     }
     @Override
     public void remScreen(IScreen screen){
         if(screens.containsValue(screen)){
-            System.out.println(screen.getService().getProcess());
             Console.printLang("service.screen.closed", screen.getScreenName());
             screens.remove(screen.getScreenName());
         }

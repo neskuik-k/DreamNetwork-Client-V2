@@ -13,9 +13,13 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean checkDefaultJVMVersion = true;
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
+
+    boolean screenNameInConsoleChange= true;
     String username = null;
     int port = 14520;
     String language = "en_EN";
+    private boolean useEmoji = false;
+    private boolean emojiOnCommand= false;
 
     public GlobalSettings() {
         // Init
@@ -37,4 +41,6 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     public void save(){
         super.saveFile(GlobalSettings.class.cast(this));
     }
+
+
 }

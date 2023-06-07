@@ -9,12 +9,13 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.accessibility.create.CreateTemplateConsole;
-import be.alexandre01.dreamnetwork.core.accessibility.intro.IntroductionConsole;
+import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
+import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroMenu;
+import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.config.remote.DevToolsToken;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreServer;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.DNChannelManager;
@@ -125,7 +126,8 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-        introConsole = new IntroductionConsole("begin");
+       introConsole = new IntroductionConsole("begin");
+
 
 
         Console.load("m:stats");
@@ -145,6 +147,8 @@ public class Core {
         ASCIIART.sendTitle();
 
 
+        IntroMenu menu = new IntroMenu("m:intro");
+        menu.buildAndRun();
         Console console = Console.getConsole(Console.actualConsole);
         console.defaultPrint = formatter.getDefaultStream();
         DevToolsToken devToolsToken = new DevToolsToken();
@@ -154,7 +158,7 @@ public class Core {
         Console.printLang("core.server.starting");
         try {
             CoreServer coreServer;
-            Thread thread = new Thread(coreServer = new CoreServer(14520));
+            Thread thread = new Thread(coreServer = new CoreServer(Main.getGlobalSettings().getPort()));
             thread.start();
             console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {
@@ -206,7 +210,7 @@ public class Core {
 
         Main.getCommandReader().init();
 
-        console.reloadCompletor();
+        console.reloadCompletors();
 
         createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 
@@ -214,15 +218,16 @@ public class Core {
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
-        if(Main.getBundlesLoading().isFirstLoad()){
-            Console.setActualConsole("m:introbegin",true,false);
+        if(!Main.getBundlesLoading().isFirstLoad()){
+            menu.show();
+           // Console.setActualConsole("m:introbegin",true,false);
         }
 
         if(Main.getGlobalSettings().isCheckDefaultJVMVersion()){
             try {
                 Integer ver = ProcessUtils.getDefaultBashJavaVersion(javaIndex.getDefaultJava().getPath());
                 if(ver != null){
-                    System.out.println("Your default Java version is "+ ver);
+                    System.out.println("Your default Java "+ Console.getEmoji("coffee","",""," ")+"version is "+ ver);
                     javaIndex.getDefaultJava().setVersion(ver);
                 }
 
@@ -234,8 +239,9 @@ public class Core {
         if(Config.isWindows()){
             Console.printLang("core.windowsWarning");
         }
-        Console.setBlockConsole(false);
 
+
+        Console.setBlockConsole(false);
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

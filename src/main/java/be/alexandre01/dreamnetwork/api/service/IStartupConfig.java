@@ -13,7 +13,7 @@ public interface IStartupConfig extends IConfig {
     }
     void saveFile();
 
-    boolean changePort(String pathName, String finalname, int port, IContainer.JVMType jvmType, JVMExecutor.Mods mods);
+    boolean changePort(String pathName, String finalname, int port,int defaultPort, IContainer.JVMType jvmType, JVMExecutor.Mods mods);
 
     Integer getCurrentPort(String pathName, String finalname, IContainer.JVMType jvmType, JVMExecutor.Mods mods);
 

@@ -22,7 +22,7 @@ public class DefaultBungeeRequest extends RequestBuilder {
             return message;
         });
         requestData.put(RequestType.PROXY_UNREGISTER_SERVER,(message,client, args) -> {
-            System.out.println("REQUEST UNREGISTER SERVER");
+            Console.fine("REQUEST UNREGISTER SERVER");
             message.set("PROCESSNAME",args[0]);
             return message;
         });

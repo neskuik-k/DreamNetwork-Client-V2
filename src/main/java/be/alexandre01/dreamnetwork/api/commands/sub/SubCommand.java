@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.commands.sub;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import lombok.NonNull;
 
 public abstract class SubCommand extends SubCommandCompletor implements SubCommandExecutor {
@@ -7,7 +8,12 @@ public abstract class SubCommand extends SubCommandCompletor implements SubComma
 
     SubCommandExecutor subCommandExecutor;
 
-
+    public SubCommand() {
+        super();
+    }
+    public SubCommand(Command command) {
+        super(command);
+    }
     // wArgs = Working Args
     public boolean when(SubCommandExecutor subCommandExecutor,String[] args,String... wArgs) {
         return new SubCommandExecutor() {

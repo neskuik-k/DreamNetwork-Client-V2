@@ -45,8 +45,12 @@ public class Config {
         File theDir = new File(getPath(path));
 
         if (!theDir.exists()) {
-            if(notify)
-                Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), Level.INFO);
+            Level level = Level.FINE;
+            if(notify){
+                level = Level.INFO;
+            }
+
+            //Console.print(Chalk.on("Creating the directory... ").cyan() + theDir.getName(), level);
             boolean result = false;
 
             try{
@@ -56,8 +60,8 @@ public class Config {
             catch(SecurityException se){
                 //handle it
             }
-            if(result && notify) {
-                Console.print(Chalk.on("Directory created").cyan(),Level.INFO);
+            if(result) {
+                Console.printLang("console.createDir",level);
             }
         }
     }

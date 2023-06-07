@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.commands.sub;
 
+import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import org.jline.builtins.Completers;
@@ -9,6 +10,14 @@ import java.util.ArrayList;
 public class SubCommandCompletor {
     public ArrayList<Object> sub = new ArrayList<>();
     public CustomTreeCompleter.Node node;
+    public Object value;
+
+    public SubCommandCompletor(){
+    }
+    public SubCommandCompletor(Command command){
+        this.value = command.getCompletorValue();
+    }
+
     public void addCompletor(Object... content){
         sub.add(content);
     }

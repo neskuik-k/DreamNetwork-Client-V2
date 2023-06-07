@@ -38,6 +38,5 @@ public class RequestBuilder {
          */
         public Message write(Message message, IClient client, Object... args);
 
-
     }
 }

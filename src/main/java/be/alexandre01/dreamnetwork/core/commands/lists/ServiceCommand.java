@@ -9,15 +9,16 @@ import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 public class ServiceCommand extends Command {
     public ServiceCommand(String name) {
         super(name);
-        addSubCommand("create",new Create());
-        addSubCommand("stop",new Stop());
-        addSubCommand("restart",new Restart());
-        addSubCommand("remove",new Remove());
-        addSubCommand("start",new Start());
-        addSubCommand("install",new Install());
-        addSubCommand("screen",new Screen());
-        addSubCommand("list",new List());
-        addSubCommand("kill",new Kill());
+        setCompletorValue("service",getBaseColor()+"service");
+        addSubCommand("create",new Create(this));
+        addSubCommand("stop",new Stop(this));
+        addSubCommand("restart",new Restart(this));
+        addSubCommand("remove",new Remove(this));
+        addSubCommand("start",new Start(this));
+        addSubCommand("install",new Install(this));
+        addSubCommand("screen",new Screen(this));
+        addSubCommand("list",new List(this));
+        addSubCommand("kill",new Kill(this));
 
         String nameLang = Console.getFromLang("name");
         getHelpBuilder().setTitleUsage(Console.getFromLang("commands.service.titleUsage"));
@@ -37,5 +38,10 @@ public class ServiceCommand extends Command {
     @Override
     public String getBaseColor() {
         return Colors.GREEN_BOLD;
+    }
+
+    @Override
+    public String getEmoji() {
+        return Console.getEmoji("gear");
     }
 }

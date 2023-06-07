@@ -1,9 +1,0 @@
-# This is the global settings of the server | Sadness is the opposite of happiness
-SIG_IGN_Handler: true
-checkDefaultJVMVersion: true
-checkJVMVersionOnServiceStart: true
-findAllocatedPorts: true
-language: en_EN
-port: 14520
-rainbowText: true
-username: '%red%Salut'

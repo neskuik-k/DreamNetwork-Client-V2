@@ -44,7 +44,7 @@ public class BundlesLoading {
         System.out.println("\n");
 
 
-        Core.getInstance().init();
+
     }
 
     public void loadBundle(File[] directories,String prefix,BundleData currentBundle){
@@ -120,7 +120,9 @@ public class BundlesLoading {
                     if(isPreview){
                         System.out.println(Console.getFromLang("bundle.loadTemplate.addJar", name));
                         try {
+                            System.out.println("");
                             is = new FileInputStream(previewFile);
+
                         } catch (FileNotFoundException e) {
                             e.printStackTrace();
                         }

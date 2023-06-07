@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.formatter;
 
 
+import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import com.github.tomaslanger.chalk.Chalk;
 
@@ -19,6 +20,9 @@ import java.util.logging.LogRecord;
 public class ConciseFormatter extends Formatter {
         private final DateFormat date = new SimpleDateFormat( "HH:mm:ss");
         private final boolean coloured;
+
+        String warningEmoji = Console.getEmoji("warning","",""," ");
+        String errorEmoji = Console.getEmoji("stop_sign","",""," ");
 
         public ConciseFormatter(boolean coloured) {
             this.coloured = coloured;
@@ -96,13 +100,13 @@ public class ConciseFormatter extends Formatter {
 
             if ( level == Level.INFO )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).bold().green());
+                builder.append(Chalk.on(level.getLocalizedName()).bold().green());
             } else if ( level == Level.WARNING )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).bold().yellow());
+                builder.append(warningEmoji+Chalk.on(level.getLocalizedName()).bold().yellow());
             } else if ( level == Level.SEVERE )
             {
-                builder.append( Chalk.on(level.getLocalizedName()).bold().red());
+                builder.append(errorEmoji+ Chalk.on(level.getLocalizedName()).bold().red());
             } else if(level == Level.FINE){
                 builder.append( Chalk.on("DEBUG").bgRed().white().bold());
             }else

@@ -28,7 +28,7 @@ public class BaseResponse extends CoreResponse {
     public BaseResponse(){
         this.core = Core.getInstance();
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
-            IJVMExecutor startExecutor = this.core.getJvmContainer().getJVMExecutor(message.getString("SERVERNAME"), "main");
+            IJVMExecutor startExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
             if (startExecutor == null) {
                 return;
             }
@@ -37,12 +37,13 @@ public class BaseResponse extends CoreResponse {
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
-            IJVMExecutor stopExecutor = this.core.getJvmContainer().getJVMExecutor(stopServerSplitted[0], "main");
+            IJVMExecutor stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
             if (stopExecutor == null) {
                 return;
             }
+            Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
             stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
-            stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
+            //stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
         addRequestInterceptor(SERVER_EXECUTE_COMMAND,(message, ctx, c) -> {

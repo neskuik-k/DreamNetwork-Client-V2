@@ -51,6 +51,7 @@ public class ScreenOutWriter {
                         if (!commands.check(args)) {
                             try {
                                 if(!screen.getService().getProcess().isAlive()){
+                                    Console.fine("The PROCESS cannot be writed anymore.");
                                     screen.destroy();
                                     return;
                                 }
