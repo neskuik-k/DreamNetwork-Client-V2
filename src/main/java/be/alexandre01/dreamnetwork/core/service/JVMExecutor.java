@@ -15,6 +15,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.service.deployment.Deploy;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaVersion;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
@@ -375,7 +376,24 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         String javaPath = version.getPath();
         if(jvmConfig.getStartup() != null){
             startup = jvmConfig.getStartup().replaceAll("%java%",javaPath).replaceAll("%xmx%",jvmConfig.getXmx()).replaceAll("%xms%",jvmConfig.getXms());
+            if(getScreenEnabled() == null){
+                if(!startup.startsWith(javaPath)){
+                    Console.print(Colors.RED+"ScreenViewer disabled for "+jvmConfig.getName()+" because the startup line doesn't start with java path",Level.WARNING);
+                    jvmConfig.setScreenEnabled(false);
+                }
+            }
+        }else{
+            if(Config.isWindows()){
+                if(getInstallLink() != null){
+                    if(getInstallLink().getExecType() == ExecType.BUNGEECORD){
+                        startup = "cmd /c start "+ javaPath +" -Xms"+jvmConfig.getXms()+" -Xmx"+jvmConfig.getXmx()+" %args% -jar %exec% nogui";
+                        jvmConfig.setScreenEnabled(false);
+                        Console.print(Colors.PURPLE_BOLD_BRIGHT+"Changing startup mode, Screen Viewer for BungeeCord is not good supported on Windows\n Switch to terminal console mode",Level.WARNING);
+                    }
+                }
+            }
         }
+
 
 
         Process proc = null;
@@ -397,8 +415,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         if(jvmConfig.getType().equals(Mods.DYNAMIC)){
             if(startup != null){
                 String jarPath = new File(System.getProperty("user.dir")+ Config.getPath("/bundles/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+ this.getExecutable();
-                startup = startup.replace("%jar%",customArgs +  jarPath).replace("%exec%",customArgs + jarPath);
-                Console.print(startup,Level.FINE);
+                startup = startup.replace("%jar%",  jarPath).replace("%exec%", jarPath);
+                startup = startup.replace("%args%",customArgs);
+
+                Console.print("JavaLine >" + startup,Level.FINE);
                 proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/runtimes/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname))).start();
 
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
@@ -418,8 +438,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 if(startup != null){
                     String jarPath = new File(System.getProperty("user.dir")+Config.getPath("/bundles/"+jvmConfig.getPathName()+"/"+jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\","/")+"/"+jvmConfig.getExecutable();
 
-                    startup = startup.replaceAll("%jar%",customArgs + jarPath).replaceAll("%exec%",customArgs + jarPath);
-                    Console.print(startup,Level.FINE);
+                    startup = startup.replaceAll("%jar%", jarPath).replaceAll("%exec%", jarPath);
+                    startup = startup.replace("%args%",customArgs);
+                    Console.print("JavaLine >" + startup,Level.FINE);
+
                     ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir")+Config.getPath("/logs/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()+"/"+finalname)+"/logs.txt"));
 
                     proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir")+Config.getPath("/bundles/"+jvmConfig.getPathName()+"/"+jvmConfig.getName()))).redirectErrorStream(true).start();
@@ -483,12 +505,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         core.getEventsFactory().callEvent(new CoreServiceStartEvent(core.getDnCoreAPI(),jvmService));
         //SCREEN SYSTEM
 
-        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        new Screen(jvmService);
+        /*ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
-            new Screen(jvmService);
+
             executorService.shutdown();
         }, 0, 1, TimeUnit.SECONDS);
-
+*/
 
         queue.remove(jvmConfig);
         if(!queue.isEmpty()){

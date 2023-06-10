@@ -61,7 +61,7 @@ public class Config {
                 //handle it
             }
             if(result) {
-                Console.printLang("console.createDir",level);
+                Console.printLang("console.createDir",level,theDir.getName());
             }
         }
     }

@@ -99,10 +99,10 @@ public class ScreenInReader extends Thread {
                             if(arg == null){
                                 continue;
                             }
-                            sb.append(arg);
-                            if(i != args.length-1)
-                                sb.append("\n");
                         }
+                        sb.append(arg);
+                        if(i != args.length-1)
+                            sb.append("\n");
                     }
                     data = sb.toString();
                     if(data.toString() != null){

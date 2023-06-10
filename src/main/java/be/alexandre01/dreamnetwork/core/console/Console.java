@@ -169,6 +169,7 @@ public class Console extends Thread{
                 }
             }
 
+
         }
         try {
             ConsoleReader.sReader.getHistory().purge();
@@ -249,19 +250,10 @@ public class Console extends Thread{
     }
 
     public static void fine(Object s){
-
-        FileHandler fh = Core.getInstance().getFileHandler();
-        String msg = s == null ? "null": s.toString();
-        if(Core.getInstance().isDebug()){
-           print(msg,Level.FINE);
-            return;
-        }
-        if(fh != null){
-            sendToLog(msg,Level.FINE,"global");
-        }
+        print(s,Level.FINE);
     }
     public static void fineLang(String map, Object s){
-        fine(Console.getFromLang(map,s));
+        printLang(map,s,Level.FINE);
     }
     public static void print(String s, Level level,String name){
 
@@ -326,7 +318,7 @@ public class Console extends Thread{
 
     public static void printLang(String map,Level level,Object... params){
         if(Core.getInstance().isDebug()) {
-            print(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+            print(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.FINE);
             return;
         }
         print(LanguageManager.getMessage(map,params),level);

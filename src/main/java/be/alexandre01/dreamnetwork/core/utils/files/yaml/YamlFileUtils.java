@@ -71,18 +71,28 @@ public class YamlFileUtils<T> {
         Yaml yaml = new Yaml(new Constructor(),new CustomRepresenter(skipNull,clazz,null)/*,representer*/);
 
         try {
-            LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
+           /* LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
             if(map == null){
                 return null;
             }
             if(map.isEmpty()){
                 return null;
+            }*/
+            T t = null;
+            try {
+                t = yaml.loadAs(new FileInputStream(file),clazz);
+            }catch (Exception e){
+                System.out.println("Error while loading file: "+file.getName());
+                //e.printStackTrace();
             }
-            Gson gson = new Gson();
-            T t = gson.fromJson(gson.toJsonTree(map), clazz);
+
+
+
+           // Gson gson = new Gson();
+            //T t = gson.fromJson(gson.toJsonTree(map), clazz);
           //  YamlFileUtils.this.readFile();
             return t;
-        } catch (FileNotFoundException e) {
+        } catch (Exception e) {
             Console.printLang("core.utils.yaml.loadFileError", file.getName());
             e.printStackTrace();
             return null;
@@ -94,7 +104,10 @@ public class YamlFileUtils<T> {
 
         // Copy all data from config to this class
         // get declaredfields and fields
-
+        if(config == null){
+          System.out.println("Config is null");
+            return;
+        }
         Field[] fields = config.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);

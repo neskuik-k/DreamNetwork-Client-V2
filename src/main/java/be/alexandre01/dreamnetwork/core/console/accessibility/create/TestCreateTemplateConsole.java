@@ -2,7 +2,9 @@ package be.alexandre01.dreamnetwork.core.console.accessibility.create;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -187,6 +189,8 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
                     }else {
                         jvmExecutor.updateConfigFile(bundleData.getName(), serverName, mods,xms, xmx, port, proxy, null, null, null);
                     }
+                    CustomType.reloadAll(BundlesNode.class);
+
 
                     return Operation.accepted(args[0]);
                 }

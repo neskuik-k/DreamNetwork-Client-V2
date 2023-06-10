@@ -36,6 +36,8 @@ public interface IScreen extends Runnable {
 
     void setScreenName(String screenName);
 
+    boolean isViewing();
+
     String toString();
 
     boolean equals(Object o);

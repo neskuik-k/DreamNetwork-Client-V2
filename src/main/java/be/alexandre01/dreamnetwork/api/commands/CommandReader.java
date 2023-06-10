@@ -49,6 +49,7 @@ public class CommandReader{
         commands.addCommands(new GuiCommand("gui"));
         commands.addCommands(new HypervisorCommand("hypervisor"));
         commands.addCommands(new AddonCommand("addon"));
+        commands.addCommands(new DeployCommand("deploy"));
         ConsoleReader.reloadCompleter();
     }
 

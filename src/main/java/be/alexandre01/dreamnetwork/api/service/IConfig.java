@@ -41,4 +41,7 @@ public interface IConfig {
 
     public String getInstallInfo();
     public void setInstallInfo(String info);
+
+    public Boolean getScreenEnabled();
+    public void setScreenEnabled(Boolean screenEnabled);
 }

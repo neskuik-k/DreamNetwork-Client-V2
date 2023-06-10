@@ -75,10 +75,10 @@ public class ProcessUtils {
         String OS = System.getProperty("os.name").toLowerCase();
         String command = null;
         if (OS.indexOf("win") >= 0) {
-            Console.fine(Console.getFromLang("core.utils.process.checkAliveWindows", pidStr));
+            //Console.fine(Console.getFromLang("core.utils.process.checkAliveWindows", pidStr));
             command = "cmd /c tasklist /FI \"PID eq " + pidStr + "\"";
         } else {
-            Console.fine(Console.getFromLang("core.utils.process.checkAliveLinuxUnix", pidStr));
+           // Console.fine(Console.getFromLang("core.utils.process.checkAliveLinuxUnix", pidStr));
             command = "ps -p " + pidStr;
         }
         return isProcessIdRunning(pidStr, command); // call generic implementation
@@ -93,17 +93,17 @@ public class ProcessUtils {
             BufferedReader bReader = new BufferedReader(isReader);
             String strLine = null;
             while ((strLine= bReader.readLine()) != null) {
-                Console.fine(Console.getFromLang("core.utils.process.isRunning.line", strLine));
+            //    Console.fine(Console.getFromLang("core.utils.process.isRunning.line", strLine));
                 if (strLine.contains(pid + " ")) {
-                    Console.fine(Console.getFromLang("core.utils.process.isRunning.running", pid));
+                  //  Console.fine(Console.getFromLang("core.utils.process.isRunning.running", pid));
                     return true;
                 }
             }
-            Console.fine(Console.getFromLang("core.utils.process.isRunning.notRunning", pid));
+            //Console.fine(Console.getFromLang("core.utils.process.isRunning.notRunning", pid));
 
             return false;
         } catch (Exception ex) {
-            Console.debugPrint(Console.getFromLang("core.utils.process.isRunning.systemCommandError", command));
+            //Console.debugPrint(Console.getFromLang("core.utils.process.isRunning.systemCommandError", command));
             return true;
         }
     }

@@ -33,17 +33,17 @@ public class CopyAndPaste extends Thread{
     private File defaultLocation;
     private File defaultTargetLocation;
     private EstablishedAction establishedAction;
-    private String[] exeptFile;
+    private String[] exceptFile;
     private MemoryMXBean memoryBean = ManagementFactory.getMemoryMXBean();
     private long xmx;
     public boolean hasReached = false;
     AtomicBoolean b = new AtomicBoolean(false);
 
-    public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction,String... exeptFile){
+    public CopyAndPaste(File sourceLocation, File targetLocation, EstablishedAction establishedAction,String... exceptFile){
         this.defaultLocation = sourceLocation;
         this.defaultTargetLocation = targetLocation;
         this.establishedAction = establishedAction;
-        this.exeptFile = exeptFile;
+        this.exceptFile = exceptFile;
         xmx = memoryBean.getHeapMemoryUsage().getMax();
         this.parts = new HashMap<>();
         this.fileChannels = new HashMap<>();
@@ -72,7 +72,7 @@ public class CopyAndPaste extends Thread{
         if (Files.isDirectory(sourceLocation)) {
             fetchFilesFromDirectory(sourceLocation);
         } else {
-            boolean result = Arrays.stream(exeptFile).anyMatch(sourceLocation.getFileName().toString()::equals);
+            boolean result = Arrays.stream(exceptFile).anyMatch(sourceLocation.getFileName().toString()::equals);
             if(!result){
                 paths.add(sourceLocation);
             }
@@ -98,8 +98,6 @@ public class CopyAndPaste extends Thread{
         }
         Collection<Path> list = countFiles(source);
         list.forEach(this::fetchCurrentFile);
-
-
 
     }
     private void proceedOperations(){
@@ -140,7 +138,7 @@ public class CopyAndPaste extends Thread{
        // System.out.println("GET POSITION >> "+ position/1024+"ko");
         //System.out.println("GET NEW ALLOC >> "+  alloc/1024+"ko");
         if(alloc > xmx/8){
-            System.out.println("TROP GROS");
+            System.out.println("TOO FAT");
             alloc = (int) (xmx/8)+1;
             long pAllocated = 0;
             if(parts.containsKey(in)){

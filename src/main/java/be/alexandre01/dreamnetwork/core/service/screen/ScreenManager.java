@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -53,6 +54,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public void remScreen(IScreen screen){
+        if(screen.getService().getClient() == null){
+          screen.getService().removeService();
+        }
         if(screens.containsValue(screen)){
             Console.printLang("service.screen.closed", screen.getScreenName());
             screens.remove(screen.getScreenName());
@@ -71,11 +75,17 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     @Override
     public void watch(String server){
         //Console.clearConsole();
+        if(!screens.get(server).isViewing()){
+            Console.print(Colors.RED+server+" is not viewing");
+            return;
+        }
 
         //A PATCH
         if(screenCurrentId.containsKey(server) && screenCurrentId.size() == 1){
-            server += "-"+0;
+            server += "-"+1;
         }
+
+
        screens.get(server).getScreenStream().init(server,screens.get(server));
     }
 

@@ -9,10 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroMenu;
-import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroductionConsole;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.Config;
@@ -85,8 +82,6 @@ public class Core {
         instance = new Core();
     }
 
-    @Getter private IntroductionConsole introConsole;
-    @Getter private CreateTemplateConsole createTemplateConsole;
 
     public Core(){
         //JVM ARGUMENTS
@@ -212,7 +207,6 @@ public class Core {
 
         console.reloadCompletors();
 
-        createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);

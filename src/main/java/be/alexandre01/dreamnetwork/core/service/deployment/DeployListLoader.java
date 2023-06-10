@@ -25,6 +25,7 @@ public class DeployListLoader {
             if (deployContainer.load()) {
                 System.out.println(Colors.CYAN_BRIGHT+ "Loaded deploy: " + deployContainer.getDeployData().getName());
                 //DeployList.addDeployContainer(deployContainer);
+
             }else {
                 System.out.println(Colors.RED+"Failed to load deploy: " + deployContainer.getName());
             }

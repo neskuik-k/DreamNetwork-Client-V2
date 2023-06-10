@@ -20,6 +20,7 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     @Getter String javaVersion = "default";
     @Getter int port = 0;
     String installInfo = null;
+    Boolean screenEnabled = null;
 
 
     public JVMConfig(){

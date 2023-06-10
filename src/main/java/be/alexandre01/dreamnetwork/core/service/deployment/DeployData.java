@@ -1,28 +1,37 @@
 package be.alexandre01.dreamnetwork.core.service.deployment;
 
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
-@Getter
-public class DeployData extends YamlFileUtils<DeployData> {
+@Getter @Setter
+public class DeployData extends YamlFileUtils<DeployData> implements Deploy{
 
-    transient String name;
+    @Ignore private String name;
+    @Ignore private File directory;
 
-    String author = Main.getGlobalSettings().getUsername();
-    String[] deployTypes = new String[]{"CONFIGURATION"};
-    String compatibleVersions = "UNKNOWN";
-    String version = "1.0";
+    private String author = Main.getGlobalSettings().getUsername();
+    private String[] types =  new String[]{"CONFIGURATION"};
+    private String compatibleVersions = "UNKNOWN";
+    private String version = "1.0";
+
 
 
     public DeployData(){
+        // Init
 
     }
     public boolean loading(File file){
         addAnnotation("Deployment folder for Services");
         name = file.getName();
+        directory = file.getParentFile();
         if(!super.config(file, DeployData.class,true)){
             super.saveFile(DeployData.class.cast(this));
         }else {
@@ -37,8 +46,11 @@ public class DeployData extends YamlFileUtils<DeployData> {
     }
 
     public DeployType[] getDeployTypes(){
-        return new DeployType[0];
+        return Arrays.stream(types).map(DeployType::valueOf).toArray(DeployType[]::new);
     }
+
+
+
     public enum DeployType{
         CONFIGURATIONS,
         ONLY_MAP,

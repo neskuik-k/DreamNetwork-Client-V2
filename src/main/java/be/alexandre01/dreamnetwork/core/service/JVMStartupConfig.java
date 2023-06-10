@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
@@ -375,6 +376,26 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             if(link.getExecType() == ExecType.VELOCITY){
                 updateFile("velocity.toml",getClass().getClassLoader().getResourceAsStream("files/velocity/velocity.toml"));
                 updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/velocity/server-icon.png"));
+                //generate random string password with 32 characters for forwarding secret
+                File file = new File(Config.getPath(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/forwarding.secret"));
+                if(!file.exists()){
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                BufferedWriter writer = null;
+                try {
+                    writer = new BufferedWriter(new FileWriter(file));
+                    //generate random string password with 32 characters
+                    String key = RandomStringUtils.randomAlphanumeric(32);
+                    writer.write(key);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
             return;

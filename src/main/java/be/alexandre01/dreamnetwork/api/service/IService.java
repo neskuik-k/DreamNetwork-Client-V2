@@ -4,7 +4,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 
 public interface IService {
-
     int getId();
     int getPort();
     String getXmx();

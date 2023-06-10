@@ -5,16 +5,17 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.console.ConsoleMessage;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.BungeeCordReader;
-import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.SpigotReader;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.spigot.SpigotReader;
 import org.jline.reader.LineReader;
 
 
 import java.io.*;
-import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 public class ScreenStream {
@@ -61,6 +62,8 @@ public class ScreenStream {
             if(execType == ExecType.BUNGEECORD){
                 screenInReader.getReaderLines().add(new BungeeCordReader());
             }
+
+
             if(execType == ExecType.SPIGOT){
                screenInReader.getReaderLines().add(new SpigotReader());
             }
@@ -94,6 +97,11 @@ public class ScreenStream {
         }
         screenOutWriter.run();
         Console.setActualConsole("s:"+name);
+        ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
+        if(!h.get(h.size()-1).content.endsWith("\n")){
+            console.defaultPrint.print("\n");
+        }
+
 
     }
     public void exit(){
