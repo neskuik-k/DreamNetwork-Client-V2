@@ -74,9 +74,9 @@ public class CopyAndPaste extends Thread{
         } else {
             boolean result = Arrays.stream(exceptFile).anyMatch(sourceLocation.getFileName().toString()::equals);
             if(!result){
+                System.out.println(""+sourceLocation);
                 paths.add(sourceLocation);
             }
-
         }
 
         filesToOperate.decrementAndGet();
@@ -98,12 +98,16 @@ public class CopyAndPaste extends Thread{
         }
         Collection<Path> list = countFiles(source);
         list.forEach(this::fetchCurrentFile);
-
     }
     private void proceedOperations(){
         String in = defaultLocation.getAbsolutePath();
         String out = defaultTargetLocation.getAbsolutePath();
-        for(Path path : paths){
+        for (int i = 0; i < paths.size(); i++) {
+            Path path = paths.get(i);
+            if(path == null){
+                System.out.println("PATH IS NULL "+ i);
+                continue;
+            }
             Path outFile = Paths.get(out+path.toString().substring(in.length()));
             try {
                 copyFile(path,outFile);
@@ -160,7 +164,16 @@ public class CopyAndPaste extends Thread{
             fileChannels.remove(in);
             return;
         }
-        ByteBuffer buffer = ByteBuffer.allocateDirect(alloc);
+        ByteBuffer buffer;
+        try {
+             buffer = ByteBuffer.allocateDirect(alloc);
+        }catch (OutOfMemoryError e){
+            //cancel
+            System.out.println("OUT OF MEMORY");
+            parts.remove(in);
+            return;
+        }
+
         AsynchronousFileChannel asyncChannelIn = AsynchronousFileChannel.open(in, StandardOpenOption.READ);
         long finalPosition = position;
         asyncChannelIn.read(buffer,0,buffer,new CompletionHandler<Integer,ByteBuffer>(){
@@ -185,6 +198,9 @@ public class CopyAndPaste extends Thread{
                         try {
                             Files.createFile(target);
                         }catch (FileAlreadyExistsException f){
+                            System.out.println("Cancel 5");
+                            establishedAction.cancelled();
+                            stop();
                             return;
                         }
                     }
@@ -214,7 +230,7 @@ public class CopyAndPaste extends Thread{
                         public void completed(Integer result, ByteBuffer attachment) {
                             // System.out.println("Complete WRITE");
                             paths.remove(in);
-                           buffer.clear();
+                           /*buffer.clear();
                            //DEPRECATED IN JDK 9+
                             try {
                                 destroyDirectByteBuffer(buffer);
@@ -224,7 +240,7 @@ public class CopyAndPaste extends Thread{
                                 e.printStackTrace();
                             } catch (NoSuchMethodException e) {
                                 e.printStackTrace();
-                            }
+                            }*/
 
                             if(parts.containsKey(in)){
                                 try {
@@ -258,6 +274,7 @@ public class CopyAndPaste extends Thread{
                                         System.out.println(Colors.RED_BOLD+"java --add-opens are not set please add this argument before -jar");
                                         System.out.println(Colors.RED_BOLD+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");
                                     }
+                                    System.out.println("Cancel 1");
                                     establishedAction.cancelled();
                                     return;
                                 }
@@ -280,8 +297,10 @@ public class CopyAndPaste extends Thread{
 
 
                                 Path path = null;
-                                if(paths.size() > 0)
+                                if(!paths.isEmpty()){
                                     path = paths.get(0);
+                                }
+
                               //  System.out.println(">> "+path);
                                 if(path == null && !cancelled){
                                     if(b.get())
@@ -308,6 +327,7 @@ public class CopyAndPaste extends Thread{
                                         return;
                                     paths.clear();
                                     b.set(true);
+                                    System.out.println("Cancel 2");
                                     establishedAction.cancelled();
                                     if(warn){
                                         System.out.println("java --add-opens are not set please add this argument before -jar");
@@ -338,6 +358,7 @@ public class CopyAndPaste extends Thread{
 
 
                             if(paths.size() == 0){
+                                System.out.println("Cancel 3");
                                 establishedAction.cancelled();
                                 if(warn){
                                     System.out.println("java --add-opens are not set please add this argument before -jar");
@@ -373,6 +394,7 @@ public class CopyAndPaste extends Thread{
 
                 paths.clear();
                 establishedAction.cancelled();
+                System.out.println("cancel 4");
                 if(warn){
                     System.out.println(Colors.RED_BOLD_BRIGHT+"java --add-opens are not set please add this argument before -jar");
                     System.out.println(Colors.RED_BOLD_BRIGHT+"--add-opens java.base/java.nio=ALL-UNNAMED --add-opens java.base/jdk.internal.ref=ALL-UNNAMED");

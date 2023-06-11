@@ -69,7 +69,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void channelRegistered(final ChannelHandlerContext ctx) {
         printLang("connection.core.handler.localAddress", Level.FINE, ctx.channel().localAddress());
         printLang("connection.core.handler.remoteAddress", Level.FINE, ctx.channel().remoteAddress());
-
+        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
         if (!hasDevUtilSoftwareAccess) {

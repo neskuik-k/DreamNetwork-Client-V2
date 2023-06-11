@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
@@ -193,11 +194,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
                 ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
                 int finalServers = servers;
-                service.scheduleAtFixedRate(() -> {
                     try {
-                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getPathName() + "/" + getName())).getAbsolutePath())), new File(Config.getPath("runtimes/" + getPathName() + "/" + getName() + "/" + finalname)), new EstablishedAction() {
+                        Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getPathName() + "/" + getName())).getAbsolutePath())), new File(System.getProperty("user.dir") +Config.getPath("/runtimes/" + getPathName() + "/" + getName() + "/" + finalname)), new FileCopyAsync.ICallback() {
                             @Override
-                            public void completed() {
+                            public void call() {
                                 dateBuilderTimer.loadComplexDate();
                                 Console.printLang("service.executor.asyncCopy", Level.FINE, dateBuilderTimer.getLongBuild());
                                 isDoneWithSucess.set(true);
@@ -215,7 +215,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             }
 
                             @Override
-                            public void cancelled() {
+                            public void cancel() {
                                 dateBuilderTimer.loadComplexDate();
                                 Console.printLang("service.executor.cannotAsyncCopy", dateBuilderTimer.getLongBuild());
                                 queue.remove(jvmConfig);
@@ -224,12 +224,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                     startJVM(queue.get(0));
                                 }
                             }
-                        }, this.getExecutable());
+
+                        },false, this.getExecutable());
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Console.bug(e);
                     }
-                    service.shutdown();
-                },1,1 ,TimeUnit.SECONDS);
+                  //  service.shutdown();
 
             }else{
                 return proceedStarting(finalname,servers,jvmConfig);

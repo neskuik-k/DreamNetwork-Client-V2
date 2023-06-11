@@ -17,6 +17,7 @@ import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
@@ -48,6 +49,7 @@ public class Main {
     @Setter
     public static BundleManager bundleManager;
     @Getter private static GlobalSettings globalSettings;
+    @Getter private static FileCopyAsync fileCopyAsync;
 
     @Getter
     private JVMContainer jvmContainer;
@@ -98,6 +100,8 @@ public class Main {
             for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
             Core.setUsername(line);
         }
+
+        fileCopyAsync = new FileCopyAsync();
         languageManager = new LanguageManager();
 
         if(!languageManager.load()){

@@ -24,7 +24,7 @@ public class Deployer {
 
     public void deploys(File folder,DeployAction action) throws IOException {
         DeployData deployData = deployDatas.get(tasks);
-        Config.asyncCopy(deployData.getDirectory(), folder, new EstablishedAction() {
+        /*/Config.asyncCopy(deployData.getDirectory(), folder, new EstablishedAction() {
             @Override
             public void completed() {
                 tasks++;
@@ -44,7 +44,7 @@ public class Deployer {
                 action.cancelled();
                 return;
             }
-        });
+        });*/
     }
     interface DeployAction{
         void completed();

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.config;
 
 
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
 
@@ -107,11 +108,14 @@ public class Config {
         return false;
 
     }
-    public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction,String... exceptFile) throws IOException {
+  /*  public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction,String... exceptFile) throws IOException {
         CopyAndPaste copyAndPaste = new CopyAndPaste(sourceLocation,targetLocation,establishedAction,exceptFile);
         Thread thread = new Thread(copyAndPaste);
         thread.run();
-    }
+    }*/
+  public static void asyncCopy(File sourceLocation, File targetLocation, FileCopyAsync.ICallback call,boolean deleteTarget, String... exceptFile) throws IOException {
+      Main.getFileCopyAsync().execute(sourceLocation.toPath(),targetLocation.toPath(),call,deleteTarget,exceptFile);
+  }
     public static void copy(File sourceLocation, File targetLocation) throws IOException {
         if (sourceLocation.isDirectory()) {
             copyDirectory(sourceLocation, targetLocation);

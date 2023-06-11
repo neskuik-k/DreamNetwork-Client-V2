@@ -14,6 +14,9 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
 
+    int threadPoolIO= 10;
+    String copyIOMethod = "files";
+
     boolean screenNameInConsoleChange= true;
     String username = null;
     int port = 14520;
