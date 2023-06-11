@@ -171,7 +171,6 @@ public class BaseResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
         //Console.debugPrint(message);
-        System.out.println("BaseResponse");
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
         ChannelPacket receivedPacket = new ChannelPacket(message);
         IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
