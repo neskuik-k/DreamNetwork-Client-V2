@@ -1,16 +1,20 @@
 package be.alexandre01.dreamnetwork.core.service.deployment;
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.CopyAndPaste;
 import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
+import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Deployer {
-    List<DeployData> deployDatas = new ArrayList<>();
+    List<Deploy> deployDatas = new ArrayList<>();
 
     int tasks = 0;
 
@@ -18,17 +22,24 @@ public class Deployer {
 
     }
 
-    public void addDeployData(DeployData deployData){
-        this.deployDatas.add(deployData);
+    public void addDeploy(Deploy deploy){
+        if(!deployDatas.contains(deploy))
+            this.deployDatas.add(deploy);
     }
 
-    public void deploys(File folder,DeployAction action) throws IOException {
-        DeployData deployData = deployDatas.get(tasks);
-        /*/Config.asyncCopy(deployData.getDirectory(), folder, new EstablishedAction() {
+    public void deploys(File folder,DeployAction action,String... exceptFile) throws IOException {
+        //add /deploy.yml in exceptFile
+        exceptFile = Arrays.copyOf(exceptFile, exceptFile.length + 1);
+        exceptFile[exceptFile.length - 1] = "deploy.yml";
+        System.out.println("Deploying "+deployDatas.size()+" deploys");
+        Deploy deploy = deployDatas.get(0);
+        System.out.println(deploy.getDirectory().getName());
+        Config.asyncCopy(deploy.getDirectory(), folder, new FileCopyAsync.ICallback() {
             @Override
-            public void completed() {
-                tasks++;
-                if(tasks == deployDatas.size()){
+            public void call() {
+                System.out.println("Task completed "+tasks);
+                deployDatas.remove(0);
+                if(deployDatas.isEmpty()){
                     action.completed();
                     return;
                 }
@@ -40,13 +51,12 @@ public class Deployer {
             }
 
             @Override
-            public void cancelled() {
+            public void cancel() {
                 action.cancelled();
-                return;
             }
-        });*/
+        },false,exceptFile);
     }
-    interface DeployAction{
+    public interface DeployAction{
         void completed();
         void cancelled();
     }

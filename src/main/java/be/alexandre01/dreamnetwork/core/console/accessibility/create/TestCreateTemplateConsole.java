@@ -1,14 +1,12 @@
 package be.alexandre01.dreamnetwork.core.console.accessibility.create;
 
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
@@ -18,9 +16,16 @@ import be.alexandre01.dreamnetwork.core.console.accessibility.install.InstallTem
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
+import be.alexandre01.dreamnetwork.core.service.deployment.Deploy;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployContainer;
+import be.alexandre01.dreamnetwork.core.service.deployment.Deployer;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.core.utils.clients.NumberArgumentCheck;
 import be.alexandre01.dreamnetwork.core.utils.clients.RamArgumentsChecker;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 import static be.alexandre01.dreamnetwork.core.console.Console.getFromLang;
@@ -195,6 +200,68 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
                     return Operation.accepted(args[0]);
                 }
               });
+
+              if(!Main.getDeployManager().getDeployDataHashMap().isEmpty()){
+                  addValueInput(PromptText.create("deployAsk"), new AcceptOrRefuse(this, new AcceptOrRefuse.AcceptOrRefuseListener() {
+                      @Override
+                      public void transition(ShowInfos infos) {
+                          infos.onEnter("DEPLOYS FOUND ! Do you want to add deploys ?");
+                      }
+
+                      @Override
+                      public Operation accept(String value, String[] args, ShowInfos infos) {
+                          String[] array = Main.getDeployManager().getDeployDataHashMap().keySet().toArray(new String[0]);
+
+                          injectValueAfter(PromptText.create("deploy").setSuggestions(create((Object[]) array)), new ValueInput() {
+                              final List<Deploy> deployList = new ArrayList<>();
+                              @Override
+                              public void onTransition(ShowInfos infos) {
+                                infos.onEnter("Select deploys : WHEN finish type ':OK'");
+                              }
+
+                              @Override
+                              public Operation received(PromptText value, String[] args, ShowInfos infos) {
+                                  if(args[0].equalsIgnoreCase(":OK")){
+                                        if(!deployList.isEmpty()){
+                                            Deployer deployer = new Deployer();
+                                            deployList.forEach(deployer::addDeploy);
+                                            try {
+                                                deployer.deploys(jvmExecutor.getFileRootDir(), new Deployer.DeployAction() {
+                                                    @Override
+                                                    public void completed() {
+                                                        Console.debugPrint("Deploys added !");
+                                                    }
+
+                                                    @Override
+                                                    public void cancelled() {
+                                                        Console.debugPrint("Deploys has been cancelled !");
+                                                    }
+                                                });
+                                            } catch (IOException e) {
+                                                throw new RuntimeException(e);
+                                            }
+                                        }
+                                        return skip();
+                                  }
+
+                                  DeployContainer c = Main.getDeployManager().getDeploy(args[0]);
+                                  if(c == null){
+                                      infos.error("Deploy not found");
+                                      return errorAndRetry(infos);
+                                  }
+                                    deployList.add(c.getDeployData());
+                                  return retry();
+                              }
+                          });
+                          return skip();
+                      }
+
+                      @Override
+                      public Operation refuse(String value, String[] args, ShowInfos infos) {
+                          return skip();
+                      }
+                  }));
+              }
            addValueInput(PromptText.create("yes1")
                            .setMacro(getFromLang("menu.yes")),
                    new AcceptOrRefuse(this, new AcceptOrRefuse.AcceptOrRefuseListener() {

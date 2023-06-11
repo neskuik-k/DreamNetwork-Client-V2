@@ -7,6 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Setter @Getter
 public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
@@ -21,6 +25,8 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     @Getter int port = 0;
     String installInfo = null;
     Boolean screenEnabled = null;
+    @Getter
+    List<String> deployers = new ArrayList<>();
 
 
     public JVMConfig(){

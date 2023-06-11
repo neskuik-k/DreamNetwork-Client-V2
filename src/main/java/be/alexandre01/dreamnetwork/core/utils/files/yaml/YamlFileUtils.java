@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
+import be.alexandre01.dreamnetwork.core.service.JVMConfig;
 import com.google.gson.Gson;
 import lombok.Getter;
 import org.yaml.snakeyaml.Yaml;
@@ -80,6 +81,7 @@ public class YamlFileUtils<T> {
             }*/
             T t = null;
             try {
+                System.out.println("Load yml file: "+file.getName());
                 t = yaml.loadAs(new FileInputStream(file),clazz);
             }catch (Exception e){
                 System.out.println("Error while loading file: "+file.getName());

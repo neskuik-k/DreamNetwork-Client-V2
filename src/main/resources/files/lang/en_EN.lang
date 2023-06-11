@@ -103,6 +103,7 @@ service.executor.processCantStartBecauseAddon=The process cannot be started beca
 service.executor.serverStartProcess=%greenbo%The service %yellowbo%%var% %greenbo%has just started the process :briefcase():
 service.executor.checkingPort=Checking if port %var% is available...
 service.executor.invalidStartPort=Invalid start port: %var%
+service.executor.deployerNotAllowed=%red%The STATIC mode is not available when you use deployments
 
 service.reader.exitValue=\n\nExit Value from %var% is %var%
 

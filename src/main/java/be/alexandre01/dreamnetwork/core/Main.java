@@ -3,8 +3,6 @@ package be.alexandre01.dreamnetwork.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -14,7 +12,6 @@ import java.util.logging.Logger;
 
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
@@ -22,11 +19,11 @@ import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
-import be.alexandre01.dreamnetwork.core.console.language.EmojiManager;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployListLoader;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -39,7 +36,6 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
-import org.jline.reader.History;
 
 public class Main {
     @Getter
@@ -48,6 +44,9 @@ public class Main {
     @Getter
     @Setter
     public static BundleManager bundleManager;
+    @Getter
+    @Setter
+    public static DeployManager deployManager;
     @Getter private static GlobalSettings globalSettings;
     @Getter private static FileCopyAsync fileCopyAsync;
 
@@ -282,6 +281,7 @@ public class Main {
         //Client.instance = instance;
 
         Main.setBundleManager(new BundleManager());
+        Main.setDeployManager(new DeployManager());
         new DeployListLoader();
         new BundlesLoading();
         Core.getInstance().init();

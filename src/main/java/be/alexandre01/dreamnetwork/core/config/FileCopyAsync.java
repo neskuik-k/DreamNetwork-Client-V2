@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import com.google.common.base.Preconditions;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.var;
 
 import java.io.File;
@@ -29,15 +30,14 @@ public class FileCopyAsync {
 
     ICallback callback;
 
-    ExecutorService scheduledExecutorService = Executors.newFixedThreadPool(10);
+    ExecutorService executor = Executors.newFixedThreadPool(Main.getGlobalSettings().getThreadPoolIO());
 
-    FileCopy copy;
+    @Getter @Setter FileCopy copy;
 
     List<String> exceptFiles;
 
     Path source;
     Path destination;
-    int l = 0;
 
     public FileCopyAsync(){
         String method = Main.getGlobalSettings().getCopyIOMethod();
@@ -56,9 +56,10 @@ public class FileCopyAsync {
 
     private void execute(Path source, Path destination, ICallback callback,boolean deleteTarget,boolean force, String... exceptFiles){
         if(running && !force){
-            queue.add(new Operation(source,destination,callback,exceptFiles));
+            queue.add(new Operation(source,destination,callback,exceptFiles,deleteTarget));
             return;
         }
+    //    System.out.println("Executing copy");
 
         this.callback = callback;
         running = true;
@@ -80,6 +81,7 @@ public class FileCopyAsync {
 
 
     protected void directoryRegister(File file){
+        //System.out.println("Dir register");
         if(file.isDirectory()){
             try {
                 Files.walk(file.toPath()).forEach(path -> {
@@ -99,12 +101,16 @@ public class FileCopyAsync {
     }
 
     protected void finish(){
+        this.paths.clear();
+        this.source = null;
+        this.destination = null;
         callback.call();
+        this.callback = null;
         if(queue.size() > 0){
-            System.out.println("QUEUE SIZE " + queue.size());
+            //System.out.println("QUEUE SIZE " + queue.size());
             Operation operation = queue.get(0);
             queue.remove(0);
-            execute(operation.getSource(),operation.getDestination(),operation.getCallback(),true,operation.getExceptFiles());
+            execute(operation.getSource(),operation.getDestination(),operation.getCallback(),operation.isDeleteTarget(),true,operation.getExceptFiles());
         }else{
             running = false;
         }
@@ -113,7 +119,10 @@ public class FileCopyAsync {
     protected void fileRegister(File file){
 
         if(exceptFiles != null){
-            if(exceptFiles.contains(file.getName())){
+            File dir = file.getParentFile();
+            // get the path from the source
+            String p = dir.toString().replace(source.toString(),"");
+            if(exceptFiles.contains(p+"/"+file.getName())){
                 return;
             }
         }
@@ -130,6 +139,7 @@ public class FileCopyAsync {
     }
 
     protected void paste(){
+        //System.out.println("Paste !");
         // Liste pour stocker les futures des tâches de copie
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         paths = new ArrayList<>(new HashSet<>(paths));
@@ -154,7 +164,9 @@ public class FileCopyAsync {
     }
 
     private void copyDirectories(Collection<Path> dir,List<CompletableFuture<Void>> futures,ICallback callback){
+      //  System.out.println("copy dir");
         for (Path folder : dir) {
+            //  System.out.println("copy dir " + folder);
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
                     Path destination = this.destination.resolve(source.relativize(folder));
@@ -165,7 +177,7 @@ public class FileCopyAsync {
                 } catch (IOException e) {
                     Console.bug(e);
                 }
-            }, scheduledExecutorService);
+            }, executor);
             futures.add(future);
         }
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
@@ -174,7 +186,7 @@ public class FileCopyAsync {
             futures.clear();
             callback.call();
             // scheduledExecutorService.shutdown();
-        }, scheduledExecutorService);
+        }, executor);
     }
     private void copyFiles(Collection<Path> files, List<CompletableFuture<Void>> futures){
         for (Path path : files) {
@@ -182,22 +194,23 @@ public class FileCopyAsync {
                 try {
                     Path destination = this.destination.resolve(source.relativize(path));
 
-                   // System.out.println("Copying " + path + " to " + destination);
+                    //System.out.println("Copying " + path + " to " + destination);
 
                     copy.copyFile(path, destination);
 
                 } catch (IOException e) {
                     Console.bug(e);
                 }
-            }, scheduledExecutorService);
+            }, executor);
             futures.add(future);
         }
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRunAsync(() -> {
             System.out.println("Every task has been completed !");
+
             finish();
             // scheduledExecutorService.shutdown();
-        }, scheduledExecutorService);
+        }, executor);
     }
 
     protected void destroyDirectByteBuffer(ByteBuffer toBeDestroyed)
@@ -231,12 +244,12 @@ public class FileCopyAsync {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-        }, scheduledExecutorService);
+        }, executor);
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRunAsync(() -> {
             System.out.println("Successfully deleted directory !");
             directoryRegister(source.toFile());
-        }, scheduledExecutorService);
+        }, executor);
 
     }
 
@@ -252,5 +265,6 @@ public class FileCopyAsync {
         Path destination;
         ICallback callback;
         String[] exceptFiles;
+        boolean deleteTarget;
     }
 }

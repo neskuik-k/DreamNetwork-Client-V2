@@ -9,14 +9,16 @@ import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.service.deployment.Deploy;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployContainer;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployData;
+import be.alexandre01.dreamnetwork.core.service.deployment.Deployer;
+import be.alexandre01.dreamnetwork.core.service.deployment.VoidDeploy;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaVersion;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
@@ -31,13 +33,11 @@ import lombok.Setter;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.PipedInputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
@@ -139,6 +139,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             return false;
         }
 
+        if(!jvmConfig.getDeployers().isEmpty() && jvmConfig.getType() == Mods.STATIC){
+            Console.printLang("service.executor.deployerNotAllowed",Level.WARNING);
+            return false;
+        }
+
         if(!this.hasExecutable()){
             Console.printLang("service.executor.missingExecutable", this.getExecutable());
             return false;
@@ -179,7 +184,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
         }
 
-
+        int finalServers = servers;
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
             String finalname =  jvmConfig.getName()+"-"+servers;
@@ -192,9 +197,53 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
-                ScheduledExecutorService service = Executors.newSingleThreadScheduledExecutor();
-                int finalServers = servers;
-                    try {
+                VoidDeploy voidDeploy = new VoidDeploy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getPathName() + "/" + getName())).getAbsolutePath())),new DeployData.DeployType[]{DeployData.DeployType.CUSTOM});
+                Deployer deployer = new Deployer();
+                deployer.addDeploy(voidDeploy);
+                if(jvmConfig.getDeployers() != null){
+                    System.out.println("Size "+jvmConfig.getDeployers().size());
+                    jvmConfig.getDeployers().forEach(s -> {
+                        System.out.println("Deployer "+s);
+                        DeployContainer d = Main.getDeployManager().getDeploy(s);
+                        if(d != null){
+                            deployer.addDeploy(d.getDeployData());
+                        }
+                    });
+                }
+
+
+                deployer.deploys(new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getPathName() + "/" + getName() + "/" + finalname)), new Deployer.DeployAction() {
+                    @Override
+                    public void completed() {
+                        dateBuilderTimer.loadComplexDate();
+                        Console.printLang("service.executor.asyncCopy", Level.FINE, dateBuilderTimer.getLongBuild());
+                        isDoneWithSucess.set(true);
+                        try {
+                            if(!proceedStarting(finalname, finalServers,jvmConfig)){
+                                queue.remove(jvmConfig);
+
+                                if(!queue.isEmpty()){
+                                    startJVM(queue.get(0));
+                                }
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        dateBuilderTimer.loadComplexDate();
+                        Console.printLang("service.executor.cannotAsyncCopy", dateBuilderTimer.getLongBuild());
+                        queue.remove(jvmConfig);
+
+                        if(!queue.isEmpty()){
+                            startJVM(queue.get(0));
+                        }
+                    }
+                },"/"+this.getExecutable());
+
+                    /*try {
                         Config.asyncCopy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getPathName() + "/" + getName())).getAbsolutePath())), new File(System.getProperty("user.dir") +Config.getPath("/runtimes/" + getPathName() + "/" + getName() + "/" + finalname)), new FileCopyAsync.ICallback() {
                             @Override
                             public void call() {
@@ -228,7 +277,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                         },false, this.getExecutable());
                     } catch (IOException e) {
                         Console.bug(e);
-                    }
+                    }*/
                   //  service.shutdown();
 
             }else{

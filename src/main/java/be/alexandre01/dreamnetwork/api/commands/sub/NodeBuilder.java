@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.console.jline.completors.CustomTreeCompleter;
 import be.alexandre01.dreamnetwork.utils.Tuple;
+import lombok.Getter;
 import org.jline.builtins.Completers;
 import org.jline.reader.Candidate;
 
@@ -26,7 +27,7 @@ public class NodeBuilder {
 
 
     public static NullNode EMPTYFIELD = new NullNode();
-    NodeContainer nodeContainer;
+    @Getter NodeContainer nodeContainer;
 
     public static NodeContainer create(Object... o){
         return new NodeContainer(o);

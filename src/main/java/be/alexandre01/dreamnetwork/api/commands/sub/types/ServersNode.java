@@ -4,7 +4,6 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
-import org.apache.commons.lang.ArrayUtils;
 import org.jline.builtins.Completers;
 
 import java.util.stream.Collectors;

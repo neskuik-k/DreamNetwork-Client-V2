@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.*;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
@@ -12,15 +13,13 @@ import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.utils.clients.RamArgumentsChecker;
 import lombok.NonNull;
 
-import java.util.Arrays;
-
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Start extends SubCommand {
     public Start(Command command) {
         super(command);
         NodeContainer next = create("STATIC","DYNAMIC",
-                create("1G","2G",create("1G","2G")));
+                create(new RamNode(0,true),create(new RamNode(0,true))));
 
         NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("start",

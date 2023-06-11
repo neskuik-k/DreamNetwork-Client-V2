@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.deployment;
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class DeployListLoader {
             if (deployContainer.load()) {
                 System.out.println(Colors.CYAN_BRIGHT+ "Loaded deploy: " + deployContainer.getDeployData().getName());
                 //DeployList.addDeployContainer(deployContainer);
+                Main.getDeployManager().addDeploy(deployContainer);
 
             }else {
                 System.out.println(Colors.RED+"Failed to load deploy: " + deployContainer.getName());

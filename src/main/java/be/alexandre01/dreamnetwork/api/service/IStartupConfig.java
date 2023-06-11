@@ -21,6 +21,8 @@ public interface IStartupConfig extends IConfig {
 
     void addConfigsFiles();
 
+    void updateConfigFile();
+
     void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion);
 
     long getConfigSize();

@@ -156,7 +156,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if(client.getJvmService() != null){
                     fine(Colors.YELLOW+"Received message from " +Colors.CYAN_BOLD+ client.getJvmService().getFullName() + " : " +Colors.RESET+ message.toString());
                 }else {
-
                     fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-CLIENT -> " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
                 }
 

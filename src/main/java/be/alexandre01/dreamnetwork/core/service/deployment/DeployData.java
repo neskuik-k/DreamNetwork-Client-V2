@@ -30,8 +30,9 @@ public class DeployData extends YamlFileUtils<DeployData> implements Deploy{
     }
     public boolean loading(File file){
         addAnnotation("Deployment folder for Services");
-        name = file.getName();
+
         directory = file.getParentFile();
+        name = directory.getName();
         if(!super.config(file, DeployData.class,true)){
             super.saveFile(DeployData.class.cast(this));
         }else {

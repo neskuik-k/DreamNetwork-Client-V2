@@ -14,6 +14,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.fine;
 
@@ -414,6 +415,12 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             e.printStackTrace();
         }
     }
+
+    @Override
+    public void updateConfigFile(){
+
+        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable.split(".jar")[0],startup,javaVersion);
+    }
     @Override
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
         this.type = type;
@@ -503,6 +510,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
         private String javaVersion;
 
+        private List<String> deployers;
+
 
 
 
@@ -573,6 +582,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             j.setJavaVersion(javaVersion);
             j.setExecutable(exec);
             j.setStartup(startup);
+            j.setDeployers(deployers);
             return j;
         }
 
@@ -599,6 +609,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 j.setExecutable(config.getExecutable());
             if(j.getStartup() == null)
                 j.setStartup(config.getStartup());
+            if(j.getDeployers() == null)
+                j.setDeployers(config.getDeployers());
 
             j.setProxy(config.isProxy());
             return j;

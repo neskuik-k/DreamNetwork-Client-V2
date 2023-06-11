@@ -18,6 +18,7 @@ public class ServiceCommand extends Command {
         addSubCommand("install",new Install(this));
         addSubCommand("screen",new Screen(this));
         addSubCommand("list",new List(this));
+        addSubCommand("edit",new Edit(this));
         addSubCommand("kill",new Kill(this));
 
         String nameLang = Console.getFromLang("name");

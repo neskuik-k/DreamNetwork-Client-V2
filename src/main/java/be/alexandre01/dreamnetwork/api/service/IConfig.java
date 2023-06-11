@@ -1,6 +1,11 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
+import lombok.Getter;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public interface IConfig {
     public String getName();
@@ -44,4 +49,7 @@ public interface IConfig {
 
     public Boolean getScreenEnabled();
     public void setScreenEnabled(Boolean screenEnabled);
+
+    public List<String> getDeployers();
+    public void setDeployers(List<String> deployers);
 }

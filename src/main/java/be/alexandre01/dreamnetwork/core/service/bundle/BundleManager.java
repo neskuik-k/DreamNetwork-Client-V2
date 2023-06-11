@@ -8,7 +8,6 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import com.google.gson.Gson;
 import lombok.Getter;
