@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
@@ -16,7 +17,7 @@ public class List extends SubCommand {
 
     public List(Command command) {
         super(command);
-        addons = CDNFiles.getAddons();
+        addons = Main.getCdnFiles().getAddons();
         NodeBuilder nodeBuilder = new NodeBuilder(
                 NodeBuilder.create(value, NodeBuilder.create("list", NodeBuilder.create("installed", "officials")))
         );

@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.addon;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
@@ -18,19 +19,22 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 public class Install extends SubCommand {
-    private final HashMap<String, AddonDowloaderObject> addons;
+    private final CDNFiles cdnFiles;
 
     public Install(Command command) {
         super(command);
-        addons = CDNFiles.getAddons();
-       /* NodeBuilder nodeBuilder = new NodeBuilder(
-                NodeBuilder.create("addon", NodeBuilder.create("install", NodeBuilder.create(addons.keySet().toArray())))
-        );*/
+        cdnFiles = Main.getCdnFiles();
+        if(cdnFiles.isInstanced()){
+            NodeBuilder nodeBuilder = new NodeBuilder(
+                    NodeBuilder.create("addon", NodeBuilder.create("install", NodeBuilder.create(cdnFiles.getAddons().keySet().toArray())))
+            );
+        }
     }
 
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         return when(sArgs-> {
+            HashMap<String, AddonDowloaderObject> addons = cdnFiles.getAddons();
             if(sArgs.length < 2 || !addons.containsKey(sArgs[1])){
                 Console.printLang("commands.addon.invalidName");
                 return true;
