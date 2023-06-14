@@ -10,7 +10,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.accessibility.install.InstallTemplateConsole;
+import be.alexandre01.dreamnetwork.core.gui.install.InstallTemplateConsole;
 import be.alexandre01.dreamnetwork.core.installer.Installer;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -94,7 +94,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             jvmExecutor.getXmx(),
                             jvmExecutor.getPort(),
                             jvmExecutor.isProxy(),
-                            installationLinks.name().toLowerCase(),
+                            installationLinks.name().toLowerCase()+".jar",
                             jvmExecutor.getStartup(),
                             javaVersion
                             );

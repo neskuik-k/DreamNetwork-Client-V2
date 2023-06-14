@@ -150,7 +150,7 @@ public class AccessibilityMenu {
     public void drawInfos(){
         ShowInfos info = infos.get(currentInput);
         if(currentOperation != null){
-            if(currentOperation.type == Operation.OperationType.RETRY || currentOperation.type == Operation.OperationType.ERROR){
+            if(currentOperation.type == Operation.OperationType.ERROR){
                 Console.debugPrint(Colors.RED_UNDERLINED+info.error+Colors.RESET);
             }
         }
@@ -238,6 +238,10 @@ public class AccessibilityMenu {
 
                         PromptText promptText = prompts.get(currentInput);
                       //  Console.print(currentInput);
+                        if(promptText == null){
+                            Console.fine("Prompt text is null");
+                            return;
+                        }
                         promptText.value = builder.toString();
 
                         Operation operation = promptText.input.received(promptText, args, infos.get(currentInput));

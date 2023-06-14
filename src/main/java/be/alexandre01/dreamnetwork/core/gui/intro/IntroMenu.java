@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.console.accessibility.intro;
+package be.alexandre01.dreamnetwork.core.gui.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.core.Main;
@@ -6,8 +6,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.accessibility.AcceptOrRefuse;
 import be.alexandre01.dreamnetwork.core.console.accessibility.AccessibilityMenu;
-import be.alexandre01.dreamnetwork.core.console.accessibility.create.TestCreateTemplateConsole;
-import be.alexandre01.dreamnetwork.core.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.gui.create.TestCreateTemplateConsole;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.getFromLang;
 
@@ -101,7 +100,7 @@ public class IntroMenu extends AccessibilityMenu {
                 Main.getCommandReader().getCommands().getCommandsManager().check(new String[]{"help"});
                 Console.debugPrint(getFromLang("tutorial.help.tada"));
                 try {
-                    Thread.sleep(2000);
+                    Thread.sleep(2700);
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }

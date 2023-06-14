@@ -31,13 +31,12 @@ public class Deployer {
         //add /deploy.yml in exceptFile
         exceptFile = Arrays.copyOf(exceptFile, exceptFile.length + 1);
         exceptFile[exceptFile.length - 1] = "deploy.yml";
-        System.out.println("Deploying "+deployDatas.size()+" deploys");
         Deploy deploy = deployDatas.get(0);
-        System.out.println(deploy.getDirectory().getName());
+       // System.out.println(deploy.getDirectory().getName());
         Config.asyncCopy(deploy.getDirectory(), folder, new FileCopyAsync.ICallback() {
             @Override
             public void call() {
-                System.out.println("Task completed "+tasks);
+               // System.out.println("Task completed "+tasks);
                 deployDatas.remove(0);
                 if(deployDatas.isEmpty()){
                     action.completed();

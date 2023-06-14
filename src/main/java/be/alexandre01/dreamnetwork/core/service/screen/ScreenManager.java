@@ -54,9 +54,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public void remScreen(IScreen screen){
-        if(screen.getService().getClient() == null){
+       // if(screen.getService().getClient() == null){
           screen.getService().removeService();
-        }
+      //  }
         if(screens.containsValue(screen)){
             Console.printLang("service.screen.closed", screen.getScreenName());
             screens.remove(screen.getScreenName());

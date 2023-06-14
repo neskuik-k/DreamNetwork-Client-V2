@@ -143,7 +143,7 @@ public class BundlesLoading {
                     Console.debugPrint(Console.getFromLang("bundle.loadTemplate.loaded", dir.getName()));
                     //Utils.templates.add(dir.getName()); <- add after
                     try {
-                        Thread.sleep(250);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

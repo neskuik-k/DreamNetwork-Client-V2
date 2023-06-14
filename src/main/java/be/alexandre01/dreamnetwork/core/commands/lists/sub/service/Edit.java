@@ -24,6 +24,7 @@ public class Edit extends SubCommand {
                                 create("max-ram",create("set",create(new RamNode(0)))),
                                 create("port",create("set")),
                                 create("javaver",create("set")),
+                                create("mods",create("set")),
                                 create("deploy",create("add","remove"))))));
     }
     @Override
@@ -49,6 +50,16 @@ public class Edit extends SubCommand {
                             jvmExecutor.getStartupConfig().updateConfigFile();
                         }
                         break;
+                    case "mode":
+                        if(args[4].equalsIgnoreCase("DYNAMIC") || args[4].equalsIgnoreCase("STATIC")){
+                            jvmExecutor.getConfig().setType(IJVMExecutor.Mods.valueOf(args[4]));
+                            jvmExecutor.getStartupConfig().updateConfigFile();
+                        }else{
+                            System.out.println("Cannot parse mode");
+                            return false;
+                        }
+                        break;
+
                     case "port":
                         try {
                             jvmExecutor.getConfig().setPort(Integer.parseInt(args[4]));

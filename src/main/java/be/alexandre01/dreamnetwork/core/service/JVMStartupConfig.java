@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
@@ -28,6 +29,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
     public static Builder builder(){
         return new Builder();
+    }
+    public static Builder builder(IConfig config){
+        return new Builder(config);
     }
 
 
@@ -73,7 +77,6 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 if(line.startsWith("executable:")){
                     executable = line;
                     executable = executable.replace("executable:","");
-                    executable = executable +".jar";
                     while (executable.charAt(0) == ' '){
                         executable = executable.substring(1);
                     }
@@ -126,7 +129,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 e.printStackTrace();
             }
         }
-        executable += ".jar";
+        //executable += ".jar";
         isConfig = true;
     }
     @Override
@@ -419,7 +422,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @Override
     public void updateConfigFile(){
 
-        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable.split(".jar")[0],startup,javaVersion);
+        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,startup,javaVersion);
     }
     @Override
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
@@ -496,6 +499,26 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     public static class Builder implements IStartupConfigBuilder {
+
+        public Builder(){
+           // ignore
+        }
+
+        public Builder(IConfig config){
+            if(config == null){
+                return;
+            }
+            this.name = config.getName();
+            this.pathName = config.getPathName();
+            this.type = config.getType();
+            this.Xms = config.getXms();
+            this.Xmx = config.getXmx();
+            this.port = config.getPort();
+            this.exec = config.getExecutable();
+            this.startup = config.getStartup();
+            this.javaVersion = config.getJavaVersion();
+            this.deployers = config.getDeployers();
+        }
         private String name;
         private String pathName;
         private JVMExecutor.Mods type;

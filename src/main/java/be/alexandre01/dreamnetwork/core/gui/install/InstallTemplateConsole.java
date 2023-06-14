@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.console.accessibility.install;
+package be.alexandre01.dreamnetwork.core.gui.install;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
@@ -128,7 +128,7 @@ public class InstallTemplateConsole extends AccessibilityMenu {
                         jvmExecutor.getXmx(),
                         jvmExecutor.getPort(),
                         jvmExecutor.isProxy(),
-                        installationLinks.name().toLowerCase(),
+                        installationLinks.name().toLowerCase()+".jar",
                         jvmExecutor.getStartup(),
                         javaVersion
                 );

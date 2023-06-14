@@ -1,16 +1,16 @@
 package be.alexandre01.dreamnetwork.core.commands.lists;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.deploys.Create;
+import be.alexandre01.dreamnetwork.core.commands.lists.sub.tasks.Global;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
 
-public class DeployCommand extends Command {
-    public DeployCommand(String name) {
+public class TaskCommand extends Command {
+    public TaskCommand(String name) {
         super(name);
-        setCompletorValue("deploy",getBaseColor()+"deploy");
-        addSubCommand("create",new Create(this));
+        setCompletorValue("task",getBaseColor()+"task");
+        addSubCommand("global",new Global(this));
         //addSubCommand("edit",new be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles.Edit(this));
        // addSubCommand("remove",new Remove(this));
       //  addSubCommand("list",new be.alexandre01.dreamnetwork.core.commands.lists.sub.bundles.List(this));
@@ -24,11 +24,11 @@ public class DeployCommand extends Command {
 
     @Override
     public String getBaseColor() {
-        return Colors.YELLOW_BOLD;
+        return Colors.CYAN_BOLD;
     }
 
     @Override
     public String getEmoji() {
-        return Console.getEmoji("package");
+        return Console.getEmoji("envelope_with_arrow");
     }
 }

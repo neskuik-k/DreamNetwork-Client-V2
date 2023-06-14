@@ -69,7 +69,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void channelRegistered(final ChannelHandlerContext ctx) {
         printLang("connection.core.handler.localAddress", Level.FINE, ctx.channel().localAddress());
         printLang("connection.core.handler.remoteAddress", Level.FINE, ctx.channel().remoteAddress());
-        System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
+      //  System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
         if (!hasDevUtilSoftwareAccess) {
@@ -206,13 +206,21 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 String name = null;
                 if (jvmService != null) {
                     name = jvmService.getFullName();
+                    if(jvmService.getExecutorCallbacks() != null){
+                        if(jvmService.getExecutorCallbacks().onStop != null){
+                            jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
+                        }
+                    }
                 }
                 if (clientByConnexion.get(ctx).isDevTool()) {
                     name = "DEVTOOLS";
                 }
 
                 printLang("connection.core.handler.processStopped", name);
-                core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(), jvmService));
+
+
+                //create an event for external stop event
+               // core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(), jvmService));
             }
         }
 

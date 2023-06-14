@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.service.IConfig;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
@@ -34,6 +35,8 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     }
 
     public void config(File file){
+        representer = new CustomRepresenter(true,JVMConfig.class);
+        ((CustomRepresenter)representer).setThisClassOnly(true);
         config(file,JVMConfig.class,true);
     }
     public JVMConfig(File file){

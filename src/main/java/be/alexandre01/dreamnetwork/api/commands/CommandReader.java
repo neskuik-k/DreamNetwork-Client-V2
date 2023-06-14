@@ -47,6 +47,7 @@ public class CommandReader{
         commands.addCommands(new QuitCommand("quit"));
         commands.addCommands(new EditCommand("edit"));
         commands.addCommands(new GuiCommand("gui"));
+        commands.addCommands(new TaskCommand("task"));
         commands.addCommands(new HypervisorCommand("hypervisor"));
         commands.addCommands(new AddonCommand("addon"));
         commands.addCommands(new DeployCommand("deploy"));

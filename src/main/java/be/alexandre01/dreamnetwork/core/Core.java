@@ -9,7 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroMenu;
+import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenu;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.Config;
@@ -27,6 +27,7 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
+import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
 import lombok.Getter;
@@ -56,6 +57,8 @@ public class Core {
     private JVMContainer jvmContainer;
     @Getter
     private SpigetConsole spigetConsole;
+    @Getter
+    private GlobalTasks globalTasks;
     private StatsConsole statsConsole;
     @Getter @Setter
     private static String username;
@@ -206,8 +209,18 @@ public class Core {
         Main.getCommandReader().init();
 
         console.reloadCompletors();
+        new Thread(() -> {
+            try {
+                Thread.sleep(0);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            globalTasks = new GlobalTasks();
+            globalTasks.loading();
+        }).start();
 
 
+      //  getEventsFactory().registerListener(new ServicesTaskListener());
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));

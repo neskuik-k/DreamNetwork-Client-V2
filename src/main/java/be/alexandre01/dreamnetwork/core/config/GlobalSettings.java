@@ -1,8 +1,11 @@
 package be.alexandre01.dreamnetwork.core.config;
 
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
 import lombok.Setter;
+import org.yaml.snakeyaml.LoaderOptions;
+import org.yaml.snakeyaml.nodes.Tag;
 
 import java.io.File;
 
@@ -14,7 +17,7 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
 
-    int threadPoolIO= 10;
+    int threadPoolIO= 8;
     String copyIOMethod = "files";
 
     boolean screenNameInConsoleChange= true;

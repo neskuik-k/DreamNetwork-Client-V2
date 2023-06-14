@@ -182,7 +182,7 @@ public class FileCopyAsync {
         }
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRunAsync(() -> {
-            Console.fine("Every directory has been created !");
+            //Console.fine("Every directory has been created !");
             futures.clear();
             callback.call();
             // scheduledExecutorService.shutdown();
@@ -206,8 +206,7 @@ public class FileCopyAsync {
         }
         CompletableFuture<Void> allFutures = CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]));
         allFutures.thenRunAsync(() -> {
-            System.out.println("Every task has been completed !");
-
+            //System.out.println("Every task has been completed !");
             finish();
             // scheduledExecutorService.shutdown();
         }, executor);

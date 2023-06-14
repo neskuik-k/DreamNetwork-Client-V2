@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.core.console.Console;
+import lombok.Setter;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.introspector.PropertyUtils;
@@ -9,23 +10,23 @@ import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.lang.reflect.Field;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CustomRepresenter extends Representer {
 
     private final boolean skipNull;
-    private final Class clazz;
-    private final Object obj;
+    private final Class[] clazz;
 
-    public CustomRepresenter(boolean skipNull,Class<?> clazz,Object obj) {
+    @Setter private Object obj;
+    @Setter private boolean thisClassOnly = false;
+
+    public CustomRepresenter(boolean skipNull,Object obj,Class<?>... clazz) {
         super();
         this.skipNull = skipNull;
         this.clazz = clazz;
         this.obj = obj;
-        PropertyUtils propUtil = new PropertyUtils() {
+        /*PropertyUtils propUtil = new PropertyUtils() {
             @Override
             protected Set<Property> createPropertySet(Class<? extends Object> type, BeanAccess bAccess) {
                 return getPropertiesMap(type, bAccess).values().stream().sequential()
@@ -33,7 +34,11 @@ public class CustomRepresenter extends Representer {
                         .collect(Collectors.toCollection(LinkedHashSet::new));
             }
         };
-        setPropertyUtils(propUtil);
+        setPropertyUtils(propUtil);*/
+    }
+
+    public CustomRepresenter(boolean skipNull,Class<?>... clazz){
+        this(skipNull,null,clazz);
     }
 
     @Override
@@ -50,9 +55,14 @@ public class CustomRepresenter extends Representer {
         if (propertyValue == null && skipNull) {
             return null;
         }
-        Field[] fields = clazz.getDeclaredFields();
+        ArrayList<Field> fields = new ArrayList<>();
+        for (Class c : clazz){
+            //System.out.println(c.getDeclaredFields());
+            fields.addAll(Arrays.asList(c.getDeclaredFields()));
+        }
         boolean isFinded = false;
         for (Field field : fields) {
+            //System.out.println(field.getName());
             field.setAccessible(true);
 
             //    System.out.println("Annotation => "+field.getAnnotation(Ignore.class));
@@ -69,13 +79,16 @@ public class CustomRepresenter extends Representer {
                 }
             }
 
+           // System.out.println(field.getName()+propertyValue);
             if (field.getName().equals(property.getName())) {
                 isFinded = true;
+                break;
             }
+            //break;
         }
 
         if (!isFinded) {
-            Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), clazz.getName()));
+            Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), "classname"));
             return null;
         }
         if (obj.getClass().equals(property.getType())) {

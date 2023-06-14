@@ -66,6 +66,11 @@ public class ScreenInReader extends Thread {
                 //System.out.println(process.getOutputStream().toString());
                if(!process.isAlive()){
                     Console.fine("The PROCESS cannot be read anymore.");
+                    //if(screen.getService().getExecutorCallbacks() != null){
+                      //  if(screen.getService().getExecutorCallbacks().onStop != null){
+                            //screen.getService().getExecutorCallbacks().onStop.whenStop(screen.getService());
+                       // }
+                    //}
                     screen.destroy();
                     isRunning = false;
                 }

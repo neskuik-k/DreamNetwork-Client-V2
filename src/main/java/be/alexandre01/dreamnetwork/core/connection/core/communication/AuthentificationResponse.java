@@ -153,7 +153,9 @@ public class AuthentificationResponse extends CoreResponse {
                                     }
                                 }
                             } else {
-                                servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f");
+                                if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
+                                    servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
+                                }
                             }
                         }
                         for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {

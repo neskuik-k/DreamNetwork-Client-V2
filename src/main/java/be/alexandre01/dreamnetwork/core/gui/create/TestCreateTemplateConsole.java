@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.console.accessibility.create;
+package be.alexandre01.dreamnetwork.core.gui.create;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
@@ -12,7 +12,7 @@ import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.AcceptOrRefuse;
 import be.alexandre01.dreamnetwork.core.console.accessibility.AccessibilityMenu;
-import be.alexandre01.dreamnetwork.core.console.accessibility.install.InstallTemplateConsole;
+import be.alexandre01.dreamnetwork.core.gui.install.InstallTemplateConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -26,6 +26,7 @@ import be.alexandre01.dreamnetwork.core.utils.clients.RamArgumentsChecker;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 import static be.alexandre01.dreamnetwork.core.console.Console.getFromLang;
@@ -214,13 +215,15 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
 
                           injectValueAfter(PromptText.create("deploy").setSuggestions(create((Object[]) array)), new ValueInput() {
                               final List<Deploy> deployList = new ArrayList<>();
+                              String head = "Select deploys : WHEN finish type ':OK'";
                               @Override
                               public void onTransition(ShowInfos infos) {
-                                infos.onEnter("Select deploys : WHEN finish type ':OK'");
+                                infos.onEnter(head);
                               }
 
                               @Override
                               public Operation received(PromptText value, String[] args, ShowInfos infos) {
+
                                   if(args[0].equalsIgnoreCase(":OK")){
                                         if(!deployList.isEmpty()){
                                             Deployer deployer = new Deployer();
@@ -249,7 +252,15 @@ public class TestCreateTemplateConsole extends AccessibilityMenu {
                                       infos.error("Deploy not found");
                                       return errorAndRetry(infos);
                                   }
+                                  if(deployList.contains(c.getDeployData())){
+                                      infos.error("Deploy already selected");
+                                      return errorAndRetry(infos);
+                                  }
+
                                     deployList.add(c.getDeployData());
+                                  // get names of deploys in list
+                                  ArrayList<String> s  = deployList.stream().map(deploy -> deploy.getDirectory().getName()).collect(Collectors.toCollection(ArrayList::new));
+                                  infos.onEnter(head + " | selecteds : " + s);
                                   return retry();
                               }
                           });
