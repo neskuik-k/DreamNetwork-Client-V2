@@ -65,6 +65,16 @@ menu.no=no
 menu.ask.acceptOrRefuse=%whitebobr%Type %var% or %var% > %reset%
 menu.headMessage=%greenbobr%Waiting you to set up the %data% data...
 menu.writing=%whitebobr%Put the value here > %reset%
+
+## Tasks
+service.task.create.taskName=Please enter the name of the task
+service.task.create.type=Please enter the type of the task
+service.task.create.incorrectType=The type is incorrect
+service.task.create.taskAlreadyExist=The task already exist
+service.task.create.count=Please enter the count of the task
+service.task.create.incorrectCount=The count is incorrect
+service.task.create.service=Please enter the service of the task
+service.task.create.incorrectService=The service is incorrect
 ## Service
 service.creation.cancelCreation=%purplebobr%do you want to cancel the creation of the service ? (y or n) > %reset%
 service.creation.cancelCreationCancelled=Cancelled.
