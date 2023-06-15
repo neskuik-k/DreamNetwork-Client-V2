@@ -52,11 +52,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
 
         for (TaskData taskData : tasks) {
             withNames.put(taskData.getName(),taskData);
-            if(taskData.getTaskType().equals(TaskData.TaskType.ALWAYS_ON)){
-                alwaysONs.add(taskData);
-            }
-            if(!(taskData.getTaskType().equals(TaskData.TaskType.MANUAL) || taskData.getTaskType().equals(TaskData.TaskType.MANUAL_RESTRICTED)))
-                taskData.operate();
+           loadTask(taskData);
         }
 
         // Init
@@ -71,6 +67,16 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
     public void addTask(TaskData taskData){
         tasks.add(taskData);
         withNames.put(taskData.getName(),taskData);
+        loadTask(taskData);
+    }
+
+    private void loadTask(TaskData taskData){
+
+        if(taskData.getTaskType().equals(TaskData.TaskType.ALWAYS_ON)){
+            alwaysONs.add(taskData);
+        }
+        if(!(taskData.getTaskType().equals(TaskData.TaskType.MANUAL) || taskData.getTaskType().equals(TaskData.TaskType.MANUAL_RESTRICTED)))
+            taskData.operate();
     }
 
 

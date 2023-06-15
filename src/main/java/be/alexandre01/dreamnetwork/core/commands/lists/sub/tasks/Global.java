@@ -39,6 +39,7 @@ public class Global extends SubCommand {
                                 create("start",create(v)),
                                 create("add", create(Completers.AnyCompleter.INSTANCE,create(v))),
                                 create("remove", create(Completers.AnyCompleter.INSTANCE,create(v))),
+                                create("list"),
                                 create("set", create(Completers.AnyCompleter.INSTANCE,create(v))))));
     }
 
@@ -65,6 +66,11 @@ public class Global extends SubCommand {
                     Core.getInstance().getGlobalTasks().disable();
                 }
 
+                if(args[1].equalsIgnoreCase("list")){
+                    Core.getInstance().getGlobalTasks().getTasks().forEach(taskData -> {
+                        System.out.println(taskData.getName() + " " + taskData.count);
+                    });
+                }
                 if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("set")){
                     if(args.length < 3){
                         System.out.println("Please specify how many tasks you want to add and your task");

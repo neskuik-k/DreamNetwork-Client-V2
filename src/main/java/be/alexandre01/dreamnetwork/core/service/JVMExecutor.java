@@ -629,7 +629,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
-        System.out.println("removing service");
+     //   System.out.println("removing service");
         try {
 
             int i = jvmService.getId();
