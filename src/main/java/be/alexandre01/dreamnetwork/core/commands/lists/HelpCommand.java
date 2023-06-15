@@ -2,7 +2,9 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
+import be.alexandre01.dreamnetwork.api.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import com.github.tomaslanger.chalk.Chalk;
 
@@ -17,10 +19,17 @@ public class HelpCommand extends Command {
         commandExecutor = new CommandExecutor() {
             @Override
             public boolean execute(String[] args) {
-                String name = Console.getFromLang("name");
-                String server = Console.getFromLang("server");
+                //String name = Console.getFromLang("name");
+                //String server = Console.getFromLang("server");
 
-                Console.printLang("commands.help.list");
+                CommandReader cr = Main.getCommandReader();
+                cr.getCommands().getCommandsManager().executorList.forEach((cmd, iCommand) -> {
+                    if(iCommand.getHelpBuilder().getSize() > 1){
+                        iCommand.getHelpBuilder().build();
+                    }
+                });
+
+                /*Console.printLang("commands.help.list");
                 Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
                 Console.printLang("commands.help.howTo.manageService");
                 Console.print("service:");
@@ -44,7 +53,7 @@ public class HelpCommand extends Command {
                 Console.printLang("commands.help.howTo.removeService");
                 Console.print("service remove server [" + name + "] | " + Console.getFromLang("commands.help.removeA", server));
                 Console.print("service remove proxy [" + name + "] | " + Console.getFromLang("commands.help.removeA", "proxy"));
-                Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());
+                Console.debugPrint(Chalk.on("   ------------------------------------------------------").red());*/
                 return true;
             }
         };
