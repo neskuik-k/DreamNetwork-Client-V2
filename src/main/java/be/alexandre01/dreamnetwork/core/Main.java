@@ -3,8 +3,6 @@ package be.alexandre01.dreamnetwork.core;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
@@ -14,19 +12,21 @@ import java.util.logging.Logger;
 
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.commands.CommandReader;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.core.console.language.ColorsConverter;
-import be.alexandre01.dreamnetwork.core.console.language.EmojiManager;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployListLoader;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
+
 import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
+
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -39,9 +39,6 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
-import org.jline.reader.History;
-import sun.misc.Unsafe;
-
 
 public class Main {
     @Getter
@@ -50,7 +47,11 @@ public class Main {
     @Getter
     @Setter
     public static BundleManager bundleManager;
+    @Getter
+    @Setter
+    public static DeployManager deployManager;
     @Getter private static GlobalSettings globalSettings;
+    @Getter private static FileCopyAsync fileCopyAsync;
 
     @Getter
     private JVMContainer jvmContainer;
@@ -103,6 +104,8 @@ public class Main {
             for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
             Core.setUsername(line);
         }
+
+        fileCopyAsync = new FileCopyAsync();
         languageManager = new LanguageManager();
 
         if(!languageManager.load()){
@@ -284,6 +287,7 @@ public class Main {
         //Client.instance = instance;
 
         Main.setBundleManager(new BundleManager());
+        Main.setDeployManager(new DeployManager());
         new DeployListLoader();
         new BundlesLoading();
         Core.getInstance().init();
@@ -291,13 +295,13 @@ public class Main {
     }
     private static void disableWarning() {
         try {
-            Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
+         /*   Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
             theUnsafe.setAccessible(true);
             Unsafe u = (Unsafe) theUnsafe.get(null);
 
             Class cls = Class.forName("jdk.internal.module.IllegalAccessLogger");
             Field logger = cls.getDeclaredField("logger");
-            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null);
+            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null);*/
         } catch (Exception e) {
             // ignore
         }

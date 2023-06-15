@@ -9,7 +9,6 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import lombok.Getter;
@@ -26,6 +25,7 @@ public class BundlesLoading {
         Main.setBundlesLoading(this);
         File file = new File("bundles");
         if(!file.exists()){
+            System.out.println("First load");
             firstLoad = true;
             file.mkdir();
         }
@@ -98,7 +98,7 @@ public class BundlesLoading {
         try {
             assert in != null;
             Config.createDir(path,false);
-            System.out.println(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
+            Console.fine(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();
@@ -143,7 +143,7 @@ public class BundlesLoading {
                     Console.debugPrint(Console.getFromLang("bundle.loadTemplate.loaded", dir.getName()));
                     //Utils.templates.add(dir.getName()); <- add after
                     try {
-                        Thread.sleep(250);
+                        Thread.sleep(50);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

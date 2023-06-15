@@ -58,7 +58,8 @@ public class LangLoader {
         }
 
         for(String key : keys){
-            Console.fine("Replacing " + key + " by default version");
+
+            //Console.fine("Replacing " + key + " by default version");
             language.getMessages().put(key, convert(manager.getDefaultLanguage().getMessages().get(key))+" (DefaultFT)");
         }
 

@@ -29,6 +29,7 @@ public class JVMService implements IService {
     private IScreen screen = null;
 
     public IConfig usedConfig;
+    public ExecutorCallbacks executorCallbacks;
 
 
     @Override

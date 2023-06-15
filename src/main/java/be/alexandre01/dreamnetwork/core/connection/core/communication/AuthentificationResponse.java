@@ -38,7 +38,7 @@ public class AuthentificationResponse extends CoreResponse {
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
         Console.print(message,Level.FINE);
 
-        if(!message.hasRequest()){
+        if(message == null || !message.hasRequest()){
             if(!coreHandler.getAllowedCTX().contains(ctx)){
                 ctx.channel().close();
             }
@@ -153,7 +153,9 @@ public class AuthentificationResponse extends CoreResponse {
                                     }
                                 }
                             } else {
-                                servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f");
+                                if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
+                                    servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
+                                }
                             }
                         }
                         for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {

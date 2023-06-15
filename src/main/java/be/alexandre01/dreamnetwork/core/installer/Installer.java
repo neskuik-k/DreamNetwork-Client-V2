@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
+import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
@@ -78,17 +79,17 @@ public class Installer {
                 public void complete() {
                     for (int i = 1; i < files.size(); i++) {
                         try {
-                            Config.asyncCopy(files.get(0), files.get(i), new EstablishedAction() {
+                            Config.asyncCopy(files.get(0), files.get(i), new FileCopyAsync.ICallback() {
                                 @Override
-                                public void completed() {
+                                public void call() {
 
                                 }
 
                                 @Override
-                                public void cancelled() {
+                                public void cancel() {
 
                                 }
-                            });
+                            },false);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

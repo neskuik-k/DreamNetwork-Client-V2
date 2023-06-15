@@ -66,6 +66,11 @@ public class ScreenInReader extends Thread {
                 //System.out.println(process.getOutputStream().toString());
                if(!process.isAlive()){
                     Console.fine("The PROCESS cannot be read anymore.");
+                    //if(screen.getService().getExecutorCallbacks() != null){
+                      //  if(screen.getService().getExecutorCallbacks().onStop != null){
+                            //screen.getService().getExecutorCallbacks().onStop.whenStop(screen.getService());
+                       // }
+                    //}
                     screen.destroy();
                     isRunning = false;
                 }
@@ -99,10 +104,10 @@ public class ScreenInReader extends Thread {
                             if(arg == null){
                                 continue;
                             }
-                            sb.append(arg);
-                            if(i != args.length-1)
-                                sb.append("\n");
                         }
+                        sb.append(arg);
+                        if(i != args.length-1)
+                            sb.append("\n");
                     }
                     data = sb.toString();
                     if(data.toString() != null){

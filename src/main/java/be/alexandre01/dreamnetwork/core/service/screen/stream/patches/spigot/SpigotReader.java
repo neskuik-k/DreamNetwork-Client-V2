@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee;
+package be.alexandre01.dreamnetwork.core.service.screen.stream.patches.spigot;
 
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenInReader;

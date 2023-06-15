@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
@@ -10,9 +11,11 @@ import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.util.List;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.fine;
 
@@ -26,6 +29,9 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
     public static Builder builder(){
         return new Builder();
+    }
+    public static Builder builder(IConfig config){
+        return new Builder(config);
     }
 
 
@@ -71,7 +77,6 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 if(line.startsWith("executable:")){
                     executable = line;
                     executable = executable.replace("executable:","");
-                    executable = executable +".jar";
                     while (executable.charAt(0) == ' '){
                         executable = executable.substring(1);
                     }
@@ -124,7 +129,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 e.printStackTrace();
             }
         }
-        executable += ".jar";
+        //executable += ".jar";
         isConfig = true;
     }
     @Override
@@ -375,6 +380,26 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             if(link.getExecType() == ExecType.VELOCITY){
                 updateFile("velocity.toml",getClass().getClassLoader().getResourceAsStream("files/velocity/velocity.toml"));
                 updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/velocity/server-icon.png"));
+                //generate random string password with 32 characters for forwarding secret
+                File file = new File(Config.getPath(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/forwarding.secret"));
+                if(!file.exists()){
+                    try {
+                        file.createNewFile();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                BufferedWriter writer = null;
+                try {
+                    writer = new BufferedWriter(new FileWriter(file));
+                    //generate random string password with 32 characters
+                    String key = RandomStringUtils.randomAlphanumeric(32);
+                    writer.write(key);
+                    writer.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
                 return;
             }
             return;
@@ -392,6 +417,12 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void updateConfigFile(){
+
+        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,startup,javaVersion);
     }
     @Override
     public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
@@ -468,6 +499,26 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     public static class Builder implements IStartupConfigBuilder {
+
+        public Builder(){
+           // ignore
+        }
+
+        public Builder(IConfig config){
+            if(config == null){
+                return;
+            }
+            this.name = config.getName();
+            this.pathName = config.getPathName();
+            this.type = config.getType();
+            this.Xms = config.getXms();
+            this.Xmx = config.getXmx();
+            this.port = config.getPort();
+            this.exec = config.getExecutable();
+            this.startup = config.getStartup();
+            this.javaVersion = config.getJavaVersion();
+            this.deployers = config.getDeployers();
+        }
         private String name;
         private String pathName;
         private JVMExecutor.Mods type;
@@ -481,6 +532,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         private String startup;
 
         private String javaVersion;
+
+        private List<String> deployers;
 
 
 
@@ -552,6 +605,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             j.setJavaVersion(javaVersion);
             j.setExecutable(exec);
             j.setStartup(startup);
+            j.setDeployers(deployers);
             return j;
         }
 
@@ -578,6 +632,8 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 j.setExecutable(config.getExecutable());
             if(j.getStartup() == null)
                 j.setStartup(config.getStartup());
+            if(j.getDeployers() == null)
+                j.setDeployers(config.getDeployers());
 
             j.setProxy(config.isProxy());
             return j;

@@ -10,7 +10,6 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class JVMContainer implements IContainer {
@@ -101,7 +100,7 @@ public class JVMContainer implements IContainer {
 
 
     @Override
-    public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile,BundleData bundleData) {
+    public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData) {
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
         try {
             return new JVMExecutor(pathName, name, bundleData);

@@ -4,16 +4,13 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
-import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import lombok.NonNull;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
@@ -26,7 +23,8 @@ public class Reload extends SubCommand {
                 create(value,
                         create("reload",
                             create("services"),
-                            create("completor",create(nodeClazz)),
+                                create("tasks"),
+                                create("completor",create(nodeClazz)),
                                 create("completors"))));
     }
 
@@ -44,7 +42,13 @@ public class Reload extends SubCommand {
                 for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors) {
                     IStartupConfig config = jvmExecutor.getStartupConfig();
                     config.saveFile();
+
+                    jvmExecutor.getJvmProfiles().loading(jvmExecutor.getJvmProfiles().getFile());
                 }
+            }
+            if(sArgs[1].equalsIgnoreCase("tasks")){
+                System.out.println("Reloading tasks");
+                Core.getInstance().getGlobalTasks().loading();
             }
             if(sArgs[1].equalsIgnoreCase("completors")){
                 Console.printLang("commands.hypervisor.reloadingCompletors");

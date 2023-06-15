@@ -1,6 +1,8 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
+import be.alexandre01.dreamnetwork.core.service.ExecutorCallbacks;
+import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import com.sun.jna.Pointer;
@@ -115,10 +117,18 @@ public interface IJVMExecutor {
 
 
 
-    public void startServer();
+    public ExecutorCallbacks startServer();
+    public ExecutorCallbacks startServer(String profile);
 
-    public void startServer(IConfig jvmConfig);
+    public ExecutorCallbacks startServer(IConfig jvmConfig);
+    public ExecutorCallbacks startServer(String profile,ExecutorCallbacks callbacks);
 
+    public ExecutorCallbacks startServer(IConfig jvmConfig,ExecutorCallbacks callbacks);
+
+    public ExecutorCallbacks startServers(int i);
+
+    public ExecutorCallbacks startServers(int i, IConfig jvmConfig);
+    public ExecutorCallbacks startServers(int i, String profile);
     public void removeService(IService service);
 
     public IService getService(Integer i);
@@ -163,6 +173,8 @@ public interface IJVMExecutor {
 
     public ExecType getExecType();
     public InstallationLinks getInstallLink();
+
+    public JVMProfiles getJvmProfiles();
 
 
 

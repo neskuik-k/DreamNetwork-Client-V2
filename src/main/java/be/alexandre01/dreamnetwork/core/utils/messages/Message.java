@@ -141,18 +141,15 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public static Message createFromJsonString(String json) {
-        Message builder = new Message(new Gson().fromJson(json, HASH_MAP_TYPE));
-        return builder;
+        try{
+            return new Message(new Gson().fromJson(json, HASH_MAP_TYPE));
+        }catch (Exception e){
+            return null;
+        }
+        //Message builder = new Message(new Gson().fromJson(json, HASH_MAP_TYPE));
     }
 
-    public static boolean isJSONValid(String json) {
-        try {
-            new Gson().fromJson(json, Object.class);
-            return true;
-        } catch(com.google.gson.JsonSyntaxException ex) {
-            return false;
-        }
-    }
+
 
     public String toString() {
         GsonBuilder gsonBuilder = new GsonBuilder();

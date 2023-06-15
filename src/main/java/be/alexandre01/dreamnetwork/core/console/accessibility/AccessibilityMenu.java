@@ -12,10 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ScheduledExecutorService;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.getFromLang;
@@ -30,7 +27,7 @@ public class AccessibilityMenu {
 
     @Setter boolean safeRemove = false;
     HashMap<String, PromptText> prompts = new HashMap<>();
-    HashMap<Integer, String> pages = new HashMap<>();
+    TreeMap<Integer, String> pages = new TreeMap<>();
     HashMap<String, Operation> values = new HashMap<>();
     HashMap<String, ShowInfos> infos = new HashMap<>();
     Multimap<String, NodeContainer> arguments =  ArrayListMultimap.create();
@@ -83,16 +80,40 @@ public class AccessibilityMenu {
             new NodeBuilder(object,console);
         }
     }
-    public AccessibilityMenu addValueInput(PromptText prompt, ValueInput valueInput){
+    public AccessibilityMenu addValueInput(PromptText prompt,int pos, ValueInput valueInput){
+
         infos.put(prompt.getValue(), new ShowInfos());
         prompt.input = valueInput;
         if(currentInput == null){
             currentInput = prompt.getValue();
         }
-        pages.put(pages.size(), prompt.getValue());
+        if(pos != -1){
+            insertPage(pos,prompt.getValue());
+        }else{
+            pages.put(pages.size(), prompt.getValue());
+        }
         prompts.put(prompt.getValue(),prompt);
 
         return this;
+    }
+
+    public AccessibilityMenu injectValueAfter(PromptText prompt, ValueInput valueInput){
+        return addValueInput(prompt,currentPage+1,valueInput);
+    }
+
+
+    private void insertPage(int newPosition, String newVal) {
+        int maxKey = pages.keySet().stream().mapToInt(Integer::intValue).max().orElse(0);
+
+        for (int i = maxKey; i >= newPosition; i--) {
+            String value = pages.get(i);
+            pages.put(i + 1, value);
+        }
+
+        pages.put(newPosition, newVal);
+    }
+    public AccessibilityMenu addValueInput(PromptText prompt, ValueInput valueInput){
+        return addValueInput(prompt,-1,valueInput);
     }
 
     public void addFinishCatch(FinishCatch finishCatch){
@@ -129,7 +150,7 @@ public class AccessibilityMenu {
     public void drawInfos(){
         ShowInfos info = infos.get(currentInput);
         if(currentOperation != null){
-            if(currentOperation.type == Operation.OperationType.RETRY || currentOperation.type == Operation.OperationType.ERROR){
+            if(currentOperation.type == Operation.OperationType.ERROR){
                 Console.debugPrint(Colors.RED_UNDERLINED+info.error+Colors.RESET);
             }
         }
@@ -217,6 +238,10 @@ public class AccessibilityMenu {
 
                         PromptText promptText = prompts.get(currentInput);
                       //  Console.print(currentInput);
+                        if(promptText == null){
+                            Console.fine("Prompt text is null");
+                            return;
+                        }
                         promptText.value = builder.toString();
 
                         Operation operation = promptText.input.received(promptText, args, infos.get(currentInput));

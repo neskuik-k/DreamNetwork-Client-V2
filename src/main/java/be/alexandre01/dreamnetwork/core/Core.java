@@ -9,10 +9,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
-import be.alexandre01.dreamnetwork.core.console.accessibility.create.CreateTemplateConsole;
-import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroMenu;
-import be.alexandre01.dreamnetwork.core.console.accessibility.intro.IntroductionConsole;
+import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenu;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
 import be.alexandre01.dreamnetwork.core.config.Config;
@@ -30,6 +27,7 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
+import be.alexandre01.dreamnetwork.api.service.tasks.GlobalTasks;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
 import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
@@ -60,6 +58,8 @@ public class Core {
     private JVMContainer jvmContainer;
     @Getter
     private SpigetConsole spigetConsole;
+    @Getter
+    private GlobalTasks globalTasks;
     private StatsConsole statsConsole;
     @Getter @Setter
     private static String username;
@@ -86,8 +86,6 @@ public class Core {
         instance = new Core();
     }
 
-    @Getter private IntroductionConsole introConsole;
-    @Getter private CreateTemplateConsole createTemplateConsole;
 
     public Core(){
         //JVM ARGUMENTS
@@ -127,7 +125,7 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-       introConsole = new IntroductionConsole("begin");
+      // introConsole = new IntroductionConsole("begin");
 
 
 
@@ -208,18 +206,22 @@ public class Core {
         //MANAGER
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
-
+        globalTasks = new GlobalTasks();
+        globalTasks.loading();
         Main.getCommandReader().init();
 
         console.reloadCompletors();
 
-        createTemplateConsole = new CreateTemplateConsole("","","","","","auto");
 
+
+
+      //  getEventsFactory().registerListener(new ServicesTaskListener());
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
-        if(!Main.getBundlesLoading().isFirstLoad()){
+        if(Main.getBundlesLoading().isFirstLoad()){
+            System.out.println("menu show");
             menu.show();
            // Console.setActualConsole("m:introbegin",true,false);
         }

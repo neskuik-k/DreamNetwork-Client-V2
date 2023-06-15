@@ -2,9 +2,9 @@ package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import be.alexandre01.dreamnetwork.core.service.ExecutorCallbacks;
 
 public interface IService {
-
     int getId();
     int getPort();
     String getXmx();
@@ -17,6 +17,7 @@ public interface IService {
     Process getProcess();
     IScreen getScreen();
     IConfig getUsedConfig();
+
     void setScreen(IScreen screen);
     void stop();
     void restart();
@@ -26,4 +27,5 @@ public interface IService {
     void removeService();
 
     void setClient(IClient client);
+    ExecutorCallbacks getExecutorCallbacks();
 }

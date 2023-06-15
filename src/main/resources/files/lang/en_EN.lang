@@ -103,6 +103,7 @@ service.executor.processCantStartBecauseAddon=The process cannot be started beca
 service.executor.serverStartProcess=%greenbo%The service %yellowbo%%var% %greenbo%has just started the process :briefcase():
 service.executor.checkingPort=Checking if port %var% is available...
 service.executor.invalidStartPort=Invalid start port: %var%
+service.executor.deployerNotAllowed=%red%The STATIC mode is not available when you use deployments
 
 service.reader.exitValue=\n\nExit Value from %var% is %var%
 
@@ -287,7 +288,6 @@ connection.core.handler.remoteAddress=Remote ADDRESS: %var%
 connection.core.handler.channelActive=Channel Active
 connection.core.handler.processStopped=%redbo%A process '%var%' has just stopped :stop_button():.
 connection.core.handler.removeClient=Remove server, client : %var%
-connection.core.handler.writeFlush=%yellow%Write and Flush>> %white%%var%
 
 connection.request.sent=Request %var% sent with success!
 connection.request.exception.requestNotFound=The request %var% isn't foundable.
@@ -301,7 +301,7 @@ console.askExit=%redbobr%do you want to exit :thinking():? (y or n) > %reset%
 console.changed=%black%%whitebg%You have just changed console. [%var%]%reset%
 console.errorOn=↪ %redbo%ERROR %whitebobr%ON%yellowbobr% >>%reset% %var% || %var%:%var%
 console.errorCause=↪ %red%ERROR CAUSE %redbobr%>>%red% %var% || %var%:%var%
-console.contactDNDevError=Please contact the DN developpers about this error.
+console.contactDNDevError=Please contact the DN developpers about this error on our Discord (https://discord.dreamnetwork.cloud).
 console.closed=Console closed
 console.createDir=%cyanbobr%  Directory %var% created :open_file_folder():
 

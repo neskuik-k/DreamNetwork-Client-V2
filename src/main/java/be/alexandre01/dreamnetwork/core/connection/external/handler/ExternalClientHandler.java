@@ -93,14 +93,16 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
 
         //TO DECODE STRING IF ENCODED AS AES
 
-        if(!Message.isJSONValid(s_to_decode))
-            return;
 
 
         //System.out.println("TO message");
 
         try {
             Message message = Message.createFromJsonString(s_to_decode);
+            if(message == null){
+                System.out.println("Message is null");
+                return;
+            }
             if(!responses.isEmpty()){
                 for(ExtResponse iResponse : responses){
                     try {

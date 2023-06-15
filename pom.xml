@@ -91,6 +91,17 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMProfiles {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class
+                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
@@ -288,6 +299,32 @@
                                         </option>
                                         <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
                                         <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMProfiles {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class
+                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }

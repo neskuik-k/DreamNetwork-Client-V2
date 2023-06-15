@@ -1,12 +1,17 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.service.IConfig;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Setter @Getter
 public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
@@ -20,6 +25,9 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     @Getter String javaVersion = "default";
     @Getter int port = 0;
     String installInfo = null;
+    Boolean screenEnabled = null;
+    @Getter
+    List<String> deployers = new ArrayList<>();
 
 
     public JVMConfig(){
@@ -27,6 +35,8 @@ public class JVMConfig extends YamlFileUtils<JVMConfig> implements IConfig {
     }
 
     public void config(File file){
+        representer = new CustomRepresenter(true,JVMConfig.class);
+        ((CustomRepresenter)representer).setThisClassOnly(true);
         config(file,JVMConfig.class,true);
     }
     public JVMConfig(File file){

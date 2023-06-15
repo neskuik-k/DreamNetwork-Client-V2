@@ -7,7 +7,6 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.core.Main;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;

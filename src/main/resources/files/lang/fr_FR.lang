@@ -102,6 +102,7 @@ service.executor.processCantStartBecauseAddon=Le processus ne peut pas démarrer
 service.executor.serverStartProcess=%greenbo%Le serveur %yellowbo%%var% %greenbo%vient de démarrer le processus :briefcase():
 service.executor.checkingPort=Vérification de la disponibilité du port %var%...
 service.executor.invalidStartPort=Port de lancement invalide: %var%
+service.executor.deployerNotAllowed=%red%Le mode STATIC n'est pas disponible lorsque vous utilisez des deployements
 
 service.reader.exitValue=\n\nLa valeur de sortie de %var% est %var%
 
@@ -125,7 +126,7 @@ tutorial.eula.ask=Acceptez-vous les conditions d'utilisation de Mojang (Minecraf
 tutorial.eula.refused=Vous avez refusé les conditions d'utilisation de Mojang (Minecraft EULA) et de DreamNetwork
 tutorial.emoji=%whitebobr%Voyez-vous cet emoji {(🥳)}... ?
 tutorial.asking=%whitebobr%Voulez-vous voir le %cyanbobr%tutoriel %whitebobr%?
-tutorial.help=Que le tutoriel commence... la commande la plus difficile est... "%cyanHELP%reset%". Allez ! Laissez-vous tenter !\nPsst, j'ai un petit conseil, essayez votre touche tabulation pour trouver le chemin !
+tutorial.help=Que le tutoriel commence... la commande la plus difficile est... "%cyan%HELP%reset%". Allez ! Laissez-vous tenter !\nPsst, j'ai un petit conseil, essayez votre touche tabulation pour trouver le chemin !
 tutorial.help.asking=%whitebobr%Tapez la commande souhaitée: %red%
 tutorial.help.notGood=Hmm, lisez le texte au dessus, vous devez écrire help.
 tutorial.help.tada=%greenbobr%TADAAA vous l'avez fait :tada():!
@@ -287,7 +288,6 @@ connection.core.handler.remoteAddress=ADRESSE Distante: %var%
 connection.core.handler.channelActive=Canal actif
 connection.core.handler.processStopped=%redbo%Le processus '%var%' a été arrêté.
 connection.core.handler.removeClient=Suppression serveur, client : %var%
-connection.core.handler.writeFlush=%yellow%Écriture et Envoi>> %white%%var%
 
 connection.request.sent=La requête %var% a été envoyé avec succès!
 connection.request.exception.requestNotFound=La requête %var% est introuvable.
@@ -297,7 +297,7 @@ debug.enabled=%purple%Mode Debug %green%%whitebg%activé
 debug.disabled=%purple%Mode Debug %red%%whitebg%désactivé
 
 ## Console
-console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%@%cyanul%%var%%reset% > %areset%
+console.dreamnetworkWriting=%cyanbobr%DreamNetworkV2%blackbgbr%%yellow%:high_brightness(@):%cyanul%%var%%reset% > %areset%
 console.askExit=%redbobr%voulez-vous vraiment quitter l'hyperviseur ? (y (oui) ou n (non)) > %reset%
 console.changed=%whitebg%%black%Vous venez de changer de console. [%var%] %reset%
 console.errorOn=↪ %redbobr%ERREUR %whitebobr%DANS %yellowbobr% >>%reset% %var% || %var%:%var%

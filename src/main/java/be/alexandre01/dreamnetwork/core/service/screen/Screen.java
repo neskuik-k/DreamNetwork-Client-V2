@@ -26,14 +26,23 @@ public class Screen extends Thread implements IScreen {
     ScreenStream screenStream;
     volatile Integer screenId;
     String screenName;
+    boolean viewing = false;
 
     public Screen(IService service){
+        if(service.getUsedConfig().getScreenEnabled() == null){
+            viewing = true;
+        }else{
+            if(service.getUsedConfig().getScreenEnabled()){
+                viewing = true;
+            }
+        }
         this.service = service;
         this.history = new ArrayList<>();
         ScreenManager screenManager = ScreenManager.instance;
         screenId = screenManager.getId(service);
         screenName = service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
-        this.screenStream = new ScreenStream(screenName,this);
+        if(viewing)
+            this.screenStream = new ScreenStream(screenName,this);
         service.setScreen(this);
         screenManager.addScreen(this);
         Core core = Core.getInstance();
@@ -53,7 +62,8 @@ public class Screen extends Thread implements IScreen {
             System.out.println("The PROCESS "+service.getJvmExecutor().getName()+" has just killed himself.");
         }
         ScreenManager.instance.remScreen(this);
-        screenStream.exit();
+        if(viewing)
+         screenStream.exit();
 
         /*if(getService().getClient() == null){
             getService().removeService();
