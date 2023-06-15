@@ -92,13 +92,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
 
-        System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
+      //  System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
         //profiles.getProfiles().put("default", JVMConfig.class.cast(this));
         jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
-        Console.debugPrint(jvmProfiles);
-        Console.debugPrint(jvmProfiles.getProfiles());
-        Console.debugPrint(jvmProfiles.getProfiles());
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
         // System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
     }
@@ -107,12 +104,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         super(pathName, name, false);
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
-        System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
        // jvmProfiles.getProfiles().put("default", this);
         jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
-        Console.debugPrint(jvmProfiles);
-        Console.debugPrint(jvmProfiles.getProfiles());
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
     }

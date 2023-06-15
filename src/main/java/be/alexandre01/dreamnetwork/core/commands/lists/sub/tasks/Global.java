@@ -26,6 +26,10 @@ public class Global extends SubCommand {
         super(command);
         List<TaskData> value = Core.getInstance().getGlobalTasks().getTasks();
         Object[] v = value.stream().map(TaskData::getName).toArray();
+
+        if(v.length == 0){
+            v = new Object[]{Completers.AnyCompleter.INSTANCE};
+        }
        // System.out.println(v.size());
 
 
