@@ -206,11 +206,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 String name = null;
                 if (jvmService != null) {
                     name = jvmService.getFullName();
-                    if(jvmService.getExecutorCallbacks() != null){
-                        if(jvmService.getExecutorCallbacks().onStop != null){
-                            jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
-                        }
-                    }
                 }
                 if (clientByConnexion.get(ctx).isDevTool()) {
                     name = "DEVTOOLS";
@@ -259,7 +254,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
         //REMOVE SERVICES
-        if (client != null && client.getJvmService() != null) {
+        if (client != null && client.getJvmService() != null && !client.getJvmService().getScreen().isViewing()) {
             client.getJvmService().getJvmExecutor().removeService(client.getJvmService());
         }
 

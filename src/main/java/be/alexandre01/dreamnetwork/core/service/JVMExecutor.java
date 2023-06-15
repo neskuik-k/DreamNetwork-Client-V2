@@ -31,7 +31,6 @@ import be.alexandre01.dreamnetwork.utils.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 
-import javax.ws.rs.core.Link;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -83,8 +82,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
     public IService staticService = null;
-    @Getter
-    JVMProfiles profiles = new JVMProfiles();
+    @Getter JVMProfiles jvmProfiles = new JVMProfiles();
 
 
     public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData) {
@@ -97,10 +95,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
         //profiles.getProfiles().put("default", JVMConfig.class.cast(this));
-        profiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
-        Console.debugPrint(profiles);
-        Console.debugPrint(profiles.getProfiles());
-        Console.debugPrint(profiles.getProfiles());
+        jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
+        Console.debugPrint(jvmProfiles);
+        Console.debugPrint(jvmProfiles.getProfiles());
+        Console.debugPrint(jvmProfiles.getProfiles());
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
         // System.out.println("JVMExecutor "+name+" "+type+" "+xms+" "+xmx+" "+port+" "+proxy+" "+updateFile+" "+bundleData);
     }
@@ -112,9 +110,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
        // jvmProfiles.getProfiles().put("default", this);
-        profiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
-        Console.debugPrint(profiles);
-        Console.debugPrint(profiles.getProfiles());
+        jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
+        Console.debugPrint(jvmProfiles);
+        Console.debugPrint(jvmProfiles.getProfiles());
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
     }
@@ -133,16 +131,44 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
     }
 
+
     @Override
     public synchronized ExecutorCallbacks startServer() {
         return startServer(this);
     }
 
     @Override
+    public ExecutorCallbacks startServer(String profile) {
+        return startServer(profile, new ExecutorCallbacks());
+    }
+
+    @Override
     public synchronized ExecutorCallbacks startServer(IConfig jvmConfig) {
+        return startServer(jvmConfig, new ExecutorCallbacks());
+    }
+
+    @Override
+    public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
+        IConfig iConfig = null;
+        if (profile != null) {
+            if (getJvmProfiles().getProfiles().containsKey(profile)) {
+                iConfig = getJvmProfiles().getProfiles().get(profile);
+            } else {
+                Console.print(Colors.RED + "The profile " + profile + " doesn't exist", Level.SEVERE);
+                return null;
+            }
+            iConfig = JVMStartupConfig.builder(iConfig).buildFrom(this);
+            return startServer(iConfig, callbacks);
+        } else {
+            Console.print(Colors.RED + "The profile is null and doesn't exist", Level.SEVERE);
+            return null;
+        }
+    }
+
+    @Override
+    public synchronized ExecutorCallbacks startServer(IConfig jvmConfig,ExecutorCallbacks c) {
         Console.fine("Checking queing start information");
         boolean b = queue.isEmpty();
-        ExecutorCallbacks c = new ExecutorCallbacks();
         Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
         queue.add(tuple);
 
@@ -163,14 +189,15 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
-        Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
-        if (i > 1) {
-            for (int j = 0; j < i - 1; j++) {
-                queue.add(tuple);
-            }
+        for (int j = 0; j < i; j++) {
+            startServer(jvmConfig,c);
         }
-        startJVM(tuple);
         return c;
+    }
+
+    @Override
+    public ExecutorCallbacks startServers(int i, String profile) {
+        return null;
     }
 
     private synchronized void startJVM(Tuple<IConfig, ExecutorCallbacks> tuple) {
@@ -283,8 +310,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                         isDoneWithSucess.set(true);
                         try {
                             if (!proceedStarting(finalname, finalServers, tuple)) {
-
                                 queue.remove(tuple);
+                                if(callbacks != null){
+                                    if(callbacks.onFail != null)
+                                        callbacks.onFail.whenFail();
+                                }
 
                                 if (!queue.isEmpty()) {
                                     Tuple<IConfig,ExecutorCallbacks> renew = queue.get(0);

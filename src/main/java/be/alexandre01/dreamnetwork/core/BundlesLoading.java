@@ -98,7 +98,7 @@ public class BundlesLoading {
         try {
             assert in != null;
             Config.createDir(path,false);
-            System.out.println(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
+            Console.fine(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
             Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();

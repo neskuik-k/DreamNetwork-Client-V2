@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
+import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -20,10 +21,10 @@ public class Start extends SubCommand {
         super(command);
         NodeContainer next = create("STATIC","DYNAMIC",
                 create(new RamNode(0,true),create(new RamNode(0,true))));
-
+        NodeContainer profile =  create("profile");
         NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("start",
-                        create(new BundlesNode(true,true,true),next))));
+                        create(new BundlesNode(true,true,true),profile,next))));
        // addCompletor("service","start","server");
        // addCompletor("service","start","proxy");
     }
@@ -71,7 +72,18 @@ public class Start extends SubCommand {
                 jvmExecutor.startServer();
                 return true;
             }
+            if(args[2].equalsIgnoreCase("profile")){
+                if(args.length < 4){
+                    Console.printLang("commands.service.start.noProfile");
+                    fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");
+                    return true;
+                }
+                String profile = sArgs[3];
 
+                jvmExecutor.startServer(profile);
+                System.out.println("Starting your server with profile " + profile);
+                return true;
+            }
             JVMExecutor.Mods mods = checkMods(sArgs[2]);
             if(mods == null){
                 Console.printLang("commands.service.start.incorrectMods");

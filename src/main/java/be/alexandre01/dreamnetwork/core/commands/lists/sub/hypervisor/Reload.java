@@ -23,7 +23,8 @@ public class Reload extends SubCommand {
                 create(value,
                         create("reload",
                             create("services"),
-                            create("completor",create(nodeClazz)),
+                                create("tasks"),
+                                create("completor",create(nodeClazz)),
                                 create("completors"))));
     }
 
@@ -41,7 +42,13 @@ public class Reload extends SubCommand {
                 for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors) {
                     IStartupConfig config = jvmExecutor.getStartupConfig();
                     config.saveFile();
+
+                    jvmExecutor.getJvmProfiles().loading(jvmExecutor.getJvmProfiles().getFile());
                 }
+            }
+            if(sArgs[1].equalsIgnoreCase("tasks")){
+                System.out.println("Reloading tasks");
+                Core.getInstance().getGlobalTasks().loading();
             }
             if(sArgs[1].equalsIgnoreCase("completors")){
                 Console.printLang("commands.hypervisor.reloadingCompletors");

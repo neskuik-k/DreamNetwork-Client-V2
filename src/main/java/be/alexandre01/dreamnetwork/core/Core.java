@@ -27,7 +27,7 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
-import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;
+import be.alexandre01.dreamnetwork.api.service.tasks.GlobalTasks;
 import be.alexandre01.dreamnetwork.core.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
 import lombok.Getter;
@@ -205,13 +205,13 @@ public class Core {
         //MANAGER
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
-
+        globalTasks = new GlobalTasks();
+        globalTasks.loading();
         Main.getCommandReader().init();
 
         console.reloadCompletors();
 
-        globalTasks = new GlobalTasks();
-        globalTasks.loading();
+
 
 
       //  getEventsFactory().registerListener(new ServicesTaskListener());

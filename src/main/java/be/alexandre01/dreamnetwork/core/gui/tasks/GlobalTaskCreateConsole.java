@@ -1,19 +1,11 @@
 package be.alexandre01.dreamnetwork.core.gui.tasks;
 
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.AccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.installer.Installer;
-import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.core.service.tasks.TaskData;
-
-import java.util.ArrayList;
+import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 

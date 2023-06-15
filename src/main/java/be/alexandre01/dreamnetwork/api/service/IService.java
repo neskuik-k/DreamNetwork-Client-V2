@@ -17,6 +17,7 @@ public interface IService {
     Process getProcess();
     IScreen getScreen();
     IConfig getUsedConfig();
+
     void setScreen(IScreen screen);
     void stop();
     void restart();

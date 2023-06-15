@@ -301,7 +301,7 @@ console.askExit=%redbobr%do you want to exit :thinking():? (y or n) > %reset%
 console.changed=%black%%whitebg%You have just changed console. [%var%]%reset%
 console.errorOn=↪ %redbo%ERROR %whitebobr%ON%yellowbobr% >>%reset% %var% || %var%:%var%
 console.errorCause=↪ %red%ERROR CAUSE %redbobr%>>%red% %var% || %var%:%var%
-console.contactDNDevError=Please contact the DN developpers about this error.
+console.contactDNDevError=Please contact the DN developpers about this error on our Discord (https://discord.dreamnetwork.cloud).
 console.closed=Console closed
 console.createDir=%cyanbobr%  Directory %var% created :open_file_folder():
 

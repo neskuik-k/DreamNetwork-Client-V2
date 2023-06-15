@@ -33,6 +33,10 @@ public class NodeBuilder {
         return new NodeContainer(o);
     }
 
+    public static NodeContainer create(String... s){
+        return new NodeContainer(s);
+    }
+
     public static Candidate of(String value,String display){
         return new Candidate(value,display,null,null,null,null,true);
     }

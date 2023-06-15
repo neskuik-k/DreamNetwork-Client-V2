@@ -27,22 +27,11 @@ public class NodeContainer {
 
     public NodeContainer(Object... objects){
         this.objects = objects;
-        /*for (Object obj : objects) {
-            if(obj instanceof NodeContainer){
-                ((NodeContainer) obj).setParent(this);
-            }
-            if(obj instanceof String){
-                stringList.add((String) obj);
-            }
-            if(obj instanceof Candidate){
-                stringList.add(((Candidate) obj).value());
-            }
-            if(obj instanceof CustomType){
-
-            }
-        }*/
     }
 
+    public NodeContainer(String... strings){
+        this.objects = strings;
+    }
   /*  public void setParent(NodeContainer parent){
         this.parent = parent;
 

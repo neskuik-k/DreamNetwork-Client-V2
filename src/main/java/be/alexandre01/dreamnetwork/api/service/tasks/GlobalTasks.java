@@ -1,13 +1,10 @@
-package be.alexandre01.dreamnetwork.core.service.tasks;
+package be.alexandre01.dreamnetwork.api.service.tasks;
 
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.service.JVMConfig;
-import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
-import lombok.Setter;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -26,7 +23,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
     @Getter private final List<TaskData> alwaysONs = new ArrayList<>();
     @Ignore private HashMap<String,TaskData> withNames = new HashMap<>();
 
-    ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+    ScheduledExecutorService executorService = null;
 
     public GlobalTasks() {
         addTag(GlobalTasks.class,Tag.MAP);
@@ -42,6 +39,10 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
 
     public void loading(){
         addAnnotation("Configure your tasks here");
+        alwaysONs.clear();
+        withNames.clear();
+        tasks.clear();
+
         if(!super.config(new File(Config.getPath("data/Tasks.yml")), GlobalTasks.class,true)){
             super.saveFile(GlobalTasks.class.cast(this));
         }else {
@@ -50,21 +51,17 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
         }
 
         for (TaskData taskData : tasks) {
-            System.out.println(taskData.getName());
             withNames.put(taskData.getName(),taskData);
             if(taskData.getTaskType().equals(TaskData.TaskType.ALWAYS_ON)){
                 alwaysONs.add(taskData);
             }
-            taskData.operate();
+            if(!(taskData.getTaskType().equals(TaskData.TaskType.MANUAL) || taskData.getTaskType().equals(TaskData.TaskType.MANUAL_RESTRICTED)))
+                taskData.operate();
         }
 
         // Init
 
-        executorService.scheduleAtFixedRate(() -> {
-            for(TaskData taskData : alwaysONs){
-                taskData.operate();
-            }
-        }, 3,3, java.util.concurrent.TimeUnit.SECONDS);
+        enable();
     }
 
     public TaskData getTask(String name){
@@ -82,4 +79,21 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> {
     }
 
 
+    public void enable() {
+        if(executorService != null)return;
+        executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            for(TaskData taskData : alwaysONs){
+                taskData.operate();
+            }
+        }, 3,3, java.util.concurrent.TimeUnit.SECONDS);
+        System.out.println("Tasks enabled");
+    }
+
+    public void disable() {
+        if(executorService == null)return;
+        executorService.shutdown();
+        executorService = null;
+        System.out.println("Tasks disabled");
+    }
 }

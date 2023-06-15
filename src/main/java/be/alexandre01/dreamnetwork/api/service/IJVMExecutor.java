@@ -118,14 +118,17 @@ public interface IJVMExecutor {
 
 
     public ExecutorCallbacks startServer();
+    public ExecutorCallbacks startServer(String profile);
 
     public ExecutorCallbacks startServer(IConfig jvmConfig);
+    public ExecutorCallbacks startServer(String profile,ExecutorCallbacks callbacks);
 
+    public ExecutorCallbacks startServer(IConfig jvmConfig,ExecutorCallbacks callbacks);
 
     public ExecutorCallbacks startServers(int i);
 
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig);
-
+    public ExecutorCallbacks startServers(int i, String profile);
     public void removeService(IService service);
 
     public IService getService(Integer i);
@@ -171,7 +174,7 @@ public interface IJVMExecutor {
     public ExecType getExecType();
     public InstallationLinks getInstallLink();
 
-    public JVMProfiles getProfiles();
+    public JVMProfiles getJvmProfiles();
 
 
 
