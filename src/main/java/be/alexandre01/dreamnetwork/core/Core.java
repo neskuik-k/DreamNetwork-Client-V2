@@ -209,15 +209,9 @@ public class Core {
         Main.getCommandReader().init();
 
         console.reloadCompletors();
-        new Thread(() -> {
-            try {
-                Thread.sleep(0);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            globalTasks = new GlobalTasks();
-            globalTasks.loading();
-        }).start();
+
+        globalTasks = new GlobalTasks();
+        globalTasks.loading();
 
 
       //  getEventsFactory().registerListener(new ServicesTaskListener());
