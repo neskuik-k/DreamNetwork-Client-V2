@@ -255,6 +255,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
         //REMOVE SERVICES
         if (client != null && client.getJvmService() != null && !client.getJvmService().getScreen().isViewing()) {
+            System.out.println("Removing service by handler");
             client.getJvmService().getJvmExecutor().removeService(client.getJvmService());
         }
 

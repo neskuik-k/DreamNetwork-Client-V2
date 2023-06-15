@@ -29,7 +29,7 @@ public class JVMReader extends Thread{
         try {
             int exitValue = process.waitFor();
             //set status of you button as process is stop or do call function
-            jvmService.getJvmExecutor().removeService(jvmService);
+           // jvmService.getJvmExecutor().removeService(jvmService);
             System.out.println("\n\nExit Value from "+jvmService.getJvmExecutor().getName()+" is " + exitValue);
 
         } catch (InterruptedException e) {

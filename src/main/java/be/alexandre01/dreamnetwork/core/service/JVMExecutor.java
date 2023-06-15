@@ -629,13 +629,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
+        System.out.println("removing service");
         try {
-            if(jvmService.getExecutorCallbacks() != null){
-              if(jvmService.getExecutorCallbacks().onStop != null){
-                jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
-             }
-            }
-            Core.getInstance().getEventsFactory().callEvent(new CoreServiceStopEvent(Core.getInstance().getDnCoreAPI(), jvmService));
 
             int i = jvmService.getId();
             String finalName = getName() + "-" + jvmService.getId();
@@ -665,6 +660,14 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
+
+            if(jvmService.getExecutorCallbacks() != null){
+                if(jvmService.getExecutorCallbacks().onStop != null){
+                    jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
+                }
+            }
+
+            Core.getInstance().getEventsFactory().callEvent(new CoreServiceStopEvent(Core.getInstance().getDnCoreAPI(), jvmService));
 
             if(jvmService.getClient() != null){
                 if (!isProxy()) {

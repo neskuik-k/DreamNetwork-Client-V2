@@ -12,19 +12,22 @@ import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenStream;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter @Setter
 public class Screen extends Thread implements IScreen {
     IService service;
     ArrayList<String> history;
     ArrayList<IClient> devToolsReading = new ArrayList<>();
     ScreenStream screenStream;
     volatile Integer screenId;
+    boolean running = true;
     String screenName;
     boolean viewing = false;
 
@@ -56,6 +59,10 @@ public class Screen extends Thread implements IScreen {
 
     @Override
     public synchronized void destroy(){
+        if(!running){
+            return;
+        }
+        running = false;
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.setActualConsole("m:default");
             Console.getConsole("s:"+screenName).destroy();
