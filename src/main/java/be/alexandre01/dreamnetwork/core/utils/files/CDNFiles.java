@@ -19,7 +19,7 @@ public class CDNFiles extends Thread{
     private WebFileReader wfr;
     @Getter private boolean instanced = false;
 
-    @Getter private static HashMap<String, AddonDowloaderObject> addons;
+    @Getter private HashMap<String, AddonDowloaderObject> addons;
     @Getter private List<String> addonsToUpdate;
 
     @Override
@@ -46,10 +46,10 @@ public class CDNFiles extends Thread{
             String hash = addonInfo.get("hash").getAsString();
             addons.put(name, new AddonDowloaderObject(name, author, desc, version, github, downloadLink, hash));
 
-            File addonDowloaded = new File("addons/" + name + ".jar");
-            if(addonDowloaded.exists()){
+            File addonDownloaded = new File("addons/" + name + ".jar");
+            if(addonDownloaded.exists()){
                 try {
-                    byte[] data = Files.readAllBytes(addonDowloaded.toPath());
+                    byte[] data = Files.readAllBytes(addonDownloaded.toPath());
                     byte[] fileHash = MessageDigest.getInstance("MD5").digest(data);
                     String checksum = new BigInteger(1, fileHash).toString(16);
                     if(!checksum.equals(hash)){addonsToUpdate.add(name);}
@@ -57,11 +57,11 @@ public class CDNFiles extends Thread{
             }
         }
         this.addons = addons;
-        if(addonsToUpdate.size() > 0){
+        /*if(addonsToUpdate.size() > 0){
             addonsToUpdate.forEach(name -> {
                 Console.printLang("addons.canUpdate", name, name);
             });
-        }
+        }*/
     }
 
     /*public static void getVersions(){

@@ -24,6 +24,9 @@ import be.alexandre01.dreamnetwork.core.console.process.ProcessHistory;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployListLoader;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
+
+import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
+
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -66,6 +69,8 @@ public class Main {
     @Getter @Setter private static BundlesLoading bundlesLoading;
 
     @Getter private static LanguageManager languageManager;
+
+    @Getter private static CDNFiles cdnFiles;
 
 
 
@@ -140,7 +145,8 @@ public class Main {
 
         }
 
-
+        cdnFiles = new CDNFiles();
+        cdnFiles.start();
 
         ConsoleReader.initHighlighter();
         Console.clearConsole(System.out);
