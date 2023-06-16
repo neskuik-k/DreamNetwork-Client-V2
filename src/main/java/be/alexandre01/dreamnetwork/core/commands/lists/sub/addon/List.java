@@ -6,18 +6,19 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.addons.AddonDowloaderObject;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
 import lombok.NonNull;
 
 import java.io.File;
 import java.util.HashMap;
 
 public class List extends SubCommand {
-    private final HashMap<String, AddonDowloaderObject> addons;
+    private HashMap<String, AddonDowloaderObject> addons = null;
 
     public List(Command command) {
         super(command);
-        addons = Main.getCdnFiles().getAddons();
+        if(Main.getCdnFiles().isInstanced()) {
+            addons = Main.getCdnFiles().getAddons();
+        }
         NodeBuilder nodeBuilder = new NodeBuilder(
                 NodeBuilder.create(value, NodeBuilder.create("list", NodeBuilder.create("installed", "officials")))
         );
@@ -41,6 +42,13 @@ public class List extends SubCommand {
                 Console.printLang("commands.addon.list.installedAddons");
                 Console.print((addonsList.length != 0 ? sb.toString().subSequence(0, sb.length()-2) : Console.getFromLang("commands.addon.list.noAddonInstalled")));
             }else{
+                if(addons == null && Main.getCdnFiles().isInstanced()){
+                    addons = Main.getCdnFiles().getAddons();
+                }
+                if(addons == null || addons.size() == 0){
+                    Console.getFromLang("commands.addon.list.noOfficialAddon");
+                    return true;
+                }
                 StringBuilder sb = new StringBuilder();
                 for(AddonDowloaderObject addon : addons.values()){
                     sb.append(Console.getFromLang("commands.addon.list.name")).append(addon.getName()).append("\n");
@@ -51,7 +59,7 @@ public class List extends SubCommand {
                     sb.append("   ------------------------------------------------------").append("\n");
                 }
                 Console.printLang("commands.addon.list.officialsAddons");
-                Console.print((addons.size() != 0 ? sb.toString() : Console.getFromLang("commands.addon.list.noOfficialAddon")));
+                Console.print(sb.toString());
             }
             return true;
         },args,"install","[" + Console.getFromLang("name") + "]");
