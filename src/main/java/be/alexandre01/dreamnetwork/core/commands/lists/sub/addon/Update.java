@@ -22,8 +22,8 @@ public class Update extends SubCommand {
             addonsToUpdate.add("all");
             NodeBuilder nodeBuilder = new NodeBuilder(
                     NodeBuilder.create("addon",
-                            NodeBuilder.create("update",
-                                    NodeBuilder.create(addonsToUpdate.toArray()))));
+                            NodeBuilder.create("update"
+                                 /*  NodeBuilder.create(addonsToUpdate.toArray())*/)));
             addonsToUpdate.remove("all");
         }
     }
