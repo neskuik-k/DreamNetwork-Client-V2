@@ -514,7 +514,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
         if (jvmConfig.getType().equals(Mods.DYNAMIC)) {
             if (startup != null) {
-                String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\", "/") + "/" + this.getExecutable();
+                String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath()+ "/" + this.getExecutable();
                 startup = startup.replace("%jar%", jarPath).replace("%exec%", jarPath);
                 startup = startup.replace("%args%", customArgs);
 
@@ -536,7 +536,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         } else {
             if (jvmConfig.getType().equals(Mods.STATIC)) {
                 if (startup != null) {
-                    String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\", "/") + "/" + jvmConfig.getExecutable();
+                    String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable();
 
                     startup = startup.replaceAll("%jar%", jarPath).replaceAll("%exec%", jarPath);
                     startup = startup.replace("%args%", customArgs);
