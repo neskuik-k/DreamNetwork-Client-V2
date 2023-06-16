@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.config;
 
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.CustomRepresenter;
+import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,6 +18,8 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
 
+    String terminalMode = "ssh";
+
     int threadPoolIO= 8;
     String copyIOMethod = "files";
 
@@ -26,6 +29,9 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     String language = "en_EN";
     private boolean useEmoji = false;
     private boolean emojiOnCommand= false;
+
+    @Ignore private TerminalMode termMode;
+
 
     public GlobalSettings() {
         // Init
@@ -42,6 +48,14 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
             super.readAndReplace(this);
             save();
         }
+
+        termMode = TerminalMode.valueOf(terminalMode.toUpperCase());
+
+
+    }
+
+    public enum TerminalMode{
+        SSH,SAFE;
     }
 
     public void save(){

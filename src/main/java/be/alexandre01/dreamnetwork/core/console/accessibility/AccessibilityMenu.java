@@ -2,6 +2,9 @@ package be.alexandre01.dreamnetwork.core.console.accessibility;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
+import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.ConsolePath;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
@@ -158,6 +161,10 @@ public class AccessibilityMenu {
             Console.debugPrint(info.headMessage.replace("%data%",currentInput));
         }
         if(info.writingMessage != null){
+            if(Main.getGlobalSettings().getTermMode() == GlobalSettings.TerminalMode.SAFE){
+                Console.debugPrint(info.writingMessage);
+                return;
+            }
             console.setWriting(info.writingMessage);
         }
 
@@ -177,6 +184,7 @@ public class AccessibilityMenu {
 
     private void playCurrentTransition(boolean macro){
         PromptText text = prompts.get(currentInput);
+
 
         if(text.macro != null && macro){
             ConsoleReader.sReader.runMacro(text.macro);
@@ -224,6 +232,7 @@ public class AccessibilityMenu {
             if(currentInput == null){
                 throw new NullPointerException("No input found");
             }
+
           //  playCurrentTransition(false);
             console.setConsoleAction(new Console.IConsole() {
                 @Override
@@ -243,6 +252,11 @@ public class AccessibilityMenu {
                             return;
                         }
                         promptText.value = builder.toString();
+
+                        if(args[0].equalsIgnoreCase(":exit")){
+                            forceExit();
+                            return;
+                        }
 
                         Operation operation = promptText.input.received(promptText, args, infos.get(currentInput));
                         if(operation != null){
