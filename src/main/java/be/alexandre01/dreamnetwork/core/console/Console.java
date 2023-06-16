@@ -239,13 +239,23 @@ public class Console extends Thread{
             debugPrint("Debug: "+s);
             return;
         }
-        /*if(level == Level.FINE){
-            fine(s);
-            return;
-        }*/
+        if(level == Level.FINE){
+            FileHandler fh = Core.getInstance().getFileHandler();
+            String msg = s == null ? "null": s.toString();
+            if(Core.getInstance().isDebug()){
+                instances.get(actualConsole).fPrint(s+Colors.ANSI_RESET(),level);
 
-        //instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level);
-        instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
+               // print(msg,Level.FINE);
+                return;
+            }
+            if(fh != null){
+                sendToLog(msg,Level.FINE,"global");
+            }
+            return;
+        }
+
+        instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level);
+        //instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
 
     }
 
@@ -318,7 +328,7 @@ public class Console extends Thread{
 
     public static void printLang(String map,Level level,Object... params){
         if(Core.getInstance().isDebug()) {
-            print(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.FINE);
+            print(LanguageManager.getMessage(map,params) + " ["+map+"]", level);
             return;
         }
         print(LanguageManager.getMessage(map,params),level);
