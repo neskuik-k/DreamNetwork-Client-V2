@@ -19,12 +19,14 @@ public class Update extends SubCommand {
         cdnFiles = Main.getCdnFiles();
         if(cdnFiles.isInstanced()) {
             addonsToUpdate = cdnFiles.getAddonsToUpdate();
-            addonsToUpdate.add("all");
-            NodeBuilder nodeBuilder = new NodeBuilder(
-                    NodeBuilder.create("addon",
-                            NodeBuilder.create("update"
-                                 /*  NodeBuilder.create(addonsToUpdate.toArray())*/)));
-            addonsToUpdate.remove("all");
+            if(addonsToUpdate != null && addonsToUpdate.size() != 0) {
+                addonsToUpdate.add("all");
+                NodeBuilder nodeBuilder = new NodeBuilder(
+                        NodeBuilder.create("addon",
+                                NodeBuilder.create("update",
+                                        NodeBuilder.create(addonsToUpdate.toArray()))));
+                addonsToUpdate.remove("all");
+            }
         }
     }
 

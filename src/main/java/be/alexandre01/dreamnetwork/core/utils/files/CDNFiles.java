@@ -19,8 +19,8 @@ public class CDNFiles extends Thread{
     private WebFileReader wfr;
     @Getter private boolean instanced = false;
 
-    @Getter private HashMap<String, AddonDowloaderObject> addons;
-    @Getter private List<String> addonsToUpdate;
+    @Getter private HashMap<String, AddonDowloaderObject> addons = null;
+    @Getter private List<String> addonsToUpdate = null;
 
     @Override
     public synchronized void start() {
@@ -30,7 +30,7 @@ public class CDNFiles extends Thread{
         instanced = true;
     }
 
-    private void readAddons(){
+    private synchronized void readAddons(){
         JsonObject addonsJSON = wfr.readJSONCDN("addon/officials.json");
         if(addonsJSON == null){this.addons = new HashMap<>();return;}
         addonsToUpdate = new ArrayList<>();

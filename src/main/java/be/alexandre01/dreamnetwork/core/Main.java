@@ -146,7 +146,7 @@ public class Main {
         }
 
         cdnFiles = new CDNFiles();
-        //cdnFiles.start();
+        cdnFiles.start();
 
         ConsoleReader.initHighlighter();
         Console.clearConsole(System.out);
