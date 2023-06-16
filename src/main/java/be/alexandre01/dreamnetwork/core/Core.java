@@ -92,7 +92,7 @@ public class Core {
     }
 
     public void afterConstructor(){
-        
+
         String s = System.getProperty("ebug");
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
@@ -125,7 +125,7 @@ public class Core {
 
         Console.load("m:spiget");
         spigetConsole = new SpigetConsole(Console.getConsole("m:spiget"));
-      // introConsole = new IntroductionConsole("begin");
+        // introConsole = new IntroductionConsole("begin");
 
 
 
@@ -215,7 +215,7 @@ public class Core {
 
 
 
-      //  getEventsFactory().registerListener(new ServicesTaskListener());
+        //  getEventsFactory().registerListener(new ServicesTaskListener());
 
         addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
@@ -223,7 +223,7 @@ public class Core {
         if(Main.getBundlesLoading().isFirstLoad()){
             System.out.println("menu show");
             menu.show();
-           // Console.setActualConsole("m:introbegin",true,false);
+            // Console.setActualConsole("m:introbegin",true,false);
         }
 
         if(Main.getGlobalSettings().isCheckDefaultJVMVersion()){
