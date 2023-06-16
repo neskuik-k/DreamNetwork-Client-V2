@@ -46,8 +46,9 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 InstallTemplateConsole i = new InstallTemplateConsole(null);
                 i.buildAndRun("m:installTemplate");
                 i.addFinishCatch(() -> {
+                    Console.setBlockConsole(false);
+                    i.exitConsole();
                     i.clearData();
-                    i.forceExit();
                 });
                 i.show();
                 return true;
