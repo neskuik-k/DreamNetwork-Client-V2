@@ -54,7 +54,9 @@ public class AccessibilityMenu {
     }
 
     public void executeFinishCatches(){
-        for (FinishCatch finishCatch : finishCatches) {
+        for (int i = 0; i < finishCatches.size(); i++) {
+            FinishCatch finishCatch = finishCatches.get(0);
+            finishCatches.remove(0);
             finishCatch.onFinish();
         }
     }
