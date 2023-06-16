@@ -508,13 +508,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         String customArgs = "";
-        customArgs += " -DNPort=" + Main.getGlobalSettings().getPort();
+        customArgs += "-DNPort=" + Main.getGlobalSettings().getPort();
         if (preProcessEvent.getCustomArguments() != null) {
             customArgs += " " + preProcessEvent.getCustomArguments();
         }
         if (jvmConfig.getType().equals(Mods.DYNAMIC)) {
             if (startup != null) {
-                String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath()+ "/" + this.getExecutable();
+                String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\", "/") + "/" + this.getExecutable();
                 startup = startup.replace("%jar%", jarPath).replace("%exec%", jarPath);
                 startup = startup.replace("%args%", customArgs);
 
@@ -523,11 +523,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             } else {
-                String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable() + " nogui";
+                String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() +" "+ customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable() + " nogui";
 
                 Console.print("JavaLine > " + line, Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-                ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
+               // ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
 
                 proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname))).redirectErrorStream(true).start();
                 // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
@@ -536,7 +536,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         } else {
             if (jvmConfig.getType().equals(Mods.STATIC)) {
                 if (startup != null) {
-                    String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable();
+                    String jarPath = new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath().replaceAll("\\\\", "/") + "/" + jvmConfig.getExecutable();
 
                     startup = startup.replaceAll("%jar%", jarPath).replaceAll("%exec%", jarPath);
                     startup = startup.replace("%args%", customArgs);
@@ -548,7 +548,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 } else {
-                    String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + this.getExecutable() + " nogui";
+                    String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " "+customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + this.getExecutable() + " nogui";
                     Console.print("JavaLine > " + line, Level.FINE);
 
                     ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
