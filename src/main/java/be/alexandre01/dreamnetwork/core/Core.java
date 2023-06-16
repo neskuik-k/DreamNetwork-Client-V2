@@ -243,12 +243,12 @@ public class Core {
             Console.printLang("core.windowsWarning");
         }
 
-        CDNFiles cdnFiles = Main.getCdnFiles();
+      /*  CDNFiles cdnFiles = Main.getCdnFiles();
         if(cdnFiles.isInstanced() && cdnFiles.getAddonsToUpdate().size() != 0){
             cdnFiles.getAddonsToUpdate().forEach(name -> {
                 Console.printLang("addons.canUpdate", name, name);
             });
-        }
+        }*/
 
         Console.setBlockConsole(false);
     }

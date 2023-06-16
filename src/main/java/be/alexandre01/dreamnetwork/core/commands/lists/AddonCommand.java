@@ -11,9 +11,9 @@ public class AddonCommand extends Command {
     public AddonCommand(String name) {
         super(name);
         setCompletorValue("addon",getBaseColor()+"addon");
-        addSubCommand("install", new Install(this));
-        addSubCommand("update", new Update(this));
-        addSubCommand("list", new List(this));
+       // addSubCommand("install", new Install(this));
+     //   addSubCommand("update", new Update(this));
+        //addSubCommand("list", new List(this));
 
         String nameText = Console.getFromLang("name");
         getHelpBuilder().setTitleUsage(Console.getFromLang("commands.addon.titleUsage"));
