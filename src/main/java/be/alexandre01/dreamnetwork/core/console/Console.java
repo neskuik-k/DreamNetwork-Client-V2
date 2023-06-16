@@ -294,7 +294,8 @@ public class Console extends Thread{
 
     public void fPrintLang(String map, Level level, Object... params){
         if (Core.getInstance().isDebug()){
-            fPrint(LanguageManager.getMessage(map,params) + " ["+map+"]", Level.INFO);
+            fPrint(LanguageManager.getMessage(map,params) + " ["+map+"]", level);
+            return;
         }
         fPrint(LanguageManager.getMessage(map,params),level);
     }
