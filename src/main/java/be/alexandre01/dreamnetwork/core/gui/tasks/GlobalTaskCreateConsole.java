@@ -35,7 +35,7 @@ public class GlobalTaskCreateConsole extends AccessibilityMenu {
                 }
             });
 
-        String[] types = new String[]{"ALWAYS_ON","ON_START","CUSTOM"};
+        String[] types = new String[]{"ALWAYS_ON","ON_START","MANUAL","MANUAL_RESTRICTED"};
 
         addValueInput(PromptText.create("type").setSuggestions(create((Object[]) types)), new ValueInput() {
             @Override
