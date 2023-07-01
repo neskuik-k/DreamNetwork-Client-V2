@@ -221,7 +221,6 @@ public class Core {
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
         if(Main.getBundlesLoading().isFirstLoad()){
-            System.out.println("menu show");
             menu.show();
             // Console.setActualConsole("m:introbegin",true,false);
         }

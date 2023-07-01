@@ -141,20 +141,25 @@ public class AuthentificationResponse extends CoreResponse {
                         ArrayList<String> servers = new ArrayList<>();
 
 
-                        for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()) {
+
+                        for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getJVMExecutors()) {
+                            String type = jvmExecutor.isProxy() ? "p" : "s";
+
+                            //services démarrés
                             if (!jvmExecutor.getServices().isEmpty()) {
                                 for (IService service : jvmExecutor.getServices()) {
 
                                     if (service.getClient() != null) {
-                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t";
+                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
                                         //System.out.println(service.);
                                         service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
-                                        servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
+                                        servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                                     }
                                 }
                             } else {
+                                //services non démarrés
                                 if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
-                                    servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t");
+                                    servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
                                 }
                             }
                         }

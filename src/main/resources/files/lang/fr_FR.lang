@@ -350,6 +350,6 @@ core.utils.yaml.errorWritingFile=Une erreur est survenue lors de l'écriture du 
 utils.spiget.searchFailed=La rechercher de %var% a échoué.
 
 ## API
-api.commands.invalidArguments=%ared% Arguments invalid.
+api.commands.invalidArguments=%ared% Arguments invalides.
 api.commands.cancelled=Commande annulée
 api.commands.helpBuilder.list=%greenul%Liste des commandes pour %var%:

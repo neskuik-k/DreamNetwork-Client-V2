@@ -36,7 +36,8 @@ public class LangLoader {
         scan.scan(new FileScan.LangScanListener() {
             @Override
             public void onScan(String line) {
-                if(line.startsWith("##") || line.equals("")){return;}
+                if(line.startsWith("##") || line.equals(""))
+                    return;
                 String key = line.split("=")[0];
                 String value = line.split("=")[1];
             //    System.out.println(key+"="+convert(value));
@@ -44,7 +45,8 @@ public class LangLoader {
             }
         });
 
-        if(keysManager == manager.getDefaultKeysManager()){return language;}
+        if(keysManager == manager.getDefaultKeysManager())
+            return language;
         //eliminate duplicate
         ArrayList<String> keys = new ArrayList<>(manager.getDefaultKeysManager().getKeys());
 

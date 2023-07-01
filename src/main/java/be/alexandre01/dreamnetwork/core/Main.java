@@ -164,7 +164,7 @@ public class Main {
         Logger.getLogger("jdk.event.security").setLevel(Level.OFF);
         Logger.getLogger("io.netty.util.internal.logging.InternalLoggerFactory").setLevel(Level.OFF);
         Logger.getLogger("jdk.internal.event.EventHelper").setLevel(Level.OFF);
-        String pathSlf4J = Core.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
+     //   String pathSlf4J = Core.class.getProtectionDomain().getCodeSource().getLocation().getPath() + "log4j.properties";
      /*   if(!Config.isWindows()){
             ConsoleHandler ch = new ConsoleHandler();
             ch.setLevel(Level.FINE);
