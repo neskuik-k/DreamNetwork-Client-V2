@@ -300,7 +300,7 @@ connection.core.handler.processStopped=%redbo%A process '%var%' has just stopped
 connection.core.handler.removeClient=Remove server, client : %var%
 
 connection.request.sent=Request %var% sent with success!
-connection.request.exception.requestNotFound=The request %var% isn't foundable.
+connection.request.exception.requestNotFound=The request %var% isn't foundable for client %var%.
 ## Debug Mod
 debug.enabled=%purple%Debug mode %green%%whitebg%enabled
 debug.disabled=%purple%Debug mode %red%%whitebg%disabled

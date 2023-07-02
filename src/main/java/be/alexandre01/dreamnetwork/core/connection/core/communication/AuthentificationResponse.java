@@ -152,7 +152,9 @@ public class AuthentificationResponse extends CoreResponse {
                                     if (service.getClient() != null) {
                                         String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
                                         //System.out.println(service.);
-                                        service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
+                                        if(!jvmExecutor.isProxy()){
+                                            service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
+                                        }
                                         servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                                     }
                                 }

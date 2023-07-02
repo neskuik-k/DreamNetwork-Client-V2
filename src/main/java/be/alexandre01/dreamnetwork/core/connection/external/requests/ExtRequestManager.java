@@ -6,6 +6,8 @@ import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
+import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientHandler;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.generated.ExternalResponseBuilder;
@@ -29,7 +31,7 @@ public class ExtRequestManager extends AbstractRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args) {
         if (!requestBuilder.getRequestData().containsKey(requestInfo)) {
             try {
-                throw new RequestNotFoundException(requestInfo);
+                throw new RequestNotFoundException(requestInfo,"ExternalClient");
             } catch (RequestNotFoundException e) {
                 e.printStackTrace();
             }

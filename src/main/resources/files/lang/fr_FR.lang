@@ -290,7 +290,7 @@ connection.core.handler.processStopped=%redbo%Le processus '%var%' a été arrê
 connection.core.handler.removeClient=Suppression serveur, client : %var%
 
 connection.request.sent=La requête %var% a été envoyé avec succès!
-connection.request.exception.requestNotFound=La requête %var% est introuvable.
+connection.request.exception.requestNotFound=La requête %var% est introuvable pour le client %var%.
 
 ## Debug Mod
 debug.enabled=%purple%Mode Debug %green%%whitebg%activé

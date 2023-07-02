@@ -61,7 +61,7 @@ public class ClientRequestManager extends AbstractRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
         if(!requestBuilder.getRequestData().containsKey(requestInfo)){
              try {
-                 throw new RequestNotFoundException(requestInfo);
+                 throw new RequestNotFoundException(requestInfo,client);
              } catch (RequestNotFoundException e) {
                  e.printStackTrace();
              }
