@@ -1,15 +1,24 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.core.service.JVMService;
+import lombok.Setter;
 
 public class ExecutorCallbacks {
     public ICallbackStart onStart;
     public ICallbackStop onStop;
     public ICallbackConnect onConnect;
 
+    @Setter JVMService jvmService = null;
+    boolean hasStarted = false;
+
     public ICallbackFail onFail;
     public ExecutorCallbacks whenStart(ICallbackStart onStart){
         this.onStart = onStart;
+        if(jvmService != null && !hasStarted){
+            onStart.whenStart(jvmService);
+            hasStarted = !hasStarted;
+        }
         return this;
     }
 
@@ -27,6 +36,9 @@ public class ExecutorCallbacks {
         this.onFail = onFail;
         return this;
     }
+
+
+
     public abstract static class ICallbackStart{
         public abstract void whenStart(IService service);
     }
@@ -35,7 +47,7 @@ public class ExecutorCallbacks {
         public abstract void whenStop(IService service);
     }
 
-    public abstract class ICallbackConnect{
+    public abstract static class ICallbackConnect{
         public abstract void whenConnect(IService service, IClient client);
     }
 

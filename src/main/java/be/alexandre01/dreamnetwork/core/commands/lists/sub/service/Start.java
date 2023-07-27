@@ -4,9 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.*;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
-import be.alexandre01.dreamnetwork.api.service.IStartupConfigBuilder;
+import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -68,7 +66,6 @@ public class Start extends SubCommand {
             //System.out.println("jvmExecutor = " + jvmExecutor);
 
             if(sArgs.length < 3){
-                Console.fine("Try to start");
                 jvmExecutor.startServer();
                 return true;
             }

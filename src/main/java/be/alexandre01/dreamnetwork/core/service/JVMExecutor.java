@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
@@ -578,6 +579,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         if(callbacks != null){
             if(callbacks.onStart != null)
                 callbacks.onStart.whenStart(jvmService);
+            callbacks.setJvmService(jvmService);
         }
         jvmServices.put(servers, jvmService);
         servicePort.put(port, jvmService);

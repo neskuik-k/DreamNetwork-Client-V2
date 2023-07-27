@@ -107,9 +107,12 @@ public class AuthentificationResponse extends CoreResponse {
                             }
                         }
                         Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
-                            newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
+                        if(newClient.getJvmService().getExecutorCallbacks() != null){
+                            if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
+                                newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
+                            }
                         }
+
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
                             Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService());
@@ -135,8 +138,10 @@ public class AuthentificationResponse extends CoreResponse {
                         }
 
                         Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
-                            newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
+                        if(newClient.getJvmService().getExecutorCallbacks() != null){
+                             if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
+                                 newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
+                            }
                         }
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
