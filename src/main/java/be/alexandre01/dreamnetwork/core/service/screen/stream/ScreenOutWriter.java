@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenOutWriter;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.Console;
 
@@ -11,7 +12,8 @@ import be.alexandre01.dreamnetwork.core.service.screen.commands.ScreenExit;
 
 import java.io.*;
 
-public class ScreenOutWriter {
+
+public class ScreenOutWriter implements IScreenOutWriter {
     ScreenCommands commands;
     BufferedWriter writer;
     private String[] args;
@@ -19,8 +21,8 @@ public class ScreenOutWriter {
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ScreenOutWriter(IScreen screen, Console console){
-      //  this.consoleReader = consoleReader;
+    public ScreenOutWriter(IScreen screen, Console console) {
+        //  this.consoleReader = consoleReader;
         //Console.debugPrint(consoleReader.getCompleters());
 
         this.console = console;
@@ -50,7 +52,7 @@ public class ScreenOutWriter {
                         //Console.debugPrint(Arrays.toString(args));
                         if (!commands.check(args)) {
                             try {
-                                if(!screen.getService().getProcess().isAlive()){
+                                if (!screen.getService().getProcess().isAlive()) {
                                     Console.fine("The PROCESS cannot be writed anymore.");
                                     screen.destroy();
                                     return;
@@ -70,13 +72,7 @@ public class ScreenOutWriter {
                                     }
 
                                 }
-
-                                Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
-                                writer.write(sb.toString()+"\n");
-
-                                //  Console.debugPrint("write");
-                                writer.flush();
-                                // Console.debugPrint("flush");
+                                writeOnConsole(sb.toString());
                             } catch (IOException e) {
                                 e.printStackTrace(Core.getInstance().formatter.getDefaultStream());
                             }
@@ -90,15 +86,13 @@ public class ScreenOutWriter {
 
             }
         });
+    }
 
-
-
-//            write("> ");
-         /*   try {
-                args = reader.readLine().split(" ");
-            }catch (Exception e){
-
-            }*/
-        }
+    @Override
+    public void writeOnConsole(String data) throws IOException {
+        Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
+        writer.write(data + "\n");
+        writer.flush();
+    }
 
 }

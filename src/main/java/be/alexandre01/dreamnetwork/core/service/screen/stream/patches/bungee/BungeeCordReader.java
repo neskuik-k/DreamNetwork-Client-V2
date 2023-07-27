@@ -1,9 +1,8 @@
 package be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee;
 
-import be.alexandre01.dreamnetwork.core.console.Console;
-import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenInReader;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
 
-public class BungeeCordReader implements ScreenInReader.ReaderLine {
+public class BungeeCordReader implements IScreenInReader.ReaderLine {
     @Override
     public String readLine(String line) {
         String convert = line.replaceAll("( )","").replaceAll("\\p{C}", "").replace("[m","").trim();

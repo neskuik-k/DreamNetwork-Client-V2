@@ -18,7 +18,6 @@ public class ScreenExit implements Command.CommandExecutor {
         if(args[0].equalsIgnoreCase(":exit")){
             Console.setActualConsole("m:default");
 
-            screen.getScreenStream().exit();
             return true;
         }
         return false;

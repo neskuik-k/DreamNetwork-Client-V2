@@ -16,7 +16,7 @@ public interface IScreen extends Runnable {
 
     ArrayList<String> getHistory();
 
-    ScreenStream getScreenStream();
+    IScreenStream getScreenStream();
 
     ArrayList<IClient> getDevToolsReading();
 

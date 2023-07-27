@@ -2,6 +2,9 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenOutWriter;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -11,6 +14,7 @@ import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.BungeeCordReader;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.spigot.SpigotReader;
+import lombok.Getter;
 import org.jline.reader.LineReader;
 
 
@@ -18,7 +22,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ScreenStream {
+@Getter
+public class ScreenStream implements IScreenStream {
     public IScreen screen;
     public PrintStream oldOut = System.out;
     public InputStream oldIn = System.in;
@@ -26,10 +31,12 @@ public class ScreenStream {
     public BufferedWriter writer;
     public ScreenInput in;
     public PrintStream out;
+
+
     public boolean isInit;
     Console console;
-    ScreenInReader screenInReader;
-    ScreenOutWriter screenOutWriter;
+    IScreenInReader screenInReader;
+    IScreenOutWriter screenOutWriter;
     public ScreenStream(String name,Screen screen){
         Console.load("s:"+name);
         this.console = Console.getConsole("s:"+name);
@@ -44,7 +51,6 @@ public class ScreenStream {
             @Override
             public boolean onKill(LineReader reader) {
                 Console.setActualConsole("m:default");
-                screen.getScreenStream().exit();
                 return true;
             }
         });
@@ -72,6 +78,7 @@ public class ScreenStream {
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
     }
+    @Override
     public void init(String name, IScreen screen){
         this.screen = screen;
      //   reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
@@ -95,29 +102,12 @@ public class ScreenStream {
 
             this.screenOutWriter = new ScreenOutWriter(screen,console);
         }
-        screenOutWriter.run();
+        ((ScreenOutWriter)screenOutWriter).run();
         Console.setActualConsole("s:"+name);
         ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
         if(!h.get(h.size()-1).content.endsWith("\n")){
             console.defaultPrint.print("\n");
         }
-
-
-    }
-    public void exit(){
-     //   console.destroy();
-
-        //screenOutReader.stop();
-        //screenOutReader.interrupt();
-      /*  screenInReader.isRunning = false;
-
-        screenInReader.stop();
-        screenInReader.interrupt();*/
-
-  /*      isInit = false;
-        Console.clearConsole();
-        System.setIn(oldIn);
-        System.setOut(oldOut);*/
     }
 
 }

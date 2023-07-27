@@ -69,8 +69,8 @@ public class Screen extends Thread implements IScreen {
             System.out.println("The PROCESS "+service.getJvmExecutor().getName()+" has just killed himself.");
         }
         ScreenManager.instance.remScreen(this);
-        if(viewing)
-         screenStream.exit();
+        //if(viewing)
+        // screenStream.exit();
 
         /*if(getService().getClient() == null){
             getService().removeService();

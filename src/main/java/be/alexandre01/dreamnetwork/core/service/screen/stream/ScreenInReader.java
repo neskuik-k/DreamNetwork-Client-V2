@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.console.Console;
@@ -24,7 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ScreenInReader extends Thread {
+public class ScreenInReader extends Thread implements IScreenInReader {
     Console console;
     InputStream in;
     IService server;
@@ -118,6 +119,8 @@ public class ScreenInReader extends Thread {
                     }
 
 
+
+
                     for(IClient client : screen.getDevToolsReading()){
                         client.getRequestManager().sendRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,data);
                     }
@@ -143,9 +146,6 @@ public class ScreenInReader extends Thread {
             exception.printStackTrace(Core.getInstance().formatter.getDefaultStream());
             Console.setActualConsole("m:default");
         }
-    }
-    public static interface ReaderLine {
-        String readLine(String line);
     }
 
 }
