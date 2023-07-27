@@ -5,16 +5,11 @@ import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.service.ExecutorCallbacks;
-import be.alexandre01.dreamnetwork.core.service.JVMConfig;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.core.service.JVMStartupConfig;
 import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Setter
 @Getter

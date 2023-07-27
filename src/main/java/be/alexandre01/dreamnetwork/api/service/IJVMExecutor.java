@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
-import be.alexandre01.dreamnetwork.core.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.service.enums.ExecType;

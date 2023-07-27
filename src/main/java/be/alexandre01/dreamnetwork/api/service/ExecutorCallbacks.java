@@ -1,8 +1,6 @@
-package be.alexandre01.dreamnetwork.core.service;
+package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.service.IService;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 
 public class ExecutorCallbacks {
     public ICallbackStart onStart;
