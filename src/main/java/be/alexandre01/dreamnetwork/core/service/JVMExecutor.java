@@ -577,7 +577,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         if(callbacks != null){
             if(callbacks.onStart != null)
-            callbacks.onStart.whenStart(jvmService);
+                callbacks.onStart.whenStart(jvmService);
         }
         jvmServices.put(servers, jvmService);
         servicePort.put(port, jvmService);
