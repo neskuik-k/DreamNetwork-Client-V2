@@ -97,7 +97,8 @@ public class Core {
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
         if(s != null && s.equalsIgnoreCase("true")){
-            Console.debugPrint("Debug mode enabled");
+            //Console.debugPrint("Debug mode enabled");
+            System.out.println("Debug mode enabled");
             debug = true;
         }
 
