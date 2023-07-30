@@ -378,10 +378,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             if (!serversPortList.isEmpty()) {
                 port = serversPortList.get(serversPortList.size() - 1) + 2;
                 //if not containing port
-                boolean reserved = true;
 
-                if (portsReserved.containsKey(port))
+                boolean reserved = false;
+                if (portsReserved.containsKey(port)){
+                    reserved = true;
                     Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getFullName());
+                }
+
                 //if containing port, get service and check if he is allowed
                 while (!reserved || portsBlackList.contains(port) || !PortUtils.isAvailable(port, true)) {
                     Console.fine(port);
