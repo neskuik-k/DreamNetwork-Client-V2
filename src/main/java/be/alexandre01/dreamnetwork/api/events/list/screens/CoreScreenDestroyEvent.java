@@ -8,6 +8,6 @@ import lombok.Getter;
 
 @Getter @AllArgsConstructor
 public class CoreScreenDestroyEvent extends Event {
-    private final IScreen screen;
     private final DNCoreAPI dnCoreAPI;
+    private final IScreen screen;
 }

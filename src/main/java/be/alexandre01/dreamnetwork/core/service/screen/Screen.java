@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.service.screen;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
+import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenDestroyEvent;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -81,7 +82,7 @@ public class Screen extends Thread implements IScreen {
             Config.removeDir("/runtimes/"+ getService().getJvmExecutor().getBundleData().getName() + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
         }
         Core core = Core.getInstance();
-        core.getEventsFactory().callEvent(new CoreScreenCreateEvent(core.getDnCoreAPI(),this));
+        core.getEventsFactory().callEvent(new CoreScreenDestroyEvent(core.getDnCoreAPI(),this));
     }
 
     @Override

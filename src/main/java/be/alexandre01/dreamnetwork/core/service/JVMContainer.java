@@ -78,7 +78,7 @@ public class JVMContainer implements IContainer {
         try {
             id = Integer.parseInt(split[1]);
         }catch (Exception e){
-            System.out.println(Colors.RED+"The text -> "+ split[1]+ " is not a number");
+            System.out.println(Colors.RED+"The id is not a number");
             return null;
         }
         return tryToGetService(split[0],id);
@@ -126,7 +126,7 @@ public class JVMContainer implements IContainer {
 
 
         if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + pathName + "/" + finalName + "/" + name))) {
-            Config.removeDir(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + pathName + "/" + finalName + "/" + name));
+            Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + pathName + "/" + finalName + "/" + name);
         }
     }
 

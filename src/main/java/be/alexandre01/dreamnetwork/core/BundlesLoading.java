@@ -99,7 +99,8 @@ public class BundlesLoading {
             assert in != null;
             Config.createDir(path,false);
             Console.fine(Console.getFromLang("bundle.replaceFile.writing", path, fileName));
-            Config.write(in,new File(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName)));
+          //  System.out.println(System.getProperty("user.dir")+Config.getPath(path+"/"+fileName));
+            Config.write(in,new File(/*System.getProperty("user.dir")+*/Config.getPath(path+"/"+fileName)));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -131,7 +132,7 @@ public class BundlesLoading {
                     }
                     File file = new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/DreamNetwork-Plugin.jar");
                         file.delete();
-                        replaceFile(is,"/bundles/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
+                        replaceFile(is,System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
                 }
 
                 IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
@@ -203,11 +204,11 @@ public class BundlesLoading {
             for (File dir : directory) {
                 String name = dir.getName();
                 //TRY TO LOAD COMPONENT
-                if (Config.contains( dir.getAbsolutePath() + "/plugins")) {
-                    File file = new File(dir.getAbsolutePath()+"/plugins/"+fileName);
+                if (Config.contains( dir.getPath() + "/plugins")) {
+                    File file = new File(dir.getPath()+"/plugins/"+fileName);
                     file.delete();
                     InputStream is = new ByteArrayInputStream(bytes);
-                    replaceFile(is,dir.getAbsolutePath()+"/plugins/",fileName);
+                    replaceFile(is,dir.getPath()+"/plugins/",fileName);
                 }
 
             }

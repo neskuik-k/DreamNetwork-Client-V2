@@ -3,9 +3,12 @@ package be.alexandre01.dreamnetwork.api.service;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 
+import java.util.Optional;
+
 public interface IService {
     int getId();
     int getPort();
+    Optional<String> getUniqueCharactersID();
     String getXmx();
     String getXms();
     IJVMExecutor.Mods getType();

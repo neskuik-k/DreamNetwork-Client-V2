@@ -207,7 +207,7 @@ public class Core {
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
         globalTasks = new GlobalTasks();
-        globalTasks.loading();
+
         Main.getCommandReader().init();
 
         console.reloadCompletors();
@@ -248,7 +248,7 @@ public class Core {
                 Console.printLang("addons.canUpdate", name, name);
             });
         }*/
-
+        globalTasks.loading();
         Console.setBlockConsole(false);
     }
 

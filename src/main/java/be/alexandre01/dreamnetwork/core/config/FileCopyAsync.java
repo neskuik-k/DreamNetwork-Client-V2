@@ -38,8 +38,10 @@ public class FileCopyAsync {
 
     Path source;
     Path destination;
+    long delay = -1;
 
     public FileCopyAsync(){
+
         String method = Main.getGlobalSettings().getCopyIOMethod();
 
         if(method.equalsIgnoreCase("files")){
@@ -56,6 +58,7 @@ public class FileCopyAsync {
 
     private void execute(Path source, Path destination, ICallback callback,boolean deleteTarget,boolean force, String... exceptFiles){
         if(running && !force){
+            Console.fine("copy is already running, adding to queue");
             queue.add(new Operation(source,destination,callback,exceptFiles,deleteTarget));
             return;
         }
@@ -67,6 +70,7 @@ public class FileCopyAsync {
         this.source = source;
         this.destination = destination;
         try {
+
             if(deleteTarget){
                 deleteDirectoryAndRun(destination);
             }else {
@@ -74,6 +78,8 @@ public class FileCopyAsync {
             }
 
         } catch (IOException e) {
+            queue.clear();
+            callback.cancel();
             throw new RuntimeException(e);
         }
     }
@@ -89,15 +95,21 @@ public class FileCopyAsync {
                         fileRegister(path.toFile());
                         //is in end
                     }catch (Exception e){
-                        e.printStackTrace();
+                        callback.cancel();
+                        Console.bug(e);
                     }
                 //    System.out.println("ENDING folder " + l);
                 });
             } catch (IOException e) {
-                e.printStackTrace();
+                queue.clear();
+                callback.cancel();
+                Console.bug(e);
             }
             paste();
-    }
+        }else {
+           Console.fine("File is not a directory, finish");
+           callback.cancel();
+        }
     }
 
     protected void finish(){
@@ -106,12 +118,15 @@ public class FileCopyAsync {
         this.destination = null;
         callback.call();
         this.callback = null;
-        if(queue.size() > 0){
+        Console.fine("copy finish, check if queue is empty");
+        if(!queue.isEmpty()){
+            Console.fine("queue is not empty, executing next operation");
             //System.out.println("QUEUE SIZE " + queue.size());
             Operation operation = queue.get(0);
             queue.remove(0);
             execute(operation.getSource(),operation.getDestination(),operation.getCallback(),operation.isDeleteTarget(),true,operation.getExceptFiles());
         }else{
+            Console.fine("queue is empty, stopping");
             running = false;
         }
     }
@@ -140,6 +155,7 @@ public class FileCopyAsync {
 
     protected void paste(){
         //System.out.println("Paste !");
+        Console.fine("Pasting files");
         // Liste pour stocker les futures des tâches de copie
         List<CompletableFuture<Void>> futures = new ArrayList<>();
         paths = new ArrayList<>(new HashSet<>(paths));
@@ -152,6 +168,7 @@ public class FileCopyAsync {
         copyDirectories(folders, futures, new ICallback() {
             @Override
             public void call() {
+                Console.fine("Copying files " + files.size());
                 copyFiles(files, futures);
             }
 
@@ -175,6 +192,8 @@ public class FileCopyAsync {
 
                     Files.createDirectories(destination);
                 } catch (IOException e) {
+                    queue.clear();
+                    callback.cancel();
                     Console.bug(e);
                 }
             }, executor);
@@ -193,12 +212,11 @@ public class FileCopyAsync {
             CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
                 try {
                     Path destination = this.destination.resolve(source.relativize(path));
-
-                    //System.out.println("Copying " + path + " to " + destination);
-
                     copy.copyFile(path, destination);
-
                 } catch (IOException e) {
+                    Console.fine("Error while copying " + path.getFileName());
+                    queue.clear();
+                    callback.cancel();
                     Console.bug(e);
                 }
             }, executor);
@@ -241,6 +259,8 @@ public class FileCopyAsync {
                             .map(Path::toFile)
                             .forEach(File::delete);
                 } catch (IOException e) {
+                    queue.clear();
+                    callback.cancel();
                     throw new RuntimeException(e);
                 }
         }, executor);

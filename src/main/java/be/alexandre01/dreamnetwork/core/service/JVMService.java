@@ -13,6 +13,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Optional;
+
 @Getter @Setter
 @Builder
 public class JVMService implements IService {
@@ -27,11 +29,17 @@ public class JVMService implements IService {
     private String xmx;
     private String xms;
 
+    private Optional<String> uniqueCharactersID;
     private IScreen screen = null;
 
     public IConfig usedConfig;
     public ExecutorCallbacks executorCallbacks;
 
+
+    @Override
+    public Optional<String> getUniqueCharactersID() {
+        return uniqueCharactersID;
+    }
 
     @Override
     public String getFullName() {

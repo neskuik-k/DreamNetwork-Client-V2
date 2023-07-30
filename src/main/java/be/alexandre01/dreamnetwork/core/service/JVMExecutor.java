@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.service;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
@@ -30,6 +29,7 @@ import be.alexandre01.dreamnetwork.utils.Tuple;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -73,26 +73,29 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter
     @Setter
     public static Integer cache = 0;
-    private ArrayList<Tuple<IConfig, ExecutorCallbacks>> queue = new ArrayList<>();
+    private final ArrayList<Tuple<IConfig, ExecutorCallbacks>> queue = new ArrayList<>();
     @Ignore
     public HashMap<Integer, IService> jvmServices = new HashMap<>();
     @Getter
     public BundleData bundleData;
     private IdSet idSet = new IdSet();
+    private boolean isWorking = false;
+
+    private ArrayList<String> charsIds = new ArrayList<>();
 
 
     public IService staticService = null;
-    @Getter JVMProfiles jvmProfiles = new JVMProfiles();
+    @Getter
+    JVMProfiles jvmProfiles = new JVMProfiles();
 
 
     public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData) {
         super(pathName, name, type, xms, xmx, port, proxy, updateFile);
         this.bundleData = bundleData;
-
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
 
-      //  System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
+        //  System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
         //profiles.getProfiles().put("default", JVMConfig.class.cast(this));
         jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
@@ -105,7 +108,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
 
-       // jvmProfiles.getProfiles().put("default", this);
+        // jvmProfiles.getProfiles().put("default", this);
         jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
         JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
@@ -160,13 +163,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     @Override
-    public synchronized ExecutorCallbacks startServer(IConfig jvmConfig,ExecutorCallbacks c) {
+    public synchronized ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks c) {
         Console.fine("Checking queing start information");
         boolean b = queue.isEmpty();
         Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
         queue.add(tuple);
 
-        if (!b) {
+        if (!b && isWorking) {
             Console.fine("Queue is not empty");
             return c;
         }
@@ -184,7 +187,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            startServer(jvmConfig,c);
+            startServer(jvmConfig, c);
         }
         return c;
     }
@@ -195,29 +198,35 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     private synchronized void startJVM(Tuple<IConfig, ExecutorCallbacks> tuple) {
+        isWorking = true;
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
         Console.printLang("service.executor.start", Level.FINE, jvmConfig.getName());
         if (!start(tuple)) {
+            isWorking = false;
             Console.printLang("service.executor.couldNotStart", Level.WARNING);
             queue.remove(tuple);
-            if(callbacks != null){
-                if(callbacks.onFail != null)
+            if (callbacks != null) {
+                if (callbacks.onFail != null)
                     callbacks.onFail.whenFail();
             }
             if (!queue.isEmpty()) {
                 //get first insered of linkedhashmap
-                Tuple<IConfig,ExecutorCallbacks> renew = queue.get(0);
+                Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                 startJVM(renew);
             }
+            return;
         }
+        isWorking = false;
     }
 
     private synchronized boolean start(Tuple<IConfig, ExecutorCallbacks> tuple) {
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
-        if (!queue.isEmpty())
-            if (!isConfig()) return false;
+        //if (!queue.isEmpty())
+        Console.fine("Starting JVMExecutor " + jvmConfig.getName());
+        Console.fine("Checking status");
+        if (!isConfig()) return false;
 
 
         if (jvmConfig.getType() == Mods.STATIC && staticService != null) {
@@ -239,13 +248,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             saveFile();
         }
 
-        boolean proxy;
+        Console.fine("ID creation...");
+
+
         int servers = 1;
-        if (jvmConfig.getPathName().contains("server")) {
-            proxy = false;
-        } else {
-            proxy = true;
-        }
 
         /*
         Verification proxy allumé
@@ -270,19 +276,30 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
         }
 
+        Console.fine("MOD Checking");
+
         int finalServers = servers;
+        String charsID = null;
         // Console.print(Colors.ANSI_RED+new File(System.getProperty("user.dir")+Config.getPath("/template/"+name.toLowerCase()+"/"+name+"-"+servers)).getAbsolutePath(), Level.INFO);
         try {
-            String finalname = jvmConfig.getName() + "-" + servers;
+            Console.fine("Creating server directory");
+            String folderName = jvmConfig.getName() + "-" + servers;
             //System.out.println("finalname "+finalname);
             if (jvmConfig.getType().equals(Mods.DYNAMIC)) {
-                if (Config.contains("runtimes/" + finalname + "/" + jvmConfig.getName())) {
-                    Config.removeDir("runtimes/" + jvmConfig.getPathName() + "/" + finalname + "/" + jvmConfig.getName());
+                while (charsIds.contains(charsID = RandomStringUtils.random(6, true, true).toLowerCase())) {
+                    // loop until we get a unique id
                 }
-                Config.createDir("runtimes/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname);
+                folderName += "-" + charsID;
+                charsIds.add(charsID);
+                Console.fine("Dynamic server mode, creating directory");
+                if (Config.contains("runtimes/" + jvmConfig.getName() + "/" + folderName)) {
+                    Config.removeDir("runtimes/" + jvmConfig.getPathName() + "/" + folderName + "/" + jvmConfig.getName());
+                }
+                Config.createDir("runtimes/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + folderName);
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
                 AtomicBoolean isDoneWithSucess = new AtomicBoolean(false);
+                Console.fine("Deploying via VoidDeploy");
                 VoidDeploy voidDeploy = new VoidDeploy(new File(Config.getPath(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getPathName() + "/" + getName())).getAbsolutePath())), new DeployData.DeployType[]{DeployData.DeployType.CUSTOM});
                 Deployer deployer = new Deployer();
                 deployer.addDeploy(voidDeploy);
@@ -295,23 +312,25 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     });
                 }
 
-
-                deployer.deploys(new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getPathName() + "/" + getName() + "/" + finalname)), new Deployer.DeployAction() {
+                Console.fine("Deployer is ready");
+                String finalName = folderName;
+                String finalCharsID = charsID;
+                deployer.deploys(new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getPathName() + "/" + getName() + "/" + finalName)), new Deployer.DeployAction() {
                     @Override
                     public void completed() {
                         dateBuilderTimer.loadComplexDate();
                         Console.printLang("service.executor.asyncCopy", Level.FINE, dateBuilderTimer.getLongBuild());
                         isDoneWithSucess.set(true);
                         try {
-                            if (!proceedStarting(finalname, finalServers, tuple)) {
+                            if (!proceedStarting(finalName, finalServers, finalCharsID, tuple)) {
                                 queue.remove(tuple);
-                                if(callbacks != null){
-                                    if(callbacks.onFail != null)
+                                if (callbacks != null) {
+                                    if (callbacks.onFail != null)
                                         callbacks.onFail.whenFail();
                                 }
 
                                 if (!queue.isEmpty()) {
-                                    Tuple<IConfig,ExecutorCallbacks> renew = queue.get(0);
+                                    Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                                     startJVM(renew);
                                 }
                             }
@@ -325,15 +344,16 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                         dateBuilderTimer.loadComplexDate();
                         Console.printLang("service.executor.cannotAsyncCopy", dateBuilderTimer.getLongBuild());
                         queue.remove(tuple);
+                        isDoneWithSucess.set(false);
 
                         if (!queue.isEmpty()) {
-                            Tuple<IConfig,ExecutorCallbacks> renew = queue.get(0);
+                            Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                             startJVM(renew);
                         }
                     }
                 }, "/" + this.getExecutable());
             } else {
-                return proceedStarting(finalname, servers, tuple);
+                return proceedStarting(folderName, servers, charsID, tuple);
             }
             return true;
         } catch (Exception e) {
@@ -343,11 +363,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
     }
 
-    private boolean proceedStarting(String finalname, int servers, Tuple<IConfig,ExecutorCallbacks> tuple) throws IOException {
+    private boolean proceedStarting(String finalname, int servers, String charsId, Tuple<IConfig, ExecutorCallbacks> tuple) throws IOException {
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
         Integer port = jvmConfig.getPort();
-
         Console.fine("Port on Exec: " + port);
 
         /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
@@ -486,6 +505,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             if (Config.isWindows()) {
                 if (getInstallLink() != null) {
                     if (getInstallLink().getExecType() == ExecType.BUNGEECORD) {
+
                         startup = "cmd /c start " + javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " %args% -jar %exec% nogui";
                         jvmConfig.setScreenEnabled(false);
                         Console.print(Colors.PURPLE_BOLD_BRIGHT + "Changing startup mode, Screen Viewer for BungeeCord is not good supported on Windows\n Switch to terminal console mode", Level.WARNING);
@@ -521,11 +541,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                 //  proc = Runtime.getRuntime().exec(startup,null ,  new File(System.getProperty("user.dir")+Config.getPath("/temp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
             } else {
-                String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() +" "+ customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable() + " nogui";
+                String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " " + customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + jvmConfig.getExecutable() + " nogui";
 
                 Console.print("JavaLine > " + line, Level.FINE);
                 // proc = Runtime.getRuntime().exec("java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/template/"+pathName+"/"+name)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
-               // ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
+                // ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
 
                 proc = new ProcessBuilder(line.split(" ")).directory(new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname))).redirectErrorStream(true).start();
                 // proc = Runtime.getRuntime().exec("screen -dmS "+finalname+" java -Duser.language=fr -Djline.terminal=jline.UnsupportedTerminal -Xms"+xms+" -Xmx"+xmx+" -jar " + new File(System.getProperty("user.dir")+ Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsolutePath()+"/"+exec +" nogui", null ,  new File(System.getProperty("user.dir")+Config.getPath("/tmp/"+pathName+"/"+name+"/"+finalname)).getAbsoluteFile());
@@ -546,7 +566,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                     //  proc = Runtime.getRuntime().exec(startup, null ,  new File(System.getProperty("user.dir")+Config.getPath("/template/"+pathName+"/"+name)).getAbsoluteFile());
                 } else {
-                    String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " "+customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + this.getExecutable() + " nogui";
+                    String line = javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " " + customArgs + " -jar " + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName())).getAbsolutePath() + "/" + this.getExecutable() + " nogui";
                     Console.print("JavaLine > " + line, Level.FINE);
 
                     ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
@@ -573,11 +593,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 .type(jvmConfig.getType())
                 .usedConfig(jvmConfig)
                 .executorCallbacks(callbacks)
+                .uniqueCharactersID(Optional.ofNullable(charsId))
                 .build();
 
 
-        if(callbacks != null){
-            if(callbacks.onStart != null)
+        if (callbacks != null) {
+            if (callbacks.onStart != null)
                 callbacks.onStart.whenStart(jvmService);
             callbacks.setJvmService(jvmService);
         }
@@ -619,7 +640,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         queue.remove(tuple);
         if (!queue.isEmpty()) {
-            Tuple<IConfig,ExecutorCallbacks> renew = queue.get(0);
+            Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
             startJVM(renew);
         }
 
@@ -628,15 +649,40 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
-     //   System.out.println("removing service");
+        //   System.out.println("removing service");
+
+
+        int i = jvmService.getId();
+        String dirName = getName() + "-" + jvmService.getId();
+        if (jvmService.getUniqueCharactersID().isPresent()){
+            dirName += "-" + jvmService.getUniqueCharactersID().get();
+        }
+        String finalName = dirName;
         try {
-
-            int i = jvmService.getId();
-            String finalName = getName() + "-" + jvmService.getId();
+            Console.debugPrint(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName));
             if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName))) {
-                Config.removeDir(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName));
-            }
+                new Thread() {
+                    @Override
+                    public void run() {
+                        Console.debugPrint("Je te supprime gros lard");
+                        System.out.println(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName));
 
+                        boolean i = Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName);
+                        if(i){
+                            Console.debugPrint("Je t'ai supprimé gros lard");
+                            System.out.println();
+                        }else {
+                            Console.debugPrint("Je t'ai pas supprimé gros lard");
+                            System.out.println();
+                        }
+                        if (jvmService.getUniqueCharactersID().isPresent())
+                            charsIds.remove(jvmService.getUniqueCharactersID().get());
+                    }
+                }.start();
+            }else {
+                if (jvmService.getUniqueCharactersID().isPresent())
+                    charsIds.remove(jvmService.getUniqueCharactersID().get());
+            }
             if (jvmService.getType() == Mods.STATIC) {
                 staticService = null;
             }
@@ -648,6 +694,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 return;
 
             jvmServices.remove(i);
+
             if (servicePort.get(jvmService.getPort()) != null && servicePort.get(jvmService.getPort()) == jvmService) {
                 serversPortList.remove(Integer.valueOf(jvmService.getPort()));
                 servicePort.remove(jvmService.getPort());
@@ -660,15 +707,15 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
 
-            if(jvmService.getExecutorCallbacks() != null){
-                if(jvmService.getExecutorCallbacks().onStop != null){
+            if (jvmService.getExecutorCallbacks() != null) {
+                if (jvmService.getExecutorCallbacks().onStop != null) {
                     jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
                 }
             }
 
             Core.getInstance().getEventsFactory().callEvent(new CoreServiceStopEvent(Core.getInstance().getDnCoreAPI(), jvmService));
 
-            if(jvmService.getClient() != null){
+            if (jvmService.getClient() != null) {
                 if (!isProxy()) {
                     be.alexandre01.dreamnetwork.core.connection.core.communication.Client proxy = Core.getInstance().getClientManager().getProxy();
                     if (proxy != null) {
@@ -679,7 +726,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         } catch (Exception e) {
             Console.bug(e);
         }
-
     }
 
 

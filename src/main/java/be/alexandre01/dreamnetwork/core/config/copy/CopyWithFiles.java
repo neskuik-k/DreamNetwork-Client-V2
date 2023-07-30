@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.config.copy;
 
+import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.FileCopy;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 
@@ -24,7 +25,8 @@ public class CopyWithFiles implements FileCopy {
         }
 
         if(Files.exists(destination)){
-            makeWritable(destination);
+            if(!Config.isWindows())
+                makeWritable(destination);
             Files.delete(destination);
             if(Files.exists(destination)){
                 System.out.println(Colors.ANSI_PURPLE+"The file "+destination.getFileName()+" already exist");

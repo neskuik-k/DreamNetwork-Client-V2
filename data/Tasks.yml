@@ -1,2 +1,10 @@
 # Configure your tasks here
-tasks: []
+tasks:
+- count: 1
+  name: global
+  service: main/lobby
+  taskType: ALWAYS_ON
+- count: 1
+  name: proxy
+  service: proxies/proxy
+  taskType: ALWAYS_ON

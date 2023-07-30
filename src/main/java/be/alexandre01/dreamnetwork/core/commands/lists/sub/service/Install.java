@@ -82,9 +82,10 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                 public void complete() {
                     Console.printLang("commands.service.install.fileUpdated");
                     String javaVersion = "default";
-                    for(Integer i : installationLinks.getJavaVersion()){
-                        if(Core.getInstance().getJavaIndex().getJVersion().containsKey(i)){
-                            javaVersion = Core.getInstance().getJavaIndex().getJVersion().get(i).getName();
+                    for (int i = installationLinks.getJavaVersion().length-1; i >= 0; i--) {
+                        int verID = installationLinks.getJavaVersion()[i];
+                        if(Core.getInstance().getJavaIndex().getJVersion().containsKey(verID)){
+                            javaVersion = Core.getInstance().getJavaIndex().getJVersion().get(verID).getName();
                             break;
                         }
                     }

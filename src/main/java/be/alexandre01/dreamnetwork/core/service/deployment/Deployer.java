@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.core.config.CopyAndPaste;
 import be.alexandre01.dreamnetwork.core.config.EstablishedAction;
 import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
+import be.alexandre01.dreamnetwork.core.console.Console;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,22 +22,22 @@ public class Deployer {
     public Deployer(){
 
     }
-
     public void addDeploy(Deploy deploy){
         if(!deployDatas.contains(deploy))
             this.deployDatas.add(deploy);
     }
-
     public void deploys(File folder,DeployAction action,String... exceptFile) throws IOException {
         //add /deploy.yml in exceptFile
         exceptFile = Arrays.copyOf(exceptFile, exceptFile.length + 1);
         exceptFile[exceptFile.length - 1] = "deploy.yml";
         Deploy deploy = deployDatas.get(0);
+        Console.fine("Deploying "+deploy.getDirectory().getName() + "in async mode");
        // System.out.println(deploy.getDirectory().getName());
         Config.asyncCopy(deploy.getDirectory(), folder, new FileCopyAsync.ICallback() {
             @Override
             public void call() {
                // System.out.println("Task completed "+tasks);
+                Console.debugPrint("Task completed "+tasks);
                 deployDatas.remove(0);
                 if(deployDatas.isEmpty()){
                     action.completed();
@@ -45,7 +46,8 @@ public class Deployer {
                 try {
                     deploys(folder,action);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    action.cancelled();
+                    Console.bug(e);
                 }
             }
 

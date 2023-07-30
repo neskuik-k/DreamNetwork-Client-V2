@@ -160,7 +160,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 }
 
                // core.getFileHandler().publish(new LogRecord(Level.INFO, "Received message from " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + message.toString()));
-                for (CoreResponse iBasicClientResponse : responses) {
+                for (int i = 0; i < responses.size(); i++) {
+                    CoreResponse iBasicClientResponse = responses.get(i);
                     try {
                         iBasicClientResponse.onAutoResponse(message, ctx, client);
                     } catch (Exception e) {
@@ -168,12 +169,12 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
                     }
                 }
-                for (CoreResponse iBasicClientResponse : globalResponses) {
+                for (int i = 0; i < globalResponses.size(); i++) {
+                    CoreResponse iBasicClientResponse = globalResponses.get(i);
                     try {
                         iBasicClientResponse.onAutoResponse(message, ctx, client);
                     } catch (Exception e) {
                         e.printStackTrace();
-
                     }
                 }
 
@@ -302,9 +303,9 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IClient client) {
 
         if (client != null && client.getJvmService() != null) {
-            fine(Colors.YELLOW + "WRITE AND FLUSH from " + client.getJvmService().getFullName() + ">> " + Colors.RESET + msg);
+            fine(Colors.YELLOW + "WRITE AND FLUSH for " + client.getJvmService().getFullName() + ">> " + Colors.RESET + msg);
         } else {
-            fine(Colors.YELLOW + "WRITE AND FLUSH from UNKNOWN>> " + Colors.RESET + msg);
+            fine(Colors.YELLOW + "WRITE AND FLUSH for UNKNOWN>> " + Colors.RESET + msg);
         }
 
 

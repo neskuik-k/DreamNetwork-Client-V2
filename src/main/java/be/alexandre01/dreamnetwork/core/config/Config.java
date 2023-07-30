@@ -91,9 +91,10 @@ public class Config {
         return theDir;
     }
     public static boolean removeDir(String path){
+        path = getPath(path);
         while (contains(path)){
-            File theDir = new File(getPath(path));
-
+            File theDir = new File(path);
+            //Console.debugPrint("Deleting the directory... "+ theDir.getName());
             if (theDir.exists()) {
                 File[] allContents = theDir.listFiles();
                 if (allContents != null) {
@@ -102,7 +103,6 @@ public class Config {
                     }
                 }
                 return theDir.delete();
-
             }
         }
         return false;
@@ -239,8 +239,6 @@ public class Config {
                 line = br.readLine();
             }
             return lines;
-
-
         } finally {
             br.close();
         }
@@ -248,11 +246,7 @@ public class Config {
 
     }
     public static boolean isWindows(){
-        if(System.getProperty("os.name").startsWith("Windows")){
-          return true;
-        }else {
-            return false;
-        }
+        return System.getProperty("os.name").startsWith("Windows");
     }
 
 }

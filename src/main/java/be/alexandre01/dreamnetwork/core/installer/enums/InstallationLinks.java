@@ -20,7 +20,7 @@ public enum InstallationLinks {
     PAPER_SPIGOT_1_17_1("https://papermc.io/api/v2/projects/paper/versions/1.17.1/builds/397/downloads/paper-1.17.1-397.jar","1.17.1",to(16,20)),
     PAPER_SPIGOT_1_18_2("https://api.papermc.io/v2/projects/paper/versions/1.18.2/builds/387/downloads/paper-1.18.2-387.jar","1.18.2",to(17,20)),
     PAPER_SPIGOT_1_19_4("https://api.papermc.io/v2/projects/paper/versions/1.19.4/builds/550/downloads/paper-1.19.4-550.jar","1.19.4",to(17,20)),
-    PAPER_SPIGOT_1_20_1("https://api.papermc.io/v2/projects/paper/versions/1.19/builds/65/downloads/paper-1.19-65.jar","1.20.1",to(17,20)),
+    PAPER_SPIGOT_1_20_1("https://api.papermc.io/v2/projects/paper/versions/1.20.1/builds/98/downloads/paper-1.20.1-98.jar","1.20.1",to(17,20)),
 
     BUNGEECORD("https://ci.md-5.net/job/BungeeCord/lastSuccessfulBuild/artifact/bootstrap/target/BungeeCord.jar","BUNGEECORD",IContainer.JVMType.PROXY,ExecType.BUNGEECORD,to(8,20)),
     WATERFALL("https://api.papermc.io/v2/projects/waterfall/versions/1.19/builds/498/downloads/waterfall-1.19-498.jar","WATERFALL",IContainer.JVMType.PROXY,ExecType.BUNGEECORD,to(8,20)),
