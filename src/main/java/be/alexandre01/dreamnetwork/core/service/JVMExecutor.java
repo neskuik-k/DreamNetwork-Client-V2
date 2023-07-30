@@ -376,26 +376,38 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }*/
         if (port == 0) {
             if (!serversPortList.isEmpty()) {
-                port = serversPortList.get(serversPortList.size() - 1) + 2;
+                port = serversPortList.get(serversPortList.size() - 1) + 1;
                 //if not containing port
 
                 boolean reserved = false;
-                if (portsReserved.containsKey(port)){
+                if (portsReserved.containsKey(port)) {
                     reserved = true;
                     Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getFullName());
                 }
 
                 //if containing port, get service and check if he is allowed
-                while (!reserved || portsBlackList.contains(port) || !PortUtils.isAvailable(port, true)) {
+                while (true) {
                     Console.fine(port);
-                    if (reserved && portsReserved.containsKey(port)) {
-                        reserved = !portsReserved.get(port).equals(this);
-                        if (!reserved) {
-                            port = port + 2;
+                    if (reserved) {
+                        if (portsReserved.containsKey(port)) {
+                            boolean isAccessible = portsReserved.get(port).equals(this);
+
+                            if (!isAccessible || !PortUtils.isAvailable(port, true)) {
+                                port = port + 1;
+                            }
+                            continue;
                         }
+
+                        if (portsBlackList.contains(port)) {
+                            port = port + 1;
+                            continue;
+                        }
+                    }
+                    if (!PortUtils.isAvailable(port, true)) {
+                        port = port + 1;
                         continue;
                     }
-                    port = port + 2;
+                    break;
                 }
                 if (!serversPort.isEmpty()) {
                     for (Map.Entry<String, Integer> s : serversPort.entrySet()) {
@@ -658,7 +670,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         int i = jvmService.getId();
         String dirName = getName() + "-" + jvmService.getId();
-        if (jvmService.getUniqueCharactersID().isPresent()){
+        if (jvmService.getUniqueCharactersID().isPresent()) {
             dirName += "-" + jvmService.getUniqueCharactersID().get();
         }
         String finalName = dirName;
@@ -668,20 +680,20 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 new Thread() {
                     @Override
                     public void run() {
-                       while ( Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName)){
+                        while (Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName)) {
                             try {
-                                 Console.fine("Something is blocking " + finalName + " folder, retrying in 1500ms");
-                                 Thread.sleep(1500);
+                                Console.fine("Something is blocking " + finalName + " folder, retrying in 1500ms");
+                                Thread.sleep(1500);
                             } catch (InterruptedException e) {
-                                 e.printStackTrace();
+                                e.printStackTrace();
                             }
-                       }
+                        }
 
                         if (jvmService.getUniqueCharactersID().isPresent())
                             charsIds.remove(jvmService.getUniqueCharactersID().get());
                     }
                 }.start();
-            }else {
+            } else {
                 if (jvmService.getUniqueCharactersID().isPresent())
                     charsIds.remove(jvmService.getUniqueCharactersID().get());
             }

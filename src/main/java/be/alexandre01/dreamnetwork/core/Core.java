@@ -111,10 +111,6 @@ public class Core {
             e.printStackTrace();
         }
 
-
-
-
-
         Console.defaultConsole = "m:default";
         Console.actualConsole =  "m:default";
         Console.getConsole("m:default").isDebug = isDebug();
@@ -259,7 +255,6 @@ public class Core {
         }
 
         Console.setBlockConsole(false);
-
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

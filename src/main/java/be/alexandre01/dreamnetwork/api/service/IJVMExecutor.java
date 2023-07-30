@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service;
 
+import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;
@@ -10,6 +12,7 @@ import com.sun.jna.platform.win32.WinNT;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Collection;
 
 public interface IJVMExecutor {
@@ -32,12 +35,12 @@ public interface IJVMExecutor {
         return pid;
     }
 
+
     //INCLUDE JNA
     public static long getProcessID(Process p) {
 
         long result = -1;
         try {
-            //for windows
             if (p.getClass().getName().equals("java.lang.Win32Process") ||
                     p.getClass().getName().equals("java.lang.ProcessImpl")) {
                 Field f = p.getClass().getDeclaredField("handle");
@@ -57,7 +60,10 @@ public interface IJVMExecutor {
                 f.setAccessible(false);
             }
         } catch (Exception ex) {
-            ex.printStackTrace();
+            System.out.println(ex.getClass().getName());
+            if(ex.getClass().getSimpleName().equals("InaccessibleObjectException")){
+                System.out.println(Colors.RED+"Please set up the jvm with the flag --add-opens java.base/java.lang=ALL-UNNAMED");
+            }
             result = -1;
         }
         return result;
