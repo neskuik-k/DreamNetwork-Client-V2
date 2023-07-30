@@ -30,6 +30,7 @@ public class JVMService implements IService {
     private String xms;
 
     private Optional<String> uniqueCharactersID;
+    private long processID;
     private IScreen screen = null;
 
     public IConfig usedConfig;
@@ -39,6 +40,11 @@ public class JVMService implements IService {
     @Override
     public Optional<String> getUniqueCharactersID() {
         return uniqueCharactersID;
+    }
+
+    @Override
+    public boolean isConnected() {
+        return client != null;
     }
 
     @Override

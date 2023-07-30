@@ -7,12 +7,14 @@ import java.util.Optional;
 
 public interface IService {
     int getId();
+    long getProcessID();
     int getPort();
     Optional<String> getUniqueCharactersID();
     String getXmx();
     String getXms();
     IJVMExecutor.Mods getType();
     IClient getClient();
+    boolean isConnected();
     IJVMExecutor getJvmExecutor();
 
     String getFullName();

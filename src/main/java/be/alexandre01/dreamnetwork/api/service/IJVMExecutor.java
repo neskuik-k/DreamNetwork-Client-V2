@@ -34,6 +34,7 @@ public interface IJVMExecutor {
 
     //INCLUDE JNA
     public static long getProcessID(Process p) {
+
         long result = -1;
         try {
             //for windows
@@ -56,6 +57,7 @@ public interface IJVMExecutor {
                 f.setAccessible(false);
             }
         } catch (Exception ex) {
+            ex.printStackTrace();
             result = -1;
         }
         return result;

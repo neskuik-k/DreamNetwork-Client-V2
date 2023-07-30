@@ -27,6 +27,7 @@ import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
 
 import be.alexandre01.dreamnetwork.core.utils.files.CDNFiles;
 
+import be.alexandre01.dreamnetwork.core.utils.process.ProcessUtils;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -71,6 +72,8 @@ public class Main {
     @Getter private static LanguageManager languageManager;
 
     @Getter private static CDNFiles cdnFiles;
+
+    @Getter private static ProcessHistory processHistory;
 
 
 
@@ -150,7 +153,19 @@ public class Main {
 
         ConsoleReader.initHighlighter();
         Console.clearConsole(System.out);
-        Config.removeDir("runtimes");
+        processHistory = new ProcessHistory();
+        processHistory.init();
+        while (Config.removeDir("runtimes")){
+            try {
+                System.out.println(Colors.YELLOW_BOLD_BRIGHT+"Deleting runtimes folder but something is blocking it...");
+                System.out.println(Colors.YELLOW_BOLD_BRIGHT+"Please close all the process that are using the runtimes folder");
+                System.out.println(Colors.YELLOW_BOLD_BRIGHT+"Retrying it...");
+                Thread.sleep(500);
+                Console.clearConsole(System.out);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
         DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
@@ -184,11 +199,19 @@ public class Main {
                         boolean isReady = false;
                         for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
                             if(!jvmExecutor.getServices().isEmpty()){
+                                ArrayList<Long> pIDs = new ArrayList<>();
                                 for(IService service : jvmExecutor.getServices()){
-                                    if(service.getClient() == null){
+                                    if(!service.isConnected()){
                                         service.kill();
                                     }
+                                    if(service.getProcessID() != -1){
+                                        if(!service.isConnected())
+                                            ProcessUtils.killProcess(service.getProcessID());
+                                        pIDs.add(service.getProcessID());
+                                    }
                                 }
+                                getProcessHistory().getProcessHistoryIndex().put("TMPProcess", Base64.getEncoder().encodeToString(ProcessHistory.convert(pIDs).getBytes(StandardCharsets.UTF_8)));
+                                getProcessHistory().getProcessHistoryIndex().refreshFile();
                             }
 
                         }
@@ -271,8 +294,7 @@ public class Main {
             e.printStackTrace();
         }
 
-        ProcessHistory processHistory = new ProcessHistory();
-        processHistory.init();
+
 
         loadClient();
     }

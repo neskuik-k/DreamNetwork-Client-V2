@@ -18,7 +18,7 @@ import java.util.List;
 
 public class ProcessHistory {
     @Getter protected static List<Long> dnProcess = new ArrayList<>();
-    @Getter protected static List<Long> templateProcess = new ArrayList<>();
+    @Getter protected static List<Long> servicesProcess = new ArrayList<>();
     private final File tokenFile = new File(System.getProperty("user.dir")+"/data/ProcessHistory.json");
    @Getter
    private ProcessHistoryIndex processHistoryIndex;
@@ -68,9 +68,21 @@ public class ProcessHistory {
                     }
 
                 }
-                for (long i : ProcessHistory.getTemplateProcess()) {
-                    if(ProcessUtils.isStillAllive(i))
+                boolean b = false;
+                for (long i : ProcessHistory.getServicesProcess()) {
+                    if(ProcessUtils.isStillAllive(i)){
+                        b = true;
+                        System.out.println(Colors.RED+"Killed old services process on the machine - PID :"+i);
                         ProcessUtils.killProcess(i);
+                    }
+                }
+                if(b){
+                    try {
+                        System.out.println("Waiting to kill the process...");
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e);
+                    }
                 }
             }
             ArrayList<Long> a = new ArrayList<>();
@@ -79,6 +91,7 @@ public class ProcessHistory {
             } catch (Exception ignored) {
                 // ignore
             }
+
             processHistoryIndex.put("DNProcess", Base64.getEncoder().encodeToString(convert(a).getBytes(StandardCharsets.UTF_8)));
             processHistoryIndex.refreshFile();
         } catch (IOException e) {
@@ -104,10 +117,9 @@ public class ProcessHistory {
             if(key.equalsIgnoreCase("TMPProcess")){
                 if(value instanceof String){
                     String s = (String) value;
-
                     s = new String(Base64.getDecoder().decode(s));
                     for (long i : getFrom(s)) {
-                        ProcessHistory.getTemplateProcess().add(i);
+                        ProcessHistory.getServicesProcess().add(i);
                     }
                 }
             }

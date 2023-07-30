@@ -11,11 +11,10 @@ import java.io.*;
 import java.nio.ByteBuffer;
 import java.nio.channels.AsynchronousFileChannel;
 import java.nio.channels.CompletionHandler;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.logging.Level;
 
 public class Config {
@@ -92,9 +91,36 @@ public class Config {
     }
     public static boolean removeDir(String path){
         path = getPath(path);
-        while (contains(path)){
+        try {
+            String finalPath = path;
+            long start = System.currentTimeMillis();
+            Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
+                @Override
+                public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
+                    //Console.debugPrint("Deleting the files... "+ file);
+                    Files.delete(file);
+                    return FileVisitResult.CONTINUE;
+                }
+
+                @Override
+                public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+                   // Console.debugPrint("Deleting the dir... "+ dir);
+                    Files.delete(dir);
+                    return FileVisitResult.CONTINUE;
+                }
+            });
+            Console.debugPrint("Deleting the directory... "+ finalPath);
+            long end = System.currentTimeMillis();
+            // calculate how long it took to delete the directory
+            long elapsedTime = end - start;
+            Console.debugPrint("Elapsed Time: " + elapsedTime + " ms");
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
+        /*while (contains(path)){
             File theDir = new File(path);
-            //Console.debugPrint("Deleting the directory... "+ theDir.getName());
+            Console.debugPrint("Deleting the directory... "+ theDir.getName());
             if (theDir.exists()) {
                 File[] allContents = theDir.listFiles();
                 if (allContents != null) {
@@ -104,8 +130,7 @@ public class Config {
                 }
                 return theDir.delete();
             }
-        }
-        return false;
+        }*/
 
     }
   /*  public static void asyncCopy(File sourceLocation, File targetLocation,EstablishedAction establishedAction,String... exceptFile) throws IOException {

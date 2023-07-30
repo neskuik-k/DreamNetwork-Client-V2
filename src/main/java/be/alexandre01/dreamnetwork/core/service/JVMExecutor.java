@@ -292,9 +292,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 folderName += "-" + charsID;
                 charsIds.add(charsID);
                 Console.fine("Dynamic server mode, creating directory");
-                if (Config.contains("runtimes/" + jvmConfig.getName() + "/" + folderName)) {
+                /*if (Config.contains("runtimes/" + jvmConfig.getName() + "/" + folderName)) {
                     Config.removeDir("runtimes/" + jvmConfig.getPathName() + "/" + folderName + "/" + jvmConfig.getName());
-                }
+                }*/
                 Config.createDir("runtimes/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + folderName);
                 DateBuilderTimer dateBuilderTimer = new DateBuilderTimer();
                 dateBuilderTimer.loadComplexDate();
@@ -580,8 +580,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             }
         }
-
-        Console.fine("PROCESS ID >" + IJVMExecutor.getProcessID(proc));
+        long processID = IJVMExecutor.getProcessID(proc);
+        Console.fine("PROCESS ID >" + processID);
         Console.fine(port);
         JVMService jvmService = JVMService.builder().
                 process(proc)
@@ -594,6 +594,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 .usedConfig(jvmConfig)
                 .executorCallbacks(callbacks)
                 .uniqueCharactersID(Optional.ofNullable(charsId))
+                .processID(processID)
                 .build();
 
 
@@ -664,17 +665,15 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 new Thread() {
                     @Override
                     public void run() {
-                        Console.debugPrint("Je te supprime gros lard");
-                        System.out.println(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName));
+                       while ( Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName)){
+                            try {
+                                 Console.fine("Something is blocking " + finalName + " folder, retrying in 1500ms");
+                                 Thread.sleep(1500);
+                            } catch (InterruptedException e) {
+                                 e.printStackTrace();
+                            }
+                       }
 
-                        boolean i = Config.removeDir(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + JVMExecutor.this.getName() + "/" + finalName);
-                        if(i){
-                            Console.debugPrint("Je t'ai supprimé gros lard");
-                            System.out.println();
-                        }else {
-                            Console.debugPrint("Je t'ai pas supprimé gros lard");
-                            System.out.println();
-                        }
                         if (jvmService.getUniqueCharactersID().isPresent())
                             charsIds.remove(jvmService.getUniqueCharactersID().get());
                     }
