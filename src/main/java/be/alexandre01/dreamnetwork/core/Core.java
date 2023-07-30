@@ -96,11 +96,8 @@ public class Core {
         String s = System.getProperty("ebug");
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
-        if(s != null && s.equalsIgnoreCase("true")){
-            //Console.debugPrint("Debug mode enabled");
-            System.out.println("Debug mode enabled");
-            debug = true;
-        }
+
+
 
 
         fileHandler = null;
@@ -136,8 +133,12 @@ public class Core {
                 /*
         JVM CONTAINER TO STORE JVMExecutors
          */
+        if(s != null && s.equalsIgnoreCase("true")){
+            //Console.debugPrint("Debug mode enabled");
+            System.out.println("Debug mode enabled");
+            Main.getInstance().setDebug(true);
+        }
         this.jvmContainer = new JVMContainer();
-
     }
 
     public void init(){
@@ -250,7 +251,15 @@ public class Core {
             });
         }*/
         globalTasks.loading();
+        boolean debug = Main.getInstance().isDebug();
+        if(debug){
+            Console.getConsoles().forEach(c -> {
+                c.isDebug = true;
+            });
+        }
+
         Console.setBlockConsole(false);
+
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){
