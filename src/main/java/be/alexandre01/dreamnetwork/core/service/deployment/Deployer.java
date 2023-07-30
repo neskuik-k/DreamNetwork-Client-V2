@@ -37,7 +37,7 @@ public class Deployer {
             @Override
             public void call() {
                // System.out.println("Task completed "+tasks);
-                Console.debugPrint("Task completed "+tasks);
+              //  Console.debugPrint("Task completed "+tasks);
                 deployDatas.remove(0);
                 if(deployDatas.isEmpty()){
                     action.completed();
