@@ -9,7 +9,7 @@ import org.fusesource.jansi.Ansi;
 
 public class RequestNotFoundException extends Exception{
     public RequestNotFoundException(RequestInfo requestInfo, Client client){
-        super(Console.getFromLang("connection.request.exception.requestNotFound", requestInfo.name(),client == null ? "null" : client.getJvmService().getFullName()));
+        super(Console.getFromLang("connection.request.exception.requestNotFound", requestInfo.name(),client == null ? "null" : client.getName()));
         Console.bug(this);
     }
     public RequestNotFoundException(RequestInfo requestInfo, String client){

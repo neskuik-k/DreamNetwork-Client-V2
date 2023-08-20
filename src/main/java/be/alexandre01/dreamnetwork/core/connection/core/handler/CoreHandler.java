@@ -2,7 +2,6 @@ package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
-import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -11,8 +10,6 @@ import be.alexandre01.dreamnetwork.core.connection.core.communication.Authentifi
 import be.alexandre01.dreamnetwork.core.connection.core.communication.BaseResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
-import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
@@ -32,7 +29,6 @@ import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
-import java.util.logging.LogRecord;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.*;
 
@@ -208,7 +204,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if (jvmService != null) {
                     name = jvmService.getFullName();
                 }
-                if (clientByConnexion.get(ctx).isDevTool()) {
+                if (clientByConnexion.get(ctx).isExternalTool()) {
                     name = "DEVTOOLS";
                 }
 
@@ -230,15 +226,15 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         //Remove Server
         printLang("connection.core.handler.removeClient", client);
         if (client != null) {
-            client.getClientManager().getDevTools().remove(client);
-            if (!client.isDevTool()) {
+            client.getClientManager().getExternalTools().remove(client);
+            if (!client.isExternalTool()) {
                 String server = client.getJvmService().getFullName();
                 for (IClient c : Core.getInstance().getClientManager().getClients().values()) {
                     if (c.getJvmType() == JVMContainer.JVMType.SERVER) {
                         c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS, server);
                     }
                 }
-                for (IClient c : Core.getInstance().getClientManager().getDevTools()) {
+                for (IClient c : Core.getInstance().getClientManager().getExternalTools()) {
                     if (c != null) {
                         //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
                         c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVERS, server);
@@ -261,7 +257,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         }
 
 
-        if (client != null && client.isDevTool()) {
+        if (client != null && client.isExternalTool()) {
             ScreenManager screenManager = ScreenManager.instance;
             for (IScreen screen : screenManager.getScreens().values()) {
                 screen.getDevToolsReading().remove(client);

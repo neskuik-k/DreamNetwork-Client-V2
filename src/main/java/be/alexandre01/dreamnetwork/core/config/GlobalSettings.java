@@ -50,8 +50,6 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
         }
 
         termMode = TerminalMode.valueOf(terminalMode.toUpperCase());
-
-
     }
 
     public enum TerminalMode{

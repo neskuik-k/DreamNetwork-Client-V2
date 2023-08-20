@@ -19,7 +19,7 @@ public class ClientManager implements IClientManager {
     private final HashMap<Integer, Client> clientByPort = new HashMap<>();
     @Getter private final HashMap<String, IClient> clients = new HashMap<>();
     @Getter private final HashMap<ChannelHandlerContext, IClient> clientsByConnection = new HashMap<>();
-    @Getter private final ArrayList<IClient> devTools = new ArrayList<>();
+    @Getter private final ArrayList<IClient> externalTools = new ArrayList<>();
 
     private final Core main;
     @Getter @Setter
@@ -29,29 +29,31 @@ public class ClientManager implements IClientManager {
     }
     @Override
     public Client registerClient(Client client){
-        if(client.isDevTool()){
+        if(client.isExternalTool()){
             client.setClientManager(this);
             clientsByConnection.put(client.getChannelHandlerContext(),client);
-            devTools.add(client);
+            externalTools.add(client);
             return client;
         }
-
+        IService jvmService = null;
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
-        if(JVMExecutor.servicePort.isEmpty()){
-            Console.print("A service tried to connect on the port " + client.getPort()+" but there is a problem (ARRAY EMPTY)",Level.SEVERE);
-            client.getChannelHandlerContext().channel().close();
-            return null;
+        if(!client.isExternalService()){
+            if(JVMExecutor.servicePort.isEmpty()){
+                Console.print("A service tried to connect with the port " + client.getPort()+" but there is a problem (ARRAY EMPTY)",Level.SEVERE);
+                client.getChannelHandlerContext().channel().close();
+                return null;
+            }
+             jvmService = JVMExecutor.servicePort.get(client.getPort());
+            if(jvmService == null){
+                Console.print("A service tried to connect with the port " + client.getPort()+" but there is a problem",Level.SEVERE);
+                client.getChannelHandlerContext().channel().close();
+                return null;
+            }
+            clientByPort.put(client.getPort(),client);
+        }else {
+            // Create a VirtualService
         }
-        IService jvmService = JVMExecutor.servicePort.get(client.getPort());
-        if(jvmService == null){
-            Console.print("A service tried to connect on the port " + client.getPort()+" but there is a problem",Level.SEVERE);
-            client.getChannelHandlerContext().channel().close();
-            return null;
-        }
-
-        clientByPort.put(client.getPort(),client);
-
         //System.out.println(client.getPort());
 
 

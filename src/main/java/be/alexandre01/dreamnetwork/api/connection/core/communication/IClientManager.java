@@ -14,7 +14,7 @@ public interface IClientManager {
 
     java.util.HashMap<ChannelHandlerContext, IClient> getClientsByConnection();
 
-    java.util.ArrayList<IClient> getDevTools();
+    java.util.ArrayList<IClient> getExternalTools();
 
     IClient getProxy();
 

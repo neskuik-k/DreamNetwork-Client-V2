@@ -61,14 +61,15 @@ public class ExternalClient extends Thread{
 
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } finally {
-
             if(!ExternalCore.getInstance().isConnected()){
                 ExternalCore.getInstance().exitMode();
                 return;
             }
+            ExternalCore.getInstance().setConnected(false);
             System.out.println("Retrying to connect...");
             executorService.scheduleAtFixedRate(() -> {
                 System.out.println("...");

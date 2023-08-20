@@ -16,7 +16,7 @@ public abstract class RequestType {
      * CORE REQUESTS
      */
     public final static RequestInfo CORE_HANDSHAKE = new RequestInfo(1, "CORE_HANDSHAKE");
-    public final static RequestInfo CORE_HANDSHAKE_SUCCESS = new RequestInfo(2, "CORE_HANDSHAKE_SUCCESS");
+    public final static RequestInfo CORE_HANDSHAKE_STATUS = new RequestInfo(2, "CORE_HANDSHAKE_STATUS");
     public final static RequestInfo CORE_LOG_MESSAGE = new RequestInfo(3,"CORE_LOG_MESSAGE");
     public final static RequestInfo CORE_WARNING_MESSAGE =  new RequestInfo(4,"CORE_WARNING_MESSAGE");
     public final static RequestInfo CORE_ERROR_MESSAGE =  new RequestInfo(5,"CORE_ERROR_MESSAGE");

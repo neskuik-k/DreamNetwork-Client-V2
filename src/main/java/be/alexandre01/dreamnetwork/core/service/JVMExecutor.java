@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.installer.enums.InstallationLinks;
@@ -541,7 +542,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         String customArgs = "";
-        customArgs += "-DNPort=" + Main.getGlobalSettings().getPort();
+
+        if(ExternalCore.getInstance().isConnected()){
+            customArgs += "-DNHost=" + ExternalCore.getInstance().getIp();
+        }else{
+            customArgs += "-DNHost=" + "this:"+Main.getGlobalSettings().getPort();
+        }
         if (preProcessEvent.getCustomArguments() != null) {
             customArgs += " " + preProcessEvent.getCustomArguments();
         }

@@ -5,15 +5,12 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
-import be.alexandre01.dreamnetwork.core.connection.external.communication.BasicTransmission;
+import be.alexandre01.dreamnetwork.core.connection.external.communication.ExternalTransmission;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtRequestManager;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtResponse;
-import be.alexandre01.dreamnetwork.core.connection.request.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -33,7 +30,7 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
 
     public ExternalClientHandler(ExternalClient externalClient){
         this.externalClient = externalClient;
-        responses.add(new BasicTransmission());
+        responses.add(new ExternalTransmission());
         System.out.println("Init external client handler");
         ExternalCore.getInstance().setClientHandler(this);
         ExternalCore.getInstance().init();
@@ -113,7 +110,6 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
                 }
             }
         } finally {
-            System.out.println("Release");
             m.release();
         }
     }

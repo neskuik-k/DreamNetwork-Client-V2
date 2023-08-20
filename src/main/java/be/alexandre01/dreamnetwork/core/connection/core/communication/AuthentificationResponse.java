@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.core.connection.request.generated.external.DefaultExternalRequest;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
@@ -68,18 +69,34 @@ public class AuthentificationResponse extends CoreResponse {
                     if(info.contains("ExternalDream")){
                         Console.print(Colors.GREEN_UNDERLINED+"ExternalDream CONNECTION DETECTED !", Level.INFO);
                         coreHandler.getExternalConnections().add(ctx);
+                        Client extClient = Core.getInstance().getClientManager().registerClient(Client.builder()
+                                .coreHandler(coreHandler)
+                                .info(info)
+                                .port(0)
+                                .jvmType(null)
+                                .isExternalTool(true)
+                                .ctx(ctx)
+                                .build());
+                        extClient.setName("ExternalClient:"+ ctx.channel().remoteAddress().toString().split(":")[0]);
+                        extClient.getRequestManager().getRequestBuilder().addRequestBuilder(new DefaultExternalRequest());
+                        extClient.getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE_STATUS,"SUCCESS");
                         return;
                     }
                     int port = message.getInt("PORT");
-                    String password = message.getString("PASSWORD");
 
+                    boolean isExternal = false;
                     Console.print("CREATE CLIENT", Level.FINE);
+                    if(message.contains("EXTERNAL")){
+                        if(message.getBoolean("EXTERNAL"))
+                            isExternal = true;
+                    }
                     Client newClient = Core.getInstance().getClientManager().registerClient(Client.builder()
                             .coreHandler(coreHandler)
                             .info(info)
                             .port(port)
                             .jvmType(null)
                             .ctx(ctx)
+                            .isExternalService(isExternal)
                             .build());
 
                     if(newClient == null){
@@ -119,7 +136,7 @@ public class AuthentificationResponse extends CoreResponse {
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
-                        for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {
+                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools()) {
                             String server = newClient.getJvmService().getFullName();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
@@ -176,7 +193,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        for (IClient devtools : Core.getInstance().getClientManager().getDevTools()) {
+                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools()) {
                             String server = newClient.getJvmService().getFullName();
                             if (devtools != null)
                                 devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
@@ -237,7 +254,7 @@ public class AuthentificationResponse extends CoreResponse {
                         .port(devPort)
                         .jvmType(null)
                         .ctx(ctx)
-                        .isDevTool(true)
+                        .isExternalTool(true)
                         .build());
 
                 ArrayList<String> devServers = new ArrayList<>();

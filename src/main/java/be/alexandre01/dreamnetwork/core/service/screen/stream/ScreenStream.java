@@ -105,6 +105,8 @@ public class ScreenStream implements IScreenStream {
         ((ScreenOutWriter)screenOutWriter).run();
         Console.setActualConsole("s:"+name);
         ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
+
+
         if(!h.isEmpty()){
             if(!h.get(h.size()-1).content.endsWith("\n")){
                 console.defaultPrint.print("\n");

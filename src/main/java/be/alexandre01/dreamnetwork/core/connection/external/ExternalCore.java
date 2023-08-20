@@ -21,11 +21,13 @@ public class ExternalCore {
     Console console;
     boolean isInit = false;
     boolean isConnected = false;
+    private String ip;
     public ExternalCore(){
 
     }
 
     public void initialize(String ip){
+        this.ip = ip;
         if(isInit){
             return;
         }

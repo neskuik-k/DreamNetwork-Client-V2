@@ -26,8 +26,10 @@ import java.util.concurrent.TimeUnit;
 @Getter
 @Setter
 public class Client implements IClient {
+    private String name;
     private int port;
-    private boolean isDevTool = false;
+    private boolean isExternalTool = false;
+    private boolean isExternalService = false;
     private JVMContainer.JVMType jvmType = null;
     private String info;
     private ChannelHandlerContext channelHandlerContext;
@@ -38,14 +40,18 @@ public class Client implements IClient {
     private ClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
 
+
+
     @Builder
-    public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType, boolean isDevTool) {
+    public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType, boolean isExternalTool,boolean isExternalService) {
         this.port = port;
         this.info = info;
-        this.isDevTool = isDevTool;
+        this.isExternalTool = isExternalTool;
+        this.isExternalService = isExternalService;
         this.coreHandler = coreHandler;
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
+        this.name = "Unknown-Client="+ ctx.channel().remoteAddress().toString()+":"+port;
         requestManager = new ClientRequestManager(this);
         Console.fine("Client : "+info);
         if (jvmType == null) {
@@ -86,11 +92,14 @@ public class Client implements IClient {
                     break;
             }
         }
-        if (isDevTool) {
+        if (isExternalTool) {
             requestManager.getRequestBuilder().addRequestBuilder(new DefaultDevToolRequest());
         }
     }
-
+    public void setJvmService(IService iService){
+        this.name = "ServiceClient="+ iService.getFullName();
+        this.jvmService = iService;
+    }
 
     @Override
     public void writeAndFlush(Message message) {

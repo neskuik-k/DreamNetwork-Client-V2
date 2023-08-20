@@ -16,7 +16,9 @@ public interface IClient {
 
     int getPort();
 
-    boolean isDevTool();
+    boolean isExternalTool();
+
+    boolean isExternalService();
 
     be.alexandre01.dreamnetwork.core.service.JVMContainer.JVMType getJvmType();
 
@@ -36,8 +38,9 @@ public interface IClient {
 
     void setPort(int port);
 
-    void setDevTool(boolean isDevTool);
+    void setExternalTool(boolean isExternal);
 
+    void setExternalService(boolean isExternal);
     void setJvmType(be.alexandre01.dreamnetwork.core.service.JVMContainer.JVMType jvmType);
 
     void setInfo(String info);
