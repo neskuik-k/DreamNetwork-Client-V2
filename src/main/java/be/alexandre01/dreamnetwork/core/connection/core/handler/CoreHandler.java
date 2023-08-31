@@ -56,6 +56,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
         responses.add(new BaseResponse());
+        responses.add(new PlayerResponse());
         authResponse = new AuthentificationResponse(this);
     }
 

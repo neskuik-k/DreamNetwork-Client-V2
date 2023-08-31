@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.connection.request;
+package be.alexandre01.dreamnetwork.core.connection.requests;
 
 import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
 

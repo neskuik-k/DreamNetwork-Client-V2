@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.config.Config;
-import be.alexandre01.dreamnetwork.core.connection.request.RequestFile;
+import be.alexandre01.dreamnetwork.core.connection.requests.RequestFile;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleData;

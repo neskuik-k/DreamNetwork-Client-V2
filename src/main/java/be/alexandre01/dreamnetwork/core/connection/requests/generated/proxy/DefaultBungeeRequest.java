@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.connection.request.generated.proxy;
+package be.alexandre01.dreamnetwork.core.connection.requests.generated.proxy;
 
 import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;

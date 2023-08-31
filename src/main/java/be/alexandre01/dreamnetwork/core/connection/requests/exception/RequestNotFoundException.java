@@ -1,11 +1,9 @@
-package be.alexandre01.dreamnetwork.core.connection.request.exception;
+package be.alexandre01.dreamnetwork.core.connection.requests.exception;
 
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
-import be.alexandre01.dreamnetwork.core.Core;
 
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.core.console.Console;
-import org.fusesource.jansi.Ansi;
 
 public class RequestNotFoundException extends Exception{
     public RequestNotFoundException(RequestInfo requestInfo, Client client){

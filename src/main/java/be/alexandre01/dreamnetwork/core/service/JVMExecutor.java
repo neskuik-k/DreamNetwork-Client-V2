@@ -21,6 +21,7 @@ import be.alexandre01.dreamnetwork.core.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaVersion;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.core.utils.clients.IdSet;
+import be.alexandre01.dreamnetwork.core.utils.files.json.JSONFileUtils;
 import be.alexandre01.dreamnetwork.core.utils.sockets.PortUtils;
 import be.alexandre01.dreamnetwork.core.utils.timers.DateBuilderTimer;
 
@@ -28,6 +29,7 @@ import be.alexandre01.dreamnetwork.core.utils.files.yaml.Ignore;
 
 import be.alexandre01.dreamnetwork.utils.Tuple;
 
+import com.google.gson.Gson;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
@@ -545,6 +547,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
         if(ExternalCore.getInstance().isConnected()){
             customArgs += "-DNHost=" + ExternalCore.getInstance().getIp();
+
         }else{
             customArgs += "-DNHost=" + "this:"+Main.getGlobalSettings().getPort();
         }

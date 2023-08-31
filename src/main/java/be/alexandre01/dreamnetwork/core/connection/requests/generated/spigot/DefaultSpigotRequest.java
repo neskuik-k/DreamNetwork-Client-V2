@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.connection.request.generated.spigot;
+package be.alexandre01.dreamnetwork.core.connection.requests.generated.spigot;
 
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;

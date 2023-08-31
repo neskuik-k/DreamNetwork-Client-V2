@@ -2,17 +2,13 @@ package be.alexandre01.dreamnetwork.core.connection.external.requests;
 
 import java.util.Collection;
 
-import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
-import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.connection.external.ExternalClient;
-import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientHandler;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.generated.ExternalResponseBuilder;
-import be.alexandre01.dreamnetwork.core.connection.request.AbstractRequestManager;
-import be.alexandre01.dreamnetwork.core.connection.request.exception.RequestNotFoundException;
+import be.alexandre01.dreamnetwork.core.connection.requests.AbstractRequestManager;
+import be.alexandre01.dreamnetwork.core.connection.requests.exception.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;

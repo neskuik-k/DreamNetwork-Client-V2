@@ -5,7 +5,6 @@ import java.util.logging.Level;
 
 import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientHandler;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtRequestManager;
-import be.alexandre01.dreamnetwork.core.connection.request.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import lombok.Getter;

@@ -47,9 +47,17 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public <T> T get(String key,Class<T> tClass){
+        Object o = super.get("DN-"+key);
+        if(o == null){
+            return null;
+        }
+        if(o instanceof LinkedHashMap && tClass != LinkedHashMap.class){
+            System.out.println(o);
+            System.out.println(new Gson().toJson(o));
+            return new Gson().fromJson(new Gson().toJson(o),tClass);
+        }
         return (T) super.get("DN-"+key);
     }
-
     public Message setChannel(String channel){
         super.put("channel",channel);
         return this;
