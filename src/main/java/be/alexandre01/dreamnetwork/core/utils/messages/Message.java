@@ -3,8 +3,10 @@ package be.alexandre01.dreamnetwork.core.utils.messages;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import com.google.gson.*;
+import com.google.gson.internal.LinkedTreeMap;
 import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.*;
 
@@ -19,6 +21,11 @@ public class Message extends LinkedHashMap<String, Object> {
     }
     public Message set(String id,Object value){
         super.put("DN-"+id,value);
+        System.out.println("Value to be set "+ value);
+        return this;
+    }
+    public Message setCustomObject(String id,Object value){
+        super.put("DN-"+id,new Gson().toJson(value));
         return this;
     }
 
@@ -47,11 +54,14 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public <T> T get(String key,Class<T> tClass){
+        System.out.println("Get hihi");
         Object o = super.get("DN-"+key);
+        System.out.println("Getted object "+ o.toString());
         if(o == null){
             return null;
         }
-        if(o instanceof LinkedHashMap && tClass != LinkedHashMap.class){
+        if((o instanceof LinkedHashMap && tClass != LinkedHashMap.class) || (o instanceof LinkedTreeMap && tClass != LinkedTreeMap.class)){
+            System.out.println("Wow");
             System.out.println(o);
             System.out.println(new Gson().toJson(o));
             return new Gson().fromJson(new Gson().toJson(o),tClass);
@@ -134,8 +144,36 @@ public class Message extends LinkedHashMap<String, Object> {
         //return new ArrayList<>(Arrays.asList(getString(key).split(",")));
     }
     public <T> List<T> getList(String key, Class<T> tClass) {
-        return (List<T>) get(key);
+        System.out.println("GetList "+ tClass);
+        Type type = new TypeToken<List<T>>(){}.getType();
+
+        System.out.println("Type > "+ type);
+        System.out.println("Wow");
+
+        Object o = get(key);
+
+        System.out.println(o.getClass());
+
+        if(o instanceof String){
+            return new Gson().fromJson((String) o,type);
+        }
+        if(o instanceof LinkedTreeMap){
+            LinkedTreeMap<?,?> l = (LinkedTreeMap<?,?>) o;
+            List<T> list = (List<T>) new ArrayList<>(l.values());
+            return list;
+        }
+
+        if(o instanceof List){
+
+        }
+
+
+
+       // LinkedTreeMap
+        //return new Gson().fromJson(new Gson().toJson(get(key)),type);
+        //return (List<T>) get(key,type);
        // return new ArrayList<T>((Collection<? extends T>) Arrays.asList(getString(key).split(",")));
+        return (List<T>) o;
     }
 
 
@@ -162,10 +200,9 @@ public class Message extends LinkedHashMap<String, Object> {
     public String toString() {
         GsonBuilder gsonBuilder = new GsonBuilder();
        // gsonBuilder.setLongSerializationPolicy(LongSerializationPolicy.STRING);
-
-
         return gsonBuilder.create().toJson(this,Message.class);
     }
+
 
 
 }

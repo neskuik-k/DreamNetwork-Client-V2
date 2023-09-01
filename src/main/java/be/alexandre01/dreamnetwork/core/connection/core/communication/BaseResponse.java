@@ -12,12 +12,14 @@ import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
+import be.alexandre01.dreamnetwork.core.connection.external.ExecutorData;
 import be.alexandre01.dreamnetwork.core.console.Console;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 
@@ -98,6 +100,14 @@ public class BaseResponse extends CoreResponse {
             this.core.getChannelManager().unregisterClientToChannel(c, message.getString("CHANNEL"));
         });
 
+        addRequestInterceptor(CORE_REGISTER_EXTERNAL_EXECUTORS, (message, ctx, client) -> {
+            System.out.println("Wow j'ai reçu cette requete");
+            List<ExecutorData> executor = message.getList("executors", ExecutorData.class);
+
+            executor.forEach(jvmExecutor -> {
+                System.out.println(jvmExecutor.name);
+            });
+        });
     }
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
@@ -176,6 +186,5 @@ public class BaseResponse extends CoreResponse {
             //RequestInfo request = message.getRequest();
         }
     }
-
 }
 

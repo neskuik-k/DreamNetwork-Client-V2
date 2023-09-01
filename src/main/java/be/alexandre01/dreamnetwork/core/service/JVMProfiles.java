@@ -38,8 +38,8 @@ public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles
             profiles = new HashMap<>();
             JVMConfig config = new JVMConfig();
             config.name = "test";
-            config.xms = "1024M";
-            config.xmx = "1024M";
+            config.setXms("1024M");
+            config.setXmx("1024M");
             profiles.put("hello", config);
             super.saveFile(JVMProfiles.class.cast(this));
         }else {

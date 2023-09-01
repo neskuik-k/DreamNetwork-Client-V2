@@ -110,7 +110,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
     public void saveFile(){
-        JVMConfig config = read();
+        JVMConfig config = getYmlFile().read();
 
         if(config == null) return;
 
@@ -482,7 +482,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        super.saveFile(JVMConfig.class.cast(this));
+        super.getYmlFile().saveFile(JVMConfig.class.cast(this));
         confSize = getConfigSize();
 
     }

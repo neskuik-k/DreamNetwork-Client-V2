@@ -36,7 +36,9 @@ public abstract class RequestType {
     public final static RequestInfo CORE_STOP_PROXY = new RequestInfo(18,"CORE_STOP_PROXY");
 
     public final static RequestInfo CORE_RESTART_SERVER = new RequestInfo(19,"CORE_RESTART_SERVER");
-    public final static RequestInfo CORE_REGISTER_EXTEXECUTOR = new RequestInfo(20,"CORE_REGISTER_EXTSERVER");
+    public final static RequestInfo CORE_REGISTER_EXTERNAL_EXECUTORS = new RequestInfo(20,"CORE_REGISTER_EXTERNAL_EXECUTORS");
+
+
     /**
      * SPIGOT REQUESTS
      */

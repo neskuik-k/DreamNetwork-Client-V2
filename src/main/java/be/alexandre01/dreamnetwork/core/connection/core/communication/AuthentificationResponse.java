@@ -77,8 +77,11 @@ public class AuthentificationResponse extends CoreResponse {
                                 .isExternalTool(true)
                                 .ctx(ctx)
                                 .build());
+                        coreHandler.getAllowedCTX().add(ctx);
                         extClient.setName("ExternalClient:"+ ctx.channel().remoteAddress().toString().split(":")[0]);
                         extClient.getRequestManager().getRequestBuilder().addRequestBuilder(new DefaultExternalRequest());
+                        extClient.getCoreHandler().getResponses().add(new BaseResponse());
+
                         extClient.getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE_STATUS,"SUCCESS");
                         return;
                     }

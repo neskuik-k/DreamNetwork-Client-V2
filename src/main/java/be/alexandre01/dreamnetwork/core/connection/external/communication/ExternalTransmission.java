@@ -7,13 +7,17 @@ import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.commands.lists.sub.addon.List;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
+import be.alexandre01.dreamnetwork.core.connection.external.ExecutorData;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtRequestManager;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtResponse;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.util.ArrayList;
 
 
 public class ExternalTransmission extends ExtResponse {
@@ -24,9 +28,13 @@ public class ExternalTransmission extends ExtResponse {
                 if(message.getString("STATUS").equalsIgnoreCase("SUCCESS")){
                     System.out.println("I'm connected to the core YEEPEE");
                     ExternalCore.getInstance().setConnected(true);
-                    for(IJVMExecutor executor : Core.getInstance().getJvmContainer().getJVMExecutors()){
-                        ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTEXECUTOR , executor);
-                    }
+
+                    ArrayList<ExecutorData> list = new ArrayList<>();
+                    list.add(new ExecutorData());
+                    list.add(new ExecutorData());
+
+                    ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTERNAL_EXECUTORS , list);
+
                 }else {
                     System.out.println("I'm not connected to the core :(");
                     ExternalCore.getInstance().setConnected(false);

@@ -15,6 +15,9 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.logging.Level;
 
+/**
+ * The {@code ClientManager} class implements the {@code IClientManager} interface and provides methods for managing clients.
+ */
 public class ClientManager implements IClientManager {
     private final HashMap<Integer, Client> clientByPort = new HashMap<>();
     @Getter private final HashMap<String, IClient> clients = new HashMap<>();

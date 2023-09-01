@@ -32,6 +32,8 @@ import java.util.logging.Level;
 
 import static be.alexandre01.dreamnetwork.core.console.Console.*;
 
+
+
 public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHandler {
 
 
@@ -64,6 +66,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void channelRegistered(final ChannelHandlerContext ctx) {
+
         printLang("connection.core.handler.localAddress", Level.FINE, ctx.channel().localAddress());
         printLang("connection.core.handler.remoteAddress", Level.FINE, ctx.channel().remoteAddress());
       //  System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
