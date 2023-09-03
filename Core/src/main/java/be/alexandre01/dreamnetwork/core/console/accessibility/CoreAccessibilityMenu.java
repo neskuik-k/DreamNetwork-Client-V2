@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.ConsolePath;
+import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
@@ -176,7 +177,7 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
 
 
         if(text.getMacro() != null && macro){
-            ConsoleReader.sReader.runMacro(text.getMacro());
+            IConsoleReader.getReader().runMacro(text.getMacro());
         }
 
         console.completorNodes.clear();

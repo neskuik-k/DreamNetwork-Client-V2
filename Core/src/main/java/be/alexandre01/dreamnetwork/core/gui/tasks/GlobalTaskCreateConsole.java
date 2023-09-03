@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.gui.tasks;
 
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -37,7 +39,7 @@ public class GlobalTaskCreateConsole extends CoreAccessibilityMenu {
 
         String[] types = new String[]{"ALWAYS_ON","ON_START","MANUAL","MANUAL_RESTRICTED"};
 
-        addValueInput(PromptText.create("type").setSuggestions(create((Object[]) types)), new ValueInput() {
+        addValueInput(PromptText.create("type").setSuggestions(NodeBuilder.create((Object[]) types)), new ValueInput() {
             @Override
             public void onTransition(ShowInfos infos) {
                 infos.onEnter(Console.getFromLang("service.task.create.type"));

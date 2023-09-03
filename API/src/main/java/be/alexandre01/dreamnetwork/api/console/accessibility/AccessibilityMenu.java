@@ -36,7 +36,7 @@ public abstract class AccessibilityMenu {
     protected Operation[] operations = new Operation[0];
     protected ScheduledExecutorService executor;
 
-    public static AccessibilityMenu create(){
+    public static AccessibilityMenu createObject(){
         return DNUtils.get().createAccessibilityMenu();
     }
 

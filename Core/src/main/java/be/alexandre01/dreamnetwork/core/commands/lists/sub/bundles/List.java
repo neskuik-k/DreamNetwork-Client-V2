@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import lombok.NonNull;
 
@@ -20,7 +21,7 @@ public class List extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         boolean b = when(sArgs -> {
-            for (BundleData bundleData : Main.getInstance().getBundleManager().getBundleDatas().values()){
+            for (BundleData bundleData : Core.getInstance().getBundleManager().getBundleDatas().values()){
                 Console.printLang("commands.bundle.list.bundleName", bundleData.getBundleInfo().getName());
                 Console.printLang("commands.bundle.list.bundleType", bundleData.getBundleInfo().getType());
                 Console.printLang("commands.bundle.list.bundleExecutors", bundleData.getExecutors());

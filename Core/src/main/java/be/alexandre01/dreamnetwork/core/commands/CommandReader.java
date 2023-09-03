@@ -34,13 +34,7 @@ public class CommandReader implements ICommandReader {
 
     public CommandReader(){
         commands = new CommandsManager();
-
-
         core = Core.getInstance();
-
-        //ConsoleReader.nodes.add(node("test"));
-
-
     }
 
     public void init(){

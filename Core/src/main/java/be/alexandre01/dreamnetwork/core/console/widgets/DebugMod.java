@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console.widgets;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import org.jline.keymap.KeyMap;
 import org.jline.reader.LineReader;
@@ -29,9 +30,9 @@ public class DebugMod extends org.jline.widget.Widgets {
                 String name = buffer().toString().split("\\s+")[0];
                 reader.callWidget(name);
 
-
-                boolean debug = Main.getInstance().isDebug();
-                Main.getInstance().setDebug(!debug);
+                Core c = Core.getInstance();
+                boolean debug = c.isDebug();
+                c.setDebug(!debug);
                 Console.getConsoles().forEach(console -> {
                     console.isDebug = !debug;
                 });

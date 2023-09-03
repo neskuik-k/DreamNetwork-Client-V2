@@ -3,11 +3,7 @@ package be.alexandre01.dreamnetwork.api.console.colors;
 public class Colors {
     private static boolean isWindows = false;
     public static final String ANSI_RESET(){
-        if(isWindows){ 
-            return "";
-        }else {
-            return "\u001B[0m";
-        }
+        return "\u001B[0m";
     }
     public static final String ANSI_BLACK(){
         if(isWindows){

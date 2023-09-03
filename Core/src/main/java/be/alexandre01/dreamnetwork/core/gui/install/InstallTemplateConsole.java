@@ -3,9 +3,12 @@ package be.alexandre01.dreamnetwork.core.gui.install;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.core.UtilsAPI;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
@@ -76,7 +79,7 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
                         return errorAndRetry(infos);
                     }
                     console.isRunning = false;
-                    ConsoleReader.sReader.getTerminal().flush();
+                    IConsoleReader.getReader().getTerminal().flush();
                    // future.onResponse();
                 }catch (Exception e){
                     return errorAndRetry(infos);
@@ -100,7 +103,7 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
         String write = console.writing;
         console.setWriting("");
         Console.setBlockConsole(true);
-        Installer.launchDependInstall(type, jvmExecutor.getFileRootDir(), new ContentInstaller.IInstall() {
+        Core.getInstance().getInstallerManager().launchDependInstall(type, jvmExecutor.getFileRootDir(), new ContentInstaller.IInstall() {
             @Override
             public void start() {
                 //block console

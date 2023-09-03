@@ -97,7 +97,7 @@ public class IntroMenuCore extends CoreAccessibilityMenu {
                     infos.error(getFromLang("tutorial.help.notGood"));
                     return errorAndRetry(infos);
                 }
-                Main.getCommandReader().getCommands().getCommandsManager().check(new String[]{"help"});
+                Main.getCommandReader().getCommands().check(new String[]{"help"});
                 Console.debugPrint(getFromLang("tutorial.help.tada"));
                 try {
                     Thread.sleep(2700);

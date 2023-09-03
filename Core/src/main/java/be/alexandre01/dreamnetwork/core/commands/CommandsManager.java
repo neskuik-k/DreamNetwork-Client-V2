@@ -11,14 +11,15 @@ import java.util.HashMap;
 import java.util.logging.Level;
 
 public class CommandsManager implements ICommandsManager {
-    @Getter public HashMap<String, ICommand> executorList;
+    @Getter public final HashMap<String, ICommand> executorsList;
 
     public CommandsManager() {
+        executorsList = new HashMap<>();
     }
 
     @Override
     public void addCommands(ICommand cmd) {
-        this.executorList.put(cmd.getName(), cmd);
+        this.executorsList.put(cmd.getName(), cmd);
     }
 
     @Override
@@ -27,8 +28,8 @@ public class CommandsManager implements ICommandsManager {
         if (args[0] == null)
             return;
 
-        if (executorList.containsKey(args[0])) {
-            if (executorList.get(args[0]).onCommand(args)) {
+        if (executorsList.containsKey(args[0])) {
+            if (executorsList.get(args[0]).onCommand(args)) {
                 hasFound = true;
             }
         }
@@ -38,4 +39,5 @@ public class CommandsManager implements ICommandsManager {
         }
 
     }
+
 }

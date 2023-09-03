@@ -1,10 +1,7 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.api.service.ConfigBuilder;
-import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.api.service.IContainer;
-import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
+import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
@@ -104,12 +101,12 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         saveFile();
         //System.out.println("Reading file ! Done !");
         //sout all class data fields with reflection
-        Field[] fields = JVMConfig.class.getDeclaredFields();
+       // Field[] fields = JVMConfig.class.getDeclaredFields();
     }
 
 
     public void saveFile(){
-        JVMConfig config = getYmlFile().read();
+        ConfigData config = getYmlFile().read();
 
         if(config == null) return;
 
@@ -119,7 +116,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         for (Field field : fields) {
             field.setAccessible(true);
             try {
-                Field field1 = JVMConfig.class.getDeclaredField(field.getName());
+                Field field1 = ConfigData.class.getDeclaredField(field.getName());
                 field1.setAccessible(true);
                 if(field1.getAnnotation(Ignore.class) != null) continue;
                 field1.set(this,field.get(config));
@@ -481,7 +478,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         } catch (Exception e) {
             e.printStackTrace();
         }*/
-        super.getYmlFile().saveFile(JVMConfig.class.cast(this));
+        super.getYmlFile().saveFile(ConfigData.class.cast(this));
         confSize = getConfigSize();
 
     }

@@ -16,17 +16,17 @@ public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles
 
     public JVMProfiles() {
         addTag(JVMProfiles.class,Tag.MAP);
-        addTag(JVMConfig.class,Tag.MAP);
+        addTag(ConfigData.class,Tag.MAP);
 
 
-        representer = new CustomRepresenter(true,JVMProfiles.class,JVMConfig.class);
+        representer = new CustomRepresenter(true,JVMProfiles.class,ConfigData.class);
         representer.addClassTag(JVMProfiles.class, Tag.MAP);
-        representer.addClassTag(JVMConfig.class, Tag.MAP);
+        representer.addClassTag(ConfigData.class, Tag.MAP);
 
         //addTag(JVMConfig2.class,new Tag("!be.alexandre01.dreamnetwork.core.service.JVMConfig2"));
         constructor = new Constructor(JVMProfiles.class);
         TypeDescription jvmConfigDescription = new TypeDescription(JVMProfiles.class);
-        jvmConfigDescription.putMapPropertyType("profiles", String.class, JVMConfig.class);
+        jvmConfigDescription.putMapPropertyType("profiles", String.class, ConfigData.class);
         constructor.addTypeDescription(jvmConfigDescription);
     }
     public void loading(File file){

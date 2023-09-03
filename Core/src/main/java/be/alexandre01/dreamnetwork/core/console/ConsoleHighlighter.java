@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.console;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.ICommand;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleHighlighter;
@@ -25,7 +26,7 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
     String[] rainbow = new String[]{Colors.CYAN_BOLD, Colors.GREEN_BOLD, Colors.YELLOW_BOLD, Colors.RED_BOLD, Colors.PURPLE_BOLD, Colors.BLUE_BOLD};
     List<String> colorUsed = new ArrayList<>();
 
-    boolean emojiOnCommand = DNCoreAPI.getInstance().getConfigManager().getGlobalSettings().isEmojiOnCommand() && DNCoreAPI.getInstance().getConfigManager().getGlobalSettings().isUseEmoji();
+    boolean emojiOnCommand = DNUtils.get().getConfigManager().getGlobalSettings().isEmojiOnCommand() && DNCoreAPI.getInstance().getConfigManager().getGlobalSettings().isUseEmoji();
 
 
     String writing = Main.getLanguageManager().getActualLanguage().translateTo("console.dreamnetworkWriting", Core.getUsername());

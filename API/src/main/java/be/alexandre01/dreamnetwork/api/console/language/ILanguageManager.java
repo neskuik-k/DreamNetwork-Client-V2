@@ -9,7 +9,7 @@ import be.alexandre01.dreamnetwork.api.DNUtils;
 */
 public interface ILanguageManager {
 
-    String[] getAvailableLanguages();
+    String[] getAvailableLangArray();
 
     boolean load();
 

@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
@@ -54,6 +55,6 @@ public class Set extends SubCommand {
     }
 
     public void reloadNode(){
-        ConsoleReader.reloadCompleter();
+        IConsoleReader.reloadCompleters();
     }
 }

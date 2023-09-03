@@ -18,11 +18,14 @@ import java.util.logging.FileHandler;
  ↬   done on 02/09/2023 at 19:32
 */
 public class UtilsAPI extends DNUtils {
+    static {
+        new UtilsAPI();
+    }
     ConfigManager configManager = new ConfigManager();
     IConsoleManager consoleManager = new IConsoleManager() {
         @Override
         public Formatter getFormatter() {
-            return Main.getInstance().formatter;
+            return Core.getInstance().formatter;
         }
 
         @Override
@@ -32,7 +35,7 @@ public class UtilsAPI extends DNUtils {
 
         @Override
         public FileHandler getFileHandler() {
-            return Main.getInstance().getFileHandler();
+            return Core.getInstance().getFileHandler();
         }
 
         @Override

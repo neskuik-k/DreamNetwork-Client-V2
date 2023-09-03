@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.commands.CommandReader;
@@ -41,7 +42,6 @@ import lombok.Setter;
 import org.jline.builtins.Completers;
 
 public class Main {
-    @Getter
     public static Core instance;
 
     @Getter
@@ -53,6 +53,7 @@ public class Main {
     @Getter private static GlobalSettings globalSettings;
     @Getter private static FileCopyAsync fileCopyAsync;
     @Getter private static ConsoleReader consoleReader;
+    @Getter private static UtilsAPI utilsAPI;
 
     @Getter
     private JVMContainer jvmContainer;
@@ -76,9 +77,9 @@ public class Main {
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-        disableWarning();
         System.setProperty("illegal-access", "permit");
         System.setProperty("file.encoding", "UTF-8");
+        utilsAPI = new UtilsAPI();
         boolean dataCreated = Config.contains("data");
         if(!dataCreated)
             new File(Config.getPath("data")).mkdir();
@@ -92,18 +93,17 @@ public class Main {
             }else {
                 try {
                     Core.setUsername( username = InetAddress.getLocalHost().getHostName());
-
                 } catch (UnknownHostException e) {
                     Core.setUsername(username = System.getProperty("user.name"));
                 };
             }
-
             Main.getGlobalSettings().setUsername(username);
             Main.getGlobalSettings().save();
         }else {
             String line = Main.getGlobalSettings().getUsername();
             for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
             Core.setUsername(line);
+            username = line;
         }
 
         fileCopyAsync = new FileCopyAsync();
@@ -313,18 +313,5 @@ public class Main {
         new BundlesLoading();
         Core.getInstance().init();
 
-    }
-    private static void disableWarning() {
-        try {
-         /*   Field theUnsafe = Unsafe.class.getDeclaredField("theUnsafe");
-            theUnsafe.setAccessible(true);
-            Unsafe u = (Unsafe) theUnsafe.get(null);
-
-            Class cls = Class.forName("jdk.internal.module.IllegalAccessLogger");
-            Field logger = cls.getDeclaredField("logger");
-            u.putObjectVolatile(cls, u.staticFieldOffset(logger), null);*/
-        } catch (Exception e) {
-            // ignore
-        }
     }
 }

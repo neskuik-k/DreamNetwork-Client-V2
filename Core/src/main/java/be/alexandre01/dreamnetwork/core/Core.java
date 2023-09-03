@@ -81,6 +81,7 @@ public class Core {
 
     @Getter private EventsFactory eventsFactory;
     @Getter private ServicePlayersManager servicePlayersManager;
+
     static {
         instance = new Core();
     }
@@ -128,7 +129,7 @@ public class Core {
         if(s != null && s.equalsIgnoreCase("true")){
             //Console.debugPrint("Debug mode enabled");
             System.out.println("Debug mode enabled");
-            Main.getInstance().setDebug(true);
+            Core.getInstance().setDebug(true);
         }
         this.jvmContainer = new JVMContainer();
     }
@@ -244,7 +245,7 @@ public class Core {
             });
         }*/
         globalTasks.loading();
-        boolean debug = Main.getInstance().isDebug();
+        boolean debug = Core.getInstance().isDebug();
         if(debug){
             Console.getConsoles().forEach(c -> {
                 c.isDebug = true;

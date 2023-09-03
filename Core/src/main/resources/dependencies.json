@@ -6,6 +6,26 @@
       "url": "https://repo1.maven.org/maven2/io/netty/netty-all/4.1.97.Final/netty-all-4.1.97.Final.jar"
     },
     {
+      "path": "io/netty/netty-handler",
+      "version": "4.1.97.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-handler/4.1.97.Final/netty-handler-4.1.97.Final.jar"
+    },
+    {
+      "path": "io/netty/netty-buffer",
+      "version": "4.1.97.Final",
+      "url": " https://repo1.maven.org/maven2/io/netty/netty-buffer/4.1.97.Final/netty-buffer-4.1.97.Final.jar"
+    },
+    {
+      "path": "io/netty/netty-transport",
+      "version": "4.1.97.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-transport/4.1.97.Final/netty-transport-4.1.97.Final.jar"
+    },
+    {
+      "path": "io/netty/netty-common",
+      "version": "4.1.97.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.97.Final/netty-common-4.1.97.Final.jar"
+    },
+    {
       "path": "com/google/code/gson",
       "version": "2.10.1",
       "url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar"
@@ -29,6 +49,21 @@
       "path": "ch/qos/logback/logback-classic",
       "version": "1.2.6",
       "url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.6/logback-classic-1.2.6.jar"
+    },
+    {
+      "path": "org/jline/jline",
+      "version": "3.21.0",
+      "url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0.jar"
+    },
+    {
+      "path": "com/google/guava/guava",
+      "version": "32.1.2-jre",
+      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/32.1.2-jre/guava-32.1.2-jre.jar"
+    },
+    {
+      "path": "com/konghq/unirest-java",
+      "version": "3.14.5",
+      "url": "https://repo1.maven.org/maven2/com/konghq/unirest-java/3.14.5/unirest-java-3.14.5.jar"
     }
   ]
 }

@@ -10,6 +10,9 @@ import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
 */
 public abstract class DNUtils {
     static DNUtils instance;
+    public DNUtils(){
+        instance = this;
+    }
     public static DNUtils get(){
         return instance;
     }

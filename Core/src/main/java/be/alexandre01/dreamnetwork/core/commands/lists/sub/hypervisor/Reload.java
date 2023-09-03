@@ -5,10 +5,12 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
+import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import lombok.NonNull;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -43,7 +45,7 @@ public class Reload extends SubCommand {
                     IStartupConfig config = jvmExecutor.getStartupConfig();
                     config.saveFile();
 
-                    jvmExecutor.getJvmProfiles().loading(jvmExecutor.getJvmProfiles().getFile());
+                    ((JVMProfiles)jvmExecutor.getJvmProfiles()).loading(jvmExecutor.getJvmProfiles().getFile());
                 }
             }
             if(sArgs[1].equalsIgnoreCase("tasks")){
@@ -81,6 +83,6 @@ public class Reload extends SubCommand {
     }
 
     public void reloadNode(){
-        ConsoleReader.reloadCompleter();
+        IConsoleReader.reloadCompleters();
     }
 }

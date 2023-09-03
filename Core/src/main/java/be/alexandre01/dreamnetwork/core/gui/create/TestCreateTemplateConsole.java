@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
@@ -68,7 +69,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
            addValueInput(PromptText.create("serviceName"), new ValueInput() {
                @Override
                public void onTransition(ShowInfos infos) {
-                   ConsoleReader.sReader.runMacro(opt[1]);
+                   IConsoleReader.getReader().runMacro(opt[1]);
                 //   infos.onEnter("Please enter the name of the service");
                    if(getOperation("bundleName").getFrom(BundleData.class).getJvmType().equals(IContainer.JVMType.SERVER)){
                        infos.onEnter(getFromLang("service.creation.ask.serverName"));
@@ -93,7 +94,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                @Override
                public void onTransition(ShowInfos infos) {
                      infos.onEnter(getFromLang("service.creation.ask.mode"));
-                        ConsoleReader.sReader.runMacro(opt[2]);
+                        IConsoleReader.getReader().runMacro(opt[2]);
                      insertArgumentBuilder("mode", create("STATIC","DYNAMIC"));
                }
 
@@ -114,7 +115,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                @Override
                public void onTransition(ShowInfos infos) {
                    infos.onEnter(getFromLang("service.creation.ask.XMS"));
-                   ConsoleReader.sReader.runMacro(opt[3]);
+                   IConsoleReader.getReader().runMacro(opt[3]);
                    insertArgumentBuilder("xms", create(new RamNode(0)));
                }
 
@@ -137,7 +138,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                      infos.onEnter(getFromLang("service.creation.ask.XMX"));
                      //RamMode get the xms data to determine what is upper xms.
                      insertArgumentBuilder("xmx", create(new RamNode(xms)));
-                     ConsoleReader.sReader.runMacro(opt[4]);
+                     IConsoleReader.getReader().runMacro(opt[4]);
                 }
 
                 @Override

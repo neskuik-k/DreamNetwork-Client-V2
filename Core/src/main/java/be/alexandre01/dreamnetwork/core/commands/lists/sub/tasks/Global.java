@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
+import be.alexandre01.dreamnetwork.api.service.tasks.ITaskData;
 import be.alexandre01.dreamnetwork.core.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.gui.tasks.GlobalTaskCreateConsole;
@@ -17,8 +18,8 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Global extends SubCommand {
     public Global(Command command) {
         super(command);
-        List<TaskData> value = Core.getInstance().getGlobalTasks().getTasks();
-        Object[] v = value.stream().map(TaskData::getName).toArray();
+        List<ITaskData> value = Core.getInstance().getGlobalTasks().getTasks();
+        Object[] v = value.stream().map(ITaskData::getName).toArray();
 
         if(v.length == 0){
             v = new Object[]{Completers.AnyCompleter.INSTANCE};
@@ -61,7 +62,7 @@ public class Global extends SubCommand {
 
                 if(args[1].equalsIgnoreCase("list")){
                     Core.getInstance().getGlobalTasks().getTasks().forEach(taskData -> {
-                        System.out.println(taskData.getName() + " " + taskData.count);
+                        System.out.println(taskData.getName() + " " + taskData.getCount());
                     });
                 }
                 if(args[1].equalsIgnoreCase("add") || args[1].equalsIgnoreCase("remove") || args[1].equalsIgnoreCase("set")){
@@ -84,24 +85,24 @@ public class Global extends SubCommand {
                         return true;
                     }
 
-                    TaskData t = Core.getInstance().getGlobalTasks().getTask(args[3]);
+                    ITaskData t = Core.getInstance().getGlobalTasks().getTask(args[3]);
                     if(t == null){
                         System.out.println("Task not found");
                         return true;
                     }
 
                     if(args[1].equalsIgnoreCase("add")){
-                        t.count += i;
+                        t.setCount(t.getCount() + i);
                         System.out.println(i + " task count added to " + t.getName());
                     }
 
                     if(args[1].equalsIgnoreCase("remove")){
-                        t.count -= i;
+                        t.setCount(t.getCount() - i);
                         System.out.println(i + " task count removed to " + t.getName());
                     }
 
                     if(args[1].equalsIgnoreCase("set")){
-                        t.count = i;
+                        t.setCount(i);
                         System.out.println("Task count set to " + i + " for " + t.getName());
                     }
                 }
@@ -113,7 +114,7 @@ public class Global extends SubCommand {
                         return true;
                     }
 
-                    TaskData t = Core.getInstance().getGlobalTasks().getTask(args[2]);
+                    ITaskData t = Core.getInstance().getGlobalTasks().getTask(args[2]);
                     if(t == null){
                         System.out.println("Task not found");
                         return true;

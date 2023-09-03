@@ -27,6 +27,11 @@ public class LanguageManager implements ILanguageManager {
     @Getter private KeysManager defaultKeysManager = new KeysManager();
 
     @Override
+    public String[] getAvailableLangArray() {
+        return availableLanguages;
+    }
+
+    @Override
     public boolean load(){
         emojiManager = new EmojiManager();
         emojiManager.load();
@@ -59,7 +64,7 @@ public class LanguageManager implements ILanguageManager {
     private InputStream getInputFrom(String localName){
         return LanguageManager.class.getClassLoader().getResourceAsStream("files/lang/" + localName + ".lang");
     }
-    static String getMessage(String key, Object... params) {
+    public static String getMessage(String key, Object... params) {
         if (Main.getLanguageManager().getActualLanguage().getMessages().containsKey(key)) {
             return Main.getLanguageManager().getActualLanguage().translateTo(key, params);
         }
