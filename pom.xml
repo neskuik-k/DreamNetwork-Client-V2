@@ -7,7 +7,12 @@
     <groupId>be.alexandre01.dreamnetwork</groupId>
     <artifactId>DreamNetworkV2</artifactId>
     <version>1.11.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>External</module>
+        <module>Core</module>
+        <module>API</module>
+    </modules>
 
     <profiles>
         <profile>
@@ -86,7 +91,7 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.config.GlobalSettings {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }
@@ -157,6 +162,11 @@
                                 <configuration>
                                     <outputFile>${outputPath}/${project.artifactId}-${project.version}-prod.jar</outputFile>
                                     <minimizeJar>true</minimizeJar>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>be.alexandre01.dreamnetwork:*</include>
+                                        </includes>
+                                    </artifactSet>
                                     <filters>
                                         <filter>
                                             <artifact>log4j:log4j</artifact>
@@ -213,6 +223,11 @@
                                 <configuration>
                                     <outputFile>${outputPath}/${project.artifactId}-${project.version}-api.jar</outputFile>
                                     <minimizeJar>true</minimizeJar>
+                                    <artifactSet>
+                                        <includes>
+                                            <include>be.alexandre01.dreamnetwork:*</include>
+                                        </includes>
+                                    </artifactSet>
                                     <filters>
                                         <filter>
                                             <artifact>log4j:log4j</artifact>
@@ -320,7 +335,7 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.config.GlobalSettings {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }
@@ -546,12 +561,6 @@
             <artifactId>snakeyaml</artifactId>
             <version>1.33</version>
         </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
-        <dependency>
-            <groupId>com.diogonunes</groupId>
-            <artifactId>JColor</artifactId>
-            <version>5.0.1</version>
-            <scope>compile</scope>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
         <dependency>
             <groupId>org.asynchttpclient</groupId>
@@ -573,8 +582,6 @@
             <artifactId>socket.io-client</artifactId>
             <version>2.1.0</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
-        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
 
         <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
 
@@ -637,12 +644,6 @@
             <scope>compile</scope>
         </dependency>
 
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
