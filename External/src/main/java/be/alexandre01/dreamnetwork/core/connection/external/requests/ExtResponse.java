@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.external.requests;
 
 
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 

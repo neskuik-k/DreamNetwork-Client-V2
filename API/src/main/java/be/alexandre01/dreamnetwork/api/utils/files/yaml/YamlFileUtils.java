@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Getter;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -16,10 +17,12 @@ import java.util.List;
 
 public class YamlFileUtils<T> {
 
-    transient private List<String> annotations = new ArrayList<>();
+    final transient private List<String> annotations = new ArrayList<>();
     transient private Class<T> clazz;
     transient @Getter File file;
     transient boolean skipNull;
+    public transient DumperOptions dumperOptions = new DumperOptions();
+    public transient LoaderOptions loaderOptions = new LoaderOptions();
 
     public transient Constructor constructor = null;
 
@@ -74,7 +77,7 @@ public class YamlFileUtils<T> {
         };*/
         Yaml yaml;
         if(constructor == null){
-            yaml = new Yaml(new Constructor(),new CustomRepresenter(skipNull,null,clazz)/*,representer*/);
+            yaml = new Yaml(new Constructor(loaderOptions),new CustomRepresenter(skipNull,null,clazz)/*,representer*/);
         }else {
             yaml = new Yaml(constructor,this.representer);
         }
@@ -151,11 +154,11 @@ public class YamlFileUtils<T> {
                 representer.addClassTag(aClass, tags.get(aClass));
             }
             Yaml yaml;
-            DumperOptions dumperOptions = new DumperOptions();
+
             if(constructor == null){
-                yaml = new Yaml(representer,new DumperOptions());
+                yaml = new Yaml(representer,dumperOptions);
             }else {
-                yaml = new Yaml(representer,new DumperOptions());
+                yaml = new Yaml(representer,dumperOptions);
                 //yaml = new Yaml(constructor,representer,new DumperOptions());
             }
 
@@ -167,8 +170,9 @@ public class YamlFileUtils<T> {
                     fileWriter.write(annotation);
                 }
             }
-            fileWriter.write(yaml.dumpAsMap(obj));
-            fileWriter.flush();
+            //substring to remove last \n new line
+            fileWriter.write(yaml.dumpAsMap(obj).substring(0,yaml.dumpAsMap(obj).length()-1));
+
             fileWriter.close();
 
 

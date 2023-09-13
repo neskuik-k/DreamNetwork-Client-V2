@@ -19,6 +19,9 @@ public class GlobalTaskCreateConsole extends CoreAccessibilityMenu {
                 @Override
                 public void onTransition(ShowInfos infos) {
                     infos.onEnter(Console.getFromLang("service.task.create.taskName"));
+                    int lastTask = Core.getInstance().getGlobalTasks().getTasks().size()+1;
+
+                    infos.macro("task-"+lastTask);
                 }
 
                 @Override

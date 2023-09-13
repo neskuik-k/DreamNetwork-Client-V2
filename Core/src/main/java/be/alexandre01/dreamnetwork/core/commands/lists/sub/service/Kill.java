@@ -15,6 +15,8 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Kill extends SubCommandCompletor implements SubCommandExecutor {
@@ -54,11 +56,7 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-
-                for(IService service : exec.getServices()){
-                    service.stop();
-                   // service.removeService();
-                }
+                new ArrayList<>(exec.getServices()).forEach(IService::kill);
                 return true;
             }
             IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);

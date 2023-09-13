@@ -1,38 +1,87 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
+import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import io.netty.channel.ChannelHandlerContext;
 
 
 import java.io.File;
 import java.util.Collection;
+import java.util.Optional;
 
 public class VirtualExecutor implements IJVMExecutor {
+    ConfigData configData;
+
+
+    public VirtualExecutor(ConfigData configData, BundleData bundle) {
+        this.configData = configData;
+    }
+
+    private Optional<IClient> externalTool;
+
     @Override
     public ExecutorCallbacks startServer() {
-        return null;
+        return startServer(":this:", new ExecutorCallbacks());
     }
 
     @Override
     public ExecutorCallbacks startServer(String profile) {
-        return null;
+        return startServer(profile, new ExecutorCallbacks());
     }
 
     @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig) {
-        return null;
+        return startServer(jvmConfig, new ExecutorCallbacks());
     }
 
     @Override
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
+        externalTool.ifPresent(client -> {
+            VirtualService virtualService = new VirtualService(getPort(), null, this);
+            sendStartCallBack(client, callbacks, virtualService, profile);
+        });
         return null;
     }
 
     @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks callbacks) {
-        return null;
+        externalTool.ifPresent(client -> {
+            VirtualService virtualService = new VirtualService(getPort(), null, this);
+            sendStartCallBack(client, callbacks, virtualService, jvmConfig);
+        });
+        return callbacks;
+    }
+
+    private void sendStartCallBack(IClient client, ExecutorCallbacks callbacks, VirtualService virtualService,Object o){
+        DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getFullName(),o), new TaskHandler() {
+            @Override
+            public void onCallback() {
+                if (hasType(TaskType.CUSTOM)) {
+                    String custom = getCustomType();
+                    if (custom.equalsIgnoreCase("STARTED")) {
+                        callbacks.onStart.whenStart(virtualService);
+                        return;
+                    }
+                    if (custom.equalsIgnoreCase("LINKED")) {
+                        // create a client
+
+                        callbacks.onConnect.whenConnect(virtualService, null);
+                        return;
+                    }
+                }
+                if (hasType(TaskType.IGNORED) || hasType(TaskType.REFUSED) || hasType(TaskType.FAILED)) {
+                    callbacks.onFail.whenFail();
+                }
+            }
+        }).send();
     }
 
     @Override

@@ -3,13 +3,16 @@ package be.alexandre01.dreamnetwork.core.connection.core.communication;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
+import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
+import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
-import be.alexandre01.dreamnetwork.core.connection.requests.ClientRequestManager;
-import be.alexandre01.dreamnetwork.core.connection.requests.generated.devtool.DefaultDevToolRequest;
-import be.alexandre01.dreamnetwork.core.connection.requests.generated.proxy.DefaultBungeeRequest;
-import be.alexandre01.dreamnetwork.core.connection.requests.generated.spigot.DefaultSpigotRequest;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.ClientRequestManager;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.devtool.DefaultDevToolRequest;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.proxy.DefaultBungeeRequest;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.spigot.DefaultSpigotRequest;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -19,6 +22,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.bouncycastle.util.Pack;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -104,13 +108,15 @@ public class Client implements IClient {
     }
 
     @Override
-    public void writeAndFlush(Message message) {
+    public Packet writeAndFlush(Message message) {
         coreHandler.writeAndFlush(message, this);
+        return message.toPacket(this);
     }
 
 
     @Override
-    public void writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
+    public Packet writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
         coreHandler.writeAndFlush(message, listener, this);
+        return message.toPacket(this);
     }
 }

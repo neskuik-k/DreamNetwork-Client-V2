@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.api.utils.clients;
 
+import lombok.Synchronized;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -12,6 +14,8 @@ public class IdSet {
     public void remove(int id) {
         ids.remove(id);
     }
+
+    @Synchronized
     public int getNextId() {
         int nextId = 1;
 

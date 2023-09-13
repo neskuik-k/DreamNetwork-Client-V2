@@ -5,9 +5,9 @@ package be.alexandre01.dreamnetwork.api.service.tasks;
  ↬   done on 03/09/2023 at 11:00
 */
 public interface IGlobalTasks {
-    ITaskData getTask(String name);
+    ATaskData getTask(String name);
 
-    void addTask(ITaskData taskData);
+    void addTask(ATaskData taskData);
 
     void save();
 
@@ -15,7 +15,7 @@ public interface IGlobalTasks {
 
     void disable();
 
-    java.util.List<ITaskData> getTasks();
+    java.util.List<ATaskData> getTasks();
 
-    java.util.List<ITaskData> getAlwaysONs();
+    java.util.List<ATaskData> getAlwaysONs();
 }

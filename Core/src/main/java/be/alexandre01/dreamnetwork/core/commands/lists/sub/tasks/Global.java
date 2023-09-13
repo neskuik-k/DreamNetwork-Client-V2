@@ -4,8 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
-import be.alexandre01.dreamnetwork.api.service.tasks.ITaskData;
-import be.alexandre01.dreamnetwork.core.service.tasks.TaskData;
+import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.gui.tasks.GlobalTaskCreateConsole;
 import lombok.NonNull;
@@ -18,8 +17,8 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Global extends SubCommand {
     public Global(Command command) {
         super(command);
-        List<ITaskData> value = Core.getInstance().getGlobalTasks().getTasks();
-        Object[] v = value.stream().map(ITaskData::getName).toArray();
+        List<ATaskData> value = Core.getInstance().getGlobalTasks().getTasks();
+        Object[] v = value.stream().map(ATaskData::getName).toArray();
 
         if(v.length == 0){
             v = new Object[]{Completers.AnyCompleter.INSTANCE};
@@ -85,7 +84,7 @@ public class Global extends SubCommand {
                         return true;
                     }
 
-                    ITaskData t = Core.getInstance().getGlobalTasks().getTask(args[3]);
+                    ATaskData t = Core.getInstance().getGlobalTasks().getTask(args[3]);
                     if(t == null){
                         System.out.println("Task not found");
                         return true;
@@ -114,7 +113,7 @@ public class Global extends SubCommand {
                         return true;
                     }
 
-                    ITaskData t = Core.getInstance().getGlobalTasks().getTask(args[2]);
+                    ATaskData t = Core.getInstance().getGlobalTasks().getTask(args[2]);
                     if(t == null){
                         System.out.println("Task not found");
                         return true;

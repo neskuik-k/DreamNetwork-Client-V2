@@ -1,9 +1,13 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.io.File;
 
 public interface IStartupConfig extends IConfig {
+
 
     static IStartupConfigBuilder builder(){
         return new ConfigBuilder();
@@ -25,7 +29,7 @@ public interface IStartupConfig extends IConfig {
 
     void updateConfigFile(String pathName, String finalName, IJVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion);
 
-    long getConfigSize();
+    @JsonIgnore long getConfigSize();
 
     boolean hasExecutable();
 
@@ -37,14 +41,14 @@ public interface IStartupConfig extends IConfig {
 
     void setFixedData(boolean fixedData);
 
-    File getFileRootDir();
+    @JsonIgnore File getFileRootDir();
 
-    boolean isConfig();
+    @JsonIgnore boolean isConfig();
 
-    long getConfSize();
+    @JsonIgnore long getConfSize();
 
-    boolean isProxy();
+    @JsonIgnore boolean isProxy();
 
-    boolean isFixedData();
+    @JsonIgnore boolean isFixedData();
 
 }

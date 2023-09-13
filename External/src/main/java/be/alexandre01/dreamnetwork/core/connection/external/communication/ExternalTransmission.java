@@ -5,15 +5,16 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import be.alexandre01.dreamnetwork.core.connection.external.ExecutorData;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtResponse;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class ExternalTransmission extends ExtResponse {
@@ -25,12 +26,22 @@ public class ExternalTransmission extends ExtResponse {
                     System.out.println("I'm connected to the core YEEPEE");
                     ExternalCore.getInstance().setConnected(true);
 
-                    ArrayList<ExecutorData> list = new ArrayList<>();
-                    list.add(new ExecutorData());
-                    list.add(new ExecutorData());
+                    ArrayList<ConfigData> list = new ArrayList<>();
+                    DNCoreAPI.getInstance().getContainer().getJVMExecutors().forEach(ijvmExecutor -> {
+                        if(ijvmExecutor.getConfig() instanceof ConfigData){
+                            list.add((ConfigData) ijvmExecutor.getConfig());
+                        }
+                    });
+
+                    //list.add(new Test());
+                    //list.add(new Test());
 
                     ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTERNAL_EXECUTORS , list);
+                    ExternalCore.getInstance().writeAndFlush(new Message().set("Salut","Salut"));
+                    HashMap<String, ConfigData> map = new HashMap<>();
+                    map.put("Server1", (ConfigData) DNCoreAPI.getInstance().getContainer().getJVMExecutors().get(0));
 
+                    ExternalCore.getInstance().writeAndFlush(new Message().setHeader("Test").set("Salut",map, ConfigData.class));
                 }else {
                     System.out.println("I'm not connected to the core :(");
                     ExternalCore.getInstance().setConnected(false);

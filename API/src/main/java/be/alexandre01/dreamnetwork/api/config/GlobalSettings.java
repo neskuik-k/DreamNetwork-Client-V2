@@ -17,7 +17,7 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
 
     String terminalMode = "ssh";
 
-    int threadPoolIO= 8;
+    int threadsPoolIO= 8;
     String copyIOMethod = "files";
 
     boolean screenNameInConsoleChange= true;
@@ -27,10 +27,15 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     private boolean useEmoji = false;
     private boolean emojiOnCommand= false;
 
+    private int nettyWorkerThreads = 4;
+    private int nettyBossThreads = 1;
+    private String connectionMode = "netty";
+
     @Ignore private TerminalMode termMode;
 
 
     public GlobalSettings() {
+        
         // Init
     }
 

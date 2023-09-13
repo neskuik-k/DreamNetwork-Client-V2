@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
-import be.alexandre01.dreamnetwork.api.service.tasks.ITaskData;
+import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
@@ -12,21 +12,8 @@ import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
-@Getter
-public class TaskData implements ITaskData {
-    public String name;
-    public String service;
-    public int count;
-    public ITaskData.TaskType taskType;
-    public String profile = null;
+public class TaskData extends ATaskData {
 
-    @Ignore
-    int actualCount = 0;
-    @Ignore
-    IJVMExecutor jvmExecutor;
-    @Ignore
-    IConfig iConfig;
 
 
 

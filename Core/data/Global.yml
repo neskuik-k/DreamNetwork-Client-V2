@@ -1,0 +1,15 @@
+# This is the global settings of the server | Sadness is the opposite of happiness
+SIG_IGN_Handler: true
+checkDefaultJVMVersion: true
+checkJVMVersionOnServiceStart: true
+copyIOMethod: files
+emojiOnCommand: false
+findAllocatedPorts: true
+language: en_EN
+port: 14520
+rainbowText: false
+screenNameInConsoleChange: true
+terminalMode: ssh
+threadPoolIO: 8
+useEmoji: false
+username: altat

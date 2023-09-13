@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Setter;
+import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -19,7 +20,7 @@ public class CustomRepresenter extends Representer {
     @Setter private boolean thisClassOnly = false;
 
     public CustomRepresenter(boolean skipNull,Object obj,Class<?>... clazz) {
-        super();
+        super(new DumperOptions());
         this.skipNull = skipNull;
         this.clazz = clazz;
         this.obj = obj;

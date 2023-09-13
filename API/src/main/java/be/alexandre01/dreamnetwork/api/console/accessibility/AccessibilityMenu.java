@@ -308,6 +308,7 @@ public abstract class AccessibilityMenu {
         String error = Colors.RED+"There is an error !"+Colors.RESET;
         String headMessage = Console.getFromLang("menu.headMessage");
         String writingMessage = Console.getFromLang("menu.writing");
+        String macro = null;
 
 
         public void onEnter(String s){
@@ -320,6 +321,9 @@ public abstract class AccessibilityMenu {
 
         public void error(String s){
              this.error = s;
+        }
+        public void macro(String s){
+            macro = s;
         }
     }
 

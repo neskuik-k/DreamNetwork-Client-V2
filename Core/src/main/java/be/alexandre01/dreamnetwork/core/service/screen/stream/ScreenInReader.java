@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import lombok.Getter;

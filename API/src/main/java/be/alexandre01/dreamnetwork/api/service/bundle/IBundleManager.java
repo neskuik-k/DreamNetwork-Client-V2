@@ -10,6 +10,7 @@ public interface IBundleManager {
     BundleData getBundleData(String name);
 
     void addBundleData(BundleData bundleData);
+    void addVirtualBundleData(BundleData bundleData);
 
     void addPath(String path);
 

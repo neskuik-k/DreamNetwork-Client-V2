@@ -9,13 +9,14 @@ import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersMa
 
 import java.util.UUID;
 
-import static be.alexandre01.dreamnetwork.api.connection.request.RequestType.*;
+import static be.alexandre01.dreamnetwork.api.connection.core.request.RequestType.*;
 
 public class PlayerResponse extends CoreResponse {
     Core core;
     public PlayerResponse(){
         core = Core.getInstance();
         addRequestInterceptor(CORE_UPDATE_PLAYER, (message, ctx, c) -> {
+
             IServicePlayersManager s = this.core.getServicePlayersManager();
             int id = message.getInt("ID");
             if (!s.getPlayersMap().containsKey(id)) {

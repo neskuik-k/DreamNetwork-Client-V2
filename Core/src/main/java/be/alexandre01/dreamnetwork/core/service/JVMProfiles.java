@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -24,7 +25,7 @@ public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles
         representer.addClassTag(ConfigData.class, Tag.MAP);
 
         //addTag(JVMConfig2.class,new Tag("!be.alexandre01.dreamnetwork.core.service.JVMConfig2"));
-        constructor = new Constructor(JVMProfiles.class);
+        constructor = new Constructor(JVMProfiles.class,new LoaderOptions());
         TypeDescription jvmConfigDescription = new TypeDescription(JVMProfiles.class);
         jvmConfigDescription.putMapPropertyType("profiles", String.class, ConfigData.class);
         constructor.addTypeDescription(jvmConfigDescription);
@@ -36,7 +37,7 @@ public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles
         if(!super.config(file, JVMProfiles.class,true)){
             profiles = new HashMap<>();
             JVMConfig config = new JVMConfig();
-            config.name = "test";
+            config.setName("test");
             config.setXms("1024M");
             config.setXmx("1024M");
             profiles.put("hello", config);

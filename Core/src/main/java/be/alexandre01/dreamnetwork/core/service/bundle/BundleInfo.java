@@ -7,9 +7,12 @@ import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import com.google.gson.Gson;
 import lombok.Getter;
+import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
 import org.yaml.snakeyaml.introspector.Property;
+import org.yaml.snakeyaml.nodes.Node;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
@@ -47,9 +50,14 @@ public class BundleInfo implements IBundleInfo {
 
 
     public static void updateFile(File file, BundleInfo bundleInfo) {
+        LoaderOptions loaderOptions = new LoaderOptions();
+        loaderOptions.setProcessComments(true);
+        DumperOptions dumperOptions = new DumperOptions();
+        dumperOptions.setProcessComments(true);
+
         try {
             file.createNewFile();
-            Representer representer = new Representer() {
+            Representer representer = new Representer(dumperOptions) {
                 @Override
                 protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
 
@@ -61,7 +69,7 @@ public class BundleInfo implements IBundleInfo {
                     }
                 }
             };
-            Yaml yaml = new Yaml(new SafeConstructor(), representer);
+            Yaml yaml = new Yaml(new SafeConstructor(loaderOptions), representer);
             FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(yaml.dumpAsMap(bundleInfo));
             fileWriter.flush();
@@ -74,7 +82,7 @@ public class BundleInfo implements IBundleInfo {
     }
 
     public static BundleInfo loadFile(File file) {
-        Yaml yaml = new Yaml(new SafeConstructor());
+        Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
         try {
 
             LinkedHashMap<String, Object> map = yaml.load(new FileInputStream(file));

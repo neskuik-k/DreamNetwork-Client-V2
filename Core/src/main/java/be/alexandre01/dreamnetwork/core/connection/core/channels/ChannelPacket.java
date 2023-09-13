@@ -2,25 +2,27 @@ package be.alexandre01.dreamnetwork.core.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestFutureResponse;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestFutureResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
+import lombok.Getter;
 
 import java.util.Collection;
 
 @SuppressWarnings("unused")
-public class ChannelPacket extends AChannelPacket {
+public class ChannelPacket extends AChannelPacket implements Packet {
     private static int currentId;
 
     private RequestInfo requestInfo;
     private final GenericFutureListener<? extends Future<? super Void>> listener;
-    private Integer MID = null;
-    private final Message message;
-    private final String provider;
+
+    @Getter private final Message message;
+    @Getter private final String provider;
     private RequestFutureResponse requestFutureResponse;
 
     private Client client;
@@ -31,9 +33,6 @@ public class ChannelPacket extends AChannelPacket {
         if(message.hasRequest())
          this.requestInfo = message.getRequest();
         this.listener = null;
-        if(message.containsKey("MID")){
-            this.MID = message.getMessageID();
-        }
         this.provider = message.getProvider();
         this.channel = message.getChannel();
     }
@@ -81,11 +80,11 @@ public class ChannelPacket extends AChannelPacket {
                 }
             }
         }
-
-
-        if(MID != null)
-            message.setInRoot("MID",MID);
         client.writeAndFlush(message,listener);
     }
 
+    @Override
+    public IClient getReceiver() {
+        return client;
+    }
 }

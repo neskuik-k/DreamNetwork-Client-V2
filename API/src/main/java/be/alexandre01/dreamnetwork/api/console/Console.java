@@ -135,15 +135,23 @@ public class Console extends Thread{
             String data;
             DNUtils utils = DNUtils.get();
             utils.getConsoleManager().getConsoleReader().getDefaultHighlighter().setEnabled(false);
-            while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
-                if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
-                    System.exit(0);
-                    return false;
-                }else {
-                    Console.debugPrint(Console.getFromLang("cancelled"));
-                    utils.getConsoleManager().getConsoleReader().getDefaultHighlighter().setEnabled(true);
-                    return true;
+            try {
+                while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
+                    if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
+                        System.exit(0);
+                        return false;
+                    }else {
+                        Console.debugPrint(Console.getFromLang("cancelled"));
+                        utils.getConsoleManager().getConsoleReader().getDefaultHighlighter().setEnabled(true);
+                        return true;
+                    }
                 }
+            }catch (Exception e){
+                if(e instanceof ClassNotFoundException){
+                    Console.print("Force close");
+                    System.exit(0);
+                }
+                Console.bug(e);
             }
             return false;
         }
@@ -552,7 +560,15 @@ public class Console extends Thread{
             Console.debugPrint(Console.getFromLang("console.closed"));
             System.exit(0);
         }
+
+        try {
+            Class.forName("org.jline.reader.Macro");
+        }catch (ClassNotFoundException e) {
+            // handle on debug when compile another
+            System.exit(0);
+        }
         LineReader reader =  DNUtils.get().getConsoleManager().getConsoleReader().getSReader();
+
 
         //  reader.setPrompt( Colors.YELLOW+"enter the secret-code > "+Colors.RESET);
         // PrintWriter out = new PrintWriter(reader.getTerminal().writer());

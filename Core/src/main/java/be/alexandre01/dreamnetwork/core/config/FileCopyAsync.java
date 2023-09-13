@@ -32,7 +32,7 @@ public class FileCopyAsync implements IFileCopyAsync {
 
     ICallback callback;
 
-    ExecutorService executor = Executors.newFixedThreadPool(Main.getGlobalSettings().getThreadPoolIO());
+    ExecutorService executor = Executors.newFixedThreadPool(Main.getGlobalSettings().getThreadsPoolIO());
 
     @Getter @Setter
     FileCopy copy;

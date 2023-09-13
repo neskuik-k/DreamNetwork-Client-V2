@@ -2,21 +2,20 @@ package be.alexandre01.dreamnetwork.core;
 
 
 
-import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.CustomRequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.FileDispatcher;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.core.connection.requests.RequestFile;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.RequestFile;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import lombok.Getter;
 
 import java.io.*;
-import java.util.Collection;
 import java.util.stream.Collectors;
 
 public class BundlesLoading {
@@ -71,7 +70,6 @@ public class BundlesLoading {
 
 
 
-
             if(bundleInfo == null){
                 continue;
             }
@@ -82,7 +80,7 @@ public class BundlesLoading {
                 }
             }
 
-
+            System.out.println("Le nom en question > "+bundleInfo.name);
             BundleData bundleData = new BundleData(bundleInfo.name,bundleInfo);
 
             Main.getBundleManager().addBundleData(bundleData);

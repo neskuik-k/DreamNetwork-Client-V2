@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import com.google.common.collect.ArrayListMultimap;

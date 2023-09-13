@@ -3,13 +3,16 @@ package be.alexandre01.dreamnetwork.core.service.tasks;
 
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.service.tasks.IGlobalTasks;
-import be.alexandre01.dreamnetwork.api.service.tasks.ITaskData;
+import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
+import lombok.Synchronized;
+import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.inspector.TagInspector;
 import org.yaml.snakeyaml.nodes.Tag;
 
 import java.io.File;
@@ -22,21 +25,23 @@ import java.util.concurrent.ScheduledExecutorService;
 
 public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTasks {
 
-    @Getter public final List<ITaskData> tasks = new ArrayList<>();
-    @Getter private final List<ITaskData> alwaysONs = new ArrayList<>();
+    @Getter public final List<ATaskData> tasks = new ArrayList<>();
+    @Getter private final List<ATaskData> alwaysONs = new ArrayList<>();
     @Ignore
-    private HashMap<String,ITaskData> withNames = new HashMap<>();
+    private HashMap<String,ATaskData> withNames = new HashMap<>();
 
     ScheduledExecutorService executorService = null;
 
     public GlobalTasks() {
         addTag(GlobalTasks.class,Tag.MAP);
-        addTag(TaskData.class,Tag.MAP);
-        representer = new CustomRepresenter(true,GlobalTasks.class,TaskData.class);
+        addTag(ATaskData.class,Tag.MAP);
+        representer = new CustomRepresenter(true,GlobalTasks.class,ATaskData.class);
+        representer.addClassTag(ATaskData.class, Tag.MAP);
         representer.addClassTag(TaskData.class, Tag.MAP);
-
-        constructor = new Constructor(GlobalTasks.class);
+        super.dumperOptions.setExplicitEnd(true);
+        constructor = new Constructor(GlobalTasks.class,new LoaderOptions());
         TypeDescription taskDescription = new TypeDescription(GlobalTasks.class);
+        taskDescription.putListPropertyType("tasks", ATaskData.class);
         taskDescription.putListPropertyType("tasks", TaskData.class);
 
     }
@@ -54,7 +59,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
             save();
         }
 
-        for (ITaskData taskData : tasks) {
+        for (ATaskData taskData : tasks) {
             withNames.put(taskData.getName(),taskData);
            loadTask(taskData);
         }
@@ -65,23 +70,22 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
     }
 
     @Override
-    public ITaskData getTask(String name){
+    public ATaskData getTask(String name){
         return withNames.get(name);
     }
 
     @Override
-    public void addTask(ITaskData taskData){
+    public void addTask(ATaskData taskData){
         tasks.add(taskData);
         withNames.put(taskData.getName(),taskData);
         loadTask(taskData);
     }
 
-    private void loadTask(ITaskData taskData){
-
-        if(taskData.getTaskType().equals(TaskData.TaskType.ALWAYS_ON)){
+    private void loadTask(ATaskData taskData){
+        if(taskData.getTaskType().equals(ATaskData.TaskType.ALWAYS_ON)){
             alwaysONs.add(taskData);
         }
-        if(!(taskData.getTaskType().equals(TaskData.TaskType.MANUAL) || taskData.getTaskType().equals(TaskData.TaskType.MANUAL_RESTRICTED)))
+        if(!(taskData.getTaskType().equals(ATaskData.TaskType.MANUAL) || taskData.getTaskType().equals(ATaskData.TaskType.MANUAL_RESTRICTED)))
             taskData.operate();
     }
 
@@ -97,7 +101,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
         if(executorService != null)return;
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
-            for(ITaskData taskData : alwaysONs){
+            for(ATaskData taskData : alwaysONs){
                 taskData.operate();
             }
         }, 3,3, java.util.concurrent.TimeUnit.SECONDS);

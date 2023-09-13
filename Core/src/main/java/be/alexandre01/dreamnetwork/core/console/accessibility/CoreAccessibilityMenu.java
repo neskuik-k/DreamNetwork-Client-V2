@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.console.accessibility;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -141,6 +142,10 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
             if(currentOperation.getType() == Operation.OperationType.ERROR){
                 Console.debugPrint(Colors.RED_UNDERLINED+info.getError()+Colors.RESET);
             }
+        }
+        if(info.getMacro() != null){
+            Console.getConsoleReader().getSReader().runMacro(info.getMacro());
+            info.macro(null);
         }
         if(info.getHeadMessage() != null){
             Console.debugPrint(info.getHeadMessage().replace("%data%",currentInput));

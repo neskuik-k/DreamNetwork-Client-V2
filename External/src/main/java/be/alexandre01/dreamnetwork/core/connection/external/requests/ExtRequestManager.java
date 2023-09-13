@@ -2,11 +2,11 @@ package be.alexandre01.dreamnetwork.core.connection.external.requests;
 
 import java.util.Collection;
 
-import be.alexandre01.dreamnetwork.api.connection.request.AbstractRequestManager;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestPacket;
-import be.alexandre01.dreamnetwork.api.connection.request.exceptions.RequestNotFoundException;
+import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestPacket;
+import be.alexandre01.dreamnetwork.api.connection.core.request.exceptions.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientHandler;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.generated.ExternalResponseBuilder;
@@ -25,6 +25,14 @@ public class ExtRequestManager extends AbstractRequestManager {
     }
     @Override
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args) {
+        RequestPacket request = getRequest(requestInfo,message,listener,args);
+        handler.writeAndFlush(request.getMessage(), listener);
+        //requests.put(request.getRequestID(), request);
+        return request;
+    }
+
+    @Override
+    public RequestPacket getRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args) {
         if (!requestBuilder.getRequestData().containsKey(requestInfo)) {
             try {
                 throw new RequestNotFoundException(requestInfo,"ExternalClient");
@@ -49,8 +57,6 @@ public class ExtRequestManager extends AbstractRequestManager {
             }
         }
         RequestPacket request = new RequestPacket(requestInfo, message, listener);
-        handler.writeAndFlush(request.getMessage(), listener);
-        requests.put(request.getRequestID(), request);
         return request;
     }
 }

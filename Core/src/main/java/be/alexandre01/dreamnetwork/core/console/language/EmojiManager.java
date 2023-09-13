@@ -104,6 +104,7 @@ public class EmojiManager implements IEmojiManager {
             if (line.contains("(")) {
                 // check text between : and :
                 String[] parts = line.split(":");
+                if(parts.length == 1) return line;
                 builder = new StringBuilder();
                 for (int i = 0; i < parts.length; i++) {
                     if (i % 2 == 1) {

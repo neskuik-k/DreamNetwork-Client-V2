@@ -10,9 +10,15 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import java.util.Optional;
 
 public class VirtualService implements IService {
+    int id;
+    int port;
+    IClient client;
+    VirtualExecutor executor;
+
+
+
 
     public VirtualService(int port, IClient client, VirtualExecutor executor){
-
     }
 
     @Override
@@ -61,7 +67,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public IJVMExecutor getJvmExecutor() {
+    public VirtualExecutor getJvmExecutor() {
         return null;
     }
 

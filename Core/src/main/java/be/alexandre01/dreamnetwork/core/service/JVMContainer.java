@@ -118,11 +118,11 @@ public class JVMContainer implements IContainer {
             System.out.println("DESTROY");
             getProcess(name).destroy();
         }*/
-        IJVMExecutor.getStartServerList().remove(name);
-        if (IJVMExecutor.getServersPort().containsKey(name)) {
-            int port = IJVMExecutor.getServersPort().get(name);
-            IJVMExecutor.getServersPort().put("cache-" + IJVMExecutor.getCache(), port);
-            IJVMExecutor.getServersPort().remove(name);
+        JVMExecutor.getStartServerList().remove(name);
+        if (JVMExecutor.getServersPort().containsKey(name)) {
+            int port = JVMExecutor.getServersPort().get(name);
+            JVMExecutor.getServersPort().put("cache-" + JVMExecutor.getCache(), port);
+            JVMExecutor.getServersPort().remove(name);
         }
 
 

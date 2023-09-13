@@ -9,6 +9,8 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
+import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
+import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
 import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenuCore;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
@@ -152,7 +154,12 @@ public class Core {
         Console.printLang("core.server.starting");
         try {
             CoreServer coreServer;
-            Thread thread = new Thread(coreServer = new CoreServer(Main.getGlobalSettings().getPort()));
+            Thread thread;
+            if(Main.getGlobalSettings().getConnectionMode().equalsIgnoreCase("reactor-netty")){
+                thread = new Thread(coreServer = new ReactorNettyServer(Main.getGlobalSettings().getPort()));
+            }else {
+                thread = new Thread(coreServer = new NettyServer(Main.getGlobalSettings().getPort()));
+            }
             thread.start();
             console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {

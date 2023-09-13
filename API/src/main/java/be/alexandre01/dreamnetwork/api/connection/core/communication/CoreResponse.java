@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 
-import be.alexandre01.dreamnetwork.api.connection.request.RequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;

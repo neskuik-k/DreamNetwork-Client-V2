@@ -5,7 +5,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;

@@ -6,6 +6,8 @@ import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Getter;
 import lombok.Setter;
 import org.apache.commons.lang.RandomStringUtils;
@@ -15,13 +17,14 @@ import java.lang.reflect.Field;
 
 import static be.alexandre01.dreamnetwork.api.console.Console.fine;
 
-@Getter @Setter @Ignore
+@Getter @Setter @Ignore @JsonIgnoreProperties(ignoreUnknown = true, allowGetters = false)
 public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
+    @JsonIgnore
     boolean isConfig;
-    long confSize = 0;
-    boolean proxy = false;
-    boolean fixedData = false;
-    File fileRootDir;
+    @JsonIgnore long confSize = 0;
+    @JsonIgnore boolean proxy = false;
+    @JsonIgnore boolean fixedData = false;
+    @JsonIgnore File fileRootDir;
 
     public static ConfigBuilder builder(){
         return new ConfigBuilder();

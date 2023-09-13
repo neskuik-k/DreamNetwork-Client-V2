@@ -6,10 +6,9 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.AuthentificationResponse;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.BaseResponse;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
@@ -39,6 +38,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Getter
     private ArrayList<CoreResponse> responses = new ArrayList<>();
+
+    @Getter private CallbackManager callbackManager;
     @Getter
     private static ArrayList<CoreResponse> globalResponses = new ArrayList<>();
     @Setter
@@ -57,8 +58,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         this.core = Core.getInstance();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
-        responses.add(new BaseResponse());
-        responses.add(new PlayerResponse());
         authResponse = new AuthentificationResponse(this);
     }
 
@@ -166,7 +165,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                         iBasicClientResponse.onAutoResponse(message, ctx, client);
                     } catch (Exception e) {
                         e.printStackTrace();
-
                     }
                 }
                 for (int i = 0; i < globalResponses.size(); i++) {

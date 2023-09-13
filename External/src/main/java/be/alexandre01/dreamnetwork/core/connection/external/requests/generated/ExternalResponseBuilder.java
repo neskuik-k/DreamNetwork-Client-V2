@@ -1,11 +1,12 @@
 package be.alexandre01.dreamnetwork.core.connection.external.requests.generated;
 
-import be.alexandre01.dreamnetwork.api.connection.request.RequestBuilder;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.service.ConfigData;
 
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ExternalResponseBuilder extends RequestBuilder {
     public ExternalResponseBuilder() {
@@ -22,7 +23,7 @@ public class ExternalResponseBuilder extends RequestBuilder {
                     Console.bug(e);
                 }
             }
-            message.setCustomObject("executors", args[0]);
+            message.set("executors", (List<?>) args[0],ConfigData.class);
             return message;
         });
 

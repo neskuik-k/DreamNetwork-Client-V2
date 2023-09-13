@@ -3,12 +3,17 @@ package be.alexandre01.dreamnetwork.core.commands;
 
 import be.alexandre01.dreamnetwork.api.commands.ICommand;
 import be.alexandre01.dreamnetwork.api.commands.ICommandsManager;
+import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import lombok.Getter;
 
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 public class CommandsManager implements ICommandsManager {
     @Getter public final HashMap<String, ICommand> executorsList;
@@ -33,9 +38,20 @@ public class CommandsManager implements ICommandsManager {
                 hasFound = true;
             }
         }
-        if (!hasFound) {
-            Console.printLang("commands.notFound", Level.WARNING);
-            PrintWriter writer = null;
+
+        if(!hasFound){
+            List<SubCommandExecutor> subCommandExecutor = executorsList.values().stream().filter(iCommand -> iCommand.getSubCommand(args[0]) != null).map(command -> command.getSubCommand(args[0])).collect(Collectors.toList());
+            if(!subCommandExecutor.isEmpty()){
+                if(subCommandExecutor.size() == 1){
+                    if(subCommandExecutor.get(0).onSubCommand(args)){
+                        System.out.println(Colors.GREEN+"A SubCommand has been found and has been executed");
+                        hasFound = true;
+                    }
+                    return;
+                }
+                Console.printLang("commands.notFound", Level.WARNING);
+                return;
+            }
         }
 
     }

@@ -1,7 +1,8 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
-import be.alexandre01.dreamnetwork.api.connection.request.IRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IService;
 
@@ -11,9 +12,9 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 public interface IClient {
     String getName();
-    void writeAndFlush(Message message);
+    Packet writeAndFlush(Message message);
 
-    void writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener);
+    Packet writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener);
 
     int getPort();
 

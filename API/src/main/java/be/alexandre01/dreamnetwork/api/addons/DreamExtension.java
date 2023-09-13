@@ -2,8 +2,8 @@ package be.alexandre01.dreamnetwork.api.addons;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.DNUtils;
-import be.alexandre01.dreamnetwork.api.connection.request.CustomRequestInfo;
-import be.alexandre01.dreamnetwork.api.connection.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.CustomRequestInfo;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import lombok.Getter;
 
 import java.io.FileInputStream;

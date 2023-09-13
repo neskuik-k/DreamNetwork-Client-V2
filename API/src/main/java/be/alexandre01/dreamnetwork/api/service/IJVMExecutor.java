@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
@@ -66,59 +67,6 @@ public interface IJVMExecutor {
         return result;
     }
 
-    public static java.util.ArrayList<String> getServerList() {
-        return IJVMExecutor.getServerList();
-    }
-
-    public static java.util.ArrayList<String> getStartServerList() {
-        return IJVMExecutor.getStartServerList();
-    }
-
-    public static java.util.HashMap<String, java.io.BufferedReader> getProcessServersInput() {
-        return IJVMExecutor.getProcessServersInput();
-    }
-
-    public static java.util.ArrayList<Integer> getServersPortList() {
-        return IJVMExecutor.getServersPortList();
-    }
-
-    public static java.util.ArrayList<Integer> getPortsBlackList() {
-        return IJVMExecutor.getPortsBlackList();
-    }
-
-    public static java.util.HashMap<String, Integer> getServersPort() {
-        return IJVMExecutor.getServersPort();
-    }
-
-    public static java.util.HashMap<Integer, IService> getServicePort() {
-        return IJVMExecutor.getServicePort();
-    }
-
-    public static Integer getCache() {
-        return IJVMExecutor.getCache();
-    }
-
-    public static void setServerList(java.util.ArrayList<String> serverList) {
-        IJVMExecutor.setServerList(serverList);
-    }
-
-    public static void setStartServerList(java.util.ArrayList<String> startServerList) {
-        IJVMExecutor.setStartServerList(startServerList);
-    }
-
-    public static void setProcessServersInput(java.util.HashMap<String, java.io.BufferedReader> processServersInput) {
-        IJVMExecutor.setProcessServersInput(processServersInput);
-    }
-
-
-
-
-
-    public static void setCache(Integer cache) {
-        IJVMExecutor.setCache(cache);
-    }
-
-
 
 
     public ExecutorCallbacks startServer();
@@ -137,48 +85,48 @@ public interface IJVMExecutor {
 
     public IService getService(Integer i);
 
-    public Collection<IService> getServices();
+    @JsonIgnore public Collection<IService> getServices();
 
     public boolean isProxy();
 
-    public String getName();
+    @JsonIgnore public String getName();
 
     public boolean isConfig();
 
     public boolean isFixedData();
 
-    public File getFileRootDir();
+    @JsonIgnore public File getFileRootDir();
 
-    public IConfig getConfig();
+    @JsonIgnore public IConfig getConfig();
 
-    public IStartupConfig getStartupConfig();
+    @JsonIgnore public IStartupConfig getStartupConfig();
 
-    public Mods getType();
+    @JsonIgnore public Mods getType();
 
-    public String getXms();
+    @JsonIgnore public String getXms();
 
-    public String getStartup();
+    @JsonIgnore public String getStartup();
 
-    public String getExecutable();
+    @JsonIgnore public String getExecutable();
 
-    public String getXmx();
+    @JsonIgnore public String getXmx();
 
-    public String getPathName();
+    @JsonIgnore public String getPathName();
 
-    public String getJavaVersion();
+    @JsonIgnore public String getJavaVersion();
 
-    public int getPort();
+    @JsonIgnore public int getPort();
 
     public boolean hasExecutable();
 
-    public BundleData getBundleData();
+    @JsonIgnore public BundleData getBundleData();
 
-    public String getFullName();
+    @JsonIgnore public String getFullName();
 
-    public ExecType getExecType();
-    public InstallationLinks getInstallLink();
+    @JsonIgnore public ExecType getExecType();
+    @JsonIgnore public InstallationLinks getInstallLink();
 
-    public IProfiles getJvmProfiles();
+    @JsonIgnore public IProfiles getJvmProfiles();
 
 
 

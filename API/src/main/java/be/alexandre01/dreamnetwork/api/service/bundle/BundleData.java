@@ -1,15 +1,18 @@
 package be.alexandre01.dreamnetwork.api.service.bundle;
 
+import be.alexandre01.dreamnetwork.api.console.language.IEmojiManager;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 
 
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-@Data
+@Getter @Setter
 public class BundleData {
     private final IContainer.JVMType jvmType;
     private String name;

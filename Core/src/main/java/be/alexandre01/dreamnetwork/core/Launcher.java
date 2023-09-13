@@ -7,10 +7,6 @@ public class Launcher {
     public static void main(String... args){
         try{
             Class<?> clazz = Class.forName("com.google.gson.Gson");
-
-
-            System.out.println("Gson est là !");
-
             try {
                 Main.main(args);
             } catch (NoSuchFieldException e) {
@@ -20,6 +16,7 @@ public class Launcher {
             }
         }catch(ClassNotFoundException e){
             System.out.println("No Library");
+            System.out.println("You have to use DNLauncher.jar (>= 1.0.3 version)");
             //new DownloadLibraries().init();
             //new LoadLibraries().init(args);
         }

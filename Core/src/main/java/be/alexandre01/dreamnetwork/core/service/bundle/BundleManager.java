@@ -26,6 +26,7 @@ import java.util.HashMap;
 
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
+    @Getter private final HashMap<String, BundleData> virtualBundles = new HashMap<>();
 
     @Getter ArrayList<String> paths = new ArrayList<>();
 
@@ -54,6 +55,17 @@ public class BundleManager implements IBundleManager {
             bundleData.setName(bundleData.getName()+"_"+i);
         }
         bundleDatas.put(bundleData.getName().toLowerCase(), bundleData);
+    }
+    @Override
+    public void addVirtualBundleData(BundleData bundleData){
+        if(virtualBundles.containsKey(bundleData.getName().toLowerCase())){
+            int i = 1;
+            while(virtualBundles.containsKey(bundleData.getName().toLowerCase()+"_"+i)){
+                i++;
+            }
+            bundleData.setName(bundleData.getName()+"_"+i);
+        }
+        virtualBundles.put(bundleData.getName().toLowerCase(), bundleData);
     }
 
     @Override

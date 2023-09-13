@@ -43,4 +43,6 @@ public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
     void setHasDevUtilSoftwareAccess(boolean hasDevUtilSoftwareAccess);
 
     public ArrayList<CoreResponse> getResponses();
+
+    public ICallbackManager getCallbackManager();
 }

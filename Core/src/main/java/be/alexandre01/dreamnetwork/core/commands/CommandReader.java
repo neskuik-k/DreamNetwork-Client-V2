@@ -28,7 +28,6 @@ public class CommandReader implements ICommandReader {
     Core core;
     @Getter
     Console console;
-    private boolean stop = false;
 
 
 
