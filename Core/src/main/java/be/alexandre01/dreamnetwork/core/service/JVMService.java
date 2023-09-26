@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
@@ -53,10 +54,33 @@ public class JVMService implements IService {
     }
 
     @Override
+    public String getFullName(boolean withBundlePath) {
+        if(withBundlePath){
+            return getFullName();
+        }
+        return getJvmExecutor().getName()+"-"+getId();
+    }
+
+    @Override
     public synchronized void stop(){
         if(screen != null){
             Console.fine("Stop screen");
-            screen.destroy();
+            screen.destroy(true);
+        }
+
+        if(getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
+            Config.removeDir("/runtimes/"+ getJvmExecutor().getBundleData().getName() + "/"+ getJvmExecutor().getName()+"/"+getJvmExecutor().getName()+"-"+getId());
+        }
+
+        if(getExecutorCallbacks() != null){
+            if(!isConnected()){
+                if(getExecutorCallbacks().onFail != null){
+                    getExecutorCallbacks().onFail.whenFail();
+                }
+            }
+            if(getExecutorCallbacks().onStop != null){
+                getExecutorCallbacks().onStop.whenStop(this);
+            }
         }
 
 
@@ -102,7 +126,7 @@ public class JVMService implements IService {
     public void restart(IConfig iConfig){
         if(screen != null){
             Console.fine("Restart screen");
-            screen.destroy();
+            screen.destroy(true);
         }
 
         if(client != null){

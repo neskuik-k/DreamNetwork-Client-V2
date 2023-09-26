@@ -9,7 +9,7 @@ public interface IScreen extends Runnable {
     @Override
     void run();
 
-    void destroy();
+    void destroy(boolean fromService);
 
     IService getService();
 

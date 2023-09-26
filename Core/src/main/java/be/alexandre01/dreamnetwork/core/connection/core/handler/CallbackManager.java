@@ -14,17 +14,20 @@ import java.util.Optional;
 */
 public class CallbackManager implements ICallbackManager {
     HashMap<Integer, TaskHandler> sendedCallbacksHashMap = new HashMap<>();
-    HashMap<Integer, DNCallbackReceiver> receivedCallbacks = new HashMap<>();
     public CallbackManager() {
 
     }
     public void addCallback(int MID, TaskHandler handler) {
         sendedCallbacksHashMap.put(MID, handler);
+        TaskHandler.getTimeStamps().put(handler,System.currentTimeMillis()+(handler.getTimeOut()*1000L));
     }
 
-    public void addCallback(int MID, DNCallbackReceiver callback) {
-        receivedCallbacks.put(MID, callback);
+    @Override
+    public void removeCallback(int MID,TaskHandler handler) {
+        TaskHandler.getTimeStamps().remove(handler);
+        sendedCallbacksHashMap.remove(MID);
     }
+
 
     public void addCallback(int MID, DNCallback callback) {
         this.addCallback(MID, callback.getHandler());
@@ -32,10 +35,5 @@ public class CallbackManager implements ICallbackManager {
     @Override
     public Optional<TaskHandler> getHandlerOf(int MID){
         return Optional.ofNullable(sendedCallbacksHashMap.get(MID));
-    }
-
-    @Override
-    public Optional<DNCallbackReceiver> getReceived(int MID){
-        return Optional.ofNullable(receivedCallbacks.get(MID));
     }
 }

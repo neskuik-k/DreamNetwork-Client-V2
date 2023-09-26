@@ -128,6 +128,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     @Override
+    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks) {
+        return startServer(this, callbacks);
+    }
+
+    @Override
     public ExecutorCallbacks startServer(String profile) {
         return startServer(profile, new ExecutorCallbacks());
     }
@@ -503,8 +508,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
         } else {
             if (Config.isWindows()) {
-                if (getInstallLink() != null) {
-                    if (getInstallLink().getExecType() == ExecType.BUNGEECORD) {
+                if (getInstallLink().isPresent()) {
+                    if (getInstallLink().get().getExecType() == ExecType.BUNGEECORD) {
 
                         startup = "cmd /c start " + javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " %args% -jar %exec% nogui";
                         jvmConfig.setScreenEnabled(false);
@@ -712,11 +717,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
 
-            if (jvmService.getExecutorCallbacks() != null) {
-                if (jvmService.getExecutorCallbacks().onStop != null) {
-                    jvmService.getExecutorCallbacks().onStop.whenStop(jvmService);
+            jvmService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                if (executorCallbacks.onStop != null) {
+                    executorCallbacks.onStop.whenStop(jvmService);
                 }
-            }
+            });
 
             Core.getInstance().getEventsFactory().callEvent(new CoreServiceStopEvent(Core.getInstance().getDnCoreAPI(), jvmService));
 
@@ -757,17 +762,18 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         return getBundleData().getName() + "/" + getName();
     }
 
+
     @Override
-    public ExecType getExecType() {
-        return getInstallLink() == null ? null : getInstallLink().getExecType();
+    public Optional<ExecType> getExecType() {
+        return !getInstallLink().isPresent() ? Optional.empty() : Optional.of(getInstallLink().get().getExecType());
     }
 
     @Override
-    public InstallationLinks getInstallLink() {
+    public Optional<InstallationLinks> getInstallLink() {
         try {
-            return InstallationLinks.valueOf(getInstallInfo());
+            return Optional.of(InstallationLinks.valueOf(getInstallInfo()));
         } catch (Exception e) {
-            return null;
+            return Optional.empty();
         }
     }
 }

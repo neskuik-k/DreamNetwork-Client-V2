@@ -45,7 +45,7 @@ public class ScreenStream implements IScreenStream {
             String oneToLast = Arrays.stream(s).skip(1).reduce((first, second) -> second+"/").orElse(null);
             String value = Colors.ANSI_CYAN+s[0]+Colors.YELLOW_BOLD+"/"+Colors.WHITE_BRIGHT+oneToLast;
             char mask = Config.isWindows() ? (char)'*' : (char) '⬩';
-            console.setWriting(mask+" "+value+Colors.ANSI_CYAN+" > ");
+            console.setWriting(mask+" "+value+Colors.ANSI_CYAN+" > "+Colors.RESET);
         }
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override

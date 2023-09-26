@@ -58,6 +58,8 @@ public class Client implements IClient {
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
         this.name = "Unknown-Client="+ ctx.channel().remoteAddress().toString()+":"+port;
+
+
         requestManager = new ClientRequestManager(this);
         Console.fine("Client : "+info);
         if (jvmType == null) {

@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface IContainer {
     IJVMExecutor getJVMExecutor(String processName, BundleData bundleData);
@@ -14,11 +15,11 @@ public interface IContainer {
     ArrayList<IJVMExecutor> getJVMExecutors();
     IJVMExecutor[] getJVMExecutorsFromName(String processName);
 
-    IJVMExecutor tryToGetJVMExecutor(String processName);
+    Optional<IJVMExecutor> tryToGetJVMExecutor(String processName);
 
-    IService tryToGetService(String serviceName);
+    Optional<IService> tryToGetService(String serviceName);
 
-    IService tryToGetService(String processName, int id);
+    Optional<IService> tryToGetService(String processName, int id);
     Collection<IJVMExecutor> getServersExecutors();
     Collection<IJVMExecutor> getProxiesExecutors();
 

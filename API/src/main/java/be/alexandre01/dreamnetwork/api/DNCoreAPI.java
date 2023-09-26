@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
@@ -48,6 +49,8 @@ public abstract class DNCoreAPI {
     public abstract IBundleManager getBundleManager();
 
     public abstract IConfigManager getConfigManager();
+
+    public abstract ICoreHandler getCoreHandler();
 
 
 }

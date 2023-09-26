@@ -16,6 +16,7 @@ import com.github.tomaslanger.chalk.Chalk;
 import lombok.NonNull;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
@@ -50,22 +51,25 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-                IJVMExecutor exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
 
-                if(exec == null){
+                if(!exec.isPresent()){
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-                new ArrayList<>(exec.getServices()).forEach(IService::kill);
-                return true;
-            }
-            IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
-            if(service == null){
-                Console.printLang("commands.service.kill.incorrectService");
+                new ArrayList<>(exec.get().getServices()).forEach(IService::kill);
                 return true;
             }
 
-            service.getProcess().destroy();
+            Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+
+            if(service.isPresent()){
+                service.get().getProcess().destroy();
+            }else {
+                Console.printLang("commands.service.kill.incorrectService");
+            }
+
+
             return true;
         }
 

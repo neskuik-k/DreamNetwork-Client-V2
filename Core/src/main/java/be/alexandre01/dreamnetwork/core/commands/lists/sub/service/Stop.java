@@ -15,6 +15,7 @@ import lombok.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
@@ -55,24 +56,24 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-                IJVMExecutor exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
 
-                if(exec == null){
+                if(!exec.isPresent()){
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
                 //iService.removeService();
-                new ArrayList<>(exec.getServices()).forEach(IService::stop);
+                new ArrayList<>(exec.get().getServices()).forEach(IService::stop);
 
                 return true;
             }
-            IService service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+            Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
 
-            if(service == null){
+            if(!service.isPresent()){
                 Console.printLang("commands.service.stop.incorrectService");
                 return true;
             }
-            service.stop();
+            service.get().stop();
             // service.removeService();
             return true;
         }

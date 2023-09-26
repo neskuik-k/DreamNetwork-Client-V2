@@ -1,10 +1,12 @@
 package be.alexandre01.dreamnetwork.api.utils;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 
 public class ASCIIART {
     public static void sendLogo(){
+
         //Chalk.setColorEnabled(true);
         Console.debugPrint(Colors.CYAN+
                          "                                  ./((((/.            \n" +

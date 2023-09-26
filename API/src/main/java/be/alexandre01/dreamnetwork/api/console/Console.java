@@ -151,7 +151,10 @@ public class Console extends Thread{
                     Console.print("Force close");
                     System.exit(0);
                 }
-                Console.bug(e);
+
+                SIG_IGN();
+                //ignore
+                //Console.bug(e);
             }
             return false;
         }
@@ -175,20 +178,21 @@ public class Console extends Thread{
         console.isRunning = true;
         if(clearConsole)
             clearConsole();
+
         if(console.defaultPrint != null && !isSilent)
-            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName()));
+            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName())+Colors.RESET);
         if(!console.history.isEmpty()){
-            List<ConsoleMessage> h = new ArrayList<>(console.history);
-            //  stashLine();
-            for (ConsoleMessage s : h){
-                if(s.level == null){
-                    console.defaultPrint.print(s.content);
-                }else{
-                    console.forcePrint(s.content,s.level);
+            if(console.defaultPrint != null){
+                List<ConsoleMessage> h = new ArrayList<>(console.history);
+                //  stashLine();
+                for (ConsoleMessage s : h){
+                    if(s.level == null){
+                        console.defaultPrint.print(Colors.RESET+s.content+Colors.RESET);
+                    }else{
+                        console.forcePrint(s.content,s.level);
+                    }
                 }
             }
-
-
         }
         try {
             consoleReader.getSReader().getHistory().purge();
@@ -204,7 +208,7 @@ public class Console extends Thread{
 
             }
         }
-        if(actualConsole == name){
+        if(actualConsole.equals(name)){
             consoleReader.getDefaultHighlighter().setEnabled(true);
         }else{
             consoleReader.getDefaultHighlighter().setEnabled(false);

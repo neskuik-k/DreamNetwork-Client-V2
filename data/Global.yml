@@ -6,7 +6,9 @@ connectionMode: netty
 copyIOMethod: files
 emojiOnCommand: false
 findAllocatedPorts: true
-language: fr_FR
+language: en_EN
+loggingService: true
+logsByService: 3
 nettyBossThreads: 1
 nettyWorkerThreads: 4
 port: 14520

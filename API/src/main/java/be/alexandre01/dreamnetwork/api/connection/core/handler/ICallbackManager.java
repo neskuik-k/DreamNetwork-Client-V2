@@ -12,8 +12,12 @@ import java.util.Optional;
 */
 public interface ICallbackManager {
 
+    void addCallback(int MID, TaskHandler handler);
+
+    void removeCallback(int MID, TaskHandler handler);
+
+    void addCallback(int MID, DNCallback callback);
+
 
     Optional<TaskHandler> getHandlerOf(int MID);
-
-    Optional<DNCallbackReceiver> getReceived(int MID);
 }

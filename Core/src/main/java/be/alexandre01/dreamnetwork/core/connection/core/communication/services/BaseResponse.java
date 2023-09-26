@@ -16,14 +16,17 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestPacket;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
+import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
+import javafx.concurrent.Task;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Level;
 
 import static be.alexandre01.dreamnetwork.api.connection.core.request.RequestType.*;
@@ -34,31 +37,34 @@ public class BaseResponse extends CoreResponse {
     public BaseResponse() {
         this.core = Core.getInstance();
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
-            IJVMExecutor startExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
-            if (startExecutor == null) {
+            Optional<IJVMExecutor> startExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
+            if (!startExecutor.isPresent()) {
                 return;
             }
-            ExecutorCallbacks executorCallbacks= startExecutor.startServer();
 
+            ExecutorCallbacks executorCallbacks = startExecutor.get().startServer();
+            Console.debugPrint("RECEIVED REQUEST");
             message.getCallback().ifPresent(callback -> {
-                callback.ignoreForNow();
+                Console.debugPrint("Callback present");
                executorCallbacks.whenStart(new ExecutorCallbacks.ICallbackStart() {
                    @Override
                    public void whenStart(IService service) {
-                       callback.send("START");
+                       callback.mergeAndSend(new Message().set("name",service.getFullName()), "STARTED");
                    }
                });
 
                 executorCallbacks.whenConnect(new ExecutorCallbacks.ICallbackConnect() {
                    @Override
                    public void whenConnect(IService service, IClient client) {
-                    callback.send("CONNECT");
+                       Console.debugPrint("LINKED");
+                    callback.send("LINKED");
                    }
                });
 
                 executorCallbacks.whenFail(new ExecutorCallbacks.ICallbackFail() {
                    @Override
                    public void whenFail() {
+                       Console.debugPrint("FAILED");
                        callback.send(TaskHandler.TaskType.FAILED);
                    }
                });
@@ -67,12 +73,12 @@ public class BaseResponse extends CoreResponse {
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
-            IJVMExecutor stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
-            if (stopExecutor == null) {
+            Optional<IJVMExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
+            if (!stopExecutor.isPresent()) {
                 return;
             }
             Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
-            stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).stop();
+            stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
             //stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
@@ -141,38 +147,54 @@ public class BaseResponse extends CoreResponse {
                 System.out.println(test.e);
             }*/
 
-            executor.forEach(jvmExecutor -> {
-                BundleData virtualBundle = new BundleData(jvmExecutor.getBundleName(), new IBundleInfo() {
-                    @Override
-                    public ArrayList<BService> getBServices() {
-                        return null;
-                    }
+            executor.forEach(configData -> {
+                BundleData virtualBundle = null;
+                if(!DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().containsKey(configData.getBundleName())){
+                    virtualBundle = new BundleData(configData.getBundleName(), new IBundleInfo() {
+                        @Override
+                        public ArrayList<BService> getBServices() {
+                            return null;
+                        }
 
-                    @Override
-                    public ArrayList<BService> getServices() {
-                        return null;
-                    }
+                        @Override
+                        public ArrayList<BService> getServices() {
+                            return null;
+                        }
 
-                    @Override
-                    public String getName() {
-                        return jvmExecutor.getBundleName();
-                    }
+                        @Override
+                        public String getName() {
+                            return configData.getBundleName();
+                        }
 
-                    @Override
-                    public IContainer.JVMType getType() {
-                        return jvmExecutor.getJvmType();
-                    }
+                        @Override
+                        public IContainer.JVMType getType() {
+                            return configData.getJvmType();
+                        }
 
-                    @Override
-                    public File getFile() {
-                        return null;
-                    }
-                });
+                        @Override
+                        public File getFile() {
+                            return null;
+                        }
 
-                DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle);
-                System.out.println(jvmExecutor.getName());
-                System.out.println(jvmExecutor.getXms());
-                System.out.println(jvmExecutor.getXmx());
+
+                    });
+                    DNCoreAPI.getInstance().getBundleManager().addBundleData(virtualBundle);
+                    DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle);
+                }
+
+                if(virtualBundle == null){
+                    virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(configData.getBundleName());
+                }
+
+                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle);
+                virtualBundle.getExecutors().put(virtualExecutor.getName(), virtualExecutor);
+                DNCoreAPI.getInstance().getContainer().getJVMExecutors().add(virtualExecutor);
+
+                if(virtualBundle.getJvmType() == IContainer.JVMType.PROXY){
+                    DNCoreAPI.getInstance().getContainer().getProxiesExecutors().add(virtualExecutor);
+                }else {
+                    DNCoreAPI.getInstance().getContainer().getServersExecutors().add(virtualExecutor);
+                }
             });
         });
     }
@@ -244,12 +266,9 @@ public class BaseResponse extends CoreResponse {
             }
         }
 
-        if (message.hasRequest()) {
-            if (message.hasProvider()) {
                 // if core send data and received callback
-                if (message.getProvider().equals("core")) {
-                    if (message.getInRoot("RID") != null) {
-                        int id = message.getMessageID();
+                if (message.containsKeyInRoot("RID")) {
+                    int id = (int) message.getInRoot("RID");
                         ((CoreHandler) client.getCoreHandler()).getCallbackManager().getHandlerOf(id).ifPresent(handler -> {
                             handler.setupHandler(message);
                             handler.onCallback();
@@ -267,21 +286,23 @@ public class BaseResponse extends CoreResponse {
                                     break;
                                 case FAILED:
                                     handler.onFailed();
+                                    handler.destroy();
                                     break;
                                 case TIMEOUT:
                                     handler.onFailed();
                                     handler.onTimeout();
+                                    handler.destroy();
                                     break;
                             }
+                            if(handler.isSingle()){
+                                handler.destroy();
+                            }
                         });
-                    }
                     /*RequestPacket request = client.getRequestManager().getRequest(message.getMessageID());
                     if(request != null)
                         request.getRequestFutureResponse().onReceived(receivedPacket);*/
-                }
             }
             //RequestInfo request = message.getRequest();
-        }
     }
 }
 

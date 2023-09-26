@@ -16,32 +16,37 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class DNCallbackReceiver {
     int MID;
     Message message;
-    boolean proceedLater = false;
+    int timeOut = 20;
+    long creationTimeStamp;
 
     public DNCallbackReceiver(int MID, Message message) {
         this.MID = MID;
         this.message = message;
+        if(message.containsKeyInRoot("tOut")){
+            timeOut = (int) message.getInRoot("tOut");
+        }
+        creationTimeStamp = System.currentTimeMillis()-100;
+    }
+
+    public boolean isOutOfTime(){
+        return (creationTimeStamp+(timeOut*1000L)) <= System.currentTimeMillis();
     }
 
     public boolean send(String custom){
         //response ID = RID
         // Message ID = MID
-        if(mergeIn(new Message(),custom).isPresent()) {
-            message.getProvider().ifPresent(client -> {
-                client.writeAndFlush(message);
-            });
-            return true;
-        }
-        return false;
+        return mergeAndSend(new Message(),custom).isPresent();
     }
+
 
     public void send(TaskHandler.TaskType taskType){
         this.send(taskType.toString());
     }
 
-    public Optional<Message> mergeIn(Message message, String custom){
-        if(message.getProvider().isPresent()){
-            IClient client = message.getProvider().get();
+    public Optional<Message> mergeAndSend(Message message, String custom){
+        if(isOutOfTime()) return Optional.empty();
+        if(this.message.getClientProvider().isPresent()){
+            IClient client = this.message.getClientProvider().get();
             message.setInRoot("RID",MID);
             message.setInRoot("tType",custom);
             client.writeAndFlush(message);
@@ -51,11 +56,8 @@ public class DNCallbackReceiver {
         }
     }
 
-    public Optional<Message> mergeIn(Message message, TaskHandler.TaskType taskType){
-        return mergeIn(message,taskType.toString());
+    public Optional<Message> mergeAndSend(Message message, TaskHandler.TaskType taskType){
+        return mergeAndSend(message,taskType.toString());
     }
 
-    public void ignoreForNow(){
-        proceedLater = true;
-    }
 }

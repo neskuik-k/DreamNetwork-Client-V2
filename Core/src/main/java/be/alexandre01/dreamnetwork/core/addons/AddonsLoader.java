@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Getter;
 
 import org.apache.commons.io.IOUtils;
+import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 
 import java.io.*;
@@ -87,16 +88,15 @@ public class AddonsLoader {
                 }else {
                     if(child.getResource("dreamy.yml") != null){
                         InputStream inputStream = child.getResourceAsStream("dreamy.yml");
-                        byte[] bytes = IOUtils.toByteArray(inputStream);
-                        byte[] prefix = "!!be.alexandre01.dreamnetwork.api.addons.Addon\n".getBytes();
-
-                        byte[] finalBytes = new byte[prefix.length + bytes.length];
-                        System.arraycopy(prefix, 0, finalBytes, 0, prefix.length);
-                        System.arraycopy(bytes, 0, finalBytes, prefix.length, bytes.length);
-
-                        addon = yaml.load(new String(finalBytes));
-
-                        inputStream.close();
+                        if(inputStream == null){
+                            System.out.println("No dreamy.yml file found for "+ file.getName());
+                            return;
+                        }
+                        try {
+                            addon = yaml.loadAs(inputStream,Addon.class);
+                        }finally {
+                            inputStream.close();
+                        }
                     }
                 }
                 if(addon == null)

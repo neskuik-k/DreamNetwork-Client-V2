@@ -12,9 +12,12 @@ public interface IBundleManager {
     void addBundleData(BundleData bundleData);
     void addVirtualBundleData(BundleData bundleData);
 
+
+
     void addPath(String path);
 
     java.util.HashMap<String, BundleData> getBundleDatas();
+    java.util.HashMap<String, BundleData> getVirtualBundles();
 
     java.util.ArrayList<String> getPaths();
 

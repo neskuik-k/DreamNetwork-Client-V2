@@ -54,7 +54,7 @@ public class ScreenOutWriter implements IScreenOutWriter {
                             try {
                                 if (!screen.getService().getProcess().isAlive()) {
                                     Console.fine("The PROCESS cannot be writed anymore.");
-                                    screen.destroy();
+                                    screen.destroy(false);
                                     return;
                                 }
                                 //   Console.debugPrint("start");

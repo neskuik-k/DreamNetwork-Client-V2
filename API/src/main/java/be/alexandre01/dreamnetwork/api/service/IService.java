@@ -18,6 +18,7 @@ public interface IService {
     IJVMExecutor getJvmExecutor();
 
     String getFullName();
+    String getFullName(boolean withBundlePath);
     Process getProcess();
     IScreen getScreen();
     IConfig getUsedConfig();
@@ -31,5 +32,5 @@ public interface IService {
     void removeService();
 
     void setClient(IClient client);
-    ExecutorCallbacks getExecutorCallbacks();
+    Optional<ExecutorCallbacks> getExecutorCallbacks();
 }

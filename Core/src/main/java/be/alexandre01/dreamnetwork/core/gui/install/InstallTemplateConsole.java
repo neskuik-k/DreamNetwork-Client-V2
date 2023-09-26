@@ -15,6 +15,7 @@ import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class InstallTemplateConsole extends CoreAccessibilityMenu {
     public InstallTemplateConsole(JVMExecutor jvmExecutor){
@@ -28,11 +29,12 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
 
                 @Override
                 public Operation received(PromptText value, String[] args, ShowInfos infos) {
-                    IJVMExecutor executor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
-                    if(executor == null){
+                    Optional<IJVMExecutor> executorOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
+                    if(!executorOpt.isPresent()){
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                         return errorAndRetry(infos);
                     }
+                    IJVMExecutor executor = executorOpt.get();
                     if(!(executor instanceof JVMExecutor)){
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                         return errorAndRetry(infos);

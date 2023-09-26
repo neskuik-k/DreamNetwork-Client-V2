@@ -6,34 +6,39 @@ import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import lombok.Setter;
 
 import java.util.Optional;
 
 public class VirtualService implements IService {
-    int id;
-    int port;
+    @Setter int id = -1;
+    @Setter int port = 0;
     IClient client;
     VirtualExecutor executor;
 
+    @Setter ExecutorCallbacks executorCallbacks;
 
 
 
-    public VirtualService(int port, IClient client, VirtualExecutor executor){
+
+    public VirtualService(IClient client, VirtualExecutor executor){
+        this.client = client;
+        this.executor = executor;
     }
 
     @Override
     public int getId() {
-        return 0;
+        return id;
     }
 
     @Override
     public long getProcessID() {
-        return 0;
+        return -1;
     }
 
     @Override
     public int getPort() {
-        return 0;
+        return port;
     }
 
     @Override
@@ -43,12 +48,12 @@ public class VirtualService implements IService {
 
     @Override
     public String getXmx() {
-        return null;
+        return "N/A";
     }
 
     @Override
     public String getXms() {
-        return null;
+        return "N/A";
     }
 
     @Override
@@ -73,6 +78,11 @@ public class VirtualService implements IService {
 
     @Override
     public String getFullName() {
+        return null;
+    }
+
+    @Override
+    public String getFullName(boolean withBundlePath) {
         return null;
     }
 
@@ -127,7 +137,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public ExecutorCallbacks getExecutorCallbacks() {
-        return null;
+    public Optional<ExecutorCallbacks> getExecutorCallbacks() {
+        return Optional.ofNullable(executorCallbacks);
     }
 }

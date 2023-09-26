@@ -9,6 +9,8 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import lombok.NonNull;
 
+import java.util.Optional;
+
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Infos extends SubCommand {
@@ -22,11 +24,13 @@ public class Infos extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
-            if(jvmExecutor == null){
+            Optional<IJVMExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
+            if(!execOpt.isPresent()){
                 System.out.println("Cannot find executor");
                 return false;
             }
+
+            IJVMExecutor jvmExecutor = execOpt.get();
             int p = jvmExecutor.getConfig().getPort();
             String port = p == 0 ? "auto" : String.valueOf(p);
             System.out.println(Colors.GREEN+"Name: "+Colors.RESET+jvmExecutor.getName());

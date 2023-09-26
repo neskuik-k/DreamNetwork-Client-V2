@@ -56,10 +56,14 @@ public class Screen extends Thread implements IScreen {
 
 
     @Override
-    public synchronized void destroy(){
+    public synchronized void destroy(boolean fromService){
         if(!running){
             return;
         }
+
+        //close logging
+        if(getScreenStream().getScreenInReader().getFileHandler() != null)
+            getScreenStream().getScreenInReader().getFileHandler().close();
         running = false;
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.setActualConsole("m:default");
@@ -74,10 +78,10 @@ public class Screen extends Thread implements IScreen {
             getService().removeService();
         }*/
 
+        //If not executed by service => Stop
+        if(!fromService)
+            service.stop();
 
-        if(getService().getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
-            Config.removeDir("/runtimes/"+ getService().getJvmExecutor().getBundleData().getName() + "/"+ getService().getJvmExecutor().getName()+"/"+getService().getJvmExecutor().getName()+"-"+getService().getId());
-        }
         Core core = Core.getInstance();
         core.getEventsFactory().callEvent(new CoreScreenDestroyEvent(core.getDnCoreAPI(),this));
     }

@@ -69,7 +69,6 @@ public interface IRequestManager {
      * @param RID
      * @return
      */
-    RequestPacket getRequest(int MID);
 
     RequestBuilder getRequestBuilder();
 

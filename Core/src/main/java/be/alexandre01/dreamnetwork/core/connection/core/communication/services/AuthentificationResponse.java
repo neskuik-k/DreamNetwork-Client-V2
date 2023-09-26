@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceLinkedEvent;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
@@ -14,7 +15,10 @@ import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.PlayerResponse;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.external.DefaultExternalRequest;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
+import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
@@ -42,6 +46,7 @@ public class AuthentificationResponse extends CoreResponse {
         Console.print(message,Level.FINE);
 
         if(message == null || !message.hasRequest()){
+            System.out.println(message.hasRequest()+" :c");
             if(!coreHandler.getAllowedCTX().contains(ctx)){
                 ctx.channel().close();
             }
@@ -53,13 +58,15 @@ public class AuthentificationResponse extends CoreResponse {
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
             RequestInfo requestInfo = message.getRequest();
-            Console.printLang("connection.core.communication.request", Level.FINE, requestInfo);
+            Console.printLang("connection.core.communication.request", Level.FINE, requestInfo.name());
 
             ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
 
             if(!coreHandler.getExternalConnections().contains(ctx)){
+                System.out.println(message);
                 if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
                     Console.print("HANDSHAKE", Level.FINE);
+                    System.out.println("");
                     if (!message.contains("INFO")) {
                         ctx.channel().close();
                         return;
@@ -106,6 +113,42 @@ public class AuthentificationResponse extends CoreResponse {
                             .ctx(ctx)
                             .isExternalService(isExternal)
                             .build());
+
+                    if(isExternal){
+                        // find service for this external client and link
+                        if(message.contains("name")){
+                            String fullName = message.getString("name");
+                            String[] split = fullName.split("/");
+
+
+                            //get all array 0 to length-2
+                            StringBuilder bundleName = new StringBuilder();
+                            for(int i = 0; i < split.length-1; i++){
+                                bundleName.append(split[i]);
+                            }
+                            String name = split[split.length-1];
+                            String[] splittedName = name.split("-");
+                            name = splittedName[0];
+                            int id = Integer.parseInt(splittedName[1]);
+                            newClient.setName(fullName);
+
+                            BundleManager bundleManager = Core.getInstance().getBundleManager();
+                            // search VirtualService in VirtualBundle
+                            if(bundleManager.getVirtualBundles().containsKey(bundleName.toString())) {
+                                BundleData bundleData = bundleManager.getVirtualBundles().get(bundleName.toString());
+                                VirtualExecutor virtualExecutor = (VirtualExecutor) bundleData.getExecutors().get(name);
+                                if (virtualExecutor == null) {
+                                    Console.print(Colors.RED + "VirtualExecutor not found");
+                                    return;
+                                }
+                                VirtualService virtualService = (VirtualService) virtualExecutor.getService(id);
+                                virtualService.setId(id);
+                                virtualService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                                    executorCallbacks.onConnect.whenConnect(virtualService, newClient);
+                                });
+                            }
+                        }
+                    }
 
 
                     coreHandler.getResponses().add(new BaseResponse());

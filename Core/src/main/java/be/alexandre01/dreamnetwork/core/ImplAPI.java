@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
@@ -97,6 +98,11 @@ public class ImplAPI extends DNCoreAPI {
     @Override
     public IConfigManager getConfigManager() {
         return UtilsAPI.get().getConfigManager();
+    }
+
+    @Override
+    public ICoreHandler getCoreHandler() {
+        return Core.getInstance().getCoreHandler();
     }
 
 

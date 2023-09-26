@@ -10,19 +10,23 @@ import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
 
 import java.io.File;
-import java.util.Collection;
-import java.util.Optional;
+import java.util.*;
 
-public class VirtualExecutor implements IJVMExecutor {
+public class VirtualExecutor  implements IJVMExecutor {
     ConfigData configData;
+    BundleData bundleData;
+    HashMap<Integer,IService> serviceList = new HashMap<>();
+
 
 
     public VirtualExecutor(ConfigData configData, BundleData bundle) {
         this.configData = configData;
+        this.bundleData = bundle;
     }
 
     private Optional<IClient> externalTool;
@@ -45,35 +49,47 @@ public class VirtualExecutor implements IJVMExecutor {
     @Override
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
         externalTool.ifPresent(client -> {
-            VirtualService virtualService = new VirtualService(getPort(), null, this);
+            VirtualService virtualService = new VirtualService( null, this);
             sendStartCallBack(client, callbacks, virtualService, profile);
         });
         return null;
     }
 
     @Override
+    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks){
+        return startServer(":this:",callbacks);
+    }
+
+    @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks callbacks) {
+
         externalTool.ifPresent(client -> {
-            VirtualService virtualService = new VirtualService(getPort(), null, this);
+            VirtualService virtualService = new VirtualService( null, this);
+
             sendStartCallBack(client, callbacks, virtualService, jvmConfig);
         });
         return callbacks;
     }
 
     private void sendStartCallBack(IClient client, ExecutorCallbacks callbacks, VirtualService virtualService,Object o){
-        DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getFullName(),o), new TaskHandler() {
+        DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getFullName(),o), new TaskHandler() {
+            Integer id;
             @Override
             public void onCallback() {
                 if (hasType(TaskType.CUSTOM)) {
                     String custom = getCustomType();
                     if (custom.equalsIgnoreCase("STARTED")) {
+                        Message message = getResponse();
+                        if(message.contains("name")){
+                            String name = message.getString("name");
+                            String splittedName = name.split("-")[1];
+                            if(splittedName.matches("[0-9]+")){
+                                id = Integer.parseInt(splittedName);
+                                serviceList.put(id,virtualService);
+                                virtualService.setExecutorCallbacks(callbacks);
+                            }
+                        }
                         callbacks.onStart.whenStart(virtualService);
-                        return;
-                    }
-                    if (custom.equalsIgnoreCase("LINKED")) {
-                        // create a client
-
-                        callbacks.onConnect.whenConnect(virtualService, null);
                         return;
                     }
                 }
@@ -82,51 +98,61 @@ public class VirtualExecutor implements IJVMExecutor {
                 }
             }
         }).send();
+
+        // link
     }
 
     @Override
     public ExecutorCallbacks startServers(int i) {
-        return null;
+        return startServers(i, ":this:");
     }
 
     @Override
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
-        return null;
+        ExecutorCallbacks callbacks = new ExecutorCallbacks();
+        for (int j = 0; j < i; j++) {
+            startServer(jvmConfig,callbacks);
+        }
+        return callbacks;
     }
 
     @Override
     public ExecutorCallbacks startServers(int i, String profile) {
-        return null;
+        ExecutorCallbacks callbacks = new ExecutorCallbacks();
+        for (int j = 0; j < i; j++) {
+            startServer(profile,callbacks);
+        }
+        return callbacks;
     }
 
     @Override
     public void removeService(IService service) {
-
+        serviceList.remove(service.getId());
     }
 
     @Override
     public IService getService(Integer i) {
-        return null;
+        return serviceList.get(i);
     }
 
     @Override
     public Collection<IService> getServices() {
-        return null;
+        return serviceList.values();
     }
 
     @Override
     public boolean isProxy() {
-        return false;
+        return bundleData.getJvmType().equals(IContainer.JVMType.PROXY);
     }
 
     @Override
     public String getName() {
-        return null;
+        return configData.getName();
     }
 
     @Override
     public boolean isConfig() {
-        return false;
+        return true;
     }
 
     @Override
@@ -134,88 +160,99 @@ public class VirtualExecutor implements IJVMExecutor {
         return false;
     }
 
-    @Override
+    @Override  // to optional
     public File getFileRootDir() {
         return null;
     }
 
-    @Override
+    @Override //to optional
     public IConfig getConfig() {
         return null;
     }
 
-    @Override
+    @Override // to optional
     public IStartupConfig getStartupConfig() {
         return null;
     }
 
     @Override
     public Mods getType() {
-        return null;
+        return configData.getType();
     }
 
     @Override
     public String getXms() {
-        return null;
+        return configData.getXms();
     }
 
     @Override
     public String getStartup() {
-        return null;
+        return configData.getStartup();
     }
 
     @Override
     public String getExecutable() {
-        return null;
+        return configData.getExecutable();
     }
 
     @Override
     public String getXmx() {
-        return null;
+        return configData.getXmx();
     }
 
-    @Override
+    @Override // to optional
     public String getPathName() {
         return null;
     }
 
     @Override
     public String getJavaVersion() {
-        return null;
+        return configData.getJavaVersion();
     }
 
     @Override
     public int getPort() {
-        return 0;
+        return configData.getPort();
     }
 
     @Override
     public boolean hasExecutable() {
-        return false;
+        return true;
     }
 
     @Override
     public BundleData getBundleData() {
-        return null;
+        return bundleData;
     }
 
     @Override
     public String getFullName() {
-        return null;
+        return getBundleData().getName()+"/"+getName();
     }
 
     @Override
-    public ExecType getExecType() {
-        return null;
+    public Optional<ExecType> getExecType() {
+        if(!getInstallLink().isPresent()) return Optional.empty();
+        try {
+            return Optional.of(ExecType.valueOf(getInstallLink().get().getExecType().name()));
+        }catch (Exception e){
+            return Optional.empty();
+        }
     }
 
     @Override
-    public InstallationLinks getInstallLink() {
-        return null;
+    public Optional<InstallationLinks> getInstallLink() {
+        try {
+            return Optional.of(InstallationLinks.valueOf(configData.getInstallInfo()));
+        }catch (Exception e){
+            return Optional.empty();
+        }
     }
 
     @Override
-    public IProfiles getJvmProfiles() {
-        return null;
+    public Optional<IProfiles> getJvmProfiles() {
+        return Optional.empty();
     }
+
+
 }

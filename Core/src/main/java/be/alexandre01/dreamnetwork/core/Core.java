@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 public class Core {
     @Getter @Setter
@@ -67,6 +68,8 @@ public class Core {
 
     @Getter
     private ClientManager clientManager;
+    @Getter @Setter
+    private CoreHandler coreHandler;
     @Getter
     private JavaIndex javaIndex;
     @Getter
@@ -161,6 +164,8 @@ public class Core {
                 thread = new Thread(coreServer = new NettyServer(Main.getGlobalSettings().getPort()));
             }
             thread.start();
+
+
             console.fPrintLang("core.server.started",coreServer.getPort(), Level.INFO);
         } catch (Exception e) {
             Console.bug(e);

@@ -10,6 +10,8 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.utils.clients.RamArgumentsChecker;
 import lombok.NonNull;
 
+import java.util.Optional;
+
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
 public class Edit extends SubCommand {
@@ -29,11 +31,12 @@ public class Edit extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
-            IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
-            if(jvmExecutor == null){
+            Optional<IJVMExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
+            if(!execOpt.isPresent()){
                 System.out.println("Cannot find executor");
                 return false;
             }
+            IJVMExecutor jvmExecutor = execOpt.get();
 
             if(args[3].equalsIgnoreCase("set")){
                 switch (args[2]){

@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JVMContainer implements IContainer {
@@ -44,7 +45,7 @@ public class JVMContainer implements IContainer {
     }
 
     @Override
-    public IJVMExecutor tryToGetJVMExecutor(String processName) {
+    public Optional<IJVMExecutor> tryToGetJVMExecutor(String processName) {
         try {
             if(processName.contains("/")){
                 String[] split = processName.split("/");
@@ -52,7 +53,7 @@ public class JVMContainer implements IContainer {
                 for(int i = 0; i < split.length-1; i++){
                     bundle.append(split[i]);
                 }
-                return getJVMExecutor(split[split.length-1],bundle.toString());
+                return Optional.ofNullable(getJVMExecutor(split[split.length - 1], bundle.toString()));
             }
             IJVMExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
             if(jvmExecutors.length == 0){
@@ -66,14 +67,14 @@ public class JVMContainer implements IContainer {
                 }
                 return null;
             }
-            return jvmExecutors[0];
+            return Optional.ofNullable(jvmExecutors[0]);
         }catch (Exception e){
             return null;
         }
     }
 
     @Override
-    public IService tryToGetService(String serviceName){
+    public Optional<IService> tryToGetService(String serviceName){
         String[] split = serviceName.split("-");
         int id;
         try {
@@ -85,12 +86,9 @@ public class JVMContainer implements IContainer {
         return tryToGetService(split[0],id);
     }
     @Override
-    public IService tryToGetService(String processName, int id){
-        IJVMExecutor jvmExecutor = tryToGetJVMExecutor(processName);
-        if(jvmExecutor == null){
-            return null;
-        }
-        return jvmExecutor.getService(id);
+    public Optional<IService> tryToGetService(String processName, int id){
+        Optional<IJVMExecutor> jvmExecutor = tryToGetJVMExecutor(processName);
+        return jvmExecutor.flatMap(ijvmExecutor -> Optional.ofNullable(ijvmExecutor.getService(id)));
     }
 
 

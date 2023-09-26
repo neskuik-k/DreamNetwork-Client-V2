@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class IdSet {
-    private Set<Integer> ids = new HashSet<>();
+    private final Set<Integer> ids = new HashSet<>();
 
     public void add(int id) {
         ids.add(id);

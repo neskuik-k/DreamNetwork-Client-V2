@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 @Getter
 public class Message extends LinkedHashMap<String, Object> {
     ObjectMapper mapper;
+    final char prefix = '$';
 
     public Message(Map<String, Object> map) {
         this(map, createMapper());
@@ -118,7 +119,7 @@ public class Message extends LinkedHashMap<String, Object> {
             });
             value = gsonBuilder.create().toJson(value);
         }
-        super.put("DN-" + id, value);
+        super.put(prefix + id, value);
         System.out.println("Value to be set " + value);
         return this;
     }
@@ -135,12 +136,12 @@ public class Message extends LinkedHashMap<String, Object> {
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             String json = mapper.writer().forType(tClass).writeValueAsString(value);
             System.out.println(json);
-            super.put("DN-" + id, json);
+            super.put(prefix + id, json);
         } catch (JsonProcessingException e) {
             System.out.println("Error with custom object");
             Console.bug(e);
         }
-        //super.put("DN-"+id, value);
+        //super.put(prefix+id, value);
         System.out.println("Value to be set " + value);
         return this;
     }
@@ -165,7 +166,7 @@ public class Message extends LinkedHashMap<String, Object> {
             });
         }
         String json = gsonBuilder.create().toJson(value);
-        super.put("DN-" + id, json);
+        super.put(prefix + id, json);
         return this;
     }
 
@@ -178,12 +179,38 @@ public class Message extends LinkedHashMap<String, Object> {
         return null;
     }
 
-    public Object setInRoot(String id, Object value) {
-        return super.put(id, value);
+    public Message setInRoot(String id, Object value) {
+        super.put(id, value);
+        return this;
     }
 
     public boolean contains(String key) {
-        return containsKey("DN-" + key);
+        return super.containsKey(prefix + key);
+    }
+    public boolean containsKey(String key) {
+        return super.containsKey(prefix + key);
+
+    }
+    public boolean containsValue(String key) {
+        return super.containsValue(prefix + key);
+    }
+
+    public boolean containsKeyInRoot(String key) {
+        return super.containsKey(key);
+    }
+
+    public boolean containsValueInRoot(String key) {
+        return super.containsValue(key);
+    }
+
+    public Message remove(String key) {
+        super.remove(prefix + key);
+        return this;
+    }
+
+    public Message removeInRoot(String key) {
+        super.remove(key);
+        return this;
     }
 
     public HashMap<String, Object> getObjectData() {
@@ -196,7 +223,7 @@ public class Message extends LinkedHashMap<String, Object> {
 
     @Override
     public Object get(Object key) {
-        return super.get("DN-" + key);
+        return super.get(Character.toString(prefix) + key);
     }
 
     public Object getInRoot(Object key) {
@@ -204,7 +231,7 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public Object get(String key, JavaType type) {
-        Object o = super.get("DN-" + key);
+        Object o = super.get(prefix + key);
         if (o instanceof String) {
             try {
                 return mapper.readValue((String) o, type);
@@ -213,10 +240,7 @@ public class Message extends LinkedHashMap<String, Object> {
             }
             //return gson.fromJson((String) o,tClass);
         }
-        if (o == null) {
-            return null;
-        }
-        return super.get("DN-" + key);
+       return o;
     }
     public <T> T get(String key, Class<T> tClass){
         return (T) get(key, mapper.getTypeFactory().constructType(tClass));
@@ -232,35 +256,49 @@ public class Message extends LinkedHashMap<String, Object> {
         return this;
     }
 
-    public Optional<IClient> getProvider() {
-        String provider = (String) super.get("provider");
+    public Optional<IClient> getClientProvider() {
+        String provider = (String) super.get("from");
         if (provider == null) {
-            return null;
+            return Optional.empty();
         }
         if(provider.contains("core_")){
             // make code for multinode
         }
-        IService service = DNCoreAPI.getInstance().getContainer().tryToGetService(provider);
-        if (service == null)
-            return Optional.empty();
-        return Optional.ofNullable(service.getClient());
+        Console.debugPrint("FIND... "+ provider);
+        Optional<IService> service = DNCoreAPI.getInstance().getContainer().tryToGetService(provider);
+
+        return service.map(IService::getClient);
     }
 
-    public void setProvider(String provider) {
-        super.put("provider", provider);
+    public String getProvider(){
+        return (String) super.get("from");
     }
 
-    public String getSender() {
-        return (String) super.get("sender");
-    }
-
-    public void setSender(String provider) {
-        super.put("sender", provider);
+    public boolean hasClientProvider() {
+        return !((String)super.get("from")).contains("core");
     }
 
     public boolean hasProvider() {
-        return containsKey("provider");
+        return super.containsKey("from");
     }
+
+    public void setProvider(String provider) {
+        super.put("from", provider);
+    }
+
+    public String getReceiver() {
+        return (String) super.get("to");
+    }
+
+    public void setReceiver(String provider) {
+        super.put("to", provider);
+    }
+
+    public boolean hasReceiver(){
+        return super.containsKey("to");
+    }
+
+
 
     public String getHeader() {
         return (String) super.get("header");
@@ -277,7 +315,7 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public RequestInfo getRequest() {
-        return (RequestInfo) RequestType.getByID((Integer) super.get("RI"));
+        return RequestType.getByID((Integer) super.get("RI"));
     }
 
     public int getRequestID() {
@@ -285,11 +323,11 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public boolean hasRequest() {
-        return containsKey("RI");
+        return containsKeyInRoot("RI");
     }
 
     public String getString(String key) {
-        return String.valueOf(super.get("DN-" + key));
+        return String.valueOf(super.get(prefix + key));
     }
 
     public int getInt(String key) {
@@ -392,18 +430,22 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public boolean hasChannel() {
-        return containsKey("channel");
+        return super.containsKey("channel");
     }
 
 
 
     public Optional<DNCallbackReceiver> getCallback(){
+
+        if(!containsKeyInRoot("MID")) return Optional.empty();
         AtomicReference<DNCallbackReceiver> callbackReceiver = new AtomicReference<>();
-        getProvider().ifPresent(new Consumer<IClient>() {
+        Console.debugPrint("Search client provider " + getClientProvider().isPresent());
+        getClientProvider().ifPresent(new Consumer<IClient>() {
             @Override
             public void accept(IClient client) {
-                Optional<DNCallbackReceiver> c = client.getCoreHandler().getCallbackManager().getReceived(getRequestID());
-                c.ifPresent(callbackReceiver::set);
+                callbackReceiver.set(new DNCallbackReceiver(getMessageID(),Message.this));
+                //Optional<DNCallbackReceiver> c = client.getCoreHandler().getCallbackManager().getReceived(getRequestID());
+                //c.ifPresent(callbackReceiver::set);
             }
         });
         return Optional.ofNullable(callbackReceiver.get());

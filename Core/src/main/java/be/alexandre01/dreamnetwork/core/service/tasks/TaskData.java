@@ -9,8 +9,11 @@ import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.Optional;
 
 public class TaskData extends ATaskData {
 
@@ -21,11 +24,12 @@ public class TaskData extends ATaskData {
     public void operate() {
 
         if (jvmExecutor == null) {
-            jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(service);
-            if (jvmExecutor == null) {
+            Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(service);
+            if (!jvmExecutor.isPresent()) {
                 System.out.println("Service " + service + " not found");
                 return;
             }
+            this.jvmExecutor = jvmExecutor.get();
         }
         if (iConfig == null) {
             if (profile != null) {

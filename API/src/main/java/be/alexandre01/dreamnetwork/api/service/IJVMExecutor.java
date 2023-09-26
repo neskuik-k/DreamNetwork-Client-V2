@@ -13,6 +13,7 @@ import com.sun.jna.platform.win32.WinNT;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface IJVMExecutor {
 
@@ -70,6 +71,7 @@ public interface IJVMExecutor {
 
 
     public ExecutorCallbacks startServer();
+    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks);
     public ExecutorCallbacks startServer(String profile);
 
     public ExecutorCallbacks startServer(IConfig jvmConfig);
@@ -123,10 +125,11 @@ public interface IJVMExecutor {
 
     @JsonIgnore public String getFullName();
 
-    @JsonIgnore public ExecType getExecType();
-    @JsonIgnore public InstallationLinks getInstallLink();
 
-    @JsonIgnore public IProfiles getJvmProfiles();
+    @JsonIgnore public Optional<ExecType> getExecType();
+    @JsonIgnore public Optional<InstallationLinks> getInstallLink();
+
+    @JsonIgnore public Optional<IProfiles> getJvmProfiles();
 
 
 

@@ -63,7 +63,7 @@ public class ChannelPacket extends AChannelPacket implements Packet {
     @Override
     public void createResponse(Message message, IClient client, GenericFutureListener<? extends Future<? super Void>> listener, String header){
         message.setProvider(provider);
-        message.setSender("core");
+        message.setReceiver("core");
         message.setHeader(header);
         message.setChannel(this.channel);
 

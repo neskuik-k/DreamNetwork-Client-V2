@@ -31,6 +31,9 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     private int nettyBossThreads = 1;
     private String connectionMode = "netty";
 
+    private boolean loggingService = true;
+    private int logsByService = 50;
+
     @Ignore private TerminalMode termMode;
 
 
@@ -53,6 +56,8 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
 
         termMode = TerminalMode.valueOf(terminalMode.toUpperCase());
     }
+
+
 
     public enum TerminalMode{
         SSH,SAFE;

@@ -16,7 +16,7 @@ import java.util.logging.Level;
 public abstract class AbstractRequestManager implements IRequestManager {
     RequestBuilder requestBuilder;
 
-    public HashMap<Integer, RequestPacket> requests = new HashMap<>();
+
 
 
     public AbstractRequestManager(){
@@ -61,9 +61,6 @@ public abstract class AbstractRequestManager implements IRequestManager {
 
         }
         return this.sendRequest(requestInfo,message,null,args);
-    }
-    public RequestPacket getRequest(int MID){
-        return requests.get(MID);
     }
 
     public abstract RequestPacket getRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args);

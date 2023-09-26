@@ -48,6 +48,7 @@ public class StatsConsole {
                 printStream =  Core.getInstance().formatter.getDefaultStream();
 
                 Console.printLang("console.consoleChanged");
+
                 executorService.scheduleAtFixedRate(new Runnable() {
                     @Override
                     public void run() {

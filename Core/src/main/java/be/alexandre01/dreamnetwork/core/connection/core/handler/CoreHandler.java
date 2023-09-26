@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -56,6 +57,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     public CoreHandler() {
         this.core = Core.getInstance();
+        this.callbackManager = new CallbackManager();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
         authResponse = new AuthentificationResponse(this);
@@ -147,7 +149,9 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if (message == null) {
                     return;
                 }
+
                 IClient client = core.getClientManager().getClient(ctx);
+
                 if(client == null){
                     return;
                 }
@@ -157,6 +161,26 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 }else {
                     fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-CLIENT -> " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
                 }
+                //if message hasReceiver resend directly to the client
+                if(message.hasReceiver()){
+                    if(!message.getReceiver().equals("core")){
+                        IClient receiver = core.getClientManager().getClient(message.getReceiver());
+                        if(receiver == null){
+                            Console.print("Receiver "+ message.getReceiver()+" is unknown");
+                            return;
+                        }
+                        if(receiver.getJvmService() != null){
+                            message.setProvider(receiver.getJvmService().getFullName());
+                        }
+
+                        receiver.writeAndFlush(message);
+                        return;
+                    }
+                }
+
+                //Receive and operate the message
+
+
 
                // core.getFileHandler().publish(new LogRecord(Level.INFO, "Received message from " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + message.toString()));
                 for (int i = 0; i < responses.size(); i++) {

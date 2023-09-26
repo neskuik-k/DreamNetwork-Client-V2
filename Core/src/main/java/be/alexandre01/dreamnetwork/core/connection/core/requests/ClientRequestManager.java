@@ -21,7 +21,6 @@ public class ClientRequestManager extends AbstractRequestManager {
     private ChannelHandlerContext ctx;
     private ICoreHandler handler;
 
-    private HashMap<Integer, RequestPacket> requests = new HashMap<>();
 
 
     public ClientRequestManager(Client client){
@@ -59,7 +58,7 @@ public class ClientRequestManager extends AbstractRequestManager {
     public RequestPacket sendRequest(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener, Object... args){
         RequestPacket request = getRequest(requestInfo,message,listener,args);
         request.getClient().writeAndFlush(request.getMessage(),listener);
-        requests.put(request.getRequestID(),request);
+        //requests.put(request.getRequestID(),request);
         return request;
          //client.writeAndFlush(requestData.write(message,client,args),listener);
     }

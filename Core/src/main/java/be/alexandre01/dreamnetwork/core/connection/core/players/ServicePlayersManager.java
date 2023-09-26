@@ -14,6 +14,7 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -91,7 +92,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
         Player player = getPlayer(id);
         String[] args = server.split("-");
 
-        IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
+        Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
         int i;
         try {
             i = Integer.parseInt(args[1]);
@@ -99,8 +100,8 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
             return;
         }
 
-        if(jvmExecutor != null){
-            IService jvmService = jvmExecutor.getService(i);
+        jvmExecutor.ifPresent(ijvmExecutor -> {
+            IService jvmService = ijvmExecutor.getService(i);
             if(jvmService != null){
                 IClient client = jvmService.getClient();
                 IClient oldClient = player.getServer();
@@ -116,7 +117,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                             count.put(client,0);
                         }
                         count.put(client,count.get(client)+1);
-                 }
+                    }
                 }else {
                     count.put(client,1);
                 }
@@ -135,7 +136,8 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                 }
 
             }
-        }
+        });
+
     }
 
 

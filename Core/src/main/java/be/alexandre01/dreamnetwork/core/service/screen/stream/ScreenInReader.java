@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream;
 
 
 
+import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -9,6 +10,7 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import lombok.Getter;
 
@@ -19,17 +21,26 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.LogRecord;
+import java.util.logging.SimpleFormatter;
 
 public class ScreenInReader extends Thread implements IScreenInReader {
     Console console;
     InputStream in;
     IService server;
     public InputStream reader;
+    @Getter FileHandler fileHandler;
+
     private Screen screen;
 
     @Getter private List<ReaderLine> readerLines = new ArrayList<>();
@@ -41,6 +52,76 @@ public class ScreenInReader extends Thread implements IScreenInReader {
         this.reader = reader;
 
         this.screen = screen;
+
+        if(Main.getGlobalSettings().isLoggingService()){
+            try {
+                File file = new File(Config.getPath("logs/"+server.getJvmExecutor().getFullName()));
+                if(!file.exists()){
+                    file.mkdirs();
+                }
+
+                // scan all files of folders logs
+                File[] files = file.listFiles();
+                int id = 1;
+                if(files != null){
+                    files = Arrays.stream(files).filter(f -> f.getName().endsWith(".log")).toArray(File[]::new);
+                    int size = files.length;
+
+                    if(size > 0){
+                        File firstFile = files[0];
+                        String idSplit = firstFile.getName().split("-")[0];
+                        System.out.println(idSplit);
+                        if(idSplit.matches("[0-9]+")){
+                            System.out.println("Match");
+                            int idSplitInt = Integer.parseInt(idSplit);
+                            if(idSplitInt >= id){
+                                id = idSplitInt+size;
+                            }
+                        }
+                        int toDelete = size - Main.getGlobalSettings().getLogsByService();
+                        if(toDelete > 0){
+                            for (int i = 0; i < toDelete; i++) {
+                                if(!files[i].delete()){
+                                    Console.fine("Can't delete log file "+files[i].getName()+ " because it's used by a process");
+                                }
+                            }
+                        }
+                    }
+
+
+                    for(File target : files){
+                        System.out.println("Find  " + target.getName());
+
+                        //check if idSplit is multiple numbers
+                        /*System.out.println(idSplit);
+                        if(idSplit.matches("[0-9]+")){
+                            System.out.println("Match");
+                            int idSplitInt = Integer.parseInt(idSplit);
+                            if(idSplitInt >= id){
+                                id = idSplitInt+1;
+                            }
+                        }*/
+                    }
+                }
+
+                String idToString = String.valueOf(id);
+                if(idToString.length() == 1){
+                    idToString = "0"+idToString;
+                }
+
+                String name = idToString+"-"+server.getFullName(false);
+                if(screen.getService().getUniqueCharactersID().isPresent()){
+                    name += "-"+screen.getService().getUniqueCharactersID().get();
+                }
+                System.out.println(Config.getPath("logs/"+server.getFullName()+"/"+name+".log"));
+                fileHandler = new FileHandler(Config.getPath("logs/"+server.getJvmExecutor().getFullName()+"/"+name+".log"));
+                fileHandler.setLevel(Level.ALL);
+                fileHandler.setFormatter(new SimpleFormatter());
+            }catch (Exception e){
+                System.out.println("Can't create log file");
+                // ignore
+            }
+        }
        /* try {
             int i = reader.read();
             if((i > 500)){
@@ -72,7 +153,7 @@ public class ScreenInReader extends Thread implements IScreenInReader {
                             //screen.getService().getExecutorCallbacks().onStop.whenStop(screen.getService());
                        // }
                     //}
-                    screen.destroy();
+                    screen.destroy(false);
                     isRunning = false;
                 }
 
@@ -113,6 +194,9 @@ public class ScreenInReader extends Thread implements IScreenInReader {
                     data = sb.toString();
                     if(data.toString() != null){
                         console.printNL(data);
+                        if(fileHandler != null){
+                            fileHandler.publish(new LogRecord(Level.INFO, data));
+                        }
                         datas.setLength(0);
                     }else {
                         datas.setLength(0);

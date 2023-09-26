@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.utils.clients.IdSet;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,31 +16,41 @@ import java.util.function.Supplier;
 
 @AllArgsConstructor @Getter
 public class DNCallback {
-    private static int currentId;
+    @Getter private final static IdSet currentId = new IdSet();
 
     Packet packet;
     TaskHandler handler;
+    private final int id;
 
     private static DNCallback on(Packet packet, TaskHandler handler){
         Message message = packet.getMessage();
-        message.setInRoot("MID",getNextId());
-        return new DNCallback(packet,handler);
+        int id = getNextId();
+        message.setInRoot("MID",id);
+        message.setInRoot("tOut",handler.getTimeOut());
+        handler.MID = id;
+        return new DNCallback(packet,handler,id);
     }
 
     public static DNCallback single(Packet packet, TaskHandler handler){
-           return on(packet,handler);
+        DNCallback dnCallback = on(packet,handler);
+        handler.isSingle = true;
+        return dnCallback;
     }
 
-    public static DNCallback multiple(Packet packet, Supplier<TaskHandler> handler){
-        return null;
+    public static DNCallback multiple(Packet packet, TaskHandler handler){
+        handler.isSingle = false;
+        return on(packet,handler);
     }
 
     @Synchronized
     private static int getNextId(){
-        return currentId++;
+        int next = currentId.getNextId();
+        currentId.add(next);
+        return next;
     }
 
     public void send(){
+        DNCoreAPI.getInstance().getCoreHandler().getCallbackManager().addCallback(id,handler);
         packet.getReceiver().writeAndFlush(packet.getMessage());
     }
 
