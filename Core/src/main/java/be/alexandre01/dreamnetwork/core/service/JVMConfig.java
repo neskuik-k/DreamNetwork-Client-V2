@@ -34,7 +34,7 @@ public class JVMConfig extends ConfigData implements IConfig {
         // Empty constructor
     }
 
-    public JVMConfig(File file, String name, JVMExecutor.Mods type, String xms, String startup, String executable, String xmx, String pathName, String javaVersion, int port){
+    public JVMConfig(File file, String name, JVMExecutor.Mods type, String xms, String startup, String executable, String xmx, String pathName, String javaVersion, int port,String bundleName){
         ymlFile = new YamlFileUtils<>();
         ymlFile.config(file,ConfigData.class,true);
         this.name = name;
@@ -46,5 +46,6 @@ public class JVMConfig extends ConfigData implements IConfig {
         this.pathName = pathName;
         this.javaVersion = javaVersion;
         this.port = port;
+        this.bundleName = bundleName;
     }
 }

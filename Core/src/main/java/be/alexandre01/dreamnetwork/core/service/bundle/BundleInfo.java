@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.api.config.Config;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import com.google.gson.Gson;
 import lombok.Getter;
 import org.yaml.snakeyaml.DumperOptions;
@@ -26,12 +27,15 @@ public class BundleInfo implements IBundleInfo {
     public ArrayList<BService> services;
     public String name;
     public IContainer.JVMType type;
-
+    public ExecType execType = ExecType.SERVER;
     transient private File file;
 
-    public BundleInfo(String name, IContainer.JVMType type){
+    public BundleInfo(File file,String name, ExecType execType){
+            this.file = file;
             this.name = name;
-            this.type = type;
+            this.type = execType.isProxy() ? IContainer.JVMType.PROXY : IContainer.JVMType.SERVER;
+            this.execType = execType;
+
             this.services = new ArrayList<>();
     }
 
@@ -50,13 +54,15 @@ public class BundleInfo implements IBundleInfo {
 
 
     public static void updateFile(File file, BundleInfo bundleInfo) {
+
         LoaderOptions loaderOptions = new LoaderOptions();
         loaderOptions.setProcessComments(true);
         DumperOptions dumperOptions = new DumperOptions();
         dumperOptions.setProcessComments(true);
 
         try {
-            file.createNewFile();
+            if (!file.exists())
+                file.createNewFile();
             Representer representer = new Representer(dumperOptions) {
                 @Override
                 protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
@@ -74,7 +80,6 @@ public class BundleInfo implements IBundleInfo {
             fileWriter.write(yaml.dumpAsMap(bundleInfo));
             fileWriter.flush();
             fileWriter.close();
-
         } catch (IOException e) {
             System.out.println("Erreur lors de l'écriture de .info");
             throw new RuntimeException(e);
@@ -91,6 +96,7 @@ public class BundleInfo implements IBundleInfo {
             }
             Gson gson = new Gson();
             BundleInfo t = gson.fromJson(gson.toJsonTree(map), BundleInfo.class);
+            t.file = file;
             //  YamlFileUtils.this.readFile();
             return t;
         } catch (FileNotFoundException e) {

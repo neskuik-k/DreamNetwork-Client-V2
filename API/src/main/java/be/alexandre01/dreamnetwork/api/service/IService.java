@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public interface IService {
     int getId();
@@ -24,10 +25,10 @@ public interface IService {
     IConfig getUsedConfig();
 
     void setScreen(IScreen screen);
-    void stop();
-    void restart();
-    void restart(IConfig config);
-    void kill();
+    CompletableFuture<Boolean> stop();
+    CompletableFuture<Boolean> kill();
+    Optional<ExecutorCallbacks> restart();
+    Optional<ExecutorCallbacks> restart(IConfig config);
 
     void removeService();
 

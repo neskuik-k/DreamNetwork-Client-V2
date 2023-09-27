@@ -24,19 +24,20 @@ public abstract class RequestType {
 
     public final static RequestInfo CORE_START_SERVER =  new RequestInfo(7,"CORE_START_SERVER");
     public final static RequestInfo CORE_STOP_SERVER =  new RequestInfo(8,"CORE_STOP_SERVER");
-    public final static RequestInfo CORE_REMOVE_SERVER =  new RequestInfo(9,"CORE_REMOVE_SERVER");
-    public final static RequestInfo CORE_SPIGET_DOWNLOAD =  new RequestInfo(10,"CORE_SPIGET_DOWNLOAD");
-    public final static RequestInfo CORE_CREATE_SERVER =  new RequestInfo(11,"CORE_CREATE_SERVER");
-    public final static RequestInfo CORE_INSTALL_SERVER =  new RequestInfo(12,"CORE_INSTALL_SERVER");
-    public final static RequestInfo CORE_UPDATE_PLAYER = new RequestInfo(13,"CORE_UPDATE_PLAYER");
-    public final static RequestInfo CORE_REMOVE_PLAYER = new RequestInfo(14,"CORE_REMOVE_PLAYER");
-    public final static RequestInfo CORE_REGISTER_CHANNEL = new RequestInfo(15,"CORE_REGISTER_CHANNEL");
-    public final static RequestInfo CORE_UNREGISTER_CHANNEL = new RequestInfo(16,"CORE_UNREGISTER_CHANNEL");
-    public final static RequestInfo CORE_ASK_DATA = new RequestInfo(17,"CORE_ASK_DATA");
-    public final static RequestInfo CORE_STOP_PROXY = new RequestInfo(18,"CORE_STOP_PROXY");
+    public final static RequestInfo CORE_KILL_SERVER =  new RequestInfo(9,"CORE_STOP_SERVER");
+    public final static RequestInfo CORE_REMOVE_SERVER =  new RequestInfo(10,"CORE_REMOVE_SERVER");
+    public final static RequestInfo CORE_SPIGET_DOWNLOAD =  new RequestInfo(11,"CORE_SPIGET_DOWNLOAD");
+    public final static RequestInfo CORE_CREATE_SERVER =  new RequestInfo(12,"CORE_CREATE_SERVER");
+    public final static RequestInfo CORE_INSTALL_SERVER =  new RequestInfo(13,"CORE_INSTALL_SERVER");
+    public final static RequestInfo CORE_UPDATE_PLAYER = new RequestInfo(14,"CORE_UPDATE_PLAYER");
+    public final static RequestInfo CORE_REMOVE_PLAYER = new RequestInfo(15,"CORE_REMOVE_PLAYER");
+    public final static RequestInfo CORE_REGISTER_CHANNEL = new RequestInfo(16,"CORE_REGISTER_CHANNEL");
+    public final static RequestInfo CORE_UNREGISTER_CHANNEL = new RequestInfo(17,"CORE_UNREGISTER_CHANNEL");
+    public final static RequestInfo CORE_ASK_DATA = new RequestInfo(18,"CORE_ASK_DATA");
+    public final static RequestInfo CORE_STOP_PROXY = new RequestInfo(19,"CORE_STOP_PROXY");
 
-    public final static RequestInfo CORE_RESTART_SERVER = new RequestInfo(19,"CORE_RESTART_SERVER");
-    public final static RequestInfo CORE_REGISTER_EXTERNAL_EXECUTORS = new RequestInfo(20,"CORE_REGISTER_EXTERNAL_EXECUTORS");
+    public final static RequestInfo CORE_RESTART_SERVER = new RequestInfo(20,"CORE_RESTART_SERVER");
+    public final static RequestInfo CORE_REGISTER_EXTERNAL_EXECUTORS = new RequestInfo(21,"CORE_REGISTER_EXTERNAL_EXECUTORS");
 
 
     /**

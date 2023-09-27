@@ -1,9 +1,11 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
+import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -406,7 +408,15 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         updateFile("eula.txt",getClass().getClassLoader().getResourceAsStream("files/spigot/eula.txt"));
         updateFile("server.properties",getClass().getClassLoader().getResourceAsStream("files/spigot/server.properties"));
         updateFile("bukkit.yml",getClass().getClassLoader().getResourceAsStream("files/spigot/bukkit.yml"));
-        updateFile("spigot.yml",getClass().getClassLoader().getResourceAsStream("files/spigot/spigot.yml"));
+        BundleData b = DNCoreAPI.getInstance().getBundleManager().getBundleData("proxies");
+        ExecType proxyType = ExecType.BUNGEECORD;
+        if(b != null){
+            if(b.getBundleInfo() != null){
+                proxyType = b.getBundleInfo().getExecType();
+            }
+        }
+        String path = proxyType == ExecType.BUNGEECORD ? "files/spigot/spigot4bungee.yml" : "files/spigot/spigot4velo.yml";
+        updateFile("spigot.yml",getClass().getClassLoader().getResourceAsStream(path));
     }
 
     private void updateFile(String fileName, InputStream in){

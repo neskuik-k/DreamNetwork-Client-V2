@@ -30,6 +30,7 @@ import be.alexandre01.dreamnetwork.utils.Tuple;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.Synchronized;
@@ -80,14 +81,14 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @JsonIgnore public IService staticService = null;
 
-    @JsonIgnore JVMProfiles jvmProfiles = new JVMProfiles();
+    @JsonIgnore @Getter(AccessLevel.NONE) JVMProfiles jvmProfiles = new JVMProfiles();
 
     public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData) {
         super(pathName, name, type, xms, xmx, port, proxy, updateFile);
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
-        JVMContainer.JVMType jvmType = bundleData.getJvmType();
-        
+        bundleName = bundleData.getName();
+        this.jvmType = bundleData.getJvmType();
         //  System.out.println("JVMExecutor " + name + " " + type + " " + xms + " " + xmx + " " + port + " " + proxy + " " + " " + bundleData);
 
         //profiles.getProfiles().put("default", JVMConfig.class.cast(this));
@@ -100,10 +101,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         super(pathName, name, false);
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
-
+        this.bundleName = bundleData.getName();
+        this.jvmType = bundleData.getJvmType();
         // jvmProfiles.getProfiles().put("default", this);
         jvmProfiles.loading(new File(getFileRootDir().getAbsolutePath() + "/profiles.yml"));
-        JVMContainer.JVMType jvmType = bundleData.getJvmType();
         Core.getInstance().getJvmContainer().addExecutor(this, bundleData);
     }
 
@@ -145,9 +146,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override @Synchronized
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
         IConfig iConfig = null;
-        if (profile != null) {
-            if (getJvmProfiles().getProfiles().containsKey(profile)) {
-                iConfig = getJvmProfiles().getProfiles().get(profile);
+        if (profile != null && getJvmProfiles().isPresent()) {
+            IProfiles profiles = getJvmProfiles().get();
+            if (profiles.getProfiles().containsKey(profile)) {
+                iConfig = profiles.getProfiles().get(profile);
             } else {
                 Console.print(Colors.RED + "The profile " + profile + " doesn't exist", Level.SEVERE);
                 return null;
@@ -531,10 +533,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         String customArgs = "";
-
         if(ExternalCore.getInstance().isConnected()){
+            String connectionId = ExternalCore.getInstance().getConnectionID();
             customArgs += "-DNHost=" + ExternalCore.getInstance().getIp();
-
+            customArgs += " -DNInfo=" + bundleData.getName()+"/"+jvmConfig.getName() + "-" + servers+"+"+connectionId;
         }else{
             customArgs += "-DNHost=" + "this:"+Main.getGlobalSettings().getPort();
         }
@@ -717,26 +719,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
 
-            jvmService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
-                if (executorCallbacks.onStop != null) {
-                    executorCallbacks.onStop.whenStop(jvmService);
-                }
-            });
-
-            Core.getInstance().getEventsFactory().callEvent(new CoreServiceStopEvent(Core.getInstance().getDnCoreAPI(), jvmService));
-
-            if (jvmService.getClient() != null) {
-                if (!isProxy()) {
-                    be.alexandre01.dreamnetwork.core.connection.core.communication.Client proxy = Core.getInstance().getClientManager().getProxy();
-                    if (proxy != null) {
-                        proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, jvmService.getFullName());
-                    }
-                }
-            }
+            IJVMExecutor.super.removeService(jvmService);
         } catch (Exception e) {
             Console.bug(e);
         }
     }
+
 
 
     public IService getService(Integer i) {
@@ -775,5 +763,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         } catch (Exception e) {
             return Optional.empty();
         }
+    }
+
+    @Override
+    public Optional<IProfiles> getJvmProfiles() {
+        return Optional.of(jvmProfiles);
     }
 }

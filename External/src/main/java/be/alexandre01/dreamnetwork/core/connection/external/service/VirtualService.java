@@ -1,29 +1,48 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
-import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
+import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 public class VirtualService implements IService {
     @Setter int id = -1;
     @Setter int port = 0;
     IClient client;
-    VirtualExecutor executor;
+    VirtualExecutor virtualExecutor;
 
     @Setter ExecutorCallbacks executorCallbacks;
+    @Getter @Setter IScreen screen;
+
+    IConfig config = null;
 
 
 
 
     public VirtualService(IClient client, VirtualExecutor executor){
         this.client = client;
-        this.executor = executor;
+        this.virtualExecutor = executor;
+        config = IStartupConfigBuilder.builder()
+                .exec(executor.getExecutable())
+                .javaVersion(executor.getJavaVersion())
+                .name(executor.getName())
+                .pathName(executor.getPathName())
+                .port(executor.getPort())
+                .startup(executor.getStartup())
+                .type(executor.getType())
+                .xms(executor.getXms())
+                .xmx(executor.getXmx())
+                .build(false);
+        config.setScreenEnabled(false);
     }
 
     @Override
@@ -58,12 +77,12 @@ public class VirtualService implements IService {
 
     @Override
     public IJVMExecutor.Mods getType() {
-        return null;
+        return virtualExecutor.getType();
     }
 
     @Override
     public IClient getClient() {
-        return null;
+        return client;
     }
 
     @Override
@@ -73,67 +92,93 @@ public class VirtualService implements IService {
 
     @Override
     public VirtualExecutor getJvmExecutor() {
-        return null;
+        return virtualExecutor;
     }
 
     @Override
     public String getFullName() {
-        return null;
+        return virtualExecutor.getFullName()+ "-"+id;
     }
 
     @Override
     public String getFullName(boolean withBundlePath) {
-        return null;
+        return virtualExecutor.getName()+"-"+id;
     }
 
-    @Override
+    @Override // to optional
     public Process getProcess() {
         return null;
     }
 
     @Override
     public IScreen getScreen() {
-        return null;
+        return screen;
     }
 
     @Override
     public IConfig getUsedConfig() {
-        return null;
+        return config;
     }
 
     @Override
     public void setScreen(IScreen screen) {
-
+        this.screen = screen;
     }
 
     @Override
-    public void stop() {
+    public CompletableFuture<Boolean> stop() {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        DNCallback.single(virtualExecutor.getExternalTool().getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
+            @Override
+            public void onAccepted() {
+                completableFuture.complete(true);
+            }
 
+            @Override
+            public void onFailed() {
+                completableFuture.complete(false);
+            }
+        }
+        );
+        return completableFuture;
     }
 
     @Override
-    public void restart() {
-
+    public Optional<ExecutorCallbacks> restart() {
+        return Optional.empty();
     }
 
     @Override
-    public void restart(IConfig config) {
-
+    public Optional<ExecutorCallbacks> restart(IConfig config) {
+        return Optional.empty();
     }
 
     @Override
-    public void kill() {
+    public CompletableFuture<Boolean> kill() {
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        DNCallback.single(virtualExecutor.getExternalTool().getRequestManager().getRequest(RequestType.CORE_KILL_SERVER), new TaskHandler() {
+                    @Override
+                    public void onAccepted() {
+                        completableFuture.complete(true);
+                    }
 
+                    @Override
+                    public void onFailed() {
+                        completableFuture.complete(false);
+                    }
+                }
+        );
+        return completableFuture;
     }
 
     @Override
     public void removeService() {
-
+        virtualExecutor.removeService(this);
     }
 
     @Override
     public void setClient(IClient client) {
-
+        this.client = client;
     }
 
     @Override

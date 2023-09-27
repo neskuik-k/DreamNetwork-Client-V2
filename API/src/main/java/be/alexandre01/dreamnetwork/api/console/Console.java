@@ -187,7 +187,8 @@ public class Console extends Thread{
                 //  stashLine();
                 for (ConsoleMessage s : h){
                     if(s.level == null){
-                        console.defaultPrint.print(Colors.RESET+s.content+Colors.RESET);
+                        consoleReader.getSReader().printAbove(s.content);
+                       // console.defaultPrint.print(Colors.RESET+s.content+Colors.RESET);
                     }else{
                         console.forcePrint(s.content,s.level);
                     }
@@ -304,7 +305,7 @@ public class Console extends Thread{
     public void printNL(Object s){
         if(Console.actualConsole.equals(name)){
             //  stashLine();
-            DNUtils.get().getConsoleManager().getConsoleReader().getSReader().printAbove(s.toString());
+           getConsoleReader().getSReader().printAbove(s.toString());
             // defaultPrint.print(s);
 
             //  ConsoleReader.sReader.setPrompt(writing);
@@ -395,7 +396,7 @@ public class Console extends Thread{
         LineReader lineReader = DNUtils.get().getConsoleManager().getConsoleReader().getSReader();
         if(s == null)
             s = "null";
-        String msg = s.toString().replaceAll("\\s+$", "");
+        //String msg = s.toString().replaceAll("\\s+$", "");
 
         lineReader.printAbove(s.toString());
         //lineReader.printAbove(s.toString());

@@ -10,11 +10,10 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Getter @Setter
 @Builder
@@ -35,7 +34,7 @@ public class JVMService implements IService {
     private IScreen screen = null;
 
     public IConfig usedConfig;
-    public ExecutorCallbacks executorCallbacks;
+    @Getter(AccessLevel.NONE) public ExecutorCallbacks executorCallbacks;
 
 
     @Override
@@ -61,8 +60,9 @@ public class JVMService implements IService {
         return getJvmExecutor().getName()+"-"+getId();
     }
 
-    @Override
-    public synchronized void stop(){
+    @Override @Synchronized
+    public CompletableFuture<Boolean> stop(){
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if(screen != null){
             Console.fine("Stop screen");
             screen.destroy(true);
@@ -72,14 +72,14 @@ public class JVMService implements IService {
             Config.removeDir("/runtimes/"+ getJvmExecutor().getBundleData().getName() + "/"+ getJvmExecutor().getName()+"/"+getJvmExecutor().getName()+"-"+getId());
         }
 
-        if(getExecutorCallbacks() != null){
+        if(executorCallbacks != null){
             if(!isConnected()){
-                if(getExecutorCallbacks().onFail != null){
-                    getExecutorCallbacks().onFail.whenFail();
+                if(executorCallbacks.onFail != null){
+                    executorCallbacks.onFail.whenFail();
                 }
             }
-            if(getExecutorCallbacks().onStop != null){
-                getExecutorCallbacks().onStop.whenStop(this);
+            if(executorCallbacks.onStop != null){
+                executorCallbacks.onStop.whenStop(this);
             }
         }
 
@@ -99,6 +99,7 @@ public class JVMService implements IService {
         }else{
             process.destroy();
         }
+        return CompletableFuture.completedFuture(true);
     }
 
 
@@ -109,21 +110,22 @@ public class JVMService implements IService {
     }
 
     @Override
-    public void kill() {
+    public CompletableFuture<Boolean> kill() {
         process.destroy();
         process.destroyForcibly();
+        return CompletableFuture.completedFuture(true);
     }
 
     @Override
-    public void restart(){
+    public Optional<ExecutorCallbacks> restart(){
         if(usedConfig == null){
-            restart(jvmExecutor.getConfig());
-            return;
+
+            return restart(jvmExecutor.getConfig());
         }
-        restart(usedConfig);
+        return restart(usedConfig);
     }
     @Override
-    public void restart(IConfig iConfig){
+    public Optional<ExecutorCallbacks> restart(IConfig iConfig){
         if(screen != null){
             Console.fine("Restart screen");
             screen.destroy(true);
@@ -136,7 +138,7 @@ public class JVMService implements IService {
             process.destroy();
         }
         //removeService();
-        getJvmExecutor().startServer(iConfig);
+        return Optional.ofNullable(getJvmExecutor().startServer(iConfig, new ExecutorCallbacks()));
     }
 
     @Override
@@ -147,5 +149,10 @@ public class JVMService implements IService {
     @Override
     public void setClient(IClient client) {
         this.client = (Client) client;
+    }
+
+    @Override
+    public Optional<ExecutorCallbacks> getExecutorCallbacks() {
+        return Optional.ofNullable(executorCallbacks);
     }
 }

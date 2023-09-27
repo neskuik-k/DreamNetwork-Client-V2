@@ -23,7 +23,7 @@ public class ClientManager implements IClientManager {
     private final HashMap<Integer, IClient> clientByPort = new HashMap<>();
     @Getter private final HashMap<String, IClient> clients = new HashMap<>();
     @Getter private final HashMap<ChannelHandlerContext, IClient> clientsByConnection = new HashMap<>();
-    @Getter private final ArrayList<IClient> externalTools = new ArrayList<>();
+    @Getter private final HashMap<String,IClient> externalTools = new HashMap<>();
 
     private final Core main;
     @Getter @Setter
@@ -31,12 +31,13 @@ public class ClientManager implements IClientManager {
     public ClientManager(Core core){
         this.main = core;
     }
+
+
     @Override
     public IClient registerClient(IClient client){
         if(client.isExternalTool()){
             client.setClientManager(this);
             clientsByConnection.put(client.getChannelHandlerContext(),client);
-            externalTools.add(client);
             return client;
         }
         IService jvmService = null;
@@ -56,7 +57,12 @@ public class ClientManager implements IClientManager {
             }
             clientByPort.put(client.getPort(),client);
         }else {
-            // Create a VirtualService
+            jvmService = client.getJvmService();
+            if(jvmService == null){
+                Console.print("A external service tried to connect but there is a problem",Level.SEVERE);
+                client.getChannelHandlerContext().channel().close();
+                return null;
+            }
         }
         //System.out.println(client.getPort());
 

@@ -63,18 +63,15 @@ public class ScreenStream implements IScreenStream {
         //System.out.println(screen.getService().getProcess().getOutputStream().toString());
           //new BufferedOutputStream(screen.getService().getProcess().getOutputStream());
         screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
-        ExecType execType = screen.getService().getJvmExecutor().getExecType();
-        if(execType != null){
+
+        screen.getService().getJvmExecutor().getExecType().ifPresent(execType -> {
             if(execType == ExecType.BUNGEECORD){
                 screenInReader.getReaderLines().add(new BungeeCordReader());
             }
-
-
-            if(execType == ExecType.SPIGOT){
-               screenInReader.getReaderLines().add(new SpigotReader());
+            if(execType == ExecType.SERVER){
+                screenInReader.getReaderLines().add(new SpigotReader());
             }
-        }
-
+        });
         Thread screenIRT = new Thread(screenInReader);
         screenIRT.start();
     }
@@ -104,14 +101,14 @@ public class ScreenStream implements IScreenStream {
         }
         ((ScreenOutWriter)screenOutWriter).run();
         Console.setActualConsole("s:"+name);
-        ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
+       /* ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
 
 
         if(!h.isEmpty()){
             if(!h.get(h.size()-1).content.endsWith("\n")){
                 console.defaultPrint.print("\n");
             }
-        }
+        }*/
     }
 
 }

@@ -32,5 +32,6 @@ public interface IStartupConfigBuilder {
     IStartupConfigBuilder javaVersion(String javaVersion);
 
     IStartupConfig build();
+    IConfig build(boolean save);
     IStartupConfig buildFrom(IStartupConfig config);
 }

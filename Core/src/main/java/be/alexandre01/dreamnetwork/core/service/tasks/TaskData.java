@@ -1,13 +1,9 @@
 package be.alexandre01.dreamnetwork.core.service.tasks;
 
-import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.api.service.IService;
-import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
+import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import lombok.Getter;
@@ -17,12 +13,8 @@ import java.util.Optional;
 
 public class TaskData extends ATaskData {
 
-
-
-
     @Override
     public void operate() {
-
         if (jvmExecutor == null) {
             Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(service);
             if (!jvmExecutor.isPresent()) {
@@ -32,9 +24,10 @@ public class TaskData extends ATaskData {
             this.jvmExecutor = jvmExecutor.get();
         }
         if (iConfig == null) {
-            if (profile != null) {
-                if (jvmExecutor.getJvmProfiles().getProfiles().containsKey(profile)) {
-                    iConfig = jvmExecutor.getJvmProfiles().getProfiles().get(profile);
+            if (profile != null && jvmExecutor.getJvmProfiles().isPresent()) {
+                IProfiles iProfiles = jvmExecutor.getJvmProfiles().get();
+                if (iProfiles.getProfiles().containsKey(profile)) {
+                    iConfig = iProfiles.getProfiles().get(profile);
                 }
                 if (!(jvmExecutor instanceof IConfig)) {
                     Core.getInstance().getGlobalTasks().tasks.remove(this);

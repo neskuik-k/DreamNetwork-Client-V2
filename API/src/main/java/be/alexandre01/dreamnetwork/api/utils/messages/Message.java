@@ -120,29 +120,29 @@ public class Message extends LinkedHashMap<String, Object> {
             value = gsonBuilder.create().toJson(value);
         }
         super.put(prefix + id, value);
-        System.out.println("Value to be set " + value);
+        //System.out.println("Value to be set " + value);
         return this;
     }
 
     public Message setCustomObject(String id, Object value, Class<?> tClass) {
-        System.out.println("Test2");
+        //System.out.println("Test2");
 
 
         ObjectMapper mapper = new ObjectMapper();
         //mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         try {
-            System.out.println(value);
+           // System.out.println(value);
             mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
             mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
             String json = mapper.writer().forType(tClass).writeValueAsString(value);
-            System.out.println(json);
+            //System.out.println(json);
             super.put(prefix + id, json);
         } catch (JsonProcessingException e) {
             System.out.println("Error with custom object");
             Console.bug(e);
         }
         //super.put(prefix+id, value);
-        System.out.println("Value to be set " + value);
+       // System.out.println("Value to be set " + value);
         return this;
     }
 
@@ -360,7 +360,7 @@ public class Message extends LinkedHashMap<String, Object> {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
         Type token = TypeToken.getParameterized(List.class, tClass).getType();
-        System.out.println(token.getTypeName());
+       // System.out.println(token.getTypeName());
         JavaType type = mapper.getTypeFactory().
                 constructCollectionType(List.class, tClass);
         ArrayList<T> list = null;
@@ -454,7 +454,7 @@ public class Message extends LinkedHashMap<String, Object> {
     public String toString() {
         try {
             String json = mapper.writeValueAsString(this);
-            System.out.println(json);
+            //System.out.println(json);
             return json;
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

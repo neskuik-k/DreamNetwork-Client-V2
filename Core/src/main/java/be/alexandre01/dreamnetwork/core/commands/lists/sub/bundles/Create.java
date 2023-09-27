@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 
@@ -55,7 +56,7 @@ public class Create extends SubCommand {
                yaml.dump(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2])),new PrintWriter(file));*/
 
 
-            BundleInfo bundleInfo =  new BundleInfo(nArgs[1], IContainer.JVMType.valueOf(nArgs[2]));
+            BundleInfo bundleInfo =  new BundleInfo(file,nArgs[1], ExecType.valueOf(nArgs[2]));
             //bundleInfo.getServices().add(new BService("test",1,2));
             BundleInfo.updateFile(file, bundleInfo);
             BundleData bundleData = new BundleData(nArgs[1],bundleInfo);

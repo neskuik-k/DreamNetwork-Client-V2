@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
@@ -22,6 +23,7 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
+import org.apache.commons.lang.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.Base64;
@@ -46,7 +48,7 @@ public class AuthentificationResponse extends CoreResponse {
         Console.print(message,Level.FINE);
 
         if(message == null || !message.hasRequest()){
-            System.out.println(message.hasRequest()+" :c");
+            //System.out.println(message.hasRequest()+" :c");
             if(!coreHandler.getAllowedCTX().contains(ctx)){
                 ctx.channel().close();
             }
@@ -61,12 +63,11 @@ public class AuthentificationResponse extends CoreResponse {
             Console.printLang("connection.core.communication.request", Level.FINE, requestInfo.name());
 
             ArrayList<ChannelHandlerContext> ctxs = coreHandler.getAllowedCTX();
-
+            ClientManager clientManager = Core.getInstance().getClientManager();
             if(!coreHandler.getExternalConnections().contains(ctx)){
-                System.out.println(message);
+               // System.out.println(message);
                 if (RequestType.CORE_HANDSHAKE.equals(requestInfo)) {
                     Console.print("HANDSHAKE", Level.FINE);
-                    System.out.println("");
                     if (!message.contains("INFO")) {
                         ctx.channel().close();
                         return;
@@ -94,7 +95,13 @@ public class AuthentificationResponse extends CoreResponse {
                         extClient.getRequestManager().getRequestBuilder().addRequestBuilder(new DefaultExternalRequest());
                       //  extClient.getCoreHandler().getResponses().add(new BaseResponse());
 
-                        extClient.getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE_STATUS,"SUCCESS");
+
+                        String connectionId;
+                        while (clientManager.getExternalTools().containsKey(connectionId = RandomStringUtils.random(6, true, true).toLowerCase())) {
+                            // loop until we get a unique id
+                        }
+                        clientManager.getExternalTools().put(connectionId,extClient);
+                        extClient.getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE_STATUS,"SUCCESS",connectionId);
                         return;
                     }
                     int port = message.getInt("PORT");
@@ -105,19 +112,19 @@ public class AuthentificationResponse extends CoreResponse {
                         if(message.getBoolean("EXTERNAL"))
                             isExternal = true;
                     }
-                    Client newClient = (Client) Core.getInstance().getClientManager().registerClient(Client.builder()
+                    Client newClient = Client.builder()
                             .coreHandler(coreHandler)
                             .info(info)
                             .port(port)
                             .jvmType(null)
                             .ctx(ctx)
                             .isExternalService(isExternal)
-                            .build());
+                            .build();
 
-                    if(isExternal){
+
                         // find service for this external client and link
-                        if(message.contains("name")){
-                            String fullName = message.getString("name");
+                        if(message.contains("NAME") && message.contains("ID") && message.contains("PORT")){
+                            String fullName = message.getString("NAME");
                             String[] split = fullName.split("/");
 
 
@@ -132,24 +139,57 @@ public class AuthentificationResponse extends CoreResponse {
                             int id = Integer.parseInt(splittedName[1]);
                             newClient.setName(fullName);
 
+                            int p = message.getInt("PORT");
+                            newClient.setPort(p);
+
                             BundleManager bundleManager = Core.getInstance().getBundleManager();
+
+                            // check bundle name if it has an another name on this client (main => main_1)
+                            String idString = message.getString("ID");
+                            System.out.println(idString);
+                            IClient extClient = clientManager.getExternalTools().get(idString);
+                            System.out.println(""+extClient);
+                            System.out.println(bundleName.toString());
+                            System.out.println(""+bundleManager.getBundlesNamesByTool().containsColumn(bundleName.toString()));
+                            System.out.println(""+bundleManager.getBundlesNamesByTool().containsRow(client));
+                            System.out.println(""+bundleManager.getBundlesNamesByTool().contains(client,bundleName.toString()));
+                            System.out.println(""+bundleManager.getBundlesNamesByTool().rowKeySet());
+                            System.out.println(""+bundleManager.getBundlesNamesByTool().columnKeySet());
+                            System.out.println(bundleManager.getBundlesNamesByTool().toString());
+
+
+                            String newBundleName = bundleManager.getBundlesNamesByTool().get(extClient,bundleName.toString());
+
+                            System.out.println(newBundleName);
                             // search VirtualService in VirtualBundle
-                            if(bundleManager.getVirtualBundles().containsKey(bundleName.toString())) {
-                                BundleData bundleData = bundleManager.getVirtualBundles().get(bundleName.toString());
+                            if(bundleManager.getVirtualBundles().containsKey(newBundleName)) {
+                                BundleData bundleData = bundleManager.getVirtualBundles().get(newBundleName);
                                 VirtualExecutor virtualExecutor = (VirtualExecutor) bundleData.getExecutors().get(name);
                                 if (virtualExecutor == null) {
                                     Console.print(Colors.RED + "VirtualExecutor not found");
                                     return;
                                 }
-                                VirtualService virtualService = (VirtualService) virtualExecutor.getService(id);
+                                VirtualService virtualService = (VirtualService) virtualExecutor.createOrGetService(id);
+                                Screen screen = new Screen(virtualService);
+                                screen.setViewing(false);
+                                virtualService.setPort(p);
+                                virtualService.setScreen(screen);
+                                virtualService.setClient(client);
                                 virtualService.setId(id);
+                                newClient.setJvmService(virtualService);
                                 virtualService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
                                     executorCallbacks.onConnect.whenConnect(virtualService, newClient);
                                 });
-                            }
-                        }
-                    }
 
+                            }else {
+                                System.out.println("No bundle found");
+                                ctx.close();
+                                return;
+                            }
+
+
+                        }
+                    client = Core.getInstance().getClientManager().registerClient(newClient);
 
                     coreHandler.getResponses().add(new BaseResponse());
                     coreHandler.getResponses().add(new PlayerResponse());
@@ -178,11 +218,10 @@ public class AuthentificationResponse extends CoreResponse {
                             }
                         }
                         Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        if(newClient.getJvmService().getExecutorCallbacks() != null){
-                            if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
-                                newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
-                            }
-                        }
+                        newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                            if(executorCallbacks.onConnect != null)
+                                executorCallbacks.onConnect.whenConnect(newClient.getJvmService(), newClient);
+                        });
 
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
@@ -190,7 +229,7 @@ public class AuthentificationResponse extends CoreResponse {
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
-                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools()) {
+                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
                             String server = newClient.getJvmService().getFullName();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
@@ -209,11 +248,10 @@ public class AuthentificationResponse extends CoreResponse {
                         }
 
                         Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        if(newClient.getJvmService().getExecutorCallbacks() != null){
-                             if(newClient.getJvmService().getExecutorCallbacks().onConnect != null){
-                                 newClient.getJvmService().getExecutorCallbacks().onConnect.whenConnect(newClient.getJvmService(), newClient);
-                            }
-                        }
+                        newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                            if(executorCallbacks.onConnect != null)
+                                executorCallbacks.onConnect.whenConnect(newClient.getJvmService(), newClient);
+                        });
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
                             Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
@@ -247,7 +285,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools()) {
+                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
                             String server = newClient.getJvmService().getFullName();
                             if (devtools != null)
                                 devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");

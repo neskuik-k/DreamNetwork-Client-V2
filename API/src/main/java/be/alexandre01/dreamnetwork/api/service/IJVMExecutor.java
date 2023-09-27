@@ -1,6 +1,10 @@
 package be.alexandre01.dreamnetwork.api.service;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
+import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 
@@ -83,7 +87,24 @@ public interface IJVMExecutor {
 
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig);
     public ExecutorCallbacks startServers(int i, String profile);
-    public void removeService(IService service);
+    public default void removeService(IService service){
+        service.getExecutorCallbacks().ifPresent(executorCallbacks -> {
+            if (executorCallbacks.onStop != null) {
+                executorCallbacks.onStop.whenStop(service);
+            }
+        });
+        DNCoreAPI api = DNCoreAPI.getInstance();
+       api.getEventsFactory().callEvent(new CoreServiceStopEvent(api, service));
+
+        if (service.getClient() != null) {
+            if (!isProxy()) {
+                IClient proxy = api.getClientManager().getProxy();
+                if (proxy != null) {
+                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getFullName());
+                }
+            }
+        }
+    }
 
     public IService getService(Integer i);
 

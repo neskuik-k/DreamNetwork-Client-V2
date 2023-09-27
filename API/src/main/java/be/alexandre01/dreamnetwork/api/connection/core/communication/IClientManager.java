@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.HashMap;
+
 public interface IClientManager {
     IClient registerClient(IClient client);
 
@@ -13,7 +15,7 @@ public interface IClientManager {
 
     java.util.HashMap<ChannelHandlerContext, IClient> getClientsByConnection();
 
-    java.util.ArrayList<IClient> getExternalTools();
+    HashMap<String,IClient> getExternalTools();
 
     IClient getProxy();
 

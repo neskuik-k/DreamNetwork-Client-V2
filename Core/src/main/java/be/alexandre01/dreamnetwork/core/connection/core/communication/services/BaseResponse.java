@@ -12,6 +12,7 @@ import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestPacket;
@@ -172,21 +173,31 @@ public class BaseResponse extends CoreResponse {
                         }
 
                         @Override
+                        public ExecType getExecType() {
+                            return ExecType.SERVER;
+                        }
+
+                        @Override
                         public File getFile() {
                             return null;
                         }
 
 
                     });
+                    virtualBundle.setVirtual(true);
+                    String name = configData.getBundleName();
                     DNCoreAPI.getInstance().getBundleManager().addBundleData(virtualBundle);
+                    // a new name has been potentially created and setted on the bundle
                     DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle);
+                    System.out.println(""+client);
+                    DNCoreAPI.getInstance().getBundleManager().getBundlesNamesByTool().put(client,name,virtualBundle.getName());
                 }
 
                 if(virtualBundle == null){
                     virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(configData.getBundleName());
                 }
 
-                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle);
+                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle,client);
                 virtualBundle.getExecutors().put(virtualExecutor.getName(), virtualExecutor);
                 DNCoreAPI.getInstance().getContainer().getJVMExecutors().add(virtualExecutor);
 

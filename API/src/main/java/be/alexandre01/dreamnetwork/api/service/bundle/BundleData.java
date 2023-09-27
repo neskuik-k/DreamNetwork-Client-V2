@@ -18,6 +18,7 @@ public class BundleData {
     private String name;
     private final ArrayList<BService> services;
     private boolean autoStart;
+    private boolean isVirtual = false;
 
     private final HashMap<String, IJVMExecutor> executors = new HashMap<>();
     private final IBundleInfo bundleInfo;

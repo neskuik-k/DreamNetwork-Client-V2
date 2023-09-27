@@ -16,6 +16,7 @@ public class ExternalCore {
 
     ExtRequestManager requestManager;
     ExternalClient client;
+    public String connectionID = "xxxxx";
     ExternalClientHandler clientHandler;
     Console console;
     boolean isInit = false;

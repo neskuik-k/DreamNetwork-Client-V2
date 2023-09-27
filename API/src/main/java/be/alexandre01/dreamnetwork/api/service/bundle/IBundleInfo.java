@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service.bundle;
 
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import com.google.gson.Gson;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.SafeConstructor;
@@ -27,6 +28,8 @@ public interface IBundleInfo {
     String getName();
 
     be.alexandre01.dreamnetwork.api.service.IContainer.JVMType getType();
+
+    ExecType getExecType();
 
     File getFile();
 }

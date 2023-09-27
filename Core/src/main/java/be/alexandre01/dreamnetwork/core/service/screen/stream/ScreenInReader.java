@@ -70,9 +70,8 @@ public class ScreenInReader extends Thread implements IScreenInReader {
                     if(size > 0){
                         File firstFile = files[0];
                         String idSplit = firstFile.getName().split("-")[0];
-                        System.out.println(idSplit);
+                       // System.out.println(idSplit);
                         if(idSplit.matches("[0-9]+")){
-                            System.out.println("Match");
                             int idSplitInt = Integer.parseInt(idSplit);
                             if(idSplitInt >= id){
                                 id = idSplitInt+size;
@@ -90,7 +89,6 @@ public class ScreenInReader extends Thread implements IScreenInReader {
 
 
                     for(File target : files){
-                        System.out.println("Find  " + target.getName());
 
                         //check if idSplit is multiple numbers
                         /*System.out.println(idSplit);

@@ -260,7 +260,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                         c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS, server);
                     }
                 }
-                for (IClient c : Core.getInstance().getClientManager().getExternalTools()) {
+                for (IClient c : Core.getInstance().getClientManager().getExternalTools().values()) {
                     if (c != null) {
                         //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
                         c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVERS, server);

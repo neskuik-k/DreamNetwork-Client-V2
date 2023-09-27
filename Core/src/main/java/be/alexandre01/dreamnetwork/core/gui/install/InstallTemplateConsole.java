@@ -62,7 +62,7 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
                 infos.writing(Console.getFromLang("service.creation.install.tab"));
                 ArrayList<String> versions = new ArrayList<>();
                 for(InstallationLinks s : InstallationLinks.values()) {
-                    if(s.getJvmType() == finalExec.bundleData.getJvmType()){
+                    if(s.getExecType() == finalExec.bundleData.getBundleInfo().getExecType()){
                         versions.add(s.getVer());
                     }
                 }
@@ -101,7 +101,9 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
         }
         if(installationLinks == null) return false;
 
-
+        if(installationLinks.getExecType() != jvmExecutor.bundleData.getBundleInfo().getExecType()){
+            return false;
+        }
         String write = console.writing;
         console.setWriting("");
         Console.setBlockConsole(true);

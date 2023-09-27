@@ -10,8 +10,11 @@ import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
+import lombok.Getter;
+import lombok.Setter;
 
 
 import java.io.File;
@@ -22,14 +25,27 @@ public class VirtualExecutor  implements IJVMExecutor {
     BundleData bundleData;
     HashMap<Integer,IService> serviceList = new HashMap<>();
 
+    @Getter IClient externalTool;
 
 
-    public VirtualExecutor(ConfigData configData, BundleData bundle) {
+
+    public VirtualExecutor(ConfigData configData, BundleData bundle,IClient externalTool){
         this.configData = configData;
         this.bundleData = bundle;
+        this.externalTool = externalTool;
     }
 
-    private Optional<IClient> externalTool;
+
+    public VirtualService createOrGetService(Integer id){
+        if(serviceList.containsKey(id)){
+            return (VirtualService) serviceList.get(id);
+        }
+        VirtualService virtualService = new VirtualService(null, this);
+        serviceList.put(id,virtualService);
+        return virtualService;
+    }
+
+
 
     @Override
     public ExecutorCallbacks startServer() {
@@ -48,10 +64,8 @@ public class VirtualExecutor  implements IJVMExecutor {
 
     @Override
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
-        externalTool.ifPresent(client -> {
-            VirtualService virtualService = new VirtualService( null, this);
-            sendStartCallBack(client, callbacks, virtualService, profile);
-        });
+        VirtualService virtualService = new VirtualService( null, this);
+        sendStartCallBack(externalTool, callbacks, virtualService, profile);
         return null;
     }
 
@@ -62,12 +76,8 @@ public class VirtualExecutor  implements IJVMExecutor {
 
     @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks callbacks) {
-
-        externalTool.ifPresent(client -> {
-            VirtualService virtualService = new VirtualService( null, this);
-
-            sendStartCallBack(client, callbacks, virtualService, jvmConfig);
-        });
+        VirtualService virtualService = new VirtualService( null, this);
+        sendStartCallBack(externalTool, callbacks, virtualService, jvmConfig);
         return callbacks;
     }
 
@@ -128,6 +138,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     @Override
     public void removeService(IService service) {
         serviceList.remove(service.getId());
+        IJVMExecutor.super.removeService(service);
     }
 
     @Override

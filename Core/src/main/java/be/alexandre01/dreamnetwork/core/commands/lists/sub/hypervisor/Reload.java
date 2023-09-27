@@ -45,7 +45,11 @@ public class Reload extends SubCommand {
                     IStartupConfig config = jvmExecutor.getStartupConfig();
                     config.saveFile();
 
-                    ((JVMProfiles)jvmExecutor.getJvmProfiles()).loading(jvmExecutor.getJvmProfiles().getFile());
+                    jvmExecutor.getJvmProfiles().ifPresent(iProfiles -> {
+                        if(iProfiles instanceof JVMProfiles){
+                            ((JVMProfiles)iProfiles).loading(iProfiles.getFile());
+                        }
+                    });
                 }
             }
             if(sArgs[1].equalsIgnoreCase("tasks")){

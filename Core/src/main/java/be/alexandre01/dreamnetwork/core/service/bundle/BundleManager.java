@@ -3,15 +3,18 @@ package be.alexandre01.dreamnetwork.core.service.bundle;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import com.google.common.collect.*;
 import com.google.gson.Gson;
 import lombok.Getter;
 
@@ -27,6 +30,7 @@ import java.util.HashMap;
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
     @Getter private final HashMap<String, BundleData> virtualBundles = new HashMap<>();
+    @Getter private final Table<IClient,String,String> bundlesNamesByTool = HashBasedTable.create();
 
     @Getter ArrayList<String> paths = new ArrayList<>();
 
@@ -49,10 +53,11 @@ public class BundleManager implements IBundleManager {
     public void addBundleData(BundleData bundleData){
         if(bundleDatas.containsKey(bundleData.getName().toLowerCase())){
             int i = 1;
-            while(bundleDatas.containsKey(bundleData.getName().toLowerCase()+"_"+i)){
+            while(bundleDatas.containsKey(bundleData.getName().toLowerCase()+"@"+i)){
                 i++;
             }
-            bundleData.setName(bundleData.getName()+"_"+i);
+            bundleData.setName(bundleData.getName()+"@"+i);
+            System.out.println("New name of bundle  => " + bundleData.getName());
         }
         bundleDatas.put(bundleData.getName().toLowerCase(), bundleData);
     }
@@ -60,10 +65,10 @@ public class BundleManager implements IBundleManager {
     public void addVirtualBundleData(BundleData bundleData){
         if(virtualBundles.containsKey(bundleData.getName().toLowerCase())){
             int i = 1;
-            while(virtualBundles.containsKey(bundleData.getName().toLowerCase()+"_"+i)){
+            while(virtualBundles.containsKey(bundleData.getName().toLowerCase()+"@"+i)){
                 i++;
             }
-            bundleData.setName(bundleData.getName()+"_"+i);
+            bundleData.setName(bundleData.getName()+"@"+i);
         }
         virtualBundles.put(bundleData.getName().toLowerCase(), bundleData);
     }
@@ -101,12 +106,12 @@ public class BundleManager implements IBundleManager {
                 File mainFile,proxyFile;
                 mainFile = new File("bundles/main/this-info.yml");
                 proxyFile = new File("bundles/proxies/this-info.yml");
-                BundleInfo main = new BundleInfo("main", JVMContainer.JVMType.SERVER);
+                BundleInfo main = new BundleInfo(mainFile,"main", ExecType.SERVER);
                 BundleInfo.updateFile(mainFile,main);
                 BundleData mainBundle = new BundleData("main",main);
 
 
-                BundleInfo proxy = new BundleInfo("proxies", JVMContainer.JVMType.PROXY);
+                BundleInfo proxy = new BundleInfo(proxyFile,"proxies", ExecType.BUNGEECORD);
                 BundleInfo.updateFile(proxyFile,proxy);
                 BundleData proxyBundle = new BundleData("proxies",proxy);
 

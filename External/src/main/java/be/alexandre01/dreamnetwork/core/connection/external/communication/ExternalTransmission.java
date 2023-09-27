@@ -24,6 +24,7 @@ public class ExternalTransmission extends ExtResponse {
             public void onRequest(Message message, ChannelHandlerContext ctx) throws Exception {
                 if(message.getString("STATUS").equalsIgnoreCase("SUCCESS")){
                     System.out.println("I'm connected to the core YEEPEE");
+                    ExternalCore.getInstance().setConnectionID(message.getString("ID"));
                     ExternalCore.getInstance().setConnected(true);
 
                     ArrayList<ConfigData> list = new ArrayList<>();
@@ -37,11 +38,11 @@ public class ExternalTransmission extends ExtResponse {
                     //list.add(new Test());
 
                     ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTERNAL_EXECUTORS , list);
-                    ExternalCore.getInstance().writeAndFlush(new Message().set("Salut","Salut"));
-                    HashMap<String, ConfigData> map = new HashMap<>();
+
+                    /*HashMap<String, ConfigData> map = new HashMap<>();
                     map.put("Server1", (ConfigData) DNCoreAPI.getInstance().getContainer().getJVMExecutors().get(0));
 
-                    ExternalCore.getInstance().writeAndFlush(new Message().setHeader("Test").set("Salut",map, ConfigData.class));
+                    ExternalCore.getInstance().writeAndFlush(new Message().setHeader("Test").set("Salut",map, ConfigData.class));*/
                 }else {
                     System.out.println("I'm not connected to the core :(");
                     ExternalCore.getInstance().setConnected(false);

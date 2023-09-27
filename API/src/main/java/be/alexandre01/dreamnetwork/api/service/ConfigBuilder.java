@@ -122,6 +122,23 @@ public class ConfigBuilder implements IStartupConfigBuilder {
     }
 
     @Override
+    public IConfig build(boolean save) {
+        if(save){
+            return build();
+        }
+        IConfig j =  DNCoreAPI.getInstance().getJVMUtils().createConfig();
+        j.setType(type);
+        j.setXms(Xms);
+        j.setXmx(Xmx);
+        j.setPort(port);
+        j.setJavaVersion(javaVersion);
+        j.setExecutable(exec);
+        j.setStartup(startup);
+        j.setDeployers(deployers);
+        return j;
+    }
+
+    @Override
     public IStartupConfig buildFrom(IStartupConfig config) {
         name = config.getName();
         pathName = config.getPathName();

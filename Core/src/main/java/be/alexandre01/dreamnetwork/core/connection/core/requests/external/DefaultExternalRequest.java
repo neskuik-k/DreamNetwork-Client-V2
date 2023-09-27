@@ -7,6 +7,7 @@ public class DefaultExternalRequest extends RequestBuilder {
     public DefaultExternalRequest(){
         super.getRequestData().put(RequestType.CORE_HANDSHAKE_STATUS,(message, client, args) -> {
             message.set("STATUS",((String)args[0]).toUpperCase());
+            message.set("ID",args[1]);
             return message;
         });
     }

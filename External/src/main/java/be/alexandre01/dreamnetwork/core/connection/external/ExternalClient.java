@@ -7,6 +7,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import lombok.Setter;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -16,6 +17,8 @@ public class ExternalClient extends Thread{
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     public int trying = 0;
     public String ip;
+
+
 
 
     public ExternalClient(String ip){

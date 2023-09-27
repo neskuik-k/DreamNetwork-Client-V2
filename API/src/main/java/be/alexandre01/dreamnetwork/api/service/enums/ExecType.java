@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.api.service.enums;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 
 public enum ExecType {
-    SPIGOT(false),BUNGEECORD(true),VELOCITY(true);
+    SERVER(false),BUNGEECORD(true),VELOCITY(true),ANY_PROXY(true);
 
 
     private IContainer.JVMType jvmType;
