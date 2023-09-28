@@ -39,7 +39,7 @@ jobs:
       run: 'cd target && ls'
       id: lstarget
     - name: Remove Deobfuscated Jar
-      run: "find . -type f ! -name '*-prod.jar' -delete"
+      run: "find . -type f ! -name 'DreamNetwork.jar' -delete"
       id: remove
     - name: Create Dir
       run: mkdir staging && cp target/DreamNetwork.jar staging
