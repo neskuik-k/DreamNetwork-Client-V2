@@ -39,16 +39,14 @@ jobs:
       run: 'cd target && ls'
       id: lstarget
     - name: Remove Deobfuscated Jar
-      run: "find . -type f ! -name '*-prod.jar' -delete"
+      run: "find . -type f ! -name 'DreamNetwork.jar' -delete"
       id: remove
     - name: Create Dir
-      run: mkdir staging && cp target/*-prod.jar staging
+      run: mkdir staging && cp target/DreamNetwork.jar staging
     - uses: actions/upload-artifact@v2
       with:
         name: Package
         path: stagging
-    - name: Rename File
-      run: "mv target/DreamNetworkV2-${{ steps.project.outputs.version }}-prod.jar target/DreamNetwork.jar"
     - name: Creating Version.txt
       run: echo "${{ steps.project.outputs.version }}#${{github.run_number}}" > version.txt
     - name: Pushing DreamNetwork.jar to CDN
