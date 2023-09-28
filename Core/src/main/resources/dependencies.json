@@ -52,8 +52,8 @@
     },
     {
       "path": "org/yaml/snakeyaml",
-      "version": "1.33",
-      "url": "https://repo1.maven.org/maven2/org/yaml/snakeyaml/1.33/snakeyaml-1.33.jar"
+      "version": "2.2",
+      "url": "https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar"
     },
     {
       "path": "ch/qos/logback/logback-classic",
@@ -104,6 +104,12 @@
       "path": "org/reactivestreams/reactive-streams",
       "version": "1.0.4",
       "url": "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
+    },
+
+    {
+      "path": "com/fasterxml/jackson/core/jackson-databind",
+      "version": "2.15.2",
+      "url": "https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-databind/2.15.2/jackson-databind-2.15.2.jar"
     }
   ]
 }
