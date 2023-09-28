@@ -1,6 +1,3 @@
 # Configure your tasks here
-tasks:
-- count: 1
-  name: lobby
-  service: lobby
-  taskType: ALWAYS_ON
+tasks: []
+...

@@ -3,11 +3,16 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
     <groupId>be.alexandre01.dreamnetwork</groupId>
     <artifactId>DreamNetworkV2</artifactId>
     <version>1.11.0-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
+    <modules>
+        <module>External</module>
+        <module>Core</module>
+        <module>API</module>
+    </modules>
+
 
     <profiles>
         <profile>
@@ -19,369 +24,6 @@
                 <java.version>11</java.version>
                 <outputPath>${project.basedir}/target/</outputPath>
             </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>com.github.wvengen</groupId>
-                        <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.13</version>
-                        <executions>
-                            <execution>
-                                <id>obfuscation-packaging</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>proguard</goal>
-                                </goals>
-                                <configuration>
-                                    <proguardVersion>7.1</proguardVersion>
-                                    <obfuscate>true</obfuscate>
-                                    <attach>true</attach>
-                                    <appendClassifier>false</appendClassifier>
-                                    <addMavenDescriptor>true</addMavenDescriptor>
-                                    <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-small.jar</outjar>
-                                    <injarNotExistsSkip>true</injarNotExistsSkip>
-                                    <libs>
-                                        <lib>${maven.multiModuleProjectDirectory}/libs/rt.jar</lib>
-                                    </libs>
-
-                                    <options>
-                                        <option>-allowaccessmodification</option>
-                                        <option>-dontoptimize</option>
-                                        <option>-dontshrink</option>
-                                        <option>-dontnote</option>
-                                        <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
-                                        <option>-keepattributes Signature,InnerClasses,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table</option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.Launcher</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.Launcher {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>
-                                            -keepclassmembers class * extends java.lang.Enum {
-                                            <![CDATA[<fields>]]>;
-                                            public static **[] values();
-                                            public static ** valueOf(java.lang.String);
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.api.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.language.Emoji</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.language.Emoji {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMProfiles {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.GlobalTasks {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.utils.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.utils.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-
-
-                                        <option>-keep public class javax.xml.*</option>
-                                    </options>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>6.2.2</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.2.4</version>
-                        <executions>
-
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <outputFile>${outputPath}/${project.artifactId}-${project.version}-prod.jar</outputFile>
-                                    <minimizeJar>true</minimizeJar>
-                                    <filters>
-                                        <filter>
-                                            <artifact>log4j:log4j</artifact>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>commons-logging:commons-logging</artifact>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>*:*</artifact>
-                                            <excludes>
-                                                <exclude>META-INF/*.SF</exclude>
-                                                <exclude>META-INF/*.DSA</exclude>
-                                                <exclude>META-INF/*.RSA</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                    <relocations>
-
-                                    </relocations>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>API</id>
-            <activation>
-                <activeByDefault>false</activeByDefault>
-            </activation>
-            <properties>
-                <java.version>11</java.version>
-                <outputPath>${project.basedir}/target/</outputPath>
-            </properties>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-shade-plugin</artifactId>
-                        <version>3.2.4</version>
-                        <executions>
-                            <execution>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>shade</goal>
-                                </goals>
-                                <configuration>
-                                    <outputFile>${outputPath}/${project.artifactId}-${project.version}-api.jar</outputFile>
-                                    <minimizeJar>true</minimizeJar>
-                                    <filters>
-                                        <filter>
-                                            <artifact>log4j:log4j</artifact>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>commons-logging:commons-logging</artifact>
-                                            <includes>
-                                                <include>**</include>
-                                            </includes>
-                                        </filter>
-                                        <filter>
-                                            <artifact>*:*</artifact>
-                                            <excludes>
-                                                <exclude>META-INF/*.SF</exclude>
-                                                <exclude>META-INF/*.DSA</exclude>
-                                                <exclude>META-INF/*.RSA</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/addons/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/cluster/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/commands/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/config/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/libraries/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/connection/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/docker/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/events/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/installer/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/rest/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/service/**</exclude>
-                                                <exclude>be/alexandre01/dreamnetwork/core/*.class</exclude>
-                                                <exclude>files/**</exclude>
-                                            </excludes>
-                                        </filter>
-                                    </filters>
-                                    <relocations>
-
-                                    </relocations>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.github.wvengen</groupId>
-                        <artifactId>proguard-maven-plugin</artifactId>
-                        <version>2.0.13</version>
-                        <executions>
-                            <execution>
-                                <id>obfuscation-packaging</id>
-                                <phase>package</phase>
-                                <goals>
-                                    <goal>proguard</goal>
-                                </goals>
-                                <configuration>
-                                    <proguardVersion>7.1</proguardVersion>
-                                    <obfuscate>true</obfuscate>
-                                    <attach>true</attach>
-                                    <appendClassifier>false</appendClassifier>
-                                    <addMavenDescriptor>true</addMavenDescriptor>
-                                    <injar>${project.build.finalName}.jar</injar>
-                                    <outjar>${project.build.finalName}-small.jar</outjar>
-                                    <injarNotExistsSkip>true</injarNotExistsSkip>
-                                    <libs>
-                                        <lib>${maven.multiModuleProjectDirectory}/libs/rt.jar</lib>
-                                    </libs>
-
-                                    <options>
-                                        <option>-allowaccessmodification</option>
-                                        <option>-dontoptimize</option>
-                                        <option>-dontshrink</option>
-                                        <option>-dontnote</option>
-                                        <option>-dontwarn</option> <!-- added option to ignore com.sun missing classes -->
-                                        <option>-keepattributes Signature,SourceFile,InnerClasses,LineNumberTable,*Annotations*,LocalVariable*Table</option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.Launcher</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.Launcher {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>
-                                            -keepclassmembers class * extends java.lang.Enum {
-                                            <![CDATA[<fields>]]>;
-                                            public static **[] values();
-                                            public static ** valueOf(java.lang.String);
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.api.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.api.connection.request.RequestType</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.api.connection.request.RequestType {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.GlobalTasks {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.config.GlobalSettings {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMProfiles {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.JVMConfig {
-                                            <![CDATA[<methods>]]>;
-                                            <![CDATA[<fields>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.core.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.utils.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-                                        <option>-keep class be.alexandre01.dreamnetwork.utils.**</option>
-                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.utils.** {
-                                            <![CDATA[<methods>]]>;
-                                            }
-                                        </option>
-
-                                        <option>-keep public class javax.xml.*</option>
-                                    </options>
-                                </configuration>
-                            </execution>
-                        </executions>
-                        <dependencies>
-                            <dependency>
-                                <groupId>net.sf.proguard</groupId>
-                                <artifactId>proguard-base</artifactId>
-                                <version>6.2.2</version>
-                            </dependency>
-                        </dependencies>
-                    </plugin>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-release-plugin</artifactId>
-                        <version>2.4.2</version>
-                        <configuration>
-                            <tagNameFormat>v@{project.version}</tagNameFormat>
-                            <autoVersionSubmodules>true</autoVersionSubmodules>
-                            <releaseProfiles>releases</releaseProfiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
         </profile>
         <profile>
             <id>releases</id>
@@ -410,10 +52,126 @@
             </build>
         </profile>
         <profile>
-            <id>Dev-1</id>
+            <id>Dev</id>
             <properties>
                 <outputPath>${project.basedir}/target</outputPath>
             </properties>
+            <dependencies>
+
+                <dependency>
+                    <groupId>commons-io</groupId>
+                    <artifactId>commons-io</artifactId>
+                    <version>2.11.0</version>
+                    <scope>compile</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+                <dependency>
+                    <groupId>com.konghq</groupId>
+                    <artifactId>unirest-java</artifactId>
+                    <version>3.13.6</version>
+                </dependency>
+                <dependency>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                    <version>2.2</version>
+                </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+                <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
+                <dependency>
+                    <groupId>org.asynchttpclient</groupId>
+                    <artifactId>async-http-client</artifactId>
+                    <version>2.12.3</version>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+                <dependency>
+                    <groupId>com.google.code.gson</groupId>
+                    <artifactId>gson</artifactId>
+                    <version>2.10.1</version>
+                    <scope>compile</scope>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
+                <dependency>
+                    <groupId>io.socket</groupId>
+                    <artifactId>socket.io-client</artifactId>
+                    <version>2.1.0</version>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/com.monitorjbl/json-view -->
+                <dependency>
+                    <groupId>com.monitorjbl</groupId>
+                    <artifactId>json-view</artifactId>
+                    <version>1.1.0</version>
+                </dependency>
+
+
+                <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+
+
+                <dependency>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                    <version>1.2.6</version>
+                    <scope>compile</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+
+                <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
+                <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
+                <dependency>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java</artifactId>
+                    <version>3.2.12</version>
+                    <scope>compile</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/com.monitorjbl/json-view -->
+                <dependency>
+                    <groupId>com.monitorjbl</groupId>
+                    <artifactId>json-view</artifactId>
+                    <version>1.1.0</version>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+                <dependency>
+                    <groupId>org.apache.httpcomponents.client5</groupId>
+                    <artifactId>httpclient5</artifactId>
+                    <version>5.1.2</version>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
+                <dependency>
+                    <groupId>com.github.docker-java</groupId>
+                    <artifactId>docker-java-transport-httpclient5</artifactId>
+                    <version>3.2.12</version>
+                </dependency>
+
+                <dependency>
+                    <groupId>org.projectlombok</groupId>
+                    <artifactId>lombok</artifactId>
+                    <version>1.18.20</version>
+                    <scope>compile</scope>
+                </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+
+                <dependency>
+                    <groupId>org.fusesource.jansi</groupId>
+                    <artifactId>jansi</artifactId>
+                    <version>1.17.1</version>
+                    <scope>compile</scope>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.jline/jline -->
+                <dependency>
+                    <groupId>org.jline</groupId>
+                    <artifactId>jline</artifactId>
+                    <version>3.21.0</version>
+                    <scope>compile</scope>
+                </dependency>
+
+                <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+                <dependency>
+                    <groupId>io.netty</groupId>
+                    <artifactId>netty-all</artifactId>
+                    <version>4.1.97.Final</version>
+                    <scope>compile</scope>
+                </dependency>
+            </dependencies>
         </profile>
         <profile>
             <id>Custom-1</id>
@@ -465,53 +223,6 @@
                         <descriptorRef>jar-with-dependencies</descriptorRef>
                     </descriptorRefs>
                 </configuration>
-            </plugin><plugin><groupId>org.apache.maven.plugins</groupId><artifactId>maven-compiler-plugin</artifactId><configuration><source>8</source><target>8</target></configuration></plugin>
-            <!-- Configures Proguard obfuscation tool to generate an
-     obfuscated version of the JAR file that replaces the
-     default unobfuscated JAR.
--->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.2.4</version>
-                <executions>
-
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                        <configuration>
-                            <outputFile>${outputPath}/${project.artifactId}-${project.version}-withShadedDependencies.jar</outputFile>
-                            <minimizeJar>false</minimizeJar>
-                            <filters>
-                                <filter>
-                                    <artifact>log4j:log4j</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>commons-logging:commons-logging</artifact>
-                                    <includes>
-                                        <include>**</include>
-                                    </includes>
-                                </filter>
-                                <filter>
-                                    <artifact>*:*</artifact>
-                                    <excludes>
-                                        <exclude>META-INF/*.SF</exclude>
-                                        <exclude>META-INF/*.DSA</exclude>
-                                        <exclude>META-INF/*.RSA</exclude>
-                                    </excludes>
-                                </filter>
-                            </filters>
-                            <relocations>
-
-                            </relocations>
-                        </configuration>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -524,130 +235,139 @@
         </repository>
     </repositories>
 
-    <dependencies><!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
-
-
-
-
-        <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
-            <version>2.11.0</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
-        <dependency>
-            <groupId>com.konghq</groupId>
-            <artifactId>unirest-java</artifactId>
-            <version>3.13.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.yaml</groupId>
-            <artifactId>snakeyaml</artifactId>
-            <version>1.33</version>
-        </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
-        <dependency>
-            <groupId>com.diogonunes</groupId>
-            <artifactId>JColor</artifactId>
-            <version>5.0.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
-        <dependency>
-            <groupId>org.asynchttpclient</groupId>
-            <artifactId>async-http-client</artifactId>
-            <version>2.12.3</version>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-        <dependency>
-            <groupId>com.google.code.gson</groupId>
-            <artifactId>gson</artifactId>
-            <version>2.8.9</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
-        <dependency>
-            <groupId>io.socket</groupId>
-            <artifactId>socket.io-client</artifactId>
-            <version>2.1.0</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
-        <!-- https://mvnrepository.com/artifact/com.comcast/ip4s-core -->
-
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
-
-
-        <dependency>
-            <groupId>ch.qos.logback</groupId>
-            <artifactId>logback-classic</artifactId>
-            <version>1.2.6</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
-
-        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
-        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
-        <dependency>
-            <groupId>com.github.docker-java</groupId>
-            <artifactId>docker-java</artifactId>
-            <version>3.2.12</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
-        <dependency>
-            <groupId>org.apache.httpcomponents.client5</groupId>
-            <artifactId>httpclient5</artifactId>
-            <version>5.1.2</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
-        <dependency>
-            <groupId>com.github.docker-java</groupId>
-            <artifactId>docker-java-transport-httpclient5</artifactId>
-            <version>3.2.12</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.20</version>
-            <scope>compile</scope>
-        </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
-
-        <dependency>
-            <groupId>org.fusesource.jansi</groupId>
-            <artifactId>jansi</artifactId>
-            <version>1.17.1</version>
-            <scope>compile</scope>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.jline/jline -->
-        <dependency>
-            <groupId>org.jline</groupId>
-            <artifactId>jline</artifactId>
-            <version>3.21.0</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>4.1.97.Final</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
-            <version>5.8.2</version>
-            <scope>test</scope>
-        </dependency>
-    </dependencies>
     <properties>
+        <!--suppress UnresolvedMavenProperty -->
+        <root>${session.executionRootDirectory}</root>
+        <rtFile>${root}/libs/rt.jar</rtFile>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
+
+    <dependencies>
+    <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.11.0</version>
+        <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+    <dependency>
+        <groupId>com.konghq</groupId>
+        <artifactId>unirest-java</artifactId>
+        <version>3.13.6</version>
+        <scope>provided</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.yaml</groupId>
+        <artifactId>snakeyaml</artifactId>
+        <version>2.2</version>
+        <scope>provided</scope>
+    </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+    <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
+    <dependency>
+        <groupId>org.asynchttpclient</groupId>
+        <artifactId>async-http-client</artifactId>
+        <version>2.12.3</version>
+        <scope>compile</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+    <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.10.1</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
+    <dependency>
+        <groupId>io.socket</groupId>
+        <artifactId>socket.io-client</artifactId>
+        <version>2.1.0</version>
+        <scope>provided</scope>
+    </dependency>
+        <dependency>
+            <groupId>com.monitorjbl</groupId>
+            <artifactId>json-view</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+
+
+    <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>1.2.6</version>
+        <scope>provided</scope>
+    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/log4j/log4j -->
+
+    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
+    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
+    <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java</artifactId>
+        <version>3.2.12</version>
+        <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+    <dependency>
+        <groupId>org.apache.httpcomponents.client5</groupId>
+        <artifactId>httpclient5</artifactId>
+        <version>5.1.2</version>
+        <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
+    <dependency>
+        <groupId>com.github.docker-java</groupId>
+        <artifactId>docker-java-transport-httpclient5</artifactId>
+        <version>3.2.12</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.20</version>
+        <scope>provided</scope>
+    </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+
+    <dependency>
+        <groupId>org.fusesource.jansi</groupId>
+        <artifactId>jansi</artifactId>
+        <version>1.17.1</version>
+        <scope>provided</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/org.jline/jline -->
+    <dependency>
+        <groupId>org.jline</groupId>
+        <artifactId>jline</artifactId>
+        <version>3.21.0</version>
+        <scope>provided</scope>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+    <dependency>
+        <groupId>io.netty</groupId>
+        <artifactId>netty-all</artifactId>
+        <version>4.1.97.Final</version>
+        <scope>provided</scope>
+    </dependency>
+        <dependency>
+            <groupId>io.projectreactor.netty</groupId>
+            <artifactId>reactor-netty</artifactId>
+            <version>1.1.10</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 </project>

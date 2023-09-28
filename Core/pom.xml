@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>be.alexandre01.dreamnetwork</groupId>
+        <artifactId>DreamNetworkV2</artifactId>
+        <version>1.11.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>be.dreamnetwork</groupId>
+    <artifactId>Core</artifactId>
+
+    <properties>
+        <maven.compiler.source>8</maven.compiler.source>
+        <maven.compiler.target>8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>be.dreamnetwork</groupId>
+            <artifactId>API</artifactId>
+            <version>1.11.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>be.dreamnetwork</groupId>
+            <artifactId>External</artifactId>
+            <version>1.11.0-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+    <profiles>
+        <profile>
+            <id>Prod</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>11</java.version>
+                <outputPath>${project.basedir}/target/</outputPath>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.github.wvengen</groupId>
+                        <artifactId>proguard-maven-plugin</artifactId>
+                        <version>2.0.13</version>
+                        <executions>
+                            <execution>
+                                <id>obfuscation-packaging</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>proguard</goal>
+                                </goals>
+                                <configuration>
+                                    <proguardVersion>7.1</proguardVersion>
+                                    <obfuscate>true</obfuscate>
+                                    <attach>true</attach>
+                                    <appendClassifier>false</appendClassifier>
+                                    <addMavenDescriptor>true</addMavenDescriptor>
+                                    <injar>${project.build.finalName}.jar</injar>
+                                    <outjar>${project.build.finalName}-small.jar</outjar>
+                                    <injarNotExistsSkip>true</injarNotExistsSkip>
+                                    <libs>
+                                        <lib>${project.parent.basedir}/libs/rt.jar</lib>
+                                    </libs>
+
+                                    <options>
+                                        <option>-allowaccessmodification</option>
+                                        <option>-dontoptimize</option>
+                                        <option>-dontshrink</option>
+                                        <option>-dontnote</option>
+                                        <option>-dontwarn
+                                        </option> <!-- added option to ignore com.sun missing classes -->
+                                        <option>-keepattributes
+                                            Signature,InnerClasses,SourceFile,LineNumberTable,*Annotations*,LocalVariable*Table
+                                        </option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.Launcher</option>
+                                        <option>-keepclasseswithmembernames class
+                                            be.alexandre01.dreamnetwork.core.Launcher {
+                                            <![CDATA[<methods>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep class !be.alexandre01.dreamnetwork.core.** { *; }</option>
+                                        <option>-keep class be.alexandre01.dreamnetwork.core.console.language.Emoji</option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.console.language.Emoji {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keepclasseswithmembernames class
+                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+                                        <option>-keep public class javax.xml.*</option>
+                                    </options>
+                                </configuration>
+                            </execution>
+                        </executions>
+                        <dependencies>
+                            <dependency>
+                                <groupId>net.sf.proguard</groupId>
+                                <artifactId>proguard-base</artifactId>
+                                <version>6.2.2</version>
+                            </dependency>
+                        </dependencies>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <outputFile>${project.parent.basedir}/target/DreamNetwork.jar
+                                    </outputFile>
+
+                                    <filters>
+                                        <filter>
+                                            <artifact>log4j:log4j</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>commons-logging:commons-logging</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                    <relocations>
+
+                                    </relocations>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>Dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <properties>
+                <java.version>11</java.version>
+                <outputPath>${project.basedir}/target/</outputPath>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <version>3.2.4</version>
+                        <executions>
+                            <execution>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>shade</goal>
+                                </goals>
+                                <configuration>
+                                    <outputFile>${project.parent.basedir}/target/${project.artifactId}-${project.version}-withDep.jar
+                                    </outputFile>
+
+                                    <filters>
+                                        <filter>
+                                            <artifact>log4j:log4j</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>commons-logging:commons-logging</artifact>
+                                            <includes>
+                                                <include>**</include>
+                                            </includes>
+                                        </filter>
+                                        <filter>
+                                            <artifact>*:*</artifact>
+                                            <excludes>
+                                                <exclude>META-INF/*.SF</exclude>
+                                                <exclude>META-INF/*.DSA</exclude>
+                                                <exclude>META-INF/*.RSA</exclude>
+                                            </excludes>
+                                        </filter>
+                                    </filters>
+                                    <relocations>
+
+                                    </relocations>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
+
+</project>

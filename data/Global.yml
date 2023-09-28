@@ -1,15 +1,20 @@
-# This is the global settings of the server | :D
+# This is the global settings of the server | <3
 SIG_IGN_Handler: true
 checkDefaultJVMVersion: true
 checkJVMVersionOnServiceStart: true
+connectionMode: netty
 copyIOMethod: files
 emojiOnCommand: false
 findAllocatedPorts: true
 language: en_EN
-port: 14521
+loggingService: true
+logsByService: 3
+nettyBossThreads: 1
+nettyWorkerThreads: 4
+port: 14520
 rainbowText: false
 screenNameInConsoleChange: true
 terminalMode: ssh
-threadPoolIO: 8
+threadsPoolIO: 8
 useEmoji: false
 username: altat

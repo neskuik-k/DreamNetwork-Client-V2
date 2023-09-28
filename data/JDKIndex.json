@@ -1,4 +1,3 @@
 {
-  "default": "java",
-  "8": "/Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/bin/java"
+  "default": "java"
 }
