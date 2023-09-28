@@ -47,8 +47,6 @@ jobs:
       with:
         name: Package
         path: stagging
-    - name: Rename File
-      run: "mv target/DreamNetworkV2-${{ steps.project.outputs.version }}-prod.jar target/DreamNetwork.jar"
     - name: Creating Version.txt
       run: echo "${{ steps.project.outputs.version }}#${{github.run_number}}" > version.txt
     - name: Pushing DreamNetwork.jar to CDN
