@@ -12,5 +12,5 @@
     </root>
     <logger name="jdk.event.security" level="WARN"/>
     <logger name="io.netty" level="WARN"/>
-    <logger name="org.yaml.snakeyaml" level="OFF"/>
+    <logger name="org.yaml.snakeyaml" level="WARN"/>
 </configuration>
