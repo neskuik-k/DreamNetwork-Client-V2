@@ -79,6 +79,9 @@ public class Main {
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
         System.setProperty("illegal-access", "permit");
         System.setProperty("file.encoding", "UTF-8");
+
+        Logger.getLogger("org.yaml.snakeyaml").setLevel(Level.OFF);
+
         utilsAPI = new UtilsAPI();
         boolean dataCreated = Config.contains("data");
         if(!dataCreated)

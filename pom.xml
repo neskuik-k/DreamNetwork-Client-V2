@@ -57,7 +57,6 @@
                 <outputPath>${project.basedir}/target</outputPath>
             </properties>
             <dependencies>
-
                 <dependency>
                     <groupId>commons-io</groupId>
                     <artifactId>commons-io</artifactId>
@@ -169,6 +168,18 @@
                     <groupId>io.netty</groupId>
                     <artifactId>netty-all</artifactId>
                     <version>4.1.97.Final</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>io.projectreactor.netty</groupId>
+                    <artifactId>reactor-netty</artifactId>
+                    <version>1.1.10</version>
+                    <scope>compile</scope>
+                </dependency>
+                <dependency>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                    <version>2.15.2</version>
                     <scope>compile</scope>
                 </dependency>
             </dependencies>
@@ -288,11 +299,6 @@
         <version>2.1.0</version>
         <scope>provided</scope>
     </dependency>
-        <dependency>
-            <groupId>com.monitorjbl</groupId>
-            <artifactId>json-view</artifactId>
-            <version>1.1.0</version>
-        </dependency>
 
     <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
 
@@ -301,13 +307,14 @@
         <groupId>ch.qos.logback</groupId>
         <artifactId>logback-classic</artifactId>
         <version>1.2.6</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
@@ -367,7 +374,7 @@
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
             <version>1.1.10</version>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 </project>
