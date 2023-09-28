@@ -21,7 +21,6 @@ import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecu
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
-import javafx.concurrent.Task;
 
 import java.io.File;
 import java.util.ArrayList;
