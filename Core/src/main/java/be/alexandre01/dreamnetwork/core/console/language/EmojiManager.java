@@ -116,9 +116,12 @@ public class EmojiManager implements IEmojiManager {
                         String subText = "";
                         if (part.contains("(")) {
                             String[] subParts = part.split("\\(");
-                            if(subParts.length != 1){
-                                if(!subParts[1].contains(")")) {
-                                    subText = subParts[1].split("\\)")[0];
+                            if(subParts.length!= 1){
+                                String after = subParts[1];
+                                if(after.length() != 1){
+                                    if(after.contains(")")){
+                                        subText = after.split("\\)")[0];
+                                    }
                                 }
                             }
                             //   System.out.println("SubText > " + subText);
