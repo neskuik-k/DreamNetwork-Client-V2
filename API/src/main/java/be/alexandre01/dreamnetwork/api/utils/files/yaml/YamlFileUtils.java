@@ -47,7 +47,8 @@ public class YamlFileUtils<T> {
                 file.createNewFile();
                 return false;
             } catch (IOException e) {
-                Console.printLang("core.utils.yaml.createFileError", file.getName());
+                System.out.println("Error creating file: "+file.getName());
+               // Console.printLang("core.utils.yaml.createFileError", file.getName());
                 e.printStackTrace();
             }
         }
@@ -189,6 +190,11 @@ public class YamlFileUtils<T> {
 
 
         } catch (IOException e) {
+            if(DNUtils.get().getConfigManager().getLanguageManager() == null){
+                System.out.println("Error writing file: "+file.getName());
+                e.printStackTrace();
+                return;
+            }
             Console.printLang("core.utils.yaml.errorWritingFile", file.getName());
             Console.bug(e);
         }
