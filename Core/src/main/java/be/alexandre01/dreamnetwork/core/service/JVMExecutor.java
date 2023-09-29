@@ -55,9 +55,6 @@ import java.util.logging.Level;
 
 @Ignore @JsonIgnoreProperties(value = {"startupConfig"}, ignoreUnknown = true) @Getter() @Setter
 public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
-
-
-
     @JsonIgnore @Getter private static ArrayList<String> serverList = new ArrayList<>();
     @JsonIgnore @Getter private static ArrayList<String> startServerList = new ArrayList<>();
 
@@ -664,8 +661,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     public void removeService(IService jvmService) {
         //   System.out.println("removing service");
-
-
         int i = jvmService.getId();
         String dirName = getName() + "-" + jvmService.getId();
         if (jvmService.getUniqueCharactersID().isPresent()) {
@@ -686,7 +681,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                 e.printStackTrace();
                             }
                         }
-
                         if (jvmService.getUniqueCharactersID().isPresent())
                             charsIds.remove(jvmService.getUniqueCharactersID().get());
                     }

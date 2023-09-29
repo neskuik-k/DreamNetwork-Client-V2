@@ -2,17 +2,14 @@ package be.alexandre01.dreamnetwork.core.service.tasks;
 
 
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.service.tasks.IGlobalTasks;
+import be.alexandre01.dreamnetwork.api.service.tasks.AGlobalTasks;
 import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
-import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
-import lombok.Synchronized;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.inspector.TagInspector;
 import org.yaml.snakeyaml.nodes.Tag;
 
 import java.io.File;
@@ -23,24 +20,22 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTasks {
-
-    @Getter public final List<ATaskData> tasks = new ArrayList<>();
-    @Getter private final List<ATaskData> alwaysONs = new ArrayList<>();
+public class GlobalTasks extends AGlobalTasks {
     @Ignore
     private HashMap<String,ATaskData> withNames = new HashMap<>();
+
 
     ScheduledExecutorService executorService = null;
 
     public GlobalTasks() {
-        addTag(GlobalTasks.class,Tag.MAP);
+        addTag(AGlobalTasks.class,Tag.MAP);
         addTag(ATaskData.class,Tag.MAP);
-        representer = new CustomRepresenter(true,GlobalTasks.class,ATaskData.class);
+        representer = new CustomRepresenter(true,AGlobalTasks.class,ATaskData.class);
         representer.addClassTag(ATaskData.class, Tag.MAP);
         representer.addClassTag(TaskData.class, Tag.MAP);
         super.dumperOptions.setExplicitEnd(true);
-        constructor = new Constructor(GlobalTasks.class,new LoaderOptions());
-        TypeDescription taskDescription = new TypeDescription(GlobalTasks.class);
+        constructor = new Constructor(AGlobalTasks.class,new LoaderOptions());
+        TypeDescription taskDescription = new TypeDescription(AGlobalTasks.class);
         taskDescription.putListPropertyType("tasks", ATaskData.class);
         taskDescription.putListPropertyType("tasks", TaskData.class);
 
@@ -52,8 +47,8 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
         withNames.clear();
         tasks.clear();
 
-        if(!super.config(new File(Config.getPath("data/Tasks.yml")), GlobalTasks.class,true)){
-            super.saveFile(GlobalTasks.class.cast(this));
+        if(!super.config(new File(Config.getPath("data/Tasks.yml")), AGlobalTasks.class,true)){
+            super.saveFile(AGlobalTasks.class.cast(this));
         }else {
             super.readAndReplace(this);
             save();
@@ -92,7 +87,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
 
     @Override
     public void save(){
-        super.saveFile(GlobalTasks.class.cast(this));
+        super.saveFile(AGlobalTasks.class.cast(this));
     }
 
 
@@ -114,5 +109,15 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasks> implements IGlobalTa
         executorService.shutdown();
         executorService = null;
         System.out.println("Tasks disabled");
+    }
+
+    @Override
+    public List<ATaskData> getTasks() {
+        return tasks;
+    }
+
+    @Override
+    public List<ATaskData> getAlwaysONs() {
+        return alwaysONs;
     }
 }
