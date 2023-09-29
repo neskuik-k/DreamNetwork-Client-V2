@@ -87,7 +87,7 @@ public class EmojiManager implements IEmojiManager {
     @Override
     public String getEmoji(String key, String ifNot){
         if(Main.getGlobalSettings().isUseEmoji()){
-            return " "+emojis.get(key);
+            return emojis.get(key);
         }
         return ifNot;
     }
@@ -131,11 +131,14 @@ public class EmojiManager implements IEmojiManager {
                         //  System.out.println("Last Emoji > " + Main.getLanguageManager().getEmojiManager().getEmoji(emojiText, subText));
                         builder.append(Main.getLanguageManager().getEmojiManager().getEmoji(emojiText, subText));
                     } else {
-                        if(i != 0){
-                            builder.append(parts[i], 1, parts[i].length());
-                        }else {
-                            builder.append(parts[i]);
+                        // get all espace on the beginning of part and remove it
+                        for (int j = 0; j < parts[i].length(); j++) {
+                            if (parts[i].charAt(j) != ' ') {
+                                parts[i] = parts[i].substring(j);
+                                break;
+                            }
                         }
+                        builder.append(parts[i]);
                     }
                 }
             } else {
