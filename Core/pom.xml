@@ -97,14 +97,14 @@
                                         </option>
 
                                         <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.core.service.tasks.TaskData {
+                                            be.alexandre01.dreamnetwork.core.service.tasks.TaskOperation {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
 
                                         <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.ATaskData {
+                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }

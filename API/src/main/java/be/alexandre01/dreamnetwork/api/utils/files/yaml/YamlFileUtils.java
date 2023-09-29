@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Getter;
+import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -11,6 +12,7 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +21,7 @@ public class YamlFileUtils<T> {
 
     final transient private List<String> annotations = new ArrayList<>();
     transient private Class<T> clazz;
+    @Setter transient private Class toLoad;
     transient @Getter File file;
     transient boolean skipNull;
     public transient DumperOptions dumperOptions = new DumperOptions();
@@ -50,8 +53,8 @@ public class YamlFileUtils<T> {
         return true;
     }
 
-    public T read(){
-        return (T) loadFile(file, clazz);
+    public Object read(){
+        return loadFile(file, clazz);
     }
 
     public void saveFile(T obj){
@@ -60,7 +63,7 @@ public class YamlFileUtils<T> {
     public void saveFile(){
         saveFile(file,this,clazz,skipNull);
     }
-    public T loadFile(File file, Class<T> clazz){
+    public Object loadFile(File file, Class<?> clazz){
       /* Representer representer = new Representer() {
             @Override
             protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
@@ -83,7 +86,7 @@ public class YamlFileUtils<T> {
         }
 
 
-        try {
+
            /* LinkedHashMap<String,Object> map = yaml.load(new FileInputStream(file));
             if(map == null){
                 return null;
@@ -91,12 +94,20 @@ public class YamlFileUtils<T> {
             if(map.isEmpty()){
                 return null;
             }*/
-            T t = null;
+
+            Object t = null;
             try {
                // System.out.println("Load yml file: "+file.getName());
-                t = yaml.loadAs(new FileInputStream(file),clazz);
+                Class<? super Object> toLoad;
+                if(this.toLoad == null){
+                    toLoad = (Class<? super Object>) clazz;
+                }else {
+                    toLoad = this.toLoad;
+                }
+                t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
             }catch (Exception e){
-                System.out.println("Error while loading file: "+file.getName());
+                Console.printLang("core.utils.yaml.loadFileError", file.getName());
+                Console.bug(e,true);
                 //e.printStackTrace();
             }
 
@@ -106,13 +117,9 @@ public class YamlFileUtils<T> {
             //T t = gson.fromJson(gson.toJsonTree(map), clazz);
           //  YamlFileUtils.this.readFile();
             return t;
-        } catch (Exception e) {
-            Console.printLang("core.utils.yaml.loadFileError", file.getName());
-            e.printStackTrace();
-            return null;
-        }
     }
 
+    @Deprecated
     public void readAndReplace(Object o){
         Object config = read();
 

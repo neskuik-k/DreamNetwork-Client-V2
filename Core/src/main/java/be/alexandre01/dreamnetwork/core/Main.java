@@ -30,6 +30,7 @@ import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
 import be.alexandre01.dreamnetwork.api.utils.files.CDNFiles;
 
 import be.alexandre01.dreamnetwork.api.utils.process.ProcessUtils;
+import be.alexandre01.dreamnetwork.core.service.tasks.TaskOperation;
 import com.github.tomaslanger.chalk.Chalk;
 
 import be.alexandre01.dreamnetwork.core.rest.DNAPI;
@@ -54,6 +55,8 @@ public class Main {
     @Getter private static FileCopyAsync fileCopyAsync;
     @Getter private static ConsoleReader consoleReader;
     @Getter private static UtilsAPI utilsAPI;
+
+    @Getter private static TaskOperation taskOperation;
 
     @Getter
     private JVMContainer jvmContainer;
@@ -122,6 +125,8 @@ public class Main {
 
         ReaderHistory readerHistory = new ReaderHistory();
         readerHistory.init();
+
+        taskOperation = new TaskOperation();
 
         // Start language fetching
 

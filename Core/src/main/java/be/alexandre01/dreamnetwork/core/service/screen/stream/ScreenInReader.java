@@ -111,7 +111,7 @@ public class ScreenInReader extends Thread implements IScreenInReader {
                 if(screen.getService().getUniqueCharactersID().isPresent()){
                     name += "-"+screen.getService().getUniqueCharactersID().get();
                 }
-                System.out.println(Config.getPath("logs/"+server.getFullName()+"/"+name+".log"));
+                //System.out.println(Config.getPath("logs/"+server.getFullName()+"/"+name+".log"));
                 fileHandler = new FileHandler(Config.getPath("logs/"+server.getJvmExecutor().getFullName()+"/"+name+".log"));
                 fileHandler.setLevel(Level.ALL);
                 fileHandler.setFormatter(new SimpleFormatter());

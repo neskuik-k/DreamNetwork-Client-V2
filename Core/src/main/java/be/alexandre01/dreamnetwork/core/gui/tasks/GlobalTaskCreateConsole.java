@@ -1,13 +1,14 @@
 package be.alexandre01.dreamnetwork.core.gui.tasks;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
-import be.alexandre01.dreamnetwork.core.service.tasks.TaskData;
+
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
@@ -113,6 +114,7 @@ public class GlobalTaskCreateConsole extends CoreAccessibilityMenu {
                     }
                 }
 
+                taskData.setOperation(Main.getTaskOperation().createOperation(taskData));
                 Core.getInstance().getGlobalTasks().addTask(taskData);
                 Core.getInstance().getGlobalTasks().save();
                 Console.print("Adding data to the task");

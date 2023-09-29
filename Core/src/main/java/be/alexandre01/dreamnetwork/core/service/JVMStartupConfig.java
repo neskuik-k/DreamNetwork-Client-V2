@@ -111,7 +111,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
     public void saveFile(){
-        ConfigData config = getYmlFile().read();
+        ConfigData config = (ConfigData) getYmlFile().read();
 
         if(config == null) return;
 

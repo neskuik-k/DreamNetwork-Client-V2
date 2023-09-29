@@ -6,17 +6,20 @@ import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.function.Supplier;
+
 /*
  ↬   Made by Alexandre01Dev 😎
  ↬   done on 03/09/2023 at 11:00
 */
 
 @Getter @Setter
-public abstract class ATaskData {
+public class TaskData {
     public String name;
     public String service;
+    @Ignore private transient Supplier<Void> operation;
     public int count;
-    public ATaskData.TaskType taskType;
+    public TaskData.TaskType taskType;
     public String profile = null;
 
     @Ignore
@@ -28,5 +31,18 @@ public abstract class ATaskData {
     public static enum TaskType {
         ALWAYS_ON, ON_START, MANUAL, MANUAL_RESTRICTED
     }
-    public abstract void operate();
+
+    public void operate(){
+        if(operation != null){
+            operation.get();
+        }
+    }
+
+    public void decreaseCount(){
+        actualCount--;
+    }
+
+    public void increaseCount(){
+        actualCount++;
+    }
 }

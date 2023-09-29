@@ -1,10 +1,8 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import lombok.Getter;
-import lombok.Setter;
 
 import java.util.*;
 import java.util.concurrent.Executors;

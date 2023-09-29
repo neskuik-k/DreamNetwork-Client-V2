@@ -215,6 +215,7 @@ public class Core {
         this.channelManager = new DNChannelManager();
         this.clientManager = new ClientManager(this);
         globalTasks = new GlobalTasks();
+        globalTasks.loading();
 
         Main.getCommandReader().init();
 
@@ -256,7 +257,7 @@ public class Core {
                 Console.printLang("addons.canUpdate", name, name);
             });
         }*/
-        globalTasks.loading();
+
         boolean debug = Core.getInstance().isDebug();
         if(debug){
             Console.getConsoles().forEach(c -> {

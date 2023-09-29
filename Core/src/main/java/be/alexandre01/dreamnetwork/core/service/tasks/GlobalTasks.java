@@ -2,92 +2,94 @@ package be.alexandre01.dreamnetwork.core.service.tasks;
 
 
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.service.tasks.AGlobalTasks;
-import be.alexandre01.dreamnetwork.api.service.tasks.ATaskData;
+import be.alexandre01.dreamnetwork.api.service.tasks.GlobalTasksData;
+import be.alexandre01.dreamnetwork.api.service.tasks.IGlobalTasks;
+import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.CustomRepresenter;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
-import lombok.Getter;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
+import be.alexandre01.dreamnetwork.core.Main;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.nodes.Tag;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 
 
-public class GlobalTasks extends AGlobalTasks {
+public class GlobalTasks extends YamlFileUtils<GlobalTasksData> implements IGlobalTasks {
+    GlobalTasksData data;
     @Ignore
-    private HashMap<String,ATaskData> withNames = new HashMap<>();
-
+    private HashMap<String, TaskData> withNames = new HashMap<>();
 
     ScheduledExecutorService executorService = null;
 
     public GlobalTasks() {
-        addTag(AGlobalTasks.class,Tag.MAP);
-        addTag(ATaskData.class,Tag.MAP);
-        representer = new CustomRepresenter(true,AGlobalTasks.class,ATaskData.class);
-        representer.addClassTag(ATaskData.class, Tag.MAP);
+        addTag(GlobalTasksData.class,Tag.MAP);
+        addTag(TaskData.class,Tag.MAP);
+        representer = new CustomRepresenter(true,GlobalTasksData.class, TaskData.class);
         representer.addClassTag(TaskData.class, Tag.MAP);
+        representer.addClassTag(TaskOperation.class, Tag.MAP);
         super.dumperOptions.setExplicitEnd(true);
-        constructor = new Constructor(AGlobalTasks.class,new LoaderOptions());
-        TypeDescription taskDescription = new TypeDescription(AGlobalTasks.class);
-        taskDescription.putListPropertyType("tasks", ATaskData.class);
+        constructor = new Constructor(GlobalTasksData.class,new LoaderOptions());
+        TypeDescription taskDescription = new TypeDescription(GlobalTasksData.class);
         taskDescription.putListPropertyType("tasks", TaskData.class);
+        taskDescription.putListPropertyType("tasks", TaskOperation.class);
 
     }
 
     public void loading(){
+       // data = new GlobalTasksData();
         addAnnotation("Configure your tasks here");
-        alwaysONs.clear();
+        /*data.alwaysONs.clear();
         withNames.clear();
-        tasks.clear();
+        data.tasks.clear();*/
 
-        if(!super.config(new File(Config.getPath("data/Tasks.yml")), AGlobalTasks.class,true)){
-            super.saveFile(AGlobalTasks.class.cast(this));
+        if(!super.config(new File(Config.getPath("data/Tasks.yml")), GlobalTasksData.class,true)){
+            data = new GlobalTasksData();
+            super.saveFile((GlobalTasksData) data);
         }else {
-            super.readAndReplace(this);
-            save();
+            data = (GlobalTasksData) super.read();
         }
 
-        for (ATaskData taskData : tasks) {
+        for (TaskData taskData : data.tasks) {
             withNames.put(taskData.getName(),taskData);
-           loadTask(taskData);
+            taskData.setOperation(Main.getTaskOperation().createOperation(taskData));
+            loadTask(taskData);
         }
 
         // Init
-
         enable();
     }
 
     @Override
-    public ATaskData getTask(String name){
+    public TaskData getTask(String name){
         return withNames.get(name);
     }
 
     @Override
-    public void addTask(ATaskData taskData){
-        tasks.add(taskData);
+    public void addTask(TaskData taskData){
+        data.tasks.add(taskData);
         withNames.put(taskData.getName(),taskData);
         loadTask(taskData);
     }
 
-    private void loadTask(ATaskData taskData){
-        if(taskData.getTaskType().equals(ATaskData.TaskType.ALWAYS_ON)){
-            alwaysONs.add(taskData);
+    private void loadTask(TaskData taskData){
+        if(taskData.getTaskType().equals(TaskData.TaskType.ALWAYS_ON)){
+            data.alwaysONs.add(taskData);
         }
-        if(!(taskData.getTaskType().equals(ATaskData.TaskType.MANUAL) || taskData.getTaskType().equals(ATaskData.TaskType.MANUAL_RESTRICTED)))
+        if(!(taskData.getTaskType().equals(TaskData.TaskType.MANUAL) || taskData.getTaskType().equals(TaskData.TaskType.MANUAL_RESTRICTED)))
             taskData.operate();
     }
 
 
     @Override
     public void save(){
-        super.saveFile(AGlobalTasks.class.cast(this));
+        super.saveFile((GlobalTasksData) data);
     }
 
 
@@ -96,7 +98,7 @@ public class GlobalTasks extends AGlobalTasks {
         if(executorService != null)return;
         executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
-            for(ATaskData taskData : alwaysONs){
+            for(TaskData taskData : data.alwaysONs){
                 taskData.operate();
             }
         }, 3,3, java.util.concurrent.TimeUnit.SECONDS);
@@ -112,12 +114,12 @@ public class GlobalTasks extends AGlobalTasks {
     }
 
     @Override
-    public List<ATaskData> getTasks() {
-        return tasks;
+    public List<TaskData> getTasks() {
+        return data.getTasks();
     }
 
     @Override
-    public List<ATaskData> getAlwaysONs() {
-        return alwaysONs;
+    public List<TaskData> getAlwaysONs() {
+        return data.getAlwaysONs();
     }
 }

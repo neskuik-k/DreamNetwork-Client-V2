@@ -463,28 +463,48 @@ public class Console extends Thread{
         }
     }
 
-    public static void bug(Exception e){
+    public static void bug(Exception e,boolean isSilent){
         if(Console.actualConsole == null){
             e.printStackTrace();
             return;
         }
-        Console.printLang("console.errorOn", Level.WARNING, e.getMessage(), e.getClass().getSimpleName());
-        Console console = Console.getConsole(actualConsole);
-        console.fPrintLang("console.errorCause", Level.SEVERE, e.getLocalizedMessage(), e.getClass().getSimpleName());
-        for(StackTraceElement s : e.getStackTrace()){
-            //Core.getInstance().formatter.getDefaultStream().println("----->");
-            console.fPrintLang("console.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName()+" on "+s.getFileName(), s.getLineNumber());
-        }
 
+
+        Console console = Console.getConsole(actualConsole);
         DNUtils utils = DNUtils.get();
         IConsoleManager consoleManager = utils.getConsoleManager();
+        if(!isSilent){
+            Console.printLang("console.errorOn", Level.WARNING, e.getMessage(), e.getClass().getSimpleName());
+        }else {
+            consoleManager.getFileHandler().publish(new LogRecord(Level.WARNING,Console.getFromLang("console.errorOn", e.getMessage(), e.getClass().getSimpleName())));
+        }
+        if(!isSilent){
+            console.fPrintLang("console.errorCause", Level.SEVERE, e.getLocalizedMessage(), e.getClass().getSimpleName());
+            for(StackTraceElement s : e.getStackTrace()){
+                //Core.getInstance().formatter.getDefaultStream().println("----->");
+                console.fPrintLang("console.errorOn", Level.SEVERE, s.getClassName(), s.getMethodName()+" on "+s.getFileName(), s.getLineNumber());
+            }
+        }else{
+            consoleManager.getFileHandler().publish(new LogRecord( Level.SEVERE,Console.getFromLang("console.errorCause", e.getLocalizedMessage(), e.getClass().getSimpleName())));
+            for(StackTraceElement s : e.getStackTrace()){
+                //Core.getInstance().formatter.getDefaultStream().println("----->");
+                consoleManager.getFileHandler().publish(new LogRecord(Level.SEVERE,Console.getFromLang("console.errorOn", s.getClassName(), s.getMethodName()+" on "+s.getFileName(), s.getLineNumber())));
+            }
+        }
+
+
 
         if(utils.getConfigManager().isDebug()){
             e.printStackTrace(consoleManager.getFormatter().getDefaultStream());
         }else {
-            consoleManager.getFormatter().getDefaultStream().println(Console.getFromLang("console.contactDNDevError"));
+            if(!isSilent)
+                consoleManager.getFormatter().getDefaultStream().println(Console.getFromLang("console.contactDNDevError"));
             consoleManager.getFileHandler().publish(new LogRecord(Level.SEVERE, Console.getFromLang("console.contactDNDevError")));
         }
+    }
+
+    public static void bug(Exception e){
+        bug(e,false);
     }
 
     @Override
