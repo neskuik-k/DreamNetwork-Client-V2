@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.connection.core;
 
 import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CorePipeline;
 import be.alexandre01.dreamnetwork.api.utils.sockets.PortUtils;
@@ -44,7 +45,6 @@ public class NettyServer extends CoreServer{
                     .childOption(ChannelOption.SO_KEEPALIVE, true); // (6)
 
             // Bind and start to accept incoming connections.
-            boolean isAvailable = PortUtils.isAvailable(port,true);
             int defaultPort = port;
             while (!PortUtils.isAvailable(port,true)){
                 port++;
@@ -54,10 +54,12 @@ public class NettyServer extends CoreServer{
                 Console.printLang("connection.core.portNotAvailable", port);
                 System.exit(0);
             }*/
-            if(!isAvailable){
+            if(port != defaultPort){
                 System.out.println(Console.getFromLang("connection.core.usePortInsteadOfNonAvailable", defaultPort, port));
                 System.out.println(Console.getFromLang("connection.core.networkMayNotWorkCorrectly"));
             }
+
+            Core.getInstance().setPort(port);
 
             ChannelFuture f = b.bind(port).sync(); // (7)
 

@@ -15,6 +15,8 @@ public interface IGlobalTasks {
 
     void disable();
 
+    void loadTasks();
+
     java.util.List<TaskData> getTasks();
 
     java.util.List<TaskData> getAlwaysONs();

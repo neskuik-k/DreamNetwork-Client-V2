@@ -85,14 +85,26 @@ public class Main {
 
         Logger.getLogger("org.yaml.snakeyaml").setLevel(Level.OFF);
 
+
         utilsAPI = new UtilsAPI();
         boolean dataCreated = Config.contains("data");
         if(!dataCreated)
             new File(Config.getPath("data")).mkdir();
 
         globalSettings = new GlobalSettings();
-
         globalSettings.loading();
+
+        languageManager = new LanguageManager();
+        if(!languageManager.load()){
+            // Fetch fail, can't use messages
+            System.out.println("Can't load language");
+            System.exit(1);
+        }
+
+
+
+
+
         if(Main.getGlobalSettings().getUsername() == null){
             if(Config.isWindows()){
                 Core.setUsername(username = System.getProperty("user.name"));
@@ -113,11 +125,9 @@ public class Main {
         }
 
         fileCopyAsync = new FileCopyAsync();
-        languageManager = new LanguageManager();
 
-        if(!languageManager.load()){
-            // Fetch fail, can't use messages
-        }
+
+
 
         commandReader = new CommandReader();
         consoleReader = new ConsoleReader();

@@ -87,7 +87,7 @@ public class EmojiManager implements IEmojiManager {
     @Override
     public String getEmoji(String key, String ifNot){
         if(Main.getGlobalSettings().isUseEmoji()){
-            return emojis.get(key);
+            return " "+emojis.get(key);
         }
         return ifNot;
     }
@@ -101,11 +101,10 @@ public class EmojiManager implements IEmojiManager {
         public static String convert(String line) {
 
             StringBuilder builder = new StringBuilder();
-            if (line.contains("(")) {
+            if (line.contains("(") && line.contains(")")) {
                 // check text between : and :
                 String[] parts = line.split(":");
                 if(parts.length == 1) return line;
-                builder = new StringBuilder();
                 for (int i = 0; i < parts.length; i++) {
                     if (i % 2 == 1) {
                         // System.out.println(i);
@@ -117,22 +116,28 @@ public class EmojiManager implements IEmojiManager {
                         String subText = "";
                         if (part.contains("(")) {
                             String[] subParts = part.split("\\(");
-                            subText = subParts[1].substring(0, subParts[1].length() - 1);
+                            if(subParts.length != 1){
+                                if(!subParts[1].contains(")")) {
+                                    subText = subParts[1].split("\\)")[0];
+                                }
+                            }
                             //   System.out.println("SubText > " + subText);
                         }
+
                         //subtext lenght + 2 equals (+aliase+)
                         String emojiText = part.substring(0, part.length() - (subText.length() + 2));
                         // System.out.println("Emoji > " + emojiText);
                         // check if emoji exists
                         //  System.out.println("Last Emoji > " + Main.getLanguageManager().getEmojiManager().getEmoji(emojiText, subText));
-
                         builder.append(Main.getLanguageManager().getEmojiManager().getEmoji(emojiText, subText));
                     } else {
-                        builder.append(parts[i]);
+                        if(i != 0){
+                            builder.append(parts[i], 1, parts[i].length());
+                        }else {
+                            builder.append(parts[i]);
+                        }
                     }
                 }
-
-
             } else {
                 builder.append(line);
             }

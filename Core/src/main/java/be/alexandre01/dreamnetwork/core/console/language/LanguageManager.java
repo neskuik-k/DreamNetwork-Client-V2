@@ -33,8 +33,7 @@ public class LanguageManager implements ILanguageManager {
 
     @Override
     public boolean load(){
-        emojiManager = new EmojiManager();
-        emojiManager.load();
+        initEmoji();
         InputStream en_EN = getInputFrom("en_EN");
         LangLoader langLoader = new LangLoader(this);
         defaultKeysManager = langLoader.loadKeys(en_EN);
@@ -43,6 +42,11 @@ public class LanguageManager implements ILanguageManager {
         loadDifferentLanguage(lang);
        // return loadLanguage();
         return true;
+    }
+
+    private void initEmoji(){
+        emojiManager = new EmojiManager();
+        emojiManager.load();
     }
 
     @Override

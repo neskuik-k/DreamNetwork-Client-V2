@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
@@ -351,53 +352,59 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             return false;
         }
     }
-
-    private boolean proceedStarting(String finalname, int servers, String charsId, Tuple<IConfig, ExecutorCallbacks> tuple) throws IOException {
-        IConfig jvmConfig = tuple.a();
-        ExecutorCallbacks callbacks = tuple.b();
-        Integer port = jvmConfig.getPort();
-        Console.fine("Port on Exec: " + port);
-
-        /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
-            Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
-
-            return false;
-        }*/
-        if (port == 0) {
-            if (!serversPortList.isEmpty()) {
-                port = serversPortList.get(serversPortList.size() - 1) + 1;
-                //if not containing port
-
-                boolean reserved = false;
+    private int whilePortCheck(int port){
+        boolean reserved = false;
+        if (portsReserved.containsKey(port)) {
+            reserved = true;
+            Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getFullName());
+        }
+        int max = Main.getGlobalSettings().getPortRangeInt()[1];
+        int min = Main.getGlobalSettings().getPortRangeInt()[0];
+        while (true) {
+            Console.fine(port);
+            int trying = 0;
+            if (reserved) {
                 if (portsReserved.containsKey(port)) {
-                    reserved = true;
-                    Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getFullName());
-                }
-
-                //if containing port, get service and check if he is allowed
-                while (true) {
-                    Console.fine(port);
-                    if (reserved) {
-                        if (portsReserved.containsKey(port)) {
-                            boolean isAccessible = portsReserved.get(port).equals(this);
-
-                            if (!isAccessible || !PortUtils.isAvailable(port, true)) {
-                                port = port + 1;
-                            }
-                            continue;
-                        }
-
-                        if (portsBlackList.contains(port)) {
-                            port = port + 1;
-                            continue;
-                        }
-                    }
-                    if (!PortUtils.isAvailable(port, true)) {
-                        port = port + 1;
+                    boolean isAccessible = portsReserved.get(port).equals(this);
+                    if (!isAccessible || !PortUtils.isAvailable(port, false)) {
+                        portCheckIncrement(port,min,max,trying);
                         continue;
                     }
-                    break;
                 }
+
+                if (portsBlackList.contains(port)) {
+                    port = port + 1;
+                    continue;
+                }
+            }
+            if (!PortUtils.isAvailable(port, false)) {
+                portCheckIncrement(port,min,max,trying);
+                continue;
+            }
+            break;
+        }
+        return port;
+    }
+
+    private void portCheckIncrement(int port,int min,int max,int trying){
+            if(port == max){
+                if(trying == 1){
+                    Console.printLang("service.executor.noPortAvailable", Level.SEVERE);
+                    throw new RuntimeException("No port available");
+                }
+                trying = 1;
+                port = min-1;
+            }
+            port = port + 1;
+    }
+
+    public Integer findPort(IConfig jvmConfig,String finalname, Integer port){
+        if (port == 0) {
+            GlobalSettings globalSettings = Main.getGlobalSettings();
+            if (!serversPortList.isEmpty() && !globalSettings.isRandomizePort()) {
+                port = serversPortList.get(serversPortList.size() - 1) + 1;
+                //if containing port, get service and check if he is allowed
+                port = whilePortCheck(port);
                 if (!serversPort.isEmpty()) {
                     for (Map.Entry<String, Integer> s : serversPort.entrySet()) {
                         if (s.getKey().startsWith("cache-")) {
@@ -409,17 +416,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
 
                 // System.out.println(port);
-
-
                 int currentPort = getCurrentPort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, bundleData.getJvmType(), jvmConfig.getType());
 
                 changePort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, port, currentPort, bundleData.getJvmType(), jvmConfig.getType());
-                if (port == null) {
-                    Console.printLang("service.executor.notFoundPort", finalname);
-                    return false;
-                }
-
-
                 //   System.out.println(port);
                 serversPortList.add(port);
                 serversPort.put(finalname, port);
@@ -430,20 +429,39 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     Console.fine("/bundles/" + jvmConfig.getPathName());
                     if (port == null) {
                         Console.printLang("service.executor.notFoundPort", finalname);
-                        return false;
+                        return null;
                     }
-                    serversPortList.add(port);
-                    serversPort.put(finalname, port);
+                    int min = globalSettings.getPortRangeInt()[0];
+                    int max = globalSettings.getPortRangeInt()[1];
+                    if(port < min || port > max){
+                        port = new Random().nextInt((max - min) + 1) + min;
+                    }
+                    if(globalSettings.isRandomizePort()){
+                        port = new Random().nextInt((max - min) + 1) + min;
+                        port = whilePortCheck(port);
+                    }else {
+                        port = whilePortCheck(port);
+                        serversPortList.add(port);
+                        serversPort.put(finalname, port);
+                    }
                 } else {
                     if (jvmConfig.getType().equals(Mods.DYNAMIC)) {
                         port = getCurrentPort("/runtimes/" + jvmConfig.getPathName(), finalname, bundleData.getJvmType(), jvmConfig.getType());
                         Console.fine("/runtimes/" + jvmConfig.getPathName());
                         if (port == null) {
                             Console.printLang("service.executor.notFoundPort", finalname);
-                            return false;
+                            return null;
                         }
-                        serversPortList.add(port);
-                        serversPort.put(finalname, port);
+                        if(globalSettings.isRandomizePort()){
+                            int min = globalSettings.getPortRangeInt()[0];
+                            int max = globalSettings.getPortRangeInt()[1];
+                            port = new Random().nextInt((max - min) + 1) + min;
+                            port = whilePortCheck(port);
+                        }else {
+                            port = whilePortCheck(port);
+                            serversPortList.add(port);
+                            serversPort.put(finalname, port);
+                        }
                     }
                 }
             }
@@ -464,8 +482,25 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 serversPort.put(finalname, port);
             } else {
                 Console.printLang("service.executor.portAlreadyUsed", Level.WARNING, port);
-                return false;
+                return null;
             }
+        }
+        return port;
+    }
+    private boolean proceedStarting(String finalname, int servers, String charsId, Tuple<IConfig, ExecutorCallbacks> tuple) throws IOException {
+        IConfig jvmConfig = tuple.a();
+        ExecutorCallbacks callbacks = tuple.b();
+        Integer port = jvmConfig.getPort();
+        Console.fine("Port on Exec: " + port);
+
+        /*if(!this.isProxy() && Client.getInstance().getClientManager().getProxy() == null){
+            Console.print(Colors.RED+"You must first turn on the proxy before starting a server.");
+
+            return false;
+        }*/
+        port = findPort(jvmConfig,finalname, port);
+        if(port == null){
+            return false;
         }
 
         Console.fine("Passing port checkup");
@@ -535,7 +570,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             customArgs += "-DNHost=" + ExternalCore.getInstance().getIp();
             customArgs += " -DNInfo=" + bundleData.getName()+"/"+jvmConfig.getName() + "-" + servers+"+"+connectionId;
         }else{
-            customArgs += "-DNHost=" + "this:"+Main.getGlobalSettings().getPort();
+            customArgs += "-DNHost=" + "this:"+Core.getInstance().getPort();
         }
         if (preProcessEvent.getCustomArguments() != null) {
             customArgs += " " + preProcessEvent.getCustomArguments();

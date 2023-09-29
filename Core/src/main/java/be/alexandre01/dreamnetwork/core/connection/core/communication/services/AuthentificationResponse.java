@@ -19,6 +19,7 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -189,8 +190,11 @@ public class AuthentificationResponse extends CoreResponse {
 
 
                         }
-                    client = Core.getInstance().getClientManager().registerClient(newClient);
 
+                    client = Core.getInstance().getClientManager().registerClient(newClient);
+                    if(client == null){
+                         return;
+                    }
                     coreHandler.getResponses().add(new BaseResponse());
                     coreHandler.getResponses().add(new PlayerResponse());
                     if(newClient == null){

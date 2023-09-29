@@ -66,6 +66,8 @@ public class Core {
     @Getter @Setter
     private static String username;
 
+    @Getter @Setter private int port;
+
     @Getter
     private ClientManager clientManager;
     @Getter @Setter
@@ -264,6 +266,19 @@ public class Core {
                 c.isDebug = true;
             });
         }
+
+        // wait 1 seconds without block the console
+        new Thread(() -> {
+            try {
+                Thread.sleep(500);
+                globalTasks.loadTasks();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            Console.setBlockConsole(false);
+        }).start();
+
+
 
         Console.setBlockConsole(false);
     }

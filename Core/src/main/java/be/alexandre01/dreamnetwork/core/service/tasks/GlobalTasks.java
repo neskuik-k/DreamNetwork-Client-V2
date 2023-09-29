@@ -55,7 +55,9 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasksData> implements IGlob
         }else {
             data = (GlobalTasksData) super.read();
         }
+    }
 
+    public void loadTasks(){
         for (TaskData taskData : data.tasks) {
             withNames.put(taskData.getName(),taskData);
             taskData.setOperation(Main.getTaskOperation().createOperation(taskData));

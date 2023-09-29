@@ -31,15 +31,12 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public boolean onSubCommand(String[] args) {
         ScreenManager screenManager = ScreenManager.instance;
         if(!args[0].equalsIgnoreCase("screen")){
-            System.out.println("");
             return false;
-        }else {
-            sendList(screenManager);
         }
 
 
         if(args.length == 1){
-            notComplete();
+            sendList(screenManager);
             return true;
         }
 
@@ -66,13 +63,11 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
             screenManager.watch(args[1]);
             //ConsoleReader.setAutosuggestionWidgets(true);
         }else {
-         sendList(screenManager);
+            sendList(screenManager);
         }
         return true;
     }
 
-    private void notComplete(){
-    }
     private void sendList(ScreenManager screenManager){
         System.out.println(Colors.GREEN_BOLD + "[*] Proxy ; "+ Colors.CYAN_BOLD+"[*] " + Console.getFromLang("server") + " ;");
         StringBuilder sb = new StringBuilder();

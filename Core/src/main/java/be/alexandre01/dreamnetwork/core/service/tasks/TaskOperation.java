@@ -53,7 +53,13 @@ public class TaskOperation {
         if(toStart == 0){
             return null;
         }
-        System.out.println("Starting " + (count - actualCount) + " " + taskData.getService() + " with profile " + taskData.getProfile());
+
+        if(taskData.getProfile() != null){
+            System.out.println("Starting " + (count - actualCount) + " " + taskData.getService() + " with profile " + taskData.getProfile());
+        }else {
+            System.out.println("Starting " + (count - actualCount) + " " + taskData.getService());
+        }
+
         actualCount += toStart;
 
         taskData.setActualCount(actualCount+toStart);

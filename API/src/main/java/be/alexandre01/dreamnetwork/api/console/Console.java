@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.api.console;
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.config.Config;
+import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.console.formatter.IFormatter;
 import be.alexandre01.dreamnetwork.api.console.history.ReaderHistory;
@@ -262,7 +263,12 @@ public class Console extends Thread{
 
 
         if(!instances.containsKey("m:default")){
-            debugPrint("Debug: "+s);
+            LineReader lineReader = DNUtils.get().getConsoleManager().getConsoleReader().getSReader();
+            if(s == null)
+                s = "null";
+            //String msg = s.toString().replaceAll("\\s+$", "");
+
+            lineReader.printAbove(s.toString());
             return;
         }
         if(level == Level.FINE){
@@ -279,7 +285,8 @@ public class Console extends Thread{
             return;
         }
 
-        instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level);
+        instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level,false);
+        Console.getConsole(ConsolePath.Main.DEFAULT).refreshHistory(s + Colors.ANSI_RESET(),level);
         //instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
 
     }
@@ -330,7 +337,7 @@ public class Console extends Thread{
     public void fPrintLang(String map, Object... params){
         fPrintLang(map,Level.INFO,params);
     }
-    public void fPrint(Object s,Level level){
+    public void fPrint(Object s,Level level,boolean saveHistory){
         //stashLine();
 
         if(Console.actualConsole.equals(name)){
@@ -342,8 +349,9 @@ public class Console extends Thread{
                 return;
             DNUtils utils = DNUtils.get();
             LineReader lineReader = utils.getConsoleManager().getConsoleReader().getSReader();
-            int cols = lineReader.getTerminal().getSize().getColumns();
+           // int cols = lineReader.getTerminal().getSize().getColumns();
             IFormatter formatter = utils.getConsoleManager().getFormatter();
+
             String msg = formatter.getDefaultFormatter().format(new LogRecord(level, (String) s));
             msg = msg.replaceAll("\\s+$", "");
 
@@ -353,8 +361,15 @@ public class Console extends Thread{
             // ConsoleReader.sReader.setPrompt(writing);
         }
         sendToLog(s,level);
-        refreshHistory(s + Colors.ANSI_RESET(),level);
+        if(saveHistory){
+            refreshHistory(s + Colors.ANSI_RESET(),level);
+        }
     }
+    public void fPrint(Object s,Level level){
+        fPrint(s,level,true);
+    }
+
+
 
     public static void printLang(String map,Level level,Object... params){
         if(DNUtils.get().getConfigManager().isDebug()) {
@@ -380,11 +395,17 @@ public class Console extends Thread{
         utils.getConsoleManager().getConsoleReader().getSReader().printAbove(msg);
     }
 
-    private void sendToLog(Object s,Level level){
+    public void sendToLog(Object s,Level level){
         final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
         DNUtils.get().getConsoleManager().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
     }
-    private static void sendToLog(Object s,Level level,String name){
+
+    public static void sendToLog(Object s,Level level,String name){
+        DNUtils utils = DNUtils.get();
+        if(utils == null)
+            return;
+        if(utils.getConsoleManager().getFileHandler() == null)
+            return;
         final String msgWithoutColorCodes = s.toString().replaceAll("\u001B\\[[;\\d]*m", "");
         DNUtils.get().getConsoleManager().getFileHandler().publish(new LogRecord(level, msgWithoutColorCodes + "| @" + name));
     }
@@ -399,6 +420,13 @@ public class Console extends Thread{
         //String msg = s.toString().replaceAll("\\s+$", "");
 
         lineReader.printAbove(s.toString());
+
+
+
+        sendToLog(s,Level.FINE,"global");
+        if(Console.MAIN != null){
+            Console.MAIN.refreshHistory(s + "",Level.FINE);
+        }
         //lineReader.printAbove(s.toString());
         // Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
         //unstashLine();
@@ -640,10 +668,11 @@ public class Console extends Thread{
         return history;
     }
     public void refreshHistory(String data,Level lvl){
+        IConfigManager configManager = DNUtils.get().getConfigManager();
         if(lvl.equals(Level.FINE) && !DNUtils.get().getConfigManager().isDebug()){
             return;
         }
-        if(historySize >= 2000){
+        if(historySize >= configManager.getGlobalSettings().getHistorySize()){
             history.remove(0);
             historySize--;
         }
@@ -653,7 +682,8 @@ public class Console extends Thread{
         historySize += data.length();
     }
     public void refreshHistory(String data){
-        if(historySize >= 2000){
+        IConfigManager configManager = DNUtils.get().getConfigManager();
+        if(historySize >= configManager.getGlobalSettings().getHistorySize()){
             history.remove(0);
             historySize--;
         }

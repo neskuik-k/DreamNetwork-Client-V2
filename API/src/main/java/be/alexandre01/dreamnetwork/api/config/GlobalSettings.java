@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.config;
 
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,6 +15,11 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean checkDefaultJVMVersion = true;
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
+
+    boolean randomizePort = false;
+    @Getter(AccessLevel.NONE) String portRange = "25565 -> 51130"; // max 65535
+
+    @Ignore int[] portRangeInt = new int[2];
 
     String terminalMode = "ssh";
 
@@ -33,6 +39,8 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
 
     private boolean loggingService = true;
     private int logsByService = 50;
+
+    private int historySize = 3250;
 
     @Ignore private TerminalMode termMode;
 
@@ -55,6 +63,16 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
         }
 
         termMode = TerminalMode.valueOf(terminalMode.toUpperCase());
+
+        String[] portRange = this.portRange.split(" -> ");
+        String portRange1 = portRange[0];
+        portRange1 = portRange1.replace(" ","");
+        if(portRange1.matches("[0-9]+"))
+            portRangeInt[0] = Integer.parseInt(portRange1);
+        String portRange2 = portRange[1];
+        portRange2 = portRange2.replace(" ","");
+        if(portRange2.matches("[0-9]+"))
+            portRangeInt[1] = Integer.parseInt(portRange2);
     }
 
 

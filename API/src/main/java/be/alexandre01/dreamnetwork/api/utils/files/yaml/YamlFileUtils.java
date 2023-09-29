@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Getter;
 import lombok.Setter;
@@ -106,6 +107,10 @@ public class YamlFileUtils<T> {
                 }
                 t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
             }catch (Exception e){
+                if(DNUtils.get().getConfigManager().getLanguageManager() == null){
+                    e.printStackTrace();
+                    return null;
+                }
                 Console.printLang("core.utils.yaml.loadFileError", file.getName());
                 Console.bug(e,true);
                 //e.printStackTrace();
