@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.UtilsAPI;
@@ -62,6 +63,12 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
                 infos.writing(Console.getFromLang("service.creation.install.tab"));
                 ArrayList<String> versions = new ArrayList<>();
                 for(InstallationLinks s : InstallationLinks.values()) {
+                    if(finalExec.bundleData.getBundleInfo().getExecType() == ExecType.ANY_PROXY){
+                        if(s.getExecType().isProxy()){
+                            versions.add(s.getVer());
+                        }
+                        continue;
+                    }
                     if(s.getExecType() == finalExec.bundleData.getBundleInfo().getExecType()){
                         versions.add(s.getVer());
                     }
@@ -100,10 +107,14 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
             return false;
         }
         if(installationLinks == null) return false;
-
-        if(installationLinks.getExecType() != jvmExecutor.bundleData.getBundleInfo().getExecType()){
-            return false;
+        if(installationLinks.getExecType() != ExecType.ANY_PROXY){
+            if(!jvmExecutor.bundleData.getBundleInfo().getExecType().isProxy()){
+                if(installationLinks.getExecType() != jvmExecutor.bundleData.getBundleInfo().getExecType()){
+                    return false;
+                }
+            }
         }
+
         String write = console.writing;
         console.setWriting("");
         Console.setBlockConsole(true);

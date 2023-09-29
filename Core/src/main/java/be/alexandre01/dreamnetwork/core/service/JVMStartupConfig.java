@@ -373,7 +373,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             }
 
             System.out.println("CONFIG " + link.getExecType());
-            if(link.getExecType() == ExecType.BUNGEECORD){
+            if(link.getExecType() == ExecType.BUNGEECORD || link.getExecType() == ExecType.ANY_PROXY){
                 updateFile("config.yml",getClass().getClassLoader().getResourceAsStream("files/bungeecord/config.yml"));
                 updateFile("server-icon.png",getClass().getClassLoader().getResourceAsStream("files/bungeecord/server-icon.png"));
                 return;
