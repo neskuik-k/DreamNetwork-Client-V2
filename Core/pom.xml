@@ -95,8 +95,9 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
+
                                         <option>-keepclasseswithmembernames class
-                                            be.alexandre01.dreamnetwork.api.service.tasks.TaskData {
+                                            be.alexandre01.dreamnetwork.core.service.tasks.TaskData {
                                             <![CDATA[<methods>]]>;
                                             <![CDATA[<fields>]]>;
                                             }
