@@ -102,6 +102,14 @@
                                             <![CDATA[<fields>]]>;
                                             }
                                         </option>
+
+                                        <option>-keepclasseswithmembernames class
+                                            be.alexandre01.dreamnetwork.api.service.tasks.ATaskData {
+                                            <![CDATA[<methods>]]>;
+                                            <![CDATA[<fields>]]>;
+                                            }
+                                        </option>
+
                                         <option>-keep public class javax.xml.*</option>
                                     </options>
                                 </configuration>
