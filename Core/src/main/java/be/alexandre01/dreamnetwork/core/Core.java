@@ -40,6 +40,7 @@ import lombok.Setter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.function.Consumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -227,12 +228,17 @@ public class Core {
 
 
         //  getEventsFactory().registerListener(new ServicesTaskListener());
-        try {
-            addonsManager.getAddons().values().forEach(DreamExtension::start);
-        }catch (Exception e){
-            Console.bug(e);
-        }
 
+        addonsManager.getAddons().values().forEach(new Consumer<DreamExtension>() {
+            @Override
+            public void accept(DreamExtension dreamExtension) {
+                try {
+                    dreamExtension.start();
+                }catch (Exception e){
+                    Console.bug(e);
+                }
+            }
+        });
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
         if(Main.getBundlesLoading().isFirstLoad()){
