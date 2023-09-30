@@ -135,6 +135,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
     @Override
     public boolean changePort(String pathName, String finalname, int port, int defaultPort, IContainer.JVMType jvmType, JVMExecutor.Mods mods){
+        fine("Changing port: " + finalname + ":" + defaultPort + " to " + port);
         String name = finalname.split("-")[0];
         String fileName = null;
         String checker = null;
@@ -188,6 +189,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
                 if(line.contains(checker)){
                     fine("Checking line : "+line);
                     line = line.replace(String.valueOf(defaultPort),String.valueOf(port));
+                    fine("New line : "+line);
                 }
                 inputBuffer.append(line);
 
@@ -198,9 +200,13 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             // write the new string with the replaced line OVER the same file
             FileOutputStream fileOut;
             if(mods.equals(JVMExecutor.Mods.DYNAMIC)){
-                fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName));
+                String out = System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+finalname+"/"+fileName);
+                fileOut = new FileOutputStream(out);
+                fine("Writing file : "+out);
             }else {
-                fileOut = new FileOutputStream(System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName));
+                String out = System.getProperty("user.dir")+ Config.getPath(pathName+"/"+name+"/"+fileName);
+                fileOut = new FileOutputStream(out);
+                fine("Writing file : "+out);
             }
             fileOut.write(inputBuffer.toString().getBytes());
             fileOut.close();

@@ -455,13 +455,15 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             int min = globalSettings.getPortRangeInt()[0];
                             int max = globalSettings.getPortRangeInt()[1];
                             port = new Random().nextInt((max - min) + 1) + min;
-
                         }
                         port = whilePortCheck(port);
                         serversPortList.add(port);
                         serversPort.put(finalname, port);
                     }
                 }
+                int currentPort = getCurrentPort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, bundleData.getJvmType(), jvmConfig.getType());
+
+                changePort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, port,currentPort, bundleData.getJvmType(), jvmConfig.getType());
             }
         } else {
             if (!serversPortList.contains(port)) {
