@@ -108,7 +108,7 @@ public class YamlFileUtils<T> {
                 }
                 t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
             }catch (Exception e){
-                if(DNUtils.get().getConfigManager().getLanguageManager() == null){
+                if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
                     e.printStackTrace();
                     return null;
                 }
