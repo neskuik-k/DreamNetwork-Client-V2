@@ -227,8 +227,12 @@ public class Core {
 
 
         //  getEventsFactory().registerListener(new ServicesTaskListener());
+        try {
+            addonsManager.getAddons().values().forEach(DreamExtension::start);
+        }catch (Exception e){
+            Console.bug(e);
+        }
 
-        addonsManager.getAddons().values().forEach(DreamExtension::start);
         getEventsFactory().callEvent(new CoreInitEvent(getDnCoreAPI()));
 
         if(Main.getBundlesLoading().isFirstLoad()){
