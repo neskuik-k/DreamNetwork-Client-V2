@@ -38,7 +38,7 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     private String connectionMode = "netty";
 
     private boolean loggingService = true;
-    private int logsByService = 50;
+    private int logsByExecutor = 15;
 
     private int historySize = 3250;
 
