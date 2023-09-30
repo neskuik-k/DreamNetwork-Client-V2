@@ -367,7 +367,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 if (portsReserved.containsKey(port)) {
                     boolean isAccessible = portsReserved.get(port).equals(this);
                     if (!isAccessible || !PortUtils.isAvailable(port, false)) {
-                        portCheckIncrement(port,min,max,trying);
+                        port = portCheckIncrement(port,min,max,trying);
                         continue;
                     }
                 }
@@ -378,7 +378,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
             }
             if (!PortUtils.isAvailable(port, false)) {
-                portCheckIncrement(port,min,max,trying);
+                port = portCheckIncrement(port,min,max,trying);
                 continue;
             }
             break;
@@ -386,7 +386,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         return port;
     }
 
-    private void portCheckIncrement(int port,int min,int max,int trying){
+    private int portCheckIncrement(int port,int min,int max,int trying){
             if(port == max){
                 if(trying == 1){
                     Console.printLang("service.executor.noPortAvailable", Level.SEVERE);
@@ -396,6 +396,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 port = min-1;
             }
             port = port + 1;
+            return port;
     }
 
     public Integer findPort(IConfig jvmConfig,String finalname, Integer port){
@@ -457,6 +458,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
                         }
                         port = whilePortCheck(port);
+                        serversPortList.add(port);
+                        serversPort.put(finalname, port);
                     }
                 }
             }
