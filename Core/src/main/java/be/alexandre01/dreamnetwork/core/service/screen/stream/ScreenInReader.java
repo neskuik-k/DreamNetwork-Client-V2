@@ -77,7 +77,7 @@ public class ScreenInReader extends Thread implements IScreenInReader {
                                 id = idSplitInt+size;
                             }
                         }
-                        int toDelete = size - Main.getGlobalSettings().getLogsByService();
+                        int toDelete = size - Main.getGlobalSettings().getLogsByExecutor();
                         if(toDelete > 0){
                             for (int i = 0; i < toDelete; i++) {
                                 if(!files[i].delete()){
