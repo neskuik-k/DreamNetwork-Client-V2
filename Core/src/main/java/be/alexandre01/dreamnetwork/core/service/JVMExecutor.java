@@ -438,12 +438,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     }
                     if(globalSettings.isRandomizePort()){
                         port = new Random().nextInt((max - min) + 1) + min;
-                        port = whilePortCheck(port);
-                    }else {
-                        port = whilePortCheck(port);
-                        serversPortList.add(port);
-                        serversPort.put(finalname, port);
                     }
+                    port = whilePortCheck(port);
+                    serversPortList.add(port);
+                    serversPort.put(finalname, port);
                 } else {
                     if (jvmConfig.getType().equals(Mods.DYNAMIC)) {
                         port = getCurrentPort("/runtimes/" + jvmConfig.getPathName(), finalname, bundleData.getJvmType(), jvmConfig.getType());
@@ -456,12 +454,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             int min = globalSettings.getPortRangeInt()[0];
                             int max = globalSettings.getPortRangeInt()[1];
                             port = new Random().nextInt((max - min) + 1) + min;
-                            port = whilePortCheck(port);
-                        }else {
-                            port = whilePortCheck(port);
-                            serversPortList.add(port);
-                            serversPort.put(finalname, port);
+
                         }
+                        port = whilePortCheck(port);
                     }
                 }
             }

@@ -17,7 +17,7 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     boolean rainbowText = false;
 
     boolean randomizePort = false;
-    @Getter(AccessLevel.NONE) String portRange = "25565 -> 51130"; // max 65535
+    String portRange = "25565 -> 51130"; // max 65535
 
     @Ignore int[] portRangeInt = new int[2];
 
