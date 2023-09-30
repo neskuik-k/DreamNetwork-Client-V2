@@ -66,6 +66,8 @@ public class AddonsLoader {
             for(File file : Objects.requireNonNull(dir.listFiles())) {
                 if (file.isDirectory())
                     continue;
+                if(!file.getName().endsWith(".jar"))
+                    continue;
 
                 Console.printLang("addons.loadingAddon", file.getName());
 

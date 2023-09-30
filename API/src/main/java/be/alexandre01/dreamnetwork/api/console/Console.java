@@ -425,7 +425,7 @@ public class Console extends Thread{
 
         sendToLog(s,Level.FINE,"global");
         if(Console.MAIN != null){
-            Console.MAIN.refreshHistory(s + "",Level.INFO);
+            Console.MAIN.refreshHistory(s + "");
         }
         //lineReader.printAbove(s.toString());
         // Client.getInstance().formatter.getDefaultStream().println(s+Colors.ANSI_RESET());
