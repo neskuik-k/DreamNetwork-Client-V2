@@ -8,9 +8,10 @@ import lombok.Setter;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Optional;
 
 @Getter @Setter
-public class DeployData extends YamlFileUtils<DeployData> implements Deploy{
+public class DeployData implements Deploy{
 
     @Ignore private String name;
     @Ignore private File directory;
@@ -26,23 +27,31 @@ public class DeployData extends YamlFileUtils<DeployData> implements Deploy{
         // Init
 
     }
-    public boolean loading(File file){
-        addAnnotation("Deployment folder for Services");
 
-        directory = file.getParentFile();
-        name = directory.getName();
-        if(!super.config(file, DeployData.class,true)){
+    public static Optional<DeployData> loading(File file){
+        YamlFileUtils<DeployData> yml = new YamlFileUtils<>(DeployData.class);
+        yml.addAnnotation("Deployment folder for Services");
+
+        Optional<DeployData> d = yml.init(file,true);
+        d.ifPresent(deployData -> {
+            deployData.setDirectory(file.getParentFile());
+            deployData.setName(deployData.getDirectory().getName());
+        });
+        return d;
+    }
+
+    
+  /*if(!super.config(file, DeployData.class,true)){
             super.saveFile(DeployData.class.cast(this));
         }else {
             super.readAndReplace(this);
             save();
-        }
-        return true;
-    }
+        }*/
 
-    public void save(){
+
+ /*   public void save(){
         super.saveFile(DeployData.class.cast(this));
-    }
+    }*/
 
     public DeployType[] getDeployTypes(){
         return Arrays.stream(types).map(DeployType::valueOf).toArray(DeployType[]::new);

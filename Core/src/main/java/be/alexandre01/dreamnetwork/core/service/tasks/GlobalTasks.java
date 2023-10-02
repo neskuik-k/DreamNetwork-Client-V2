@@ -29,6 +29,7 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasksData> implements IGlob
     ScheduledExecutorService executorService = null;
 
     public GlobalTasks() {
+        super(GlobalTasksData.class);
         addTag(GlobalTasksData.class,Tag.MAP);
         addTag(TaskData.class,Tag.MAP);
         representer = new CustomRepresenter(true,GlobalTasksData.class, TaskData.class);
@@ -49,12 +50,9 @@ public class GlobalTasks extends YamlFileUtils<GlobalTasksData> implements IGlob
         withNames.clear();
         data.tasks.clear();*/
 
-        if(!super.config(new File(Config.getPath("data/Tasks.yml")), GlobalTasksData.class,true)){
-            data = new GlobalTasksData();
-            super.saveFile((GlobalTasksData) data);
-        }else {
-            data = (GlobalTasksData) super.read();
-        }
+        init(new File(Config.getPath("data/Tasks.yml")),true).ifPresent(globalTasksData -> {
+            data = globalTasksData;
+        });
     }
 
     public void loadTasks(){

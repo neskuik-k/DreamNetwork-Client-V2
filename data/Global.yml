@@ -1,4 +1,4 @@
-# This is the global settings of the server | <3
+# This is the global settings of the server | The Dreamy Networky the best !
 SIG_IGN_Handler: true
 checkDefaultJVMVersion: true
 checkJVMVersionOnServiceStart: true
@@ -6,13 +6,16 @@ connectionMode: netty
 copyIOMethod: files
 emojiOnCommand: false
 findAllocatedPorts: true
+historySize: 3250
 language: en_EN
 loggingService: true
-logsByService: 3
+logsByExecutor: 15
 nettyBossThreads: 1
 nettyWorkerThreads: 4
 port: 14520
+portRange: 25565 -> 51130
 rainbowText: false
+randomizePort: false
 screenNameInConsoleChange: true
 terminalMode: ssh
 threadsPoolIO: 8

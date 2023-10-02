@@ -1,14 +1,13 @@
 package be.alexandre01.dreamnetwork.core.gui.intro;
 
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
+import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.core.console.accessibility.AcceptOrRefuse;
+import be.alexandre01.dreamnetwork.api.console.accessibility.AcceptOrRefuse;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.gui.create.TestCreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
@@ -95,7 +94,7 @@ public class IntroMenuCore extends CoreAccessibilityMenu {
                     @Override
                     public Operation accept(String value, String[] args, ShowInfos infos) {
                         Main.getGlobalSettings().setUseEmoji(true);
-                        Main.getGlobalSettings().save();
+                        GlobalSettings.getYml().saveFile();
                         Main.getLanguageManager().getEmojiManager().load();
                         Main.getLanguageManager().forceLoad(Main.getLanguageManager().getActualLanguage().getLocalizedName());
                         return skip();

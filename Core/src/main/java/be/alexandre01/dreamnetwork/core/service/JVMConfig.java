@@ -21,10 +21,11 @@ public class JVMConfig extends ConfigData implements IConfig {
     @Ignore @JsonIgnore YamlFileUtils<ConfigData> ymlFile;
     public JVMConfig(){
         // Empty constructor
-        ymlFile = new YamlFileUtils<>();
+        ymlFile = new YamlFileUtils<>(ConfigData.class);
     }
 
     public void config(File file){
+        ymlFile.init(file,true);
         ymlFile.representer = new CustomRepresenter(true,ConfigData.class);
         ((CustomRepresenter)ymlFile.representer).setThisClassOnly(true);
         ymlFile.config(file,ConfigData.class,true);
@@ -35,7 +36,7 @@ public class JVMConfig extends ConfigData implements IConfig {
     }
 
     public JVMConfig(File file, String name, JVMExecutor.Mods type, String xms, String startup, String executable, String xmx, String pathName, String javaVersion, int port,String bundleName){
-        ymlFile = new YamlFileUtils<>();
+        ymlFile = new YamlFileUtils<>(ConfigData.class);
         ymlFile.config(file,ConfigData.class,true);
         this.name = name;
         this.type = type;

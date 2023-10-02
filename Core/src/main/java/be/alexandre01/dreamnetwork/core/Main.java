@@ -91,8 +91,16 @@ public class Main {
         if(!dataCreated)
             new File(Config.getPath("data")).mkdir();
 
-        globalSettings = new GlobalSettings();
-        globalSettings.loading();
+
+        Optional<GlobalSettings> opt = GlobalSettings.load();
+        if(opt.isPresent()){
+            globalSettings = opt.get();
+            globalSettings.loading();
+        }else {
+            System.out.println("Can't load global settings");
+            System.exit(1);
+        }
+
 
         languageManager = new LanguageManager();
         if(!languageManager.load()){
@@ -116,7 +124,7 @@ public class Main {
                 };
             }
             Main.getGlobalSettings().setUsername(username);
-            Main.getGlobalSettings().save();
+            GlobalSettings.getYml().saveFile();
         }else {
             String line = Main.getGlobalSettings().getUsername();
             for(ColorsConverter color : ColorsConverter.values()){line = line.replace("%" + color.toString().toLowerCase() + "%", color.getColor());}
@@ -156,7 +164,7 @@ public class Main {
                 String l = data.split(" ")[0];
                   if(languages.contains(l)){
                       Main.getGlobalSettings().setLanguage(l);
-                      Main.getGlobalSettings().save();
+                      GlobalSettings.getYml().saveFile();
                       languageManager.loadDifferentLanguage(l);
                       break;
                   }

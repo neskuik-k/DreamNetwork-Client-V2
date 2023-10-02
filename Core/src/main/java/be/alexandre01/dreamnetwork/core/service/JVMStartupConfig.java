@@ -16,6 +16,7 @@ import org.apache.commons.lang.RandomStringUtils;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 import static be.alexandre01.dreamnetwork.api.console.Console.fine;
 
@@ -98,7 +99,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     }
 
     public JVMStartupConfig(String pathName,String name,boolean isBuilded){
-        config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"));
+        //config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"));
         this.name = name;
         this.pathName = pathName;
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
@@ -111,12 +112,16 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
     public void saveFile(){
-        ConfigData config = (ConfigData) getYmlFile().read();
+        Optional<ConfigData> opt = super.getYmlFile().init(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"),true);
 
-        if(config == null) return;
+        if(!opt.isPresent()) return;
+
+        ConfigData config = opt.get();
 
         // Copy all data from config to this class
         // get declaredfields and fields
+
+
         Field[] fields = config.getClass().getDeclaredFields();
         for (Field field : fields) {
             field.setAccessible(true);

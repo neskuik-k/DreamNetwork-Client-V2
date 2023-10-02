@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
+import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.core.Main;
@@ -46,7 +47,7 @@ public class Set extends SubCommand {
                 }
                 Main.getLanguageManager().loadDifferentLanguage(args[2]);
                 Main.getGlobalSettings().setLanguage(args[2]);
-                Main.getGlobalSettings().save();
+                GlobalSettings.getYml().saveFile();
                 Console.printLang("commands.hypervisor.languageChanged",args[2]);
             }
             return true;

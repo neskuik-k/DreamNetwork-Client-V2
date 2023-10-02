@@ -12,10 +12,12 @@ import org.yaml.snakeyaml.nodes.Tag;
 import java.io.File;
 import java.util.HashMap;
 
-public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles {
-    @Getter public HashMap<String,IConfig> profiles;
+public class JVMProfiles extends YamlFileUtils<ProfilesData> implements IProfiles {
+    ProfilesData profilesData = null;
+
 
     public JVMProfiles() {
+        super(ProfilesData.class);
         addTag(JVMProfiles.class,Tag.MAP);
         addTag(ConfigData.class,Tag.MAP);
 
@@ -31,28 +33,49 @@ public class JVMProfiles extends YamlFileUtils<JVMProfiles> implements IProfiles
         constructor.addTypeDescription(jvmConfigDescription);
     }
     public void loading(File file){
-        profiles = null;
+
         addAnnotation("Profiles files");
 
-        if(!super.config(file, JVMProfiles.class,true)){
-            profiles = new HashMap<>();
-            JVMConfig config = new JVMConfig();
-            config.setName("test");
-            config.setXms("1024M");
-            config.setXmx("1024M");
-            profiles.put("hello", config);
-            super.saveFile(JVMProfiles.class.cast(this));
+        init(file,true).ifPresent(profilesData -> {
+            this.profilesData = profilesData;
+        });
+
+
+
+        /*if(!super.config(file, ProfilesData.class,true)){
+            profilesData = createObject();
         }else {
-            super.readAndReplace(this);
+            try {
+                profilesData = readObject();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
             save();
-        }
+        }*/
        // System.out.println("Loading JVMConfigs "+ profiles.size() + ":"+profiles.toString());
 
     }
 
     @Override
     public void save(){
-        super.saveFile(JVMProfiles.class.cast(this));
+        super.saveFile(profilesData);
     }
 
+    @Override
+    public HashMap<String, IConfig> getProfiles() {
+        return profilesData.profiles;
+    }
+
+    @Override
+    public ProfilesData createObject() {
+        profilesData = new ProfilesData();
+        profilesData.profiles = new HashMap<>();
+        JVMConfig config = new JVMConfig();
+        config.setName("test");
+        config.setXms("1024M");
+        config.setXmx("1024M");
+        profilesData.profiles.put("hello", config);
+        super.saveFile(profilesData);
+        return profilesData;
+    }
 }

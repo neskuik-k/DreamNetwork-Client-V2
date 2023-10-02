@@ -37,9 +37,8 @@ public class Create extends SubCommand {
 
 
                 Config.createDir("deploys/"+folder);
-
-                DeployData deployData = new DeployData();
-                deployData.loading(new File("deploys/"+folder+"/deploy.yml"));
+// a patch
+                DeployData.loading(new File("deploys/"+folder+"/deploy.yml"));
                 return true;
             }
         },args,"create","folder")) {

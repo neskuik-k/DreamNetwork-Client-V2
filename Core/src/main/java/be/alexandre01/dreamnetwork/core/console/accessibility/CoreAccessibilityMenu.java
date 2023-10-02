@@ -140,7 +140,7 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
         ShowInfos info = infos.get(currentInput);
         if(currentOperation != null){
             if(currentOperation.getType() == Operation.OperationType.ERROR){
-                Console.debugPrint(Colors.RED_UNDERLINED+info.getError()+Colors.RESET);
+                console.printNL(Colors.RED_UNDERLINED+info.getError()+Colors.RESET);
             }
         }
         if(info.getMacro() != null){
@@ -148,11 +148,11 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
             info.macro(null);
         }
         if(info.getHeadMessage() != null){
-            Console.debugPrint(info.getHeadMessage().replace("%data%",currentInput));
+            console.printNL(info.getHeadMessage().replace("%data%",currentInput));
         }
         if(info.getWritingMessage() != null){
             if(Main.getGlobalSettings().getTermMode() == GlobalSettings.TerminalMode.SAFE){
-                Console.debugPrint(info.getWritingMessage());
+                console.printNL(info.getWritingMessage());
                 return;
             }
             console.setWriting(info.getWritingMessage());
@@ -277,7 +277,7 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
                             // quit
                             forceExit();
                         }else {
-                            Console.debugPrint(Console.getFromLang("menu.cancel"));
+                           console.printNL(Console.getFromLang("menu.cancel"));
                         }
                     }
                 }, Console.getFromLang("menu.cancelWriting"));
@@ -308,11 +308,11 @@ public class CoreAccessibilityMenu extends AccessibilityMenu {
         injectOperation(Operation.set(Operation.OperationType.FINISH));
     }
     public void skipToNext(){
-        Console.print("Skip to next");
+       // Console.print("Skip to next");
         currentPage++;
-        Console.print("Skip to page "+currentPage);
+        //Console.print("Skip to page "+currentPage);
         currentInput = pages.get(currentPage);
-        Console.print("Skip to input "+currentInput);
+        //Console.print("Skip to input "+currentInput);
 
         playCurrentTransition(true);
         redrawScreen();

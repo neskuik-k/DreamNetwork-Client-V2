@@ -26,13 +26,16 @@ public class DeployContainer {
         if(!file.exists()){
             return false;
         }
-        this.deployData = new DeployData();
         File file = new File(this.file, "deploy.yml");
         if(!file.exists()){
             return false;
         }
-        boolean b = deployData.loading(file);
-        return b;
+
+        DeployData.loading(file).ifPresent(deployData -> {
+            this.deployData = deployData;
+        });
+
+        return deployData != null;
     }
 
 }

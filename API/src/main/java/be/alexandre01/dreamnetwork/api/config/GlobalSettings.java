@@ -7,9 +7,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.Optional;
 
 @Getter @Setter
-public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
+public class GlobalSettings {
     boolean SIG_IGN_Handler = true;
     boolean findAllocatedPorts = true;
     boolean checkDefaultJVMVersion = true;
@@ -44,24 +45,24 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
 
     @Ignore private TerminalMode termMode;
 
+    @Getter static YamlFileUtils<GlobalSettings> yml;
+
 
     public GlobalSettings() {
-        
+
         // Init
     }
 
-    public void loading(){
+    public static Optional<GlobalSettings> load(){
+        yml = new YamlFileUtils<>(GlobalSettings.class);
         String[] randomString = {"Better, faster, stronger", "The Dreamy Networky the best !", "If you see this message, you are the best", ":)","<3",":D","Thank you for using our hypervisor","Roblox is better than minecraft (it's joke huh)","Sadness is the opposite of happiness"};
 
         String random = randomString[(int) (Math.random() * randomString.length)];
-        addAnnotation("This is the global settings of the server | " + random);
-        if(!super.config(new File(Config.getPath("data/Global.yml")),GlobalSettings.class,true)){
-            super.saveFile(GlobalSettings.class.cast(this));
-        }else {
-            super.readAndReplace(this);
-            save();
-        }
+        yml.addAnnotation("This is the global settings of the server | " + random);
+        return yml.init(new File(Config.getPath("data/Global.yml")),false);
+    }
 
+    public void loading(){
         termMode = TerminalMode.valueOf(terminalMode.toUpperCase());
 
         String[] portRange = this.portRange.split(" -> ");
@@ -80,10 +81,4 @@ public class GlobalSettings extends YamlFileUtils<GlobalSettings> {
     public enum TerminalMode{
         SSH,SAFE;
     }
-
-    public void save(){
-        super.saveFile(GlobalSettings.class.cast(this));
-    }
-
-
 }

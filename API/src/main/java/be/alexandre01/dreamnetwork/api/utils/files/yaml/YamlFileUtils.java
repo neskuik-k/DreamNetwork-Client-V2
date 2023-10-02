@@ -1,28 +1,34 @@
 package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.DNUtils;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.accessibility.AcceptOrRefuse;
+import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
+import be.alexandre01.dreamnetwork.api.service.ConfigData;
+import be.alexandre01.dreamnetwork.api.utils.files.FileScan;
 import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.nodes.Tag;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class YamlFileUtils<T> {
 
     final transient private List<String> annotations = new ArrayList<>();
     transient private Class<T> clazz;
     @Setter transient private Class toLoad;
+
+    transient private T obj;
     transient @Getter File file;
     transient boolean skipNull;
     public transient DumperOptions dumperOptions = new DumperOptions();
@@ -34,6 +40,11 @@ public class YamlFileUtils<T> {
 
     HashMap<Class<?>,Tag> tags = new HashMap<>();
      List<String> settedFields = new ArrayList<>();
+
+     public YamlFileUtils(Class<T> clazz){
+            this.clazz = clazz;
+         // Ignore
+     }
     public void addTag(Class<?> clazz, Tag tag) {
         tags.put(clazz, tag);
     }
@@ -55,7 +66,7 @@ public class YamlFileUtils<T> {
         return true;
     }
 
-    public Object read(){
+    public Object read() throws Exception{
         return loadFile(file, clazz);
     }
 
@@ -63,9 +74,9 @@ public class YamlFileUtils<T> {
         saveFile(file, obj,clazz,skipNull);
     }
     public void saveFile(){
-        saveFile(file,this,clazz,skipNull);
+        saveFile(file,obj,clazz,skipNull);
     }
-    public Object loadFile(File file, Class<?> clazz){
+    public Object loadFile(File file, Class<?> clazz) throws Exception{
       /* Representer representer = new Representer() {
             @Override
             protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
@@ -98,8 +109,8 @@ public class YamlFileUtils<T> {
             }*/
 
             Object t = null;
-            try {
-               // System.out.println("Load yml file: "+file.getName());
+
+            // System.out.println("Load yml file: "+file.getName());
                 Class<? super Object> toLoad;
                 if(this.toLoad == null){
                     toLoad = (Class<? super Object>) clazz;
@@ -107,15 +118,7 @@ public class YamlFileUtils<T> {
                     toLoad = this.toLoad;
                 }
                 t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
-            }catch (Exception e){
-                if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
-                    e.printStackTrace();
-                    return null;
-                }
-                Console.printLang("core.utils.yaml.loadFileError", file.getName());
-                Console.bug(e,true);
-                //e.printStackTrace();
-            }
+
 
 
 
@@ -125,9 +128,120 @@ public class YamlFileUtils<T> {
             return t;
     }
 
+    public void preLoad(){
+        addTag(clazz,Tag.MAP);
+        representer = new CustomRepresenter(true,clazz);
+        representer.addClassTag(clazz, Tag.MAP);
+    }
+    public Optional<T> init(File file, boolean skipNull){
+        if(!config(file,clazz,skipNull)){
+            return Optional.ofNullable(obj = createObject());
+        }else {
+            try {
+                return Optional.ofNullable(obj = readObject());
+            }catch (Exception e) {
+                try {
+                    if(!(e instanceof YAMLException)){
+                        throw new RuntimeException(e);
+                    }
+                    System.out.println("Error reading file: "+file.getName());
+                    System.out.println("Recreating the file and trying to put old data on it");
+                    return Optional.ofNullable(obj = replaceOldByNew());
+                }catch (Exception cantReplace){
+                    if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
+                        e.printStackTrace();
+                        return null;
+                    }
+                    Console.printLang("core.utils.yaml.loadFileError", file.getName());
+                    Console.bug(e,true);
+                    return null;
+                }
+            }
+        }
+    }
+
+    public T replaceOldByNew() throws Exception{
+        ArrayList<String> linesBefore = new ArrayList<>();
+        FileScan fileScan = new FileScan(getFile());
+        fileScan.scan(new FileScan.LangScanListener() {
+            @Override
+            public void onScan(String line) {
+                linesBefore.add(line);
+            }
+        });
+
+        createObject();
+
+        ArrayList<String> linesAfter = new ArrayList<>();
+        fileScan = new FileScan(getFile());
+        fileScan.scan(new FileScan.LangScanListener() {
+            @Override
+            public void onScan(String line) {
+                linesAfter.add(line);
+            }
+        });
+
+        for (String oldL : linesBefore) {
+            for (String newL : linesAfter) {
+                if(newL.contains(":")){
+                    String[] newSplit = newL.split(":");
+                    String[] oldSplit = oldL.split(":");
+                    if(newSplit[0].equalsIgnoreCase(oldSplit[0])){
+                        if(!newSplit[1].equalsIgnoreCase(oldSplit[1])){
+                            System.out.println("Replace "+newL+" by "+oldL);
+                            linesAfter.set(linesAfter.indexOf(newL),oldL);
+                        }
+                    }
+                    continue;
+                }
+                if(newL.startsWith("-")){
+                    linesAfter.set(linesAfter.indexOf(newL),oldL);
+                }
+            }
+        }
+
+        try {
+            FileWriter fileWriter = new FileWriter(getFile());
+            for (String s : linesAfter) {
+                fileWriter.write(s+"\n");
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return readObject();
+    }
+
+    public T readObject() throws Exception{
+        return (T) read();
+    }
+
+    public T createObject() {
+         Class<T> clazz = (Class<T>) this.clazz;
+        try {
+            T t = clazz.newInstance();
+            saveFile(t);
+            return t;
+        } catch (InstantiationException | IllegalAccessException e) {
+            if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
+                e.printStackTrace();
+                return null;
+            }
+            Console.print("Error creating object: "+clazz.getName());
+            Console.bug(e,true);
+            return null;
+        }
+    }
+
     @Deprecated
     public void readAndReplace(Object o){
-        Object config = read();
+        Object config = null;
+        try {
+            config = read();
+        } catch (Exception e) {
+            return;
+        }
 
         // Copy all data from config to this class
         // get declaredfields and fields
@@ -184,11 +298,10 @@ public class YamlFileUtils<T> {
                 }
             }
             //substring to remove last \n new line
-            fileWriter.write(yaml.dumpAsMap(obj).substring(0,yaml.dumpAsMap(obj).length()-1));
+            String dump = yaml.dumpAsMap(obj);
+            fileWriter.write(dump.substring(0,dump.length()-1));
 
             fileWriter.close();
-
-
         } catch (IOException e) {
             if(DNUtils.get().getConfigManager().getLanguageManager() == null){
                 System.out.println("Error writing file: "+file.getName());
@@ -199,6 +312,8 @@ public class YamlFileUtils<T> {
             Console.bug(e);
         }
     }
+
+
 
     public void addAnnotation(String annotation){
         annotations.add("# "+annotation+"\n");
