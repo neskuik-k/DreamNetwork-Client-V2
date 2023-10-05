@@ -2,10 +2,9 @@ package be.alexandre01.dreamnetwork.core.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
-import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
-import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
@@ -22,7 +21,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import org.bouncycastle.util.Pack;
 
 import java.util.ArrayList;
 import java.util.concurrent.Executors;
@@ -31,7 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
-public class Client implements IClient {
+public class Client implements IClient, IGlobalClient {
     private String name;
     private int port;
     private boolean isExternalTool = false;

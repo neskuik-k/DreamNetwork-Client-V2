@@ -7,8 +7,9 @@ public interface IStartupConfigBuilder {
     static IStartupConfigBuilder builder() {
         return new ConfigBuilder();
     }
-    static IStartupConfigBuilder builder(IConfig iConfig) {
-        return new ConfigBuilder();
+
+    static IStartupConfigBuilder builder(IStartupConfig iConfig) {
+        return new ConfigBuilder(new ConfigBuilder().buildFrom(iConfig));
     }
 
     IStartupConfigBuilder name(String name);
@@ -34,4 +35,6 @@ public interface IStartupConfigBuilder {
     IStartupConfig build();
     IConfig build(boolean save);
     IStartupConfig buildFrom(IStartupConfig config);
+
+    IStartupConfig buildFrom(ConfigData config);
 }

@@ -152,7 +152,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 Console.print(Colors.RED + "The profile " + profile + " doesn't exist", Level.SEVERE);
                 return null;
             }
-            iConfig = JVMStartupConfig.builder(iConfig).buildFrom(this);
+            iConfig = JVMStartupConfig.builder(iConfig).buildFrom((IStartupConfig) this);
             return startServer(iConfig, callbacks);
         } else {
             Console.print(Colors.RED + "The profile is null and doesn't exist", Level.SEVERE);

@@ -36,39 +36,9 @@ public class BaseResponse extends CoreResponse {
 
     public BaseResponse() {
         this.core = Core.getInstance();
+        System.out.println("Init base response");
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
-            Optional<IJVMExecutor> startExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
-            if (!startExecutor.isPresent()) {
-                return;
-            }
 
-            ExecutorCallbacks executorCallbacks = startExecutor.get().startServer();
-            Console.debugPrint("RECEIVED REQUEST");
-            message.getCallback().ifPresent(callback -> {
-                Console.debugPrint("Callback present");
-               executorCallbacks.whenStart(new ExecutorCallbacks.ICallbackStart() {
-                   @Override
-                   public void whenStart(IService service) {
-                       callback.mergeAndSend(new Message().set("name",service.getFullName()), "STARTED");
-                   }
-               });
-
-                executorCallbacks.whenConnect(new ExecutorCallbacks.ICallbackConnect() {
-                   @Override
-                   public void whenConnect(IService service, IClient client) {
-                       Console.debugPrint("LINKED");
-                    callback.send("LINKED");
-                   }
-               });
-
-                executorCallbacks.whenFail(new ExecutorCallbacks.ICallbackFail() {
-                   @Override
-                   public void whenFail() {
-                       Console.debugPrint("FAILED");
-                       callback.send(TaskHandler.TaskType.FAILED);
-                   }
-               });
-            });
         });
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
@@ -185,6 +155,7 @@ public class BaseResponse extends CoreResponse {
                     });
                     virtualBundle.setVirtual(true);
                     String name = configData.getBundleName();
+                    virtualBundle.setVirtualName(Optional.of(name));
                     DNCoreAPI.getInstance().getBundleManager().addBundleData(virtualBundle);
                     // a new name has been potentially created and setted on the bundle
                     DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle);

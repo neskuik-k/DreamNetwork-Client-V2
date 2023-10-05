@@ -11,6 +11,7 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Optional;
 
 @Getter @Setter
 public class BundleData {
@@ -19,6 +20,7 @@ public class BundleData {
     private final ArrayList<BService> services;
     private boolean autoStart;
     private boolean isVirtual = false;
+    private Optional<String> virtualName = Optional.empty();
 
     private final HashMap<String, IJVMExecutor> executors = new HashMap<>();
     private final IBundleInfo bundleInfo;

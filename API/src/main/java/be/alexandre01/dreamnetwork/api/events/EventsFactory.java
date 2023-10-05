@@ -34,9 +34,9 @@ public class EventsFactory {
             try {
                 method.invoke(listeners.get(method), event);
             } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
+                Console.bug(e);
             } catch (InvocationTargetException e) {
-                throw new RuntimeException(e);
+                Console.bug(e);
             }
         });
     }

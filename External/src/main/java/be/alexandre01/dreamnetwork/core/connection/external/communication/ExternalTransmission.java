@@ -54,6 +54,7 @@ public class ExternalTransmission extends ExtResponse {
 
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx) throws Exception {
+        System.out.println(message);
         IDNChannelManager channelManager = DNCoreAPI.getInstance().getChannelManager();
         AChannelPacket receivedPacket = channelManager.createChannelPacket(message);
         if(message.getHeader().equals("channel")) {

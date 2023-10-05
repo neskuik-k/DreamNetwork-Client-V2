@@ -167,4 +167,29 @@ public class ConfigBuilder implements IStartupConfigBuilder {
         j.setProxy(config.isProxy());
         return j;
     }
+
+    @Override
+    public IStartupConfig buildFrom(ConfigData config) {
+        name = config.getName();
+        IStartupConfig j = build();
+        if (j.getName() == null)
+            j.setName(config.getName());
+        if (j.getType() == null)
+            j.setType(config.getType());
+        if (j.getXms() == null)
+            j.setXms(config.getXms());
+        if (j.getXmx() == null)
+            j.setXmx(config.getXmx());
+        if (j.getPort() == 0)
+            j.setPort(config.getPort());
+        if (j.getJavaVersion() == null)
+            j.setJavaVersion(config.getJavaVersion());
+        if (j.getExecutable() == null)
+            j.setExecutable(config.getExecutable());
+        if (j.getStartup() == null)
+            j.setStartup(config.getStartup());
+        if (j.getDeployers() == null)
+            j.setDeployers(config.getDeployers());
+        return j;
+    }
 }

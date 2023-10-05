@@ -12,10 +12,6 @@ import io.netty.util.concurrent.GenericFutureListener;
 
 public interface IClient {
     String getName();
-    Packet writeAndFlush(Message message);
-
-    Packet writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener);
-
     int getPort();
 
     boolean isExternalTool();
@@ -50,7 +46,6 @@ public interface IClient {
     void setChannelHandlerContext(io.netty.channel.ChannelHandlerContext channelHandlerContext);
 
     void setCoreHandler(ICoreHandler coreHandler);
-
 
 
     void setClientManager(IClientManager clientManager);

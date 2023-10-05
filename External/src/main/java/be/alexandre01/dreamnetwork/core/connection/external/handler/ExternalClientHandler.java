@@ -31,6 +31,7 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
     public ExternalClientHandler(ExternalClient externalClient){
         this.externalClient = externalClient;
         responses.add(new ExternalTransmission());
+
         System.out.println("Init external client handler");
         ExternalCore.getInstance().setClientHandler(this);
         ExternalCore.getInstance().init();

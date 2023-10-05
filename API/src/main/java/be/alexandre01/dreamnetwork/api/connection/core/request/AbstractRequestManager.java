@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -16,7 +17,7 @@ import java.util.logging.Level;
 public abstract class AbstractRequestManager implements IRequestManager {
     RequestBuilder requestBuilder;
 
-
+    @Getter private static HashMap<String, CoreResponse.RequestInterceptor> tasks = new HashMap<>();
 
 
     public AbstractRequestManager(){

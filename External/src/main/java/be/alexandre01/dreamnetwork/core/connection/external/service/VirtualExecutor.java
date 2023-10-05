@@ -82,7 +82,8 @@ public class VirtualExecutor  implements IJVMExecutor {
     }
 
     private void sendStartCallBack(IClient client, ExecutorCallbacks callbacks, VirtualService virtualService,Object o){
-        DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getFullName(),o), new TaskHandler() {
+        System.out.println("Sending start callback to "+ getTrueFullName().get());
+        DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName().get(),o), new TaskHandler() {
             Integer id;
             @Override
             public void onCallback() {
@@ -262,6 +263,13 @@ public class VirtualExecutor  implements IJVMExecutor {
 
     @Override
     public Optional<IProfiles> getJvmProfiles() {
+        return Optional.empty();
+    }
+
+    public Optional<String> getTrueFullName(){
+        if(getBundleData().getVirtualName().isPresent()){
+            return Optional.of(getBundleData().getVirtualName().get() + "/" + getName());
+        }
         return Optional.empty();
     }
 

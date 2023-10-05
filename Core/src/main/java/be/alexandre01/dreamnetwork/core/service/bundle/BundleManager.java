@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
@@ -68,6 +69,7 @@ public class BundleManager implements IBundleManager {
             while(virtualBundles.containsKey(bundleData.getName().toLowerCase()+"@"+i)){
                 i++;
             }
+
             bundleData.setName(bundleData.getName()+"@"+i);
         }
         virtualBundles.put(bundleData.getName().toLowerCase(), bundleData);
