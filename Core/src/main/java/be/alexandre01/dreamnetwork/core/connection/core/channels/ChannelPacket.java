@@ -1,9 +1,9 @@
 package be.alexandre01.dreamnetwork.core.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestFutureResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
@@ -25,7 +25,7 @@ public class ChannelPacket extends AChannelPacket implements Packet {
     @Getter private final String provider;
     private RequestFutureResponse requestFutureResponse;
 
-    private Client client;
+    private ServiceClient client;
     private final String channel;
 
     public ChannelPacket(Message message){
@@ -45,23 +45,23 @@ public class ChannelPacket extends AChannelPacket implements Packet {
 
 
     @Override
-    public void createResponse(Message message, IClient client){
+    public void createResponse(Message message, AServiceClient client){
         createResponse(message,client,null,"channel");
     }
 
     @Override
-    public void createResponse(Message message, IClient client, String header){
+    public void createResponse(Message message, AServiceClient client, String header){
         createResponse(message,client,null,header);
     }
 
     @Override
-    public void createResponse(Message message, IClient client, GenericFutureListener<? extends Future<? super Void>> listener){
+    public void createResponse(Message message, AServiceClient client, GenericFutureListener<? extends Future<? super Void>> listener){
         createResponse(message,client,listener,"channel");
     }
 
 
     @Override
-    public void createResponse(Message message, IClient client, GenericFutureListener<? extends Future<? super Void>> listener, String header){
+    public void createResponse(Message message, AServiceClient client, GenericFutureListener<? extends Future<? super Void>> listener, String header){
         message.setProvider(provider);
         message.setReceiver("core");
         message.setHeader(header);
@@ -84,7 +84,7 @@ public class ChannelPacket extends AChannelPacket implements Packet {
     }
 
     @Override
-    public IClient getReceiver() {
+    public AServiceClient getReceiver() {
         return client;
     }
 }

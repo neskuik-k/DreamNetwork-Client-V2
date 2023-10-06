@@ -1,12 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service.bundle;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
-import com.google.common.collect.BiMap;
-import com.google.common.collect.Multimap;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import com.google.common.collect.Table;
-
-import java.util.HashMap;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -25,7 +20,7 @@ public interface IBundleManager {
     java.util.HashMap<String, BundleData> getBundleDatas();
     java.util.HashMap<String, BundleData> getVirtualBundles();
 
-    Table<IClient,String,String> getBundlesNamesByTool();
+    Table<AServiceClient,String,String> getBundlesNamesByTool();
 
     java.util.ArrayList<String> getPaths();
 

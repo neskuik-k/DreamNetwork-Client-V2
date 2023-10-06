@@ -1,11 +1,10 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import lombok.Getter;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -46,7 +45,7 @@ public class DNCallbackReceiver {
     public Optional<Message> mergeAndSend(Message message, String custom){
         if(isOutOfTime()) return Optional.empty();
         if(this.message.getClientProvider().isPresent()){
-            IClient client = this.message.getClientProvider().get();
+            AServiceClient client = this.message.getClientProvider().get();
             message.setInRoot("RID",MID);
             message.setInRoot("tType",custom);
             client.writeAndFlush(message);

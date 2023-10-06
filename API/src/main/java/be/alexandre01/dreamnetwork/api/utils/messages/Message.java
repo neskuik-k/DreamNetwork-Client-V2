@@ -1,7 +1,8 @@
 package be.alexandre01.dreamnetwork.api.utils.messages;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.*;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ConfigData;
@@ -256,7 +257,7 @@ public class Message extends LinkedHashMap<String, Object> {
         return this;
     }
 
-    public Optional<IClient> getClientProvider() {
+    public Optional<AServiceClient> getClientProvider() {
         String provider = (String) super.get("from");
         if (provider == null) {
             return Optional.empty();
@@ -405,7 +406,7 @@ public class Message extends LinkedHashMap<String, Object> {
 
     }
 
-    public Packet toPacket(IClient theReceiver){
+    public Packet toPacket(IGlobalClient theReceiver){
         return new Packet() {
             @Override
             public Message getMessage() {
@@ -418,7 +419,7 @@ public class Message extends LinkedHashMap<String, Object> {
             }
 
             @Override
-            public IClient getReceiver() {
+            public IGlobalClient getReceiver() {
                 return theReceiver;
             }
         };
@@ -440,9 +441,9 @@ public class Message extends LinkedHashMap<String, Object> {
         if(!containsKeyInRoot("MID")) return Optional.empty();
         AtomicReference<DNCallbackReceiver> callbackReceiver = new AtomicReference<>();
         Console.debugPrint("Search client provider " + getClientProvider().isPresent());
-        getClientProvider().ifPresent(new Consumer<IClient>() {
+        getClientProvider().ifPresent(new Consumer<AServiceClient>() {
             @Override
-            public void accept(IClient client) {
+            public void accept(AServiceClient client) {
                 callbackReceiver.set(new DNCallbackReceiver(getMessageID(),Message.this));
                 //Optional<DNCallbackReceiver> c = client.getCoreHandler().getCallbackManager().getReceived(getRequestID());
                 //c.ifPresent(callbackReceiver::set);

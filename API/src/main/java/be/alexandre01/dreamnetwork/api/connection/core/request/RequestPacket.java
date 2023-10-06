@@ -1,7 +1,8 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.util.concurrent.Future;
 import io.netty.util.concurrent.GenericFutureListener;
@@ -18,7 +19,7 @@ public class RequestPacket implements Packet{
     private String provider;
     private RequestFutureResponse requestFutureResponse;
 
-    private IClient client;
+    private AServiceClient client;
 
     public RequestPacket(RequestInfo requestInfo, Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
         this.requestInfo = requestInfo;
@@ -40,12 +41,12 @@ public class RequestPacket implements Packet{
         //message.setInRoot("MID",messageID);
         currentId++;
     }
-    public RequestPacket send(IClient client){
+    public RequestPacket send(AServiceClient client){
         return client.getRequestManager().sendRequest(this);
     }
 
     @Override
-    public IClient getReceiver() {
+    public IGlobalClient getReceiver() {
         return client;
     }
 }

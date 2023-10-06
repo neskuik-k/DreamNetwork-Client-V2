@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 
 import java.util.Optional;
@@ -14,7 +14,7 @@ public interface IService {
     String getXmx();
     String getXms();
     IJVMExecutor.Mods getType();
-    IClient getClient();
+    AServiceClient getClient();
     boolean isConnected();
     IJVMExecutor getJvmExecutor();
 
@@ -32,6 +32,6 @@ public interface IService {
 
     void removeService();
 
-    void setClient(IClient client);
+    void setClient(AServiceClient client);
     Optional<ExecutorCallbacks> getExecutorCallbacks();
 }

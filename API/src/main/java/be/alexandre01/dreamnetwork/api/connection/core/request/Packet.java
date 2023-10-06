@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 
 /*
@@ -10,5 +10,5 @@ import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 public interface Packet {
     public Message getMessage();
     public String getProvider();
-    public IClient getReceiver();
+    public IGlobalClient getReceiver();
 }

@@ -1,14 +1,14 @@
 package be.alexandre01.dreamnetwork.core.connection.core.communication.services;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceLinkedEvent;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -19,7 +19,6 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -44,7 +43,7 @@ public class AuthentificationResponse extends CoreResponse {
     }
 
     @Override
-    protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client) {
+    protected boolean preReader(Message message, ChannelHandlerContext ctx, AServiceClient client) {
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
         Console.print(message,Level.FINE);
 
@@ -59,7 +58,7 @@ public class AuthentificationResponse extends CoreResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, AServiceClient client) throws Exception {
             RequestInfo requestInfo = message.getRequest();
             Console.printLang("connection.core.communication.request", Level.FINE, requestInfo.name());
 
@@ -74,13 +73,11 @@ public class AuthentificationResponse extends CoreResponse {
                         return;
                     }
 
-
-
                     String info = message.getString("INFO");
                     if(info.contains("ExternalDream")){
                         Console.print(Colors.GREEN_UNDERLINED+"ExternalDream CONNECTION DETECTED !", Level.INFO);
                         coreHandler.getExternalConnections().add(ctx);
-                        Client extClient = (Client) Core.getInstance().getClientManager().registerClient(Client.builder()
+                        ServiceClient extClient = (ServiceClient) Core.getInstance().getClientManager().registerClient(ServiceClient.builder()
                                 .coreHandler(coreHandler)
                                 .info(info)
                                 .port(0)
@@ -89,12 +86,12 @@ public class AuthentificationResponse extends CoreResponse {
                                 .ctx(ctx)
                                 .build());
                         coreHandler.getAllowedCTX().add(ctx);
-                        coreHandler.getResponses().add(new BaseResponse());
-                        coreHandler.getResponses().add(new ExternalResponse());
+                        /*coreHandler.getResponses().add(new BaseResponse());
+                        coreHandler.getResponses().add(new ExternalResponse());*/
 
                         extClient.setName("ExternalClient:"+ ctx.channel().remoteAddress().toString().split(":")[0]);
                         extClient.getRequestManager().getRequestBuilder().addRequestBuilder(new DefaultExternalRequest());
-                      //  extClient.getCoreHandler().getResponses().add(new BaseResponse());
+                        extClient.getCoreHandler().getResponses().add(new BaseResponse());
 
 
                         String connectionId;
@@ -113,7 +110,7 @@ public class AuthentificationResponse extends CoreResponse {
                         if(message.getBoolean("EXTERNAL"))
                             isExternal = true;
                     }
-                    Client newClient = Client.builder()
+                    ServiceClient newClient = ServiceClient.builder()
                             .coreHandler(coreHandler)
                             .info(info)
                             .port(port)
@@ -148,7 +145,7 @@ public class AuthentificationResponse extends CoreResponse {
                             // check bundle name if it has an another name on this client (main => main_1)
                             String idString = message.getString("ID");
                             System.out.println(idString);
-                            IClient extClient = clientManager.getExternalTools().get(idString);
+                            AServiceClient extClient = clientManager.getExternalTools().get(idString);
                             System.out.println(""+extClient);
                             System.out.println(bundleName.toString());
                             System.out.println(""+bundleManager.getBundlesNamesByTool().containsColumn(bundleName.toString()));
@@ -233,7 +230,7 @@ public class AuthentificationResponse extends CoreResponse {
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
-                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
+                        for (AServiceClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
                             String server = newClient.getJvmService().getFullName();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
@@ -241,7 +238,7 @@ public class AuthentificationResponse extends CoreResponse {
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         newClient.getRequestManager().sendRequest(RequestType.SERVER_HANDSHAKE_SUCCESS);
-                        Client proxy = Core.getInstance().getClientManager().getProxy();
+                        ServiceClient proxy = Core.getInstance().getClientManager().getProxy();
                         String[] remoteAdress = ctx.channel().remoteAddress().toString().split(":");
 
                         if(proxy != null){
@@ -289,7 +286,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                             }
                         }
-                        for (IClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
+                        for (AServiceClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
                             String server = newClient.getJvmService().getFullName();
                             if (devtools != null)
                                 devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
@@ -345,7 +342,7 @@ public class AuthentificationResponse extends CoreResponse {
                 int devPort = message.getInt("PORT");
 
                 Console.print("CREATE CLIENT", Level.FINE);
-                Client devClient = (Client) Core.getInstance().getClientManager().registerClient(Client.builder()
+                ServiceClient devClient = (ServiceClient) Core.getInstance().getClientManager().registerClient(ServiceClient.builder()
                         .coreHandler(coreHandler)
                         .info(devInfo)
                         .port(devPort)

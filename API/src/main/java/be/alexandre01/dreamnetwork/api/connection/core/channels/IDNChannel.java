@@ -1,22 +1,22 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 
 public interface IDNChannel {
     void received(AChannelPacket receivedPacket);
 
-    void setData(String key, Object object, boolean autoSend, IClient... clients);
+    void setData(String key, Object object, boolean autoSend, AServiceClient... clients);
 
-    void storeData(String key, Object object, IClient... clients);
+    void storeData(String key, Object object, AServiceClient... clients);
 
-    void storeData(String key, Object object, boolean autoSend, IClient... clients);
+    void storeData(String key, Object object, boolean autoSend, AServiceClient... clients);
 
     Object getData(String key);
 
     <T> T getData(String key, Class<T> clazz);
 
-    void sendMessage(Message message, IClient client);
+    void sendMessage(Message message, AServiceClient client);
 
     void addInterceptor(AChannelPacket.DNChannelInterceptor dnChannelInterceptor);
 

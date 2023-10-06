@@ -5,19 +5,19 @@ import io.netty.channel.ChannelHandlerContext;
 import java.util.HashMap;
 
 public interface IClientManager {
-    IClient registerClient(IClient client);
+    AServiceClient registerClient(AServiceClient client);
 
-    IClient getClient(String processName);
+    AServiceClient getClient(String processName);
 
-    IClient getClient(ChannelHandlerContext ctx);
+    AServiceClient getClient(ChannelHandlerContext ctx);
 
-    java.util.HashMap<String, IClient> getClients();
+    java.util.HashMap<String, AServiceClient> getClients();
 
-    java.util.HashMap<ChannelHandlerContext, IClient> getClientsByConnection();
+    java.util.HashMap<ChannelHandlerContext, AServiceClient> getClientsByConnection();
 
-    HashMap<String,IClient> getExternalTools();
+    HashMap<String, AServiceClient> getExternalTools();
 
-    IClient getProxy();
+    AServiceClient getProxy();
 
 
 }

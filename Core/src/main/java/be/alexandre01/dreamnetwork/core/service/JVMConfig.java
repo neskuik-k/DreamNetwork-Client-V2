@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.events.EventCatcher;
 import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.CustomRepresenter;

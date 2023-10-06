@@ -1,8 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.communication;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -29,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 
 @Getter
 @Setter
-public class Client implements IClient, IGlobalClient {
+public class ServiceClient extends AServiceClient {
     private String name;
     private int port;
     private boolean isExternalTool = false;
@@ -47,7 +46,7 @@ public class Client implements IClient, IGlobalClient {
 
 
     @Builder
-    public Client(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType, boolean isExternalTool,boolean isExternalService) {
+    public ServiceClient(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType, boolean isExternalTool, boolean isExternalService) {
         this.port = port;
         this.info = info;
         this.isExternalTool = isExternalTool;

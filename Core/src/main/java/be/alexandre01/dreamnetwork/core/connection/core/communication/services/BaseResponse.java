@@ -4,9 +4,8 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
-import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
@@ -15,8 +14,8 @@ import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
-import be.alexandre01.dreamnetwork.api.connection.core.request.RequestPacket;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
+import be.alexandre01.dreamnetwork.core.connection.core.interceptors.StartTask;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -25,7 +24,7 @@ import io.netty.channel.ChannelHandlerContext;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.logging.Level;
 
@@ -33,12 +32,14 @@ import static be.alexandre01.dreamnetwork.api.connection.core.request.RequestTyp
 
 public class BaseResponse extends CoreResponse {
     private final Core core;
-
+    HashMap<String, CoreResponse.RequestInterceptor> tasks = AbstractRequestManager.getTasks();
+    RequestInterceptor start = StartTask.get();
     public BaseResponse() {
         this.core = Core.getInstance();
+
         System.out.println("Init base response");
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
-
+            start.onRequest(message, ctx, c);
         });
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
@@ -53,7 +54,7 @@ public class BaseResponse extends CoreResponse {
         });
 
         addRequestInterceptor(SERVER_EXECUTE_COMMAND, (message, ctx, c) -> {
-            IClient cmdClient = this.core.getClientManager().getClient(message.getString("SERVERNAME"));
+            AServiceClient cmdClient = this.core.getClientManager().getClient(message.getString("SERVERNAME"));
             if (cmdClient != null) {
                 cmdClient.getRequestManager().sendRequest(SERVER_EXECUTE_COMMAND, message.getString("CMD"));
             }
@@ -181,7 +182,7 @@ public class BaseResponse extends CoreResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, AServiceClient client) throws Exception {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
@@ -227,7 +228,7 @@ public class BaseResponse extends CoreResponse {
             }
             if (message.getHeader().equals("channel") && message.getChannel() != null) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
-                    final Collection<IClient> clients = this.core.getChannelManager().getClientsRegistered().get(message.getChannel());
+                    final Collection<AServiceClient> clients = this.core.getChannelManager().getClientsRegistered().get(message.getChannel());
                     if (!clients.isEmpty()) {
                         boolean resend = true;
 
@@ -236,7 +237,7 @@ public class BaseResponse extends CoreResponse {
                         }
                         /*Console.debugPrint("NotEmptyGetClients");
                         Console.debugPrint("NotEmptyGetClients "+ this.client.getChannelManager().clientsRegistered.get(message.getChannel()));*/
-                        for (IClient c : this.core.getChannelManager().getClientsRegistered().get(message.getChannel())) {
+                        for (AServiceClient c : this.core.getChannelManager().getClientsRegistered().get(message.getChannel())) {
                             if (!resend && c == client) {
                                 continue;
                             }

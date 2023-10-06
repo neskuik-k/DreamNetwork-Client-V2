@@ -1,15 +1,15 @@
 package be.alexandre01.dreamnetwork.api.connection.core.players;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 
 public interface IServicePlayersManager {
     void registerPlayer(Player player);
 
-    void removeUpdatingClient(IClient client);
+    void removeUpdatingClient(AServiceClient client);
 
-    ServicePlayersObject getObject(IClient client);
+    ServicePlayersObject getObject(AServiceClient client);
 
-    void addUpdatingClient(IClient client, long time, DataType dataType);
+    void addUpdatingClient(AServiceClient client, long time, DataType dataType);
 
     void udpatePlayerServer(int id, String server,String bundle);
 
@@ -17,7 +17,7 @@ public interface IServicePlayersManager {
 
     void unregisterPlayer(int id);
 
-    java.util.HashMap<IClient, ServicePlayersObject> getObjects();
+    java.util.HashMap<AServiceClient, ServicePlayersObject> getObjects();
 
     java.util.HashMap<Integer, Player> getPlayersMap();
 
@@ -25,7 +25,7 @@ public interface IServicePlayersManager {
 
     java.util.HashMap<ServicePlayersObject, java.util.concurrent.ScheduledExecutorService> getWantToBeInformed();
 
-    com.google.common.collect.Multimap<Player, IClient> getIsRegistered();
+    com.google.common.collect.Multimap<Player, AServiceClient> getIsRegistered();
 
     public enum DataType {
         PLAYERS_COUNT, PLAYERS_LIST;

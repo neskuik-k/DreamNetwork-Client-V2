@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import lombok.Setter;
 
 public class ExecutorCallbacks {
@@ -47,7 +47,7 @@ public class ExecutorCallbacks {
     }
 
     public abstract static class ICallbackConnect{
-        public abstract void whenConnect(IService service, IClient client);
+        public abstract void whenConnect(IService service, AServiceClient client);
     }
 
     public abstract static class ICallbackFail{

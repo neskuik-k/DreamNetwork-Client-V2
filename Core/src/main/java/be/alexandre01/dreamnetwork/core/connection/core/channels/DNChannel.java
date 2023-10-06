@@ -4,11 +4,10 @@ package be.alexandre01.dreamnetwork.core.connection.core.channels;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -39,13 +38,13 @@ public class DNChannel implements IDNChannel {
 
 
     @Override
-    public void setData(String key, Object object, boolean autoSend, IClient... clients){
+    public void setData(String key, Object object, boolean autoSend, AServiceClient... clients){
         objects.put(key, object);
         autoSendObjects.put(key, autoSend);
     }
 
     @Override
-    public void storeData(String key, Object object, IClient... clients){
+    public void storeData(String key, Object object, AServiceClient... clients){
         boolean autoSend = true;
         if(autoSendObjects.containsKey(key)){
             autoSend = autoSendObjects.get(key);
@@ -54,8 +53,8 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void storeData(String key, Object object, boolean autoSend, IClient... clients){
-        List<IClient> c = Arrays.asList(clients);
+    public void storeData(String key, Object object, boolean autoSend, AServiceClient... clients){
+        List<AServiceClient> c = Arrays.asList(clients);
         setData(key,object,autoSend);
         Console.printLang("connection.core.channels.object", object);
         if(autoSend){
@@ -67,7 +66,7 @@ public class DNChannel implements IDNChannel {
                 return;
 
 
-            for(IClient client : channelManager.getClientsRegistered().get(getName())){
+            for(AServiceClient client : channelManager.getClientsRegistered().get(getName())){
                 if(c.contains(client)){
                     continue;
                 }
@@ -89,7 +88,7 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void sendMessage(Message message, IClient client){
+    public void sendMessage(Message message, AServiceClient client){
         message.setProvider("core");
         ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
         channelPacket.createResponse(message,client);

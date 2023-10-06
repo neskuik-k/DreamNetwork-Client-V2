@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import com.google.common.collect.ArrayListMultimap;
@@ -37,7 +37,7 @@ public class RequestBuilder {
          * @param args
          * @return the {@linkplain Message message}
          */
-        public Message write(Message message, IClient client, Object... args);
+        public Message write(Message message, AServiceClient client, Object... args);
 
     }
 }

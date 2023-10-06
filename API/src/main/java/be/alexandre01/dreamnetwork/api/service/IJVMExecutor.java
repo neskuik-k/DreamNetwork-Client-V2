@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
@@ -98,7 +98,7 @@ public interface IJVMExecutor {
 
         if (service.getClient() != null) {
             if (!isProxy()) {
-                IClient proxy = api.getClientManager().getProxy();
+                AServiceClient proxy = api.getClientManager().getProxy();
                 if (proxy != null) {
                     proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getFullName());
                 }

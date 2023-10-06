@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.core.service.bundle;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
@@ -26,12 +26,11 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
     @Getter private final HashMap<String, BundleData> virtualBundles = new HashMap<>();
-    @Getter private final Table<IClient,String,String> bundlesNamesByTool = HashBasedTable.create();
+    @Getter private final Table<AServiceClient,String,String> bundlesNamesByTool = HashBasedTable.create();
 
     @Getter ArrayList<String> paths = new ArrayList<>();
 

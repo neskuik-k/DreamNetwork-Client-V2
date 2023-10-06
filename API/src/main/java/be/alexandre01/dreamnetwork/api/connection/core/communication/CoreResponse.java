@@ -14,7 +14,7 @@ public abstract class CoreResponse {
 
 
 
-    public void onAutoResponse(Message message, ChannelHandlerContext ctx, IClient client){
+    public void onAutoResponse(Message message, ChannelHandlerContext ctx, AServiceClient client){
         if(!preReader(message,ctx,client)){
             return;
         }
@@ -31,7 +31,7 @@ public abstract class CoreResponse {
         }
     }
 
-    protected void onResponse(Message message, ChannelHandlerContext ctx, IClient client) throws Exception {
+    protected void onResponse(Message message, ChannelHandlerContext ctx, AServiceClient client) throws Exception {
         // override this
     }
 
@@ -43,10 +43,10 @@ public abstract class CoreResponse {
         return map.get(message.getRequestID());
     }
     public interface RequestInterceptor {
-        public void onRequest(Message message, ChannelHandlerContext ctx, IClient client) throws Exception;
+        public void onRequest(Message message, ChannelHandlerContext ctx, AServiceClient client) throws Exception;
     }
 
-    protected boolean preReader(Message message, ChannelHandlerContext ctx, IClient client){
+    protected boolean preReader(Message message, ChannelHandlerContext ctx, AServiceClient client){
         // do nothing
         return true;
     }

@@ -1,8 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
-import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
-import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
@@ -10,11 +8,8 @@ import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
-import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import io.netty.channel.ChannelHandlerContext;
 import lombok.Getter;
-import lombok.Setter;
 
 
 import java.io.File;
@@ -25,11 +20,12 @@ public class VirtualExecutor  implements IJVMExecutor {
     BundleData bundleData;
     HashMap<Integer,IService> serviceList = new HashMap<>();
 
-    @Getter IClient externalTool;
+    @Getter
+    AServiceClient externalTool;
 
 
 
-    public VirtualExecutor(ConfigData configData, BundleData bundle,IClient externalTool){
+    public VirtualExecutor(ConfigData configData, BundleData bundle, AServiceClient externalTool){
         this.configData = configData;
         this.bundleData = bundle;
         this.externalTool = externalTool;
@@ -81,7 +77,7 @@ public class VirtualExecutor  implements IJVMExecutor {
         return callbacks;
     }
 
-    private void sendStartCallBack(IClient client, ExecutorCallbacks callbacks, VirtualService virtualService,Object o){
+    private void sendStartCallBack(AServiceClient client, ExecutorCallbacks callbacks, VirtualService virtualService, Object o){
         System.out.println("Sending start callback to "+ getTrueFullName().get());
         DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName().get(),o), new TaskHandler() {
             Integer id;

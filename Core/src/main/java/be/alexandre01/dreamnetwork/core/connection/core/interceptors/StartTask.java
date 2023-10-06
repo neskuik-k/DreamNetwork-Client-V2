@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.interceptors;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -15,8 +16,9 @@ import java.util.Optional;
  ↬   done on 03/10/2023 at 23:09
 */
 public class StartTask {
-    static {
-        AbstractRequestManager.getTasks().put("start", (message, ctx, client) -> {
+    public static CoreResponse.RequestInterceptor get(){
+        CoreResponse.RequestInterceptor start;
+        AbstractRequestManager.getTasks().put("start", start = (message, ctx, client) -> {
             Optional<IJVMExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
 
             System.out.println("Searching if start executor of "+ message.getString("SERVERNAME")+ "is present");
@@ -45,7 +47,7 @@ public class StartTask {
 
                 executorCallbacks.whenConnect(new ExecutorCallbacks.ICallbackConnect() {
                     @Override
-                    public void whenConnect(IService service, IClient client) {
+                    public void whenConnect(IService service, AServiceClient client) {
                         Console.debugPrint("LINKED");
                         callback.send("LINKED");
                     }
@@ -60,5 +62,6 @@ public class StartTask {
                 });
             });
         });
+        return start;
     }
 }

@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -150,7 +151,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                     return;
                 }
 
-                IClient client = core.getClientManager().getClient(ctx);
+                AServiceClient client = core.getClientManager().getClient(ctx);
 
                 if(client == null){
                     return;
@@ -164,7 +165,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 //if message hasReceiver resend directly to the client
                 if(message.hasReceiver()){
                     if(!message.getReceiver().equals("core")){
-                        IClient receiver = core.getClientManager().getClient(message.getReceiver());
+                        AServiceClient receiver = core.getClientManager().getClient(message.getReceiver());
                         if(receiver == null){
                             Console.print("Receiver "+ message.getReceiver()+" is unknown");
                             return;
@@ -223,7 +224,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
         //LOG
         if (allowedCTX.contains(ctx)) {
-            HashMap<ChannelHandlerContext, IClient> clientByConnexion = Core.getInstance().getClientManager().getClientsByConnection();
+            HashMap<ChannelHandlerContext, AServiceClient> clientByConnexion = Core.getInstance().getClientManager().getClientsByConnection();
             if (clientByConnexion.containsKey(ctx)) {
                 IService jvmService = clientByConnexion.get(ctx).getJvmService();
                 String name = null;
@@ -246,7 +247,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             executorService.shutdown();
         }
         print(ctx.channel().remoteAddress(), Level.FINE);
-        IClient client = Core.getInstance().getClientManager().getClient(ctx);
+        AServiceClient client = Core.getInstance().getClientManager().getClient(ctx);
 
 
         //Remove Server
@@ -255,12 +256,12 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             client.getClientManager().getExternalTools().remove(client);
             if (!client.isExternalTool()) {
                 String server = client.getJvmService().getFullName();
-                for (IClient c : Core.getInstance().getClientManager().getClients().values()) {
+                for (AServiceClient c : Core.getInstance().getClientManager().getClients().values()) {
                     if (c.getJvmType() == JVMContainer.JVMType.SERVER) {
                         c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS, server);
                     }
                 }
-                for (IClient c : Core.getInstance().getClientManager().getExternalTools().values()) {
+                for (AServiceClient c : Core.getInstance().getClientManager().getExternalTools().values()) {
                     if (c != null) {
                         //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
                         c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVERS, server);
@@ -317,17 +318,19 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
     @Override
-    public void writeAndFlush(Message msg, IClient client) {
+    public void writeAndFlush(Message msg, IGlobalClient client) {
         this.writeAndFlush(msg, null, client);
     }
 
     @Override
-    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IClient client) {
-
-        if (client != null && client.getJvmService() != null) {
-            fine(Colors.YELLOW + "WRITE AND FLUSH for " + client.getJvmService().getFullName() + ">> " + Colors.RESET + msg);
-        } else {
-            fine(Colors.YELLOW + "WRITE AND FLUSH for UNKNOWN>> " + Colors.RESET + msg);
+    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IGlobalClient client) {
+        if(client instanceof AServiceClient){
+            AServiceClient serviceClient = (AServiceClient) client;
+            if (serviceClient.getJvmService() != null) {
+                fine(Colors.YELLOW + "WRITE AND FLUSH for " + serviceClient.getJvmService().getFullName() + ">> " + Colors.RESET + msg);
+            } else {
+                fine(Colors.YELLOW + "WRITE AND FLUSH for UNKNOWN>> " + Colors.RESET + msg);
+            }
         }
 
 

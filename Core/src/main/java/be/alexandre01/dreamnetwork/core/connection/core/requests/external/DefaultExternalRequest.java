@@ -24,5 +24,8 @@ public class DefaultExternalRequest extends RequestBuilder {
             }
             return message;
         });
+        super.getRequestData().put(RequestType.CORE_START_SERVER,(message, client, args) -> {
+            return message;
+        });
     }
 }

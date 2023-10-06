@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 
 public interface IDNChannelManager {
@@ -11,11 +11,11 @@ public interface IDNChannelManager {
 
     void createChannel(IDNChannel dnChannel);
 
-    void registerClientToChannel(IClient client, String channel, boolean resend);
+    void registerClientToChannel(AServiceClient client, String channel, boolean resend);
 
-    void unregisterClientToChannel(IClient client, String channel);
+    void unregisterClientToChannel(AServiceClient client, String channel);
 
-    void unregisterAllClientToChannel(IClient client);
+    void unregisterAllClientToChannel(AServiceClient client);
 
     void registerCoreToChannel(String channel);
 
@@ -23,9 +23,9 @@ public interface IDNChannelManager {
 
     java.util.HashMap<String, IDNChannel> getChannels();
 
-    com.google.common.collect.Multimap<String, IClient> getClientsRegistered();
+    com.google.common.collect.Multimap<String, AServiceClient> getClientsRegistered();
 
-    java.util.ArrayList<IClient> getDontResendsData();
+    java.util.ArrayList<AServiceClient> getDontResendsData();
 
     java.util.ArrayList<String> getChannelRegisteredInCore();
 

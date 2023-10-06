@@ -1,8 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
-import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.DNUtils;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
@@ -17,7 +15,7 @@ import java.util.concurrent.CompletableFuture;
 public class VirtualService implements IService {
     @Setter int id = -1;
     @Setter int port = 0;
-    IClient client;
+    AServiceClient client;
     VirtualExecutor virtualExecutor;
 
     @Setter ExecutorCallbacks executorCallbacks;
@@ -28,7 +26,7 @@ public class VirtualService implements IService {
 
 
 
-    public VirtualService(IClient client, VirtualExecutor executor){
+    public VirtualService(AServiceClient client, VirtualExecutor executor){
         this.client = client;
         this.virtualExecutor = executor;
         config = IStartupConfigBuilder.builder()
@@ -81,7 +79,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public IClient getClient() {
+    public AServiceClient getClient() {
         return client;
     }
 
@@ -177,7 +175,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public void setClient(IClient client) {
+    public void setClient(AServiceClient client) {
         this.client = client;
     }
 

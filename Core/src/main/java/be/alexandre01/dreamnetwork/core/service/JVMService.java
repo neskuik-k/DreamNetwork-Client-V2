@@ -1,13 +1,13 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import lombok.*;
@@ -20,7 +20,7 @@ import java.util.concurrent.CompletableFuture;
 public class JVMService implements IService {
     private int id;
     private int port;
-    private Client client;
+    private ServiceClient client;
     private JVMExecutor jvmExecutor;
     private Process process;
 
@@ -105,7 +105,7 @@ public class JVMService implements IService {
 
 
 
-    public void setClient(Client client) {
+    public void setClient(ServiceClient client) {
         this.client = client;
     }
 
@@ -147,8 +147,8 @@ public class JVMService implements IService {
     }
 
     @Override
-    public void setClient(IClient client) {
-        this.client = (Client) client;
+    public void setClient(AServiceClient client) {
+        this.client = (ServiceClient) client;
     }
 
     @Override

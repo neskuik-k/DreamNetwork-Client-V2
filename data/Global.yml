@@ -1,4 +1,4 @@
-# This is the global settings of the server | The Dreamy Networky the best !
+# This is the global settings of the server | <3
 SIG_IGN_Handler: true
 checkDefaultJVMVersion: true
 checkJVMVersionOnServiceStart: true
@@ -19,5 +19,5 @@ randomizePort: false
 screenNameInConsoleChange: true
 terminalMode: ssh
 threadsPoolIO: 8
-useEmoji: false
+useEmoji: true
 username: altat

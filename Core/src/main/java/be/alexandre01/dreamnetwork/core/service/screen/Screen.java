@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.screen;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenDestroyEvent;
@@ -8,8 +8,6 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -22,7 +20,7 @@ import java.util.ArrayList;
 public class Screen extends Thread implements IScreen {
     IService service;
     ArrayList<String> history;
-    ArrayList<IClient> devToolsReading = new ArrayList<>();
+    ArrayList<AServiceClient> devToolsReading = new ArrayList<>();
     IScreenStream screenStream;
     volatile Integer screenId;
     boolean running = true;

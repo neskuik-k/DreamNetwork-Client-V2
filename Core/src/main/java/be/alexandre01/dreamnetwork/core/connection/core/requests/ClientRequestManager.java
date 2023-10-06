@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.core.connection.core.requests;
 
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.*;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.Client;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.exceptions.RequestNotFoundException;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
@@ -12,12 +12,11 @@ import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
 
 import java.util.Collection;
-import java.util.HashMap;
 
 public class ClientRequestManager extends AbstractRequestManager {
     @Getter
     RequestBuilder requestBuilder;
-    private Client client;
+    private ServiceClient client;
     private ChannelHandlerContext ctx;
     private ICoreHandler handler;
 
@@ -25,7 +24,7 @@ public class ClientRequestManager extends AbstractRequestManager {
 
 
 
-    public ClientRequestManager(Client client){
+    public ClientRequestManager(ServiceClient client){
         super();
         this.client = client;
         this.ctx = client.getChannelHandlerContext();
