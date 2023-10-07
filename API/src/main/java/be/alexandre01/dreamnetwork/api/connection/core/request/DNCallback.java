@@ -37,6 +37,7 @@ public class DNCallback {
         return dnCallback;
     }
 
+    // a faire => Ajouter int pour multiple pour max paquets
     public static DNCallback multiple(Packet packet, TaskHandler handler){
         handler.isSingle = false;
         return on(packet,handler);

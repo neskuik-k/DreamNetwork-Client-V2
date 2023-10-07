@@ -26,6 +26,10 @@ public class ExternalResponseBuilder extends RequestBuilder {
             message.set("executors", (List<?>) args[0],ConfigData.class);
             return message;
         });
+        requestData.put(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE, ((message, client, args) -> {
+            message.set("DATA", args[0]);
+            return message;
+        }));
 
     }
 }

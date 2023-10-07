@@ -9,12 +9,15 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleManager;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.config.ConfigManager;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CallbackManager;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
+import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 
 import java.util.logging.FileHandler;
 
@@ -51,6 +54,11 @@ public class UtilsAPI extends DNUtils {
     @Override
     public AccessibilityMenu createAccessibilityMenu() {
         return new CoreAccessibilityMenu();
+    }
+
+    @Override
+    public IScreen createScreen(IService service) {
+        return new Screen(service);
     }
 
     @Override

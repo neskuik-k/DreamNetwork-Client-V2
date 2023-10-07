@@ -6,6 +6,8 @@ import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.console.IConsoleManager;
 import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -20,6 +22,7 @@ public abstract class DNUtils {
         return instance;
     }
     public abstract AccessibilityMenu createAccessibilityMenu();
+    public abstract IScreen createScreen(IService service);
     public abstract ICallbackManager createCallbackManager();
     public abstract IRequestManager createClientRequestManager(UniversalConnection client);
     public abstract IConfigManager getConfigManager();

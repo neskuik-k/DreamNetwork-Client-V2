@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ClientManager;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
@@ -172,10 +173,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 }
                                 VirtualService virtualService = (VirtualService) virtualExecutor.createOrGetService(id);
                                 virtualService.setId(id);
-                                Screen screen = new Screen(virtualService);
-                                screen.setViewing(false);
                                 virtualService.setPort(p);
-                                virtualService.setScreen(screen);
                                 virtualService.setClient((AServiceClient) client);
                                 newClient.setJvmService(virtualService);
                                 virtualService.getExecutorCallbacks().ifPresent(executorCallbacks -> {

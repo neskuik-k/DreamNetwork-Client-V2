@@ -38,20 +38,18 @@ public class RequestPacket implements Packet{
         this.message = message;
         this.provider = "core";
         message.setProvider(provider);
-        //message.setInRoot("MID",messageID);
+        //message.setInRoot("MID",messageID);q
         currentId++;
     }
-    public RequestPacket send(AServiceClient client){
+   /* public RequestPacket send(){
         return client.getRequestManager().sendRequest(this);
     }
+    public RequestPacket send(GenericFutureListener<? extends Future<? super Void>> listener){
+        return client.getRequestManager().sendRequest(this,listener);
+    }*/
 
     @Override
     public UniversalConnection getReceiver() {
         return client;
-    }
-
-    @Override
-    public void send() {
-        client.getRequestManager().sendRequest(this);
     }
 }

@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -41,7 +43,7 @@ public class VirtualService implements IService {
                 .xms(executor.getXms())
                 .xmx(executor.getXmx())
                 .build(false);
-        config.setScreenEnabled(false);
+        config.setScreenEnabled(DNUtils.get().getConfigManager().getGlobalSettings().isExternalScreenViewing());
     }
 
     @Override
@@ -186,6 +188,6 @@ public class VirtualService implements IService {
     }
 
     public String getTrueFullName() {
-        return virtualExecutor.getTrueFullName()+"-"+id;
+        return virtualExecutor.getTrueFullName() + "-" + id;
     }
 }

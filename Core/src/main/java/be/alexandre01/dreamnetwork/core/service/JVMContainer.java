@@ -57,7 +57,7 @@ public class JVMContainer implements IContainer {
             }
             IJVMExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
             if(jvmExecutors.length == 0){
-                return null;
+                return Optional.empty();
             }
 
             if(jvmExecutors.length > 1){
@@ -65,11 +65,11 @@ public class JVMContainer implements IContainer {
                 for(IJVMExecutor jvmExecutor : jvmExecutors){
                     System.out.println(Colors.YELLOW+ "> "+jvmExecutor.getFullName());
                 }
-                return null;
+                return Optional.empty();
             }
             return Optional.ofNullable(jvmExecutors[0]);
         }catch (Exception e){
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -81,7 +81,7 @@ public class JVMContainer implements IContainer {
             id = Integer.parseInt(split[1]);
         }catch (Exception e){
             System.out.println(Colors.RED+"The id is not a number");
-            return null;
+            return Optional.empty();
         }
         return tryToGetService(split[0],id);
     }

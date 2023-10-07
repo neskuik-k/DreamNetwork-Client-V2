@@ -27,7 +27,12 @@ public class DefaultDevToolRequest extends RequestBuilder {
         });
 
         requestData.put(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,(message, client, args) -> {
-            message.set("DATAS", args[0]);
+            message.set("DATA", args[0]);
+            return message;
+        });
+        requestData.put(RequestType.DEV_TOOLS_SEND_COMMAND,(message, client, args) -> {
+            message.set("SERVICE", args[0]);
+            message.set("CMD", args[1]);
             return message;
         });
 

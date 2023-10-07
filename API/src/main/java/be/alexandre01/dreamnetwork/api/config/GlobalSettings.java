@@ -41,11 +41,13 @@ public class GlobalSettings {
     private boolean loggingService = true;
     private int logsByExecutor = 15;
 
+    private boolean externalScreenViewing = true;
     private int historySize = 3250;
 
     @Ignore private TerminalMode termMode;
 
     @Getter static YamlFileUtils<GlobalSettings> yml;
+
 
 
     public GlobalSettings() {
@@ -75,6 +77,7 @@ public class GlobalSettings {
         if(portRange2.matches("[0-9]+"))
             portRangeInt[1] = Integer.parseInt(portRange2);
     }
+
 
 
 

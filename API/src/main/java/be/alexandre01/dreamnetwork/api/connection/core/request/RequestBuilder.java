@@ -6,6 +6,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Synchronized;
 
 @Data
 public class RequestBuilder {
@@ -17,13 +18,14 @@ public class RequestBuilder {
     }
 
     public void addRequestBuilder(RequestBuilder... requestBuilders){
-        for(RequestBuilder requestBuilder : requestBuilders){
+        for (RequestBuilder requestBuilder : requestBuilders) {
             requestData.putAll(requestBuilder.requestData);
         }
     }
 
+
     public static void addGlobalRequestData(RequestBuilder... requestBuilders){
-        for(RequestBuilder requestBuilder : requestBuilders){
+        for (RequestBuilder requestBuilder : requestBuilders) {
             globalRequestData.putAll(requestBuilder.requestData);
         }
     }

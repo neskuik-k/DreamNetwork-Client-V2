@@ -10,7 +10,11 @@ import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
+import be.alexandre01.dreamnetwork.core.service.JVMService;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.external.ExternalScreenInReader;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.external.ExternalScreenOutWriter;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.bungee.BungeeCordReader;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.patches.spigot.SpigotReader;
 import lombok.Getter;
@@ -48,30 +52,39 @@ public class ProcessScreenStream implements IScreenStream {
         console.setKillListener(new Console.ConsoleKillListener() {
             @Override
             public boolean onKill(LineReader reader) {
-                Console.setActualConsole("m:default");
+                exitScreen();
                 return true;
             }
         });
         this.screen = screen;
-        reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
+
 
         // read outputstream entry
 
         //System.out.println(screen.getService().getProcess().getOutputStream().getClass());
         //System.out.println(screen.getService().getProcess().getOutputStream().toString());
           //new BufferedOutputStream(screen.getService().getProcess().getOutputStream());
-        screenInReader = new ProcessScreenInReader(console,screen.getService(),reader,screen);
-
-        screen.getService().getJvmExecutor().getExecType().ifPresent(execType -> {
-            if(execType == ExecType.BUNGEECORD){
-                screenInReader.getReaderLines().add(new BungeeCordReader());
+        if(console.getConsoleAction() == null){
+            if(screen.getService() instanceof JVMService){
+                screenOutWriter = new ProcessScreenOutWriter(screen, console,this);
+            }else{
+                screenOutWriter = new ExternalScreenOutWriter(screen, console,this);
             }
-            if(execType == ExecType.SERVER){
-                screenInReader.getReaderLines().add(new SpigotReader());
-            }
-        });
-        Thread screenIRT = new Thread(screenInReader);
-        screenIRT.start();
+        }
+        if(screen.getService() instanceof JVMService){
+            reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
+            screenInReader = new ProcessScreenInReader(console,screen.getService(),reader,screen);
+            screen.getService().getJvmExecutor().getExecType().ifPresent(execType -> {
+                if(execType == ExecType.BUNGEECORD){
+                    screenInReader.getReaderLines().add(new BungeeCordReader());
+                }
+                if(execType == ExecType.SERVER){
+                    screenInReader.getReaderLines().add(new SpigotReader());
+                }
+            });
+            Thread screenIRT = new Thread(screenInReader);
+            screenIRT.start();
+        }
     }
     @Override
     public void init(String name, IScreen screen){
@@ -82,22 +95,14 @@ public class ProcessScreenStream implements IScreenStream {
 
 
         LineReader c = null;
-       if(console.getConsoleAction() == null){
-           /*  try {
-                c = LineReaderBuilder.builder()
-                        .terminal(terminal)
-                        :completer(new MyCompleter())
-                        .highlighter(new MyHighlighter())
-                        .parser(new MyParser())
-                        .build();
-                c = new LineReaderBuilder.builder().terminal()(screen.getService().getProcess().getInputStream(), screen.getService().getProcess().getOutputStream());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }*/
 
-            this.screenOutWriter = new ProcessScreenOutWriter(screen, console);
-        }
-        ((ProcessScreenOutWriter)screenOutWriter).run();
+
+       if(screen.getService() instanceof VirtualService){
+           screenInReader = new ExternalScreenInReader(console,screen.getService(),screen);
+           screenInReader.run();
+       }
+
+       screenOutWriter.run();
         Console.setActualConsole("s:"+name);
        /* ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
 
@@ -108,5 +113,13 @@ public class ProcessScreenStream implements IScreenStream {
             }
         }*/
     }
+
+    public void exitScreen(){
+        Console.setActualConsole("m:default");
+        if(screenInReader instanceof ExternalScreenInReader){
+            screenInReader.stopReader();
+        }
+    }
+
 
 }

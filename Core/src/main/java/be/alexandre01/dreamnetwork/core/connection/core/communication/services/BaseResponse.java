@@ -12,7 +12,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalCo
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
-import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.*;
@@ -24,9 +23,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
 import be.alexandre01.dreamnetwork.core.connection.core.interceptors.StartTask;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
-import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import com.google.common.collect.Multimap;
 import com.google.common.collect.Table;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -77,13 +74,13 @@ public class BaseResponse extends CoreResponse {
             this.core.getClientManager().getClient(server).writeAndFlush(message);
         });
 
-        addRequestInterceptor(DEV_TOOLS_VIEW_CONSOLE_MESSAGE, (message, ctx, c) -> {
-            ScreenManager.instance.getScreens().get(message.getString("SERVERNAME")).getDevToolsReading().add((AServiceClient) c);
-        });
+        /*addRequestInterceptor(DEV_TOOLS_VIEW_CONSOLE_MESSAGE, (message, ctx, c) -> {
+            ScreenManager.instance.getScreens().get(message.getString("DATA")).getDevToolsReading().add((AServiceClient) c);
+        });*/
+
 
         addRequestInterceptor(DEV_TOOLS_SEND_COMMAND, (message, ctx, c) -> {
-            boolean b = Boolean.parseBoolean(message.getString("TYPE"));
-            String[] serv = message.getString("SERVERNAME").split("-");
+            String[] serv = message.getString("SERVICE").split("-");
             String cmd = message.getString("CMD");
             /*
             if (b) {
@@ -203,6 +200,7 @@ public class BaseResponse extends CoreResponse {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
+
         IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
         if (dnChannel != null) {
             ChannelPacket receivedPacket = new ChannelPacket(message);
@@ -265,17 +263,21 @@ public class BaseResponse extends CoreResponse {
             }
         }
 
-                // if core send data and received callback
-                if (message.containsKeyInRoot("RID")) {
+        // if core send data and received callback
+
+        if (message.containsKeyInRoot("RID")) {
                     int id = (int) message.getInRoot("RID");
                     ICallbackManager callbackManager = DNCoreAPI.getInstance().getCallbackManager();
                     callbackManager.getHandlerOf(id).ifPresent(handler -> {
                         handler(message, handler);
                     });
-                    /*RequestPacket request = client.getRequestManager().getRequest(message.getMessageID());
-                    if(request != null)
-                        request.getRequestFutureResponse().onReceived(receivedPacket);*/
-            }
+        }
+
+        // verifier si single
+        /*message.getCallback().ifPresent(receiver -> {
+            receiver.
+        });*/
+
             //RequestInfo request = message.getRequest();
     }
 
@@ -287,8 +289,8 @@ public class BaseResponse extends CoreResponse {
             case ACCEPTED:
                 handler.onAccepted();
                 break;
-            case REFUSED:
-                handler.onRefused();
+            case REJECTED:
+                handler.onRejected();
                 break;
             case IGNORED:
                 handler.onFailed();

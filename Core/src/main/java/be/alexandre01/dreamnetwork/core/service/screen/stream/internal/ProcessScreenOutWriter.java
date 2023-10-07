@@ -21,7 +21,7 @@ public class ProcessScreenOutWriter implements IScreenOutWriter {
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ProcessScreenOutWriter(IScreen screen, Console console) {
+    public ProcessScreenOutWriter(IScreen screen, Console console, ProcessScreenStream screenStream) {
         //  this.consoleReader = consoleReader;
         //Console.debugPrint(consoleReader.getCompleters());
 
@@ -36,7 +36,7 @@ public class ProcessScreenOutWriter implements IScreenOutWriter {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        commands.addCommands(new ScreenExit(screen));
+        commands.addCommands(new ScreenExit(screen,screenStream));
     }
 
     public void run() {

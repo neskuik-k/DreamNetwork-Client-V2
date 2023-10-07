@@ -4,4 +4,6 @@ import java.io.IOException;
 
 public interface IScreenOutWriter {
     void writeOnConsole(String data) throws IOException;
+
+    void run();
 }

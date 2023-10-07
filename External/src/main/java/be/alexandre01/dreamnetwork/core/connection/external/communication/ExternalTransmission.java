@@ -9,12 +9,19 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ConfigData;
+import be.alexandre01.dreamnetwork.api.service.IContainer;
+import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Optional;
 
 
 public class ExternalTransmission extends CoreResponse {
@@ -51,6 +58,40 @@ public class ExternalTransmission extends CoreResponse {
                     ExternalCore.getInstance().exitMode();
                 }
             }
+        });
+
+        addRequestInterceptor(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,(message, ctx, client) -> {
+            String serverName = message.getString("DATA");
+            IContainer container = DNCoreAPI.getInstance().getContainer();
+            message.getCallback().ifPresent(receiver -> {
+                Optional<IService> optionalService = container.tryToGetService(serverName);
+                if(optionalService.isPresent()){
+                    IService iService = optionalService.get();
+                    IScreen screen = iService.getScreen();
+                    if(screen.getDevToolsReading().contains(client)){
+                        screen.getDevToolsReading().remove(client);
+                    }else {
+                        screen.getDevToolsReading().add(client);
+                    }
+                    receiver.send(TaskHandler.TaskType.ACCEPTED);
+                }else {
+                    receiver.send(TaskHandler.TaskType.REJECTED);
+                }
+            });
+        });
+        addRequestInterceptor(RequestType.DEV_TOOLS_SEND_COMMAND,(message, ctx, client) -> {
+            System.out.println("Find ");
+            String serverName = message.getString("SERVICE");
+            String command = message.getString("CMD");
+            IContainer container = DNCoreAPI.getInstance().getContainer();
+               container.tryToGetService(serverName).ifPresent(iService -> {
+                    IScreen screen = iService.getScreen();
+                    try {
+                        screen.getScreenStream().getScreenOutWriter().writeOnConsole(command);
+                    } catch (IOException e) {
+                        Console.bug(e);
+                    }
+                });
         });
     }
 

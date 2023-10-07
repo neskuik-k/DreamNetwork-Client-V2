@@ -16,11 +16,13 @@ public interface Packet {
     public String getProvider();
     public UniversalConnection getReceiver();
 
-    default void dispatch(){
-        getReceiver().writeAndFlush(getMessage());
+    default Packet dispatch(){
+        getReceiver().dispatch(this);
+        return this;
     }
 
-    default void dispatch(GenericFutureListener<? extends Future<? super Void>> future){
-        getReceiver().writeAndFlush(getMessage(),future);
+    default Packet dispatch(GenericFutureListener<? extends Future<? super Void>> future){
+        getReceiver().dispatch(this,future);
+        return this;
     }
 }

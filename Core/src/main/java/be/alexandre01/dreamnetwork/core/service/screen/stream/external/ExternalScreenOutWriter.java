@@ -1,13 +1,19 @@
 package be.alexandre01.dreamnetwork.core.service.screen.stream.external;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenOutWriter;
 import be.alexandre01.dreamnetwork.core.Core;
 
+import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
 import be.alexandre01.dreamnetwork.core.service.screen.commands.ScreenCommands;
 import be.alexandre01.dreamnetwork.core.service.screen.commands.ScreenExit;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.internal.ProcessScreenStream;
 
 
 import java.io.*;
@@ -15,28 +21,15 @@ import java.io.*;
 
 public class ExternalScreenOutWriter implements IScreenOutWriter {
     ScreenCommands commands;
-    BufferedWriter writer;
-    private String[] args;
     private final IScreen screen;
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ExternalScreenOutWriter(IScreen screen, Console console) {
-        //  this.consoleReader = consoleReader;
-        //Console.debugPrint(consoleReader.getCompleters());
-
+    public ExternalScreenOutWriter(IScreen screen, Console console, ProcessScreenStream screenStream) {
         this.console = console;
         this.screen = screen;
         commands = new ScreenCommands(screen);
-        /*reader = new BufferedReader(new InputStreamReader(screen.getScreenStream().in));
-        write("> ");
-
-        try {
-            args = reader.readLine().split(" ");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }*/
-        commands.addCommands(new ScreenExit(screen));
+        commands.addCommands(new ScreenExit(screen,screenStream));
     }
 
     public void run() {
@@ -52,16 +45,6 @@ public class ExternalScreenOutWriter implements IScreenOutWriter {
                         //Console.debugPrint(Arrays.toString(args));
                         if (!commands.check(args)) {
                             try {
-                                if (!screen.getService().getProcess().isAlive()) {
-                                    Console.fine("The PROCESS cannot be writed anymore.");
-                                    screen.destroy(false);
-                                    return;
-                                }
-                                //   Console.debugPrint("start");
-
-                                //  Console.debugPrint("writer");
-
-                                //writer.write(args[args.length-1]+"\n");
                                 StringBuilder sb = new StringBuilder();
                                 for (int i = 0; i < args.length; i++) {
                                     if (args[i] != null) {
@@ -83,16 +66,18 @@ public class ExternalScreenOutWriter implements IScreenOutWriter {
 
             @Override
             public void consoleChange() {
-
+                // do nothing
             }
         });
     }
 
     @Override
     public void writeOnConsole(String data) throws IOException {
-        Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
-        writer.write(data + "\n");
-        writer.flush();
+        if(screen.getService() instanceof VirtualService){
+            VirtualService virtualService = (VirtualService) screen.getService();
+            ExternalClient externalExecutor = virtualService.getJvmExecutor().getExternalCore();
+            externalExecutor.getRequestManager().getRequest(RequestType.DEV_TOOLS_SEND_COMMAND, virtualService.getTrueFullName(),data).dispatch();
+        }
     }
 
 }

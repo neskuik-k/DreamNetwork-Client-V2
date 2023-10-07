@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream.internal;
 
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
@@ -201,7 +202,7 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
 
 
 
-                    for(AServiceClient client : screen.getDevToolsReading()){
+                    for(UniversalConnection client : screen.getDevToolsReading()){
                         client.getRequestManager().sendRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE,data);
                     }
                 }
@@ -228,5 +229,9 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
         }
     }
 
+    @Override
+    public void stopReader() {
+        this.isRunning = false;
+    }
 }
 

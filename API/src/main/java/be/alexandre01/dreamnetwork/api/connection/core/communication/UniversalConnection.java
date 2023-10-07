@@ -10,6 +10,7 @@ import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import org.bouncycastle.util.Pack;
 
 import java.util.ArrayList;
 
@@ -34,14 +35,25 @@ public class UniversalConnection {
         this.name = "Unknown-Client="+ ctx.channel().remoteAddress().toString()+":"+port;
     }
 
+    @Deprecated
     public Packet writeAndFlush(Message message) {
         coreHandler.writeAndFlush(message, this);
         return message.toPacket(this);
     }
 
-
+    @Deprecated
     public Packet writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
         coreHandler.writeAndFlush(message, listener, this);
         return message.toPacket(this);
+    }
+
+    public Packet dispatch(Packet packet) {
+        coreHandler.writeAndFlush(packet.getMessage(), this);
+        return packet;
+    }
+
+    public Packet dispatch(Packet packet, GenericFutureListener<? extends Future<? super Void>> future) {
+        coreHandler.writeAndFlush(packet.getMessage(),future, this);
+        return packet;
     }
 }

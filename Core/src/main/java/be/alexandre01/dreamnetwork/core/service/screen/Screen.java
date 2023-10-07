@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.service.screen;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenDestroyEvent;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 public class Screen extends Thread implements IScreen {
     IService service;
     ArrayList<String> history;
-    ArrayList<AServiceClient> devToolsReading = new ArrayList<>();
+    ArrayList<UniversalConnection> devToolsReading = new ArrayList<>();
     IScreenStream screenStream;
     volatile Integer screenId;
     boolean running = true;
@@ -45,8 +46,9 @@ public class Screen extends Thread implements IScreen {
         ScreenManager screenManager = ScreenManager.instance;
         screenId = screenManager.getId(service);
         screenName = service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
-        if(viewing)
+        if(viewing){
             this.screenStream = new ProcessScreenStream(screenName,this);
+        }
         service.setScreen(this);
         screenManager.addScreen(this);
         Core core = Core.getInstance();

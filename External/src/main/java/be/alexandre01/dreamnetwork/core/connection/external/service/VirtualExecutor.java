@@ -1,16 +1,16 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
-import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import lombok.Getter;
 
@@ -81,9 +81,11 @@ public class VirtualExecutor  implements IJVMExecutor {
     }
 
     private void sendStartCallBack(ExternalClient client, ExecutorCallbacks callbacks, VirtualService virtualService, Object o){
-        System.out.println("Sending start callback to "+ getTrueFullName().get());
-        DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName().get(),o), new TaskHandler() {
+        System.out.println("Sending start callback to "+ getTrueFullName());
+        DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName(),o), new TaskHandler() {
+
             Integer id;
+
             @Override
             public void onCallback() {
                 if (hasType(TaskType.CUSTOM)) {
@@ -98,6 +100,9 @@ public class VirtualExecutor  implements IJVMExecutor {
                                 serviceList.put(id,virtualService);
                                 virtualService.setId(id);
                                 virtualService.setExecutorCallbacks(callbacks);
+                                IScreen screen = DNUtils.get().createScreen(virtualService);
+                                screen.setViewing(DNUtils.get().getConfigManager().getGlobalSettings().isExternalScreenViewing());
+                                virtualService.setScreen(screen);
                             }
                         }
                         destroy();
@@ -110,7 +115,7 @@ public class VirtualExecutor  implements IJVMExecutor {
                         return;
                     }
                 }
-                if (hasType(TaskType.IGNORED) || hasType(TaskType.REFUSED) || hasType(TaskType.FAILED)) {
+                if (hasType(TaskType.IGNORED) || hasType(TaskType.REJECTED) || hasType(TaskType.FAILED)) {
                     Console.print("[EXTERNAL] => "+Console.getFromLang("service.executor.couldNotStart", getFullName()));
                     super.destroy();
                     if(callbacks != null){
@@ -279,11 +284,11 @@ public class VirtualExecutor  implements IJVMExecutor {
         return Optional.empty();
     }
 
-    public Optional<String> getTrueFullName(){
+    public String getTrueFullName(){
         if(getBundleData().getVirtualName().isPresent()){
-            return Optional.of(getBundleData().getVirtualName().get() + "/" + getName());
+            return getBundleData().getVirtualName().get() + "/" + getName();
         }
-        return Optional.empty();
+        return null;
     }
 
 

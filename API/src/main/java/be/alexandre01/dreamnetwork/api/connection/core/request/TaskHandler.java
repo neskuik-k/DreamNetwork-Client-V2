@@ -46,7 +46,7 @@ public abstract class TaskHandler {
 
     public void onAccepted(){}
 
-    public void onRefused(){}
+    public void onRejected(){}
 
     public void onIgnored(){}
 
@@ -58,7 +58,7 @@ public abstract class TaskHandler {
 
     public enum TaskType{
         IGNORED,
-        REFUSED,
+        REJECTED,
         ACCEPTED,
         SUCCESS,
         FAILED,
@@ -79,6 +79,8 @@ public abstract class TaskHandler {
             this.taskType = TaskType.CUSTOM;
         }
     }
+
+
     static {
         Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
             Long l = System.currentTimeMillis();
@@ -100,6 +102,6 @@ public abstract class TaskHandler {
                 handler.destroy();
                 timeStamps.remove(handler);
             });
-        }, 5, 5, TimeUnit.SECONDS);
+        }, 5,5, TimeUnit.SECONDS);
     }
 }

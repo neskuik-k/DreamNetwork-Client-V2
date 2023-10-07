@@ -136,7 +136,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             e.printStackTrace();
         }
 
-        System.out.println("Bytes: "+s_to_decode);
         //TO DECODE STRING IF ENCODED AS AES
 
         //ctx.channel().closeFuture();
@@ -149,7 +148,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         try {
             //ALLOWED CONNECTION
             if (allowedCTX.contains(ctx)) {
-                System.out.println("Allowed connection");
                 Message message = Message.createFromJsonString(s_to_decode);
                 if (message == null) {
                     return;
@@ -208,7 +206,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             } else {
                 //NOT ALLOWED CONNECTION
                 try {
-                    System.out.println("Not allowed connection");
+
                     Message message = Message.createFromJsonString(s_to_decode);
                     authResponse.onAutoResponse(message, ctx, core.getClientManager().getClient(ctx));
                 } catch (Exception e) {

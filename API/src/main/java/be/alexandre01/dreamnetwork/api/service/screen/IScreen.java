@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service.screen;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.service.IService;
 
 import java.util.ArrayList;
@@ -17,17 +18,18 @@ public interface IScreen extends Runnable {
 
     IScreenStream getScreenStream();
 
-    ArrayList<AServiceClient> getDevToolsReading();
+    ArrayList<UniversalConnection> getDevToolsReading();
 
     Integer getScreenId();
 
     String getScreenName();
 
     void setService(IService service);
+    void setViewing(boolean viewing);
 
     void setHistory(ArrayList<String> history);
 
-    void setDevToolsReading(ArrayList<AServiceClient> devToolsReading);
+    void setDevToolsReading(ArrayList<UniversalConnection> devToolsReading);
 
     void setScreenStream(IScreenStream screenStream);
 
