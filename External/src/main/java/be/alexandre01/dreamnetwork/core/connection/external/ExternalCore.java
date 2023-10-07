@@ -3,25 +3,27 @@ package be.alexandre01.dreamnetwork.core.connection.external;
 
 import java.util.logging.Level;
 
+import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
+import be.alexandre01.dreamnetwork.api.connection.external.IExternalCore;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientHandler;
-import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.external.handler.IExternalClientHandler;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter @Setter
-public class ExternalCore {
+public class ExternalCore implements IExternalCore {
     @Getter private static final ExternalCore instance = new ExternalCore();
 
-    ExtRequestManager requestManager;
-    ExternalClient client;
-    public String connectionID = "xxxxx";
-    ExternalClientHandler clientHandler;
+    ExternalServer serverConnection;
+    public String connectionID = "N/A";
+    IExternalClientHandler clientHandler;
     Console console;
     boolean isInit = false;
     boolean isConnected = false;
     private String ip;
+    
+    private CoreNetServer server;
     public ExternalCore(){
 
     }
@@ -31,34 +33,36 @@ public class ExternalCore {
         if(isInit){
             return;
         }
-        client = new ExternalClient(ip);
-        Thread thread = new Thread(client);
+        serverConnection = new ExternalServer(ip);
+        Thread thread = new Thread(serverConnection);
         thread.start();
 
         ExternalConsole console = new ExternalConsole();
         this.console = console.getConsole();
-
-
-
     }
+    @Override
     public void sendMessage(String message, Level level){
         console.fPrint(message,level);
     }
 
+    @Override
     public void sendMessage(String message){
         sendMessage(message,Level.INFO);
     }
 
+    @Override
     public void writeAndFlush(Message message){
         clientHandler.writeAndFlush(message);
     }
 
+    @Override
     public void exitMode(){
         System.out.println("Exited external mode");
         isInit = false;
     }
 
 
+    @Override
     public void init() {
 
     }

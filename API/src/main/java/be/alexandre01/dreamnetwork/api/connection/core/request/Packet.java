@@ -1,7 +1,11 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+
+import java.util.concurrent.CompletableFuture;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -10,5 +14,13 @@ import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 public interface Packet {
     public Message getMessage();
     public String getProvider();
-    public IGlobalClient getReceiver();
+    public UniversalConnection getReceiver();
+
+    default void dispatch(){
+        getReceiver().writeAndFlush(getMessage());
+    }
+
+    default void dispatch(GenericFutureListener<? extends Future<? super Void>> future){
+        getReceiver().writeAndFlush(getMessage(),future);
+    }
 }

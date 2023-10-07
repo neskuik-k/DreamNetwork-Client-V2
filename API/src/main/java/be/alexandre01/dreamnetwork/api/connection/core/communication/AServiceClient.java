@@ -4,8 +4,13 @@ import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import io.netty.channel.ChannelHandlerContext;
 
-public abstract class AServiceClient implements IGlobalClient{
+public abstract class AServiceClient extends UniversalConnection {
+    public AServiceClient(int port, String info, ChannelHandlerContext ctx) {
+        super(port, info, ctx);
+    }
+
     public abstract String getName();
     public abstract int getPort();
     public abstract boolean isExternalTool();

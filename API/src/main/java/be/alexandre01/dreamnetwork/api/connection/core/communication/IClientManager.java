@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.HashMap;
@@ -7,15 +8,20 @@ import java.util.HashMap;
 public interface IClientManager {
     AServiceClient registerClient(AServiceClient client);
 
-    AServiceClient getClient(String processName);
+    <T> T getClient(ChannelHandlerContext ctx, Class<T> tClass);
 
-    AServiceClient getClient(ChannelHandlerContext ctx);
+    UniversalConnection getClient(ChannelHandlerContext ctx);
 
-    java.util.HashMap<String, AServiceClient> getClients();
+    AServiceClient getServiceClient(ChannelHandlerContext ctx);
 
-    java.util.HashMap<ChannelHandlerContext, AServiceClient> getClientsByConnection();
+    public AServiceClient getClient(String processName);
 
-    HashMap<String, AServiceClient> getExternalTools();
+
+    java.util.HashMap<String, AServiceClient> getServiceClients();
+
+    java.util.HashMap<ChannelHandlerContext, UniversalConnection> getClientsByConnection();
+
+    HashMap<String, ExternalClient> getExternalTools();
 
     AServiceClient getProxy();
 

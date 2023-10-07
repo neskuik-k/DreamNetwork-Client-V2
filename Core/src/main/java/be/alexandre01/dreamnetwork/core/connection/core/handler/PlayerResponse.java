@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
@@ -46,7 +47,10 @@ public class PlayerResponse extends CoreResponse {
             s.unregisterPlayer(id);
         });
 
-        addRequestInterceptor(CORE_ASK_DATA,(message, ctx, c) -> {
+        addRequestInterceptor(CORE_ASK_DATA,(message, ctx, client) -> {
+            if(!(client instanceof AServiceClient)) return;
+            AServiceClient c = (AServiceClient) client;
+
             IServicePlayersManager s;
             s = this.core.getServicePlayersManager();
             String type = message.getString("TYPE");

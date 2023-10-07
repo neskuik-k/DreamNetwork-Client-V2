@@ -4,6 +4,8 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceCli
 import lombok.Setter;
 
 public class ExecutorCallbacks {
+
+    @Setter private boolean hasFailed = false;
     public ICallbackStart onStart;
     public ICallbackStop onStop;
     public ICallbackConnect onConnect;
@@ -33,6 +35,9 @@ public class ExecutorCallbacks {
 
     public ExecutorCallbacks whenFail(ICallbackFail onFail){
         this.onFail = onFail;
+        if(hasFailed){
+            onFail.whenFail();
+        }
         return this;
     }
 

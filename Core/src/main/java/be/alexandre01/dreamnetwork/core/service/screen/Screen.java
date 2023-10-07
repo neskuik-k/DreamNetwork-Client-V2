@@ -8,7 +8,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.service.screen.stream.ScreenStream;
+import be.alexandre01.dreamnetwork.core.service.screen.stream.internal.ProcessScreenStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -27,6 +27,11 @@ public class Screen extends Thread implements IScreen {
     String screenName;
     boolean viewing = false;
 
+    /**
+     * Creates a new instance of the Screen class with the given service.
+     *
+     * @param service the service to associate with the screen
+     */
     public Screen(IService service){
         if(service.getUsedConfig().getScreenEnabled() == null){
             viewing = true;
@@ -41,7 +46,7 @@ public class Screen extends Thread implements IScreen {
         screenId = screenManager.getId(service);
         screenName = service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
         if(viewing)
-            this.screenStream = new ScreenStream(screenName,this);
+            this.screenStream = new ProcessScreenStream(screenName,this);
         service.setScreen(this);
         screenManager.addScreen(this);
         Core core = Core.getInstance();

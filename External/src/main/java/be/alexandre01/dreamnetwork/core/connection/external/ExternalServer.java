@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.external;
 
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.connection.external.handler.ExternalClientPipeline;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.ChannelFuture;
@@ -7,13 +8,12 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
-import lombok.Setter;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
-public class ExternalClient extends Thread{
+public class ExternalServer extends Thread{
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
     public int trying = 0;
     public String ip;
@@ -21,7 +21,7 @@ public class ExternalClient extends Thread{
 
 
 
-    public ExternalClient(String ip){
+    public ExternalServer(String ip){
         this.ip = ip;
     }
 
@@ -59,32 +59,32 @@ public class ExternalClient extends Thread{
             // Start the client.
             ChannelFuture f = b.connect(host, port).sync(); // (5)
             ExternalCore.getInstance().setConnected(true);
+            System.out.println("Connected to "+host+":"+port);
 
             // Wait until the connection is closed.
             f.channel().closeFuture().sync();
 
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println("Error while connecting to "+host+":"+port);
+            Console.bug(e);
         } finally {
             if(!ExternalCore.getInstance().isConnected()){
                 ExternalCore.getInstance().exitMode();
-                return;
-            }
-            ExternalCore.getInstance().setConnected(false);
-            System.out.println("Retrying to connect...");
-            executorService.scheduleAtFixedRate(() -> {
-                System.out.println("...");
-                connect(ip);
-                executorService.shutdown();
-            },5,5, TimeUnit.SECONDS);
-            trying ++;
+            }else {
+                ExternalCore.getInstance().setConnected(false);
+                System.out.println("Retrying to connect...");
+                executorService.scheduleAtFixedRate(() -> {
+                    System.out.println("...");
+                    connect(ip);
+                    executorService.shutdown();
+                },5,5, TimeUnit.SECONDS);
+                trying ++;
 
-            workerGroup.shutdownGracefully();
-            if(trying > 6){
-                ExternalCore.getInstance().exitMode();
-                return;
+                workerGroup.shutdownGracefully();
+                if(trying > 6){
+                    ExternalCore.getInstance().exitMode();
+                }
             }
-
         }
     }
 }

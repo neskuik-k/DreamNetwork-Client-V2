@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -38,13 +39,13 @@ public class DNChannel implements IDNChannel {
 
 
     @Override
-    public void setData(String key, Object object, boolean autoSend, AServiceClient... clients){
+    public void setData(String key, Object object, boolean autoSend, UniversalConnection... clients){
         objects.put(key, object);
         autoSendObjects.put(key, autoSend);
     }
 
     @Override
-    public void storeData(String key, Object object, AServiceClient... clients){
+    public void storeData(String key, Object object, UniversalConnection... clients){
         boolean autoSend = true;
         if(autoSendObjects.containsKey(key)){
             autoSend = autoSendObjects.get(key);
@@ -53,8 +54,8 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void storeData(String key, Object object, boolean autoSend, AServiceClient... clients){
-        List<AServiceClient> c = Arrays.asList(clients);
+    public void storeData(String key, Object object, boolean autoSend, UniversalConnection... clients){
+        List<UniversalConnection> c = Arrays.asList(clients);
         setData(key,object,autoSend);
         Console.printLang("connection.core.channels.object", object);
         if(autoSend){
@@ -88,7 +89,7 @@ public class DNChannel implements IDNChannel {
     }
 
     @Override
-    public void sendMessage(Message message, AServiceClient client){
+    public void sendMessage(Message message, UniversalConnection client){
         message.setProvider("core");
         ChannelPacket channelPacket = new ChannelPacket(getName(),"core");
         channelPacket.createResponse(message,client);

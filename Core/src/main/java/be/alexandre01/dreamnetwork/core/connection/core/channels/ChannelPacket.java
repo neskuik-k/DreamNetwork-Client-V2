@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
@@ -45,23 +46,23 @@ public class ChannelPacket extends AChannelPacket implements Packet {
 
 
     @Override
-    public void createResponse(Message message, AServiceClient client){
+    public void createResponse(Message message, UniversalConnection client){
         createResponse(message,client,null,"channel");
     }
 
     @Override
-    public void createResponse(Message message, AServiceClient client, String header){
+    public void createResponse(Message message, UniversalConnection client, String header){
         createResponse(message,client,null,header);
     }
 
     @Override
-    public void createResponse(Message message, AServiceClient client, GenericFutureListener<? extends Future<? super Void>> listener){
+    public void createResponse(Message message, UniversalConnection client, GenericFutureListener<? extends Future<? super Void>> listener){
         createResponse(message,client,listener,"channel");
     }
 
 
     @Override
-    public void createResponse(Message message, AServiceClient client, GenericFutureListener<? extends Future<? super Void>> listener, String header){
+    public void createResponse(Message message, UniversalConnection client, GenericFutureListener<? extends Future<? super Void>> listener, String header){
         message.setProvider(provider);
         message.setReceiver("core");
         message.setHeader(header);

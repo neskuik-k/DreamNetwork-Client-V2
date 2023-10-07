@@ -2,11 +2,16 @@ package be.alexandre01.dreamnetwork.core;
 
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.config.IConfigManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
+import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleManager;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.config.ConfigManager;
+import be.alexandre01.dreamnetwork.core.connection.core.handler.CallbackManager;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
@@ -46,6 +51,16 @@ public class UtilsAPI extends DNUtils {
     @Override
     public AccessibilityMenu createAccessibilityMenu() {
         return new CoreAccessibilityMenu();
+    }
+
+    @Override
+    public ICallbackManager createCallbackManager() {
+        return new CallbackManager();
+    }
+
+    @Override
+    public IRequestManager createClientRequestManager(UniversalConnection client) {
+        return new ClientRequestManager(client);
     }
 
     @Override

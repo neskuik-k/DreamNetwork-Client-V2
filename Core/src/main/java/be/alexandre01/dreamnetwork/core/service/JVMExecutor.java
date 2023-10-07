@@ -206,6 +206,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             Console.printLang("service.executor.couldNotStart", Level.WARNING);
             queue.remove(tuple);
             if (callbacks != null) {
+                callbacks.setHasFailed(true);
                 if (callbacks.onFail != null)
                     callbacks.onFail.whenFail();
             }
@@ -314,6 +315,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                 idSet.remove(finalServers);
                                 queue.remove(tuple);
                                 if (callbacks != null) {
+                                    callbacks.setHasFailed(true);
                                     if (callbacks.onFail != null)
                                         callbacks.onFail.whenFail();
                                 }

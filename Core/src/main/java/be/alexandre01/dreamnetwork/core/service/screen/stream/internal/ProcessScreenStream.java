@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.service.screen.stream;
+package be.alexandre01.dreamnetwork.core.service.screen.stream.internal;
 
 
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -8,7 +8,6 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreenOutWriter;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.console.ConsoleMessage;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
@@ -19,11 +18,10 @@ import org.jline.reader.LineReader;
 
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 
 @Getter
-public class ScreenStream implements IScreenStream {
+public class ProcessScreenStream implements IScreenStream {
     public IScreen screen;
     public PrintStream oldOut = System.out;
     public InputStream oldIn = System.in;
@@ -37,7 +35,7 @@ public class ScreenStream implements IScreenStream {
     Console console;
     IScreenInReader screenInReader;
     IScreenOutWriter screenOutWriter;
-    public ScreenStream(String name,Screen screen){
+    public ProcessScreenStream(String name, Screen screen){
         Console.load("s:"+name);
         this.console = Console.getConsole("s:"+name);
         if(Main.getGlobalSettings().isScreenNameInConsoleChange()){
@@ -62,7 +60,7 @@ public class ScreenStream implements IScreenStream {
         //System.out.println(screen.getService().getProcess().getOutputStream().getClass());
         //System.out.println(screen.getService().getProcess().getOutputStream().toString());
           //new BufferedOutputStream(screen.getService().getProcess().getOutputStream());
-        screenInReader = new ScreenInReader(console,screen.getService(),reader,screen);
+        screenInReader = new ProcessScreenInReader(console,screen.getService(),reader,screen);
 
         screen.getService().getJvmExecutor().getExecType().ifPresent(execType -> {
             if(execType == ExecType.BUNGEECORD){
@@ -97,9 +95,9 @@ public class ScreenStream implements IScreenStream {
                 e.printStackTrace();
             }*/
 
-            this.screenOutWriter = new ScreenOutWriter(screen, console);
+            this.screenOutWriter = new ProcessScreenOutWriter(screen, console);
         }
-        ((ScreenOutWriter)screenOutWriter).run();
+        ((ProcessScreenOutWriter)screenOutWriter).run();
         Console.setActualConsole("s:"+name);
        /* ArrayList<ConsoleMessage> h = Console.getCurrent().getHistory();
 

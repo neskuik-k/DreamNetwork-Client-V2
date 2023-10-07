@@ -107,8 +107,7 @@ public class ConfigBuilder implements IStartupConfigBuilder {
 
     @Override
     public IStartupConfig build() {
-
-        IStartupConfig j =  DNCoreAPI.getInstance().getJVMUtils().createStartupConfig(pathName,name,true);
+        IStartupConfig j = DNCoreAPI.getInstance().getJVMUtils().createStartupConfig(pathName,name,true);
         j.setType(type);
         j.setXms(Xms);
         j.setXmx(Xmx);
@@ -172,23 +171,23 @@ public class ConfigBuilder implements IStartupConfigBuilder {
     public IStartupConfig buildFrom(ConfigData config) {
         name = config.getName();
         IStartupConfig j = build();
-        if (j.getName() == null)
+        if (config.getName() != null)
             j.setName(config.getName());
-        if (j.getType() == null)
+        if (config.getType() != null)
             j.setType(config.getType());
-        if (j.getXms() == null)
+        if (config.getType() !=  null)
             j.setXms(config.getXms());
-        if (j.getXmx() == null)
+        if (config.getXmx() != null)
             j.setXmx(config.getXmx());
-        if (j.getPort() == 0)
+        if (config.getPort() == 0)
             j.setPort(config.getPort());
-        if (j.getJavaVersion() == null)
+        if (config.getJavaVersion() != null)
             j.setJavaVersion(config.getJavaVersion());
-        if (j.getExecutable() == null)
+        if (config.getExecutable() != null)
             j.setExecutable(config.getExecutable());
-        if (j.getStartup() == null)
+        if (config.getStartup() != null)
             j.setStartup(config.getStartup());
-        if (j.getDeployers() == null)
+        if (config.getDeployers() != null)
             j.setDeployers(config.getDeployers());
         return j;
     }

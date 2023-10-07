@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.core.requests.spigot;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
@@ -14,7 +15,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
         Core c = Core.getInstance();
         requestData.put(RequestType.SERVER_HANDSHAKE_SUCCESS,(message,client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", client.getJvmService().getFullName());
+            message.set("PROCESSNAME", ((AServiceClient) client).getJvmService().getFullName());
             return message;
         });
         requestData.put(RequestType.SERVER_EXECUTE_COMMAND,(message,client, args) -> {
@@ -54,7 +55,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
                             sb.append(p.getUuid().toString());
                         }
 
-                        c.getServicePlayersManager().getIsRegistered().put(p,client);
+                        c.getServicePlayersManager().getIsRegistered().put(p, (AServiceClient) client);
                     }
                     s.add(sb.toString());
                 }

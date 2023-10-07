@@ -1,11 +1,19 @@
 package be.alexandre01.dreamnetwork.core.connection.core.communication.services;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
+import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
@@ -14,11 +22,12 @@ import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.channels.ChannelPacket;
-import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.interceptors.StartTask;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.io.File;
@@ -69,7 +78,7 @@ public class BaseResponse extends CoreResponse {
         });
 
         addRequestInterceptor(DEV_TOOLS_VIEW_CONSOLE_MESSAGE, (message, ctx, c) -> {
-            ScreenManager.instance.getScreens().get(message.getString("SERVERNAME")).getDevToolsReading().add(c);
+            ScreenManager.instance.getScreens().get(message.getString("SERVERNAME")).getDevToolsReading().add((AServiceClient) c);
         });
 
         addRequestInterceptor(DEV_TOOLS_SEND_COMMAND, (message, ctx, c) -> {
@@ -98,11 +107,11 @@ public class BaseResponse extends CoreResponse {
         });
 
         addRequestInterceptor(CORE_REGISTER_CHANNEL, (message, ctx, c) -> {
-            this.core.getChannelManager().registerClientToChannel(c, message.getString("CHANNEL"), message.contains("RESEND") && message.getBoolean("RESEND"));
+            this.core.getChannelManager().registerClientToChannel((AServiceClient) c, message.getString("CHANNEL"), message.contains("RESEND") && message.getBoolean("RESEND"));
         });
 
         addRequestInterceptor(CORE_UNREGISTER_CHANNEL, (message, ctx, c) -> {
-            this.core.getChannelManager().unregisterClientToChannel(c, message.getString("CHANNEL"));
+            this.core.getChannelManager().unregisterClientToChannel((AServiceClient) c, message.getString("CHANNEL"));
         });
 
         addRequestInterceptor(CORE_REGISTER_EXTERNAL_EXECUTORS, (message, ctx, client) -> {
@@ -117,10 +126,15 @@ public class BaseResponse extends CoreResponse {
                 System.out.println(test.name);
                 System.out.println(test.e);
             }*/
-
+            if(!(client instanceof ExternalClient)){
+               return;
+            }
             executor.forEach(configData -> {
                 BundleData virtualBundle = null;
-                if(!DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().containsKey(configData.getBundleName())){
+
+                Table<ExternalClient, String,BundleData> virtualBundles = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles();
+
+                if(!virtualBundles.containsRow(client) || !virtualBundles.row((ExternalClient) client).containsKey(configData.getBundleName())){
                     virtualBundle = new BundleData(configData.getBundleName(), new IBundleInfo() {
                         @Override
                         public ArrayList<BService> getBServices() {
@@ -157,18 +171,21 @@ public class BaseResponse extends CoreResponse {
                     virtualBundle.setVirtual(true);
                     String name = configData.getBundleName();
                     virtualBundle.setVirtualName(Optional.of(name));
+
                     DNCoreAPI.getInstance().getBundleManager().addBundleData(virtualBundle);
+                    DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle, (ExternalClient) client);
                     // a new name has been potentially created and setted on the bundle
-                    DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle);
+
                     System.out.println(""+client);
-                    DNCoreAPI.getInstance().getBundleManager().getBundlesNamesByTool().put(client,name,virtualBundle.getName());
+                    DNCoreAPI.getInstance().getBundleManager().getBundlesNamesByTool().put((ExternalClient) client,name,virtualBundle.getName());
+                    CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 }
 
                 if(virtualBundle == null){
-                    virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(configData.getBundleName());
+                    virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(client,configData.getBundleName());
                 }
 
-                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle,client);
+                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle, (ExternalClient) client);
                 virtualBundle.getExecutors().put(virtualExecutor.getName(), virtualExecutor);
                 DNCoreAPI.getInstance().getContainer().getJVMExecutors().add(virtualExecutor);
 
@@ -182,7 +199,7 @@ public class BaseResponse extends CoreResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, AServiceClient client) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
@@ -251,40 +268,45 @@ public class BaseResponse extends CoreResponse {
                 // if core send data and received callback
                 if (message.containsKeyInRoot("RID")) {
                     int id = (int) message.getInRoot("RID");
-                        ((CoreHandler) client.getCoreHandler()).getCallbackManager().getHandlerOf(id).ifPresent(handler -> {
-                            handler.setupHandler(message);
-                            handler.onCallback();
-
-                            switch (handler.getTaskType()) {
-                                case ACCEPTED:
-                                    handler.onAccepted();
-                                    break;
-                                case REFUSED:
-                                    handler.onRefused();
-                                    break;
-                                case IGNORED:
-                                    handler.onFailed();
-                                    handler.onIgnored();
-                                    break;
-                                case FAILED:
-                                    handler.onFailed();
-                                    handler.destroy();
-                                    break;
-                                case TIMEOUT:
-                                    handler.onFailed();
-                                    handler.onTimeout();
-                                    handler.destroy();
-                                    break;
-                            }
-                            if(handler.isSingle()){
-                                handler.destroy();
-                            }
-                        });
+                    ICallbackManager callbackManager = DNCoreAPI.getInstance().getCallbackManager();
+                    callbackManager.getHandlerOf(id).ifPresent(handler -> {
+                        handler(message, handler);
+                    });
                     /*RequestPacket request = client.getRequestManager().getRequest(message.getMessageID());
                     if(request != null)
                         request.getRequestFutureResponse().onReceived(receivedPacket);*/
             }
             //RequestInfo request = message.getRequest();
+    }
+
+    private void handler(Message message, TaskHandler handler){
+        handler.setupHandler(message);
+        handler.onCallback();
+
+        switch (handler.getTaskType()) {
+            case ACCEPTED:
+                handler.onAccepted();
+                break;
+            case REFUSED:
+                handler.onRefused();
+                break;
+            case IGNORED:
+                handler.onFailed();
+                handler.onIgnored();
+                break;
+            case FAILED:
+                handler.onFailed();
+                handler.destroy();
+                break;
+            case TIMEOUT:
+                handler.onFailed();
+                handler.onTimeout();
+                handler.destroy();
+                break;
+        }
+        if(handler.isSingle()){
+            handler.destroy();
+        }
     }
 }
 

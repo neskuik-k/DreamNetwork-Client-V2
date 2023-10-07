@@ -7,8 +7,11 @@ import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IResponsesCollection;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
+import be.alexandre01.dreamnetwork.api.connection.external.IExternalCore;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
@@ -16,11 +19,14 @@ import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 
 import be.alexandre01.dreamnetwork.api.commands.ICommandReader;
+import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
+import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.service.JVMUtils;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public class ImplAPI extends DNCoreAPI {
 
@@ -28,6 +34,8 @@ public class ImplAPI extends DNCoreAPI {
     @Getter
     static DNCoreAPI instance;
     private final Core core;
+
+
 
     private final JVMUtils jvmUtils;
 
@@ -56,6 +64,11 @@ public class ImplAPI extends DNCoreAPI {
     @Override
     public IJVMUtils getJVMUtils() {
         return jvmUtils;
+    }
+
+    @Override
+    public IResponsesCollection getResponsesCollection() {
+        return new ResponsesCollection();
     }
 
     @Override
@@ -103,6 +116,16 @@ public class ImplAPI extends DNCoreAPI {
     @Override
     public ICoreHandler getCoreHandler() {
         return Core.getInstance().getCoreHandler();
+    }
+
+    @Override
+    public ICallbackManager getCallbackManager() {
+        return Core.getInstance().getCallbackManager();
+    }
+
+    @Override
+    public Optional<IExternalCore> getExternalCore() {
+        return Optional.of(ExternalCore.getInstance());
     }
 
 

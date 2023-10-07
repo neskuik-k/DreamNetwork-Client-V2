@@ -19,6 +19,7 @@ public class VirtualService implements IService {
     VirtualExecutor virtualExecutor;
 
     @Setter ExecutorCallbacks executorCallbacks;
+
     @Getter @Setter IScreen screen;
 
     IConfig config = null;
@@ -126,7 +127,7 @@ public class VirtualService implements IService {
     @Override
     public CompletableFuture<Boolean> stop() {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
-        DNCallback.single(virtualExecutor.getExternalTool().getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
+        DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
             @Override
             public void onAccepted() {
                 completableFuture.complete(true);
@@ -137,7 +138,7 @@ public class VirtualService implements IService {
                 completableFuture.complete(false);
             }
         }
-        );
+        ).send();
         return completableFuture;
     }
 
@@ -154,7 +155,7 @@ public class VirtualService implements IService {
     @Override
     public CompletableFuture<Boolean> kill() {
         CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
-        DNCallback.single(virtualExecutor.getExternalTool().getRequestManager().getRequest(RequestType.CORE_KILL_SERVER), new TaskHandler() {
+        DNCallback.single(virtualExecutor.getExternalCore().getRequestManager().getRequest(RequestType.CORE_KILL_SERVER), new TaskHandler() {
                     @Override
                     public void onAccepted() {
                         completableFuture.complete(true);
@@ -165,7 +166,7 @@ public class VirtualService implements IService {
                         completableFuture.complete(false);
                     }
                 }
-        );
+        ).send();
         return completableFuture;
     }
 
@@ -182,5 +183,9 @@ public class VirtualService implements IService {
     @Override
     public Optional<ExecutorCallbacks> getExecutorCallbacks() {
         return Optional.ofNullable(executorCallbacks);
+    }
+
+    public String getTrueFullName() {
+        return virtualExecutor.getTrueFullName()+"-"+id;
     }
 }

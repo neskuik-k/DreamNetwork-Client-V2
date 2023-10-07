@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.service.screen.stream;
+package be.alexandre01.dreamnetwork.core.service.screen.stream.internal;
 
 
 
@@ -32,7 +32,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import java.util.logging.SimpleFormatter;
 
-public class ScreenInReader extends Thread implements IScreenInReader {
+public class ProcessScreenInReader extends Thread implements IScreenInReader {
     Console console;
     InputStream in;
     IService server;
@@ -44,7 +44,7 @@ public class ScreenInReader extends Thread implements IScreenInReader {
     @Getter private List<ReaderLine> readerLines = new ArrayList<>();
     public boolean isRunning;
     private StringBuilder datas = new StringBuilder();
-    public ScreenInReader(Console console, IService server, InputStream reader, Screen screen) {
+    public ProcessScreenInReader(Console console, IService server, InputStream reader, Screen screen) {
         this.console = console;
         this.server = server;
         this.reader = reader;

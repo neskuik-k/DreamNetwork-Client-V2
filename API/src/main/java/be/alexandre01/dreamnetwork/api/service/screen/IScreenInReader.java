@@ -8,6 +8,8 @@ public interface IScreenInReader extends Runnable {
 
     FileHandler getFileHandler();
 
+    void stopReader();
+
     public static interface ReaderLine {
         String readLine(String line);
     }

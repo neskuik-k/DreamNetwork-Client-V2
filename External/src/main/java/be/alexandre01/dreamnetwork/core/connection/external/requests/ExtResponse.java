@@ -1,13 +1,15 @@
 package be.alexandre01.dreamnetwork.core.connection.external.requests;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.util.Base64;
 import java.util.LinkedHashMap;
 
-public abstract class ExtResponse {
+public abstract class ExtResponse  {
     private final LinkedHashMap<Integer,RequestInterceptor> map = new LinkedHashMap<>();
 
 

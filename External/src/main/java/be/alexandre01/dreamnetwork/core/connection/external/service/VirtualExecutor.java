@@ -4,6 +4,9 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceCli
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
+import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
@@ -21,14 +24,14 @@ public class VirtualExecutor  implements IJVMExecutor {
     HashMap<Integer,IService> serviceList = new HashMap<>();
 
     @Getter
-    AServiceClient externalTool;
+    ExternalClient externalCore;
 
 
 
-    public VirtualExecutor(ConfigData configData, BundleData bundle, AServiceClient externalTool){
+    public VirtualExecutor(ConfigData configData, BundleData bundle, ExternalClient externalCore){
         this.configData = configData;
         this.bundleData = bundle;
-        this.externalTool = externalTool;
+        this.externalCore = externalCore;
     }
 
 
@@ -61,7 +64,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     @Override
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
         VirtualService virtualService = new VirtualService( null, this);
-        sendStartCallBack(externalTool, callbacks, virtualService, profile);
+        sendStartCallBack(externalCore, callbacks, virtualService, profile);
         return null;
     }
 
@@ -73,11 +76,11 @@ public class VirtualExecutor  implements IJVMExecutor {
     @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks callbacks) {
         VirtualService virtualService = new VirtualService( null, this);
-        sendStartCallBack(externalTool, callbacks, virtualService, jvmConfig);
+        sendStartCallBack(externalCore, callbacks, virtualService, jvmConfig);
         return callbacks;
     }
 
-    private void sendStartCallBack(AServiceClient client, ExecutorCallbacks callbacks, VirtualService virtualService, Object o){
+    private void sendStartCallBack(ExternalClient client, ExecutorCallbacks callbacks, VirtualService virtualService, Object o){
         System.out.println("Sending start callback to "+ getTrueFullName().get());
         DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName().get(),o), new TaskHandler() {
             Integer id;
@@ -93,15 +96,29 @@ public class VirtualExecutor  implements IJVMExecutor {
                             if(splittedName.matches("[0-9]+")){
                                 id = Integer.parseInt(splittedName);
                                 serviceList.put(id,virtualService);
+                                virtualService.setId(id);
                                 virtualService.setExecutorCallbacks(callbacks);
                             }
                         }
-                        callbacks.onStart.whenStart(virtualService);
+                        destroy();
+                        Console.print("[EXTERNAL] => "+Console.getFromLang("service.executor.serverStartProcess", getFullName()));
+                        if(callbacks != null){
+                            if(callbacks.onStart != null)
+                                callbacks.onStart.whenStart(virtualService);
+                        }
+
                         return;
                     }
                 }
                 if (hasType(TaskType.IGNORED) || hasType(TaskType.REFUSED) || hasType(TaskType.FAILED)) {
-                    callbacks.onFail.whenFail();
+                    Console.print("[EXTERNAL] => "+Console.getFromLang("service.executor.couldNotStart", getFullName()));
+                    super.destroy();
+                    if(callbacks != null){
+                        callbacks.setHasFailed(true);
+                        if(callbacks.onFail != null){
+                            callbacks.onFail.whenFail();
+                        }
+                    }
                 }
             }
         }).send();
@@ -175,12 +192,12 @@ public class VirtualExecutor  implements IJVMExecutor {
 
     @Override //to optional
     public IConfig getConfig() {
-        return null;
+        return IStartupConfig.builder().buildFrom(configData);
     }
 
     @Override // to optional
     public IStartupConfig getStartupConfig() {
-        return null;
+        return IStartupConfig.builder().buildFrom(configData);
     }
 
     @Override

@@ -6,17 +6,22 @@ import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.IResponsesCollection;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
+import be.alexandre01.dreamnetwork.api.connection.external.IExternalCore;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 
+import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 public abstract class DNCoreAPI {
 
@@ -33,6 +38,8 @@ public abstract class DNCoreAPI {
 
     public abstract IContainer getContainer();
     public abstract IJVMUtils getJVMUtils();
+
+    public abstract IResponsesCollection getResponsesCollection();
 
     public abstract IServicePlayersManager getServicePlayersManager();
     public abstract String getDevToolsToken();
@@ -52,5 +59,8 @@ public abstract class DNCoreAPI {
 
     public abstract ICoreHandler getCoreHandler();
 
+    public abstract ICallbackManager getCallbackManager();
 
+
+    public abstract Optional<IExternalCore> getExternalCore();
 }

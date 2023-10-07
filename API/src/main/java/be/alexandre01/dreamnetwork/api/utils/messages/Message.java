@@ -1,9 +1,9 @@
 package be.alexandre01.dreamnetwork.api.utils.messages;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.*;
+import be.alexandre01.dreamnetwork.api.connection.external.IExternalCore;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -257,7 +257,7 @@ public class Message extends LinkedHashMap<String, Object> {
         return this;
     }
 
-    public Optional<AServiceClient> getClientProvider() {
+    public Optional<UniversalConnection> getClientProvider() {
         String provider = (String) super.get("from");
         if (provider == null) {
             return Optional.empty();
@@ -266,8 +266,12 @@ public class Message extends LinkedHashMap<String, Object> {
             // make code for multinode
         }
         Console.debugPrint("FIND... "+ provider);
-        Optional<IService> service = DNCoreAPI.getInstance().getContainer().tryToGetService(provider);
 
+        if(provider.equals("core")){
+            return DNCoreAPI.getInstance().getExternalCore().map(IExternalCore::getServer);
+        }
+
+        Optional<IService> service = DNCoreAPI.getInstance().getContainer().tryToGetService(provider);
         return service.map(IService::getClient);
     }
 
@@ -406,7 +410,7 @@ public class Message extends LinkedHashMap<String, Object> {
 
     }
 
-    public Packet toPacket(IGlobalClient theReceiver){
+    public Packet toPacket(UniversalConnection theReceiver){
         return new Packet() {
             @Override
             public Message getMessage() {
@@ -419,7 +423,7 @@ public class Message extends LinkedHashMap<String, Object> {
             }
 
             @Override
-            public IGlobalClient getReceiver() {
+            public UniversalConnection getReceiver() {
                 return theReceiver;
             }
         };
@@ -441,9 +445,9 @@ public class Message extends LinkedHashMap<String, Object> {
         if(!containsKeyInRoot("MID")) return Optional.empty();
         AtomicReference<DNCallbackReceiver> callbackReceiver = new AtomicReference<>();
         Console.debugPrint("Search client provider " + getClientProvider().isPresent());
-        getClientProvider().ifPresent(new Consumer<AServiceClient>() {
+        getClientProvider().ifPresent(new Consumer<UniversalConnection>() {
             @Override
-            public void accept(AServiceClient client) {
+            public void accept(UniversalConnection client) {
                 callbackReceiver.set(new DNCallbackReceiver(getMessageID(),Message.this));
                 //Optional<DNCallbackReceiver> c = client.getCoreHandler().getCallbackManager().getReceived(getRequestID());
                 //c.ifPresent(callbackReceiver::set);

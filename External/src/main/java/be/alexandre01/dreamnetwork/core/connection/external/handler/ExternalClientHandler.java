@@ -5,13 +5,18 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.DNUtils;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
+import be.alexandre01.dreamnetwork.api.connection.external.handler.IExternalClientHandler;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
-import be.alexandre01.dreamnetwork.core.connection.external.ExternalClient;
+import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
+import be.alexandre01.dreamnetwork.core.connection.external.ExternalServer;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.connection.external.communication.ExternalTransmission;
 import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtRequestManager;
-import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtResponse;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
@@ -22,15 +27,19 @@ import io.netty.util.concurrent.GenericFutureListener;
 import lombok.Getter;
 import lombok.Setter;
 
-public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
-    private ArrayList<ExtResponse> responses = new ArrayList<>();
+public class ExternalClientHandler extends ChannelInboundHandlerAdapter implements IExternalClientHandler {
+    private ArrayList<CoreResponse> responses = new ArrayList<>();
     private HashMap<Message, GenericFutureListener<? extends Future<? super Void>>> queue = new HashMap<>();
-    private ExternalClient externalClient;
+    private ExternalServer externalServer;
+    @Getter private ICallbackManager callbackManager; //DNCoreAPI.getInstance().getCoreHandler().getCallbackManager();
     @Getter @Setter private Channel channel;
 
-    public ExternalClientHandler(ExternalClient externalClient){
-        this.externalClient = externalClient;
+    public ExternalClientHandler(ExternalServer externalServer){
+        System.out.println("Init external client handler");
+        this.externalServer = externalServer;
+        System.out.println("Hey !");
         responses.add(new ExternalTransmission());
+        responses.add(DNCoreAPI.getInstance().getResponsesCollection().getResponses("BaseResponse"));
 
         System.out.println("Init external client handler");
         ExternalCore.getInstance().setClientHandler(this);
@@ -55,12 +64,20 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
         if(!queue.isEmpty()){
             taskQueue();
         }
-        externalClient.trying = 0;
 
-        ExternalCore.getInstance().setRequestManager(new ExtRequestManager(this));
+
+        callbackManager = DNCoreAPI.getInstance().getCallbackManager();
+        externalServer.trying = 0;
+        ExtRequestManager requestManager = new ExtRequestManager(this);
+
+        CoreNetServer coreServer = new CoreNetServer(ctx, requestManager);
+        ExternalCore.getInstance().setServer(coreServer);
+
         System.out.println("I'm sending handshake");
 
-        ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE);
+        coreServer.getRequestManager().sendRequest(RequestType.CORE_HANDSHAKE);
+        Message message = new Message().set("TEST", "TEST");
+        coreServer.writeAndFlush(message);
     }
 
     private void taskQueue(){
@@ -87,6 +104,8 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
         ByteBuf m = (ByteBuf) msg; // (1)
         String s_to_decode = m.toString(StandardCharsets.UTF_8);
 
+        System.out.println(s_to_decode);
+
          //System.out.println("To_Decode >> "+ s_to_decode);
 
         //TO DECODE STRING IF ENCODED AS AES
@@ -102,9 +121,9 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
                 return;
             }
             if(!responses.isEmpty()){
-                for(ExtResponse iResponse : responses){
+                for(CoreResponse iResponse : responses){
                     try {
-                        iResponse.onAutoResponse(message,ctx);
+                        iResponse.onAutoResponse(message,ctx,ExternalCore.getInstance().getServer());
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -164,12 +183,14 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter   {
 
 
 
+    @Override
     public void writeAndFlush(Message msg){
         this.writeAndFlush(msg, null);
     }
 
 
 
+    @Override
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener){
         if(channel == null || !channel.isActive() || !queue.isEmpty()){
             queue.put(msg,listener);

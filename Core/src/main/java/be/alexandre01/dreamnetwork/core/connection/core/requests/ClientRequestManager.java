@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.requests;
 
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.*;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
@@ -16,7 +17,7 @@ import java.util.Collection;
 public class ClientRequestManager extends AbstractRequestManager {
     @Getter
     RequestBuilder requestBuilder;
-    private ServiceClient client;
+    private UniversalConnection client;
     private ChannelHandlerContext ctx;
     private ICoreHandler handler;
 
@@ -24,7 +25,7 @@ public class ClientRequestManager extends AbstractRequestManager {
 
 
 
-    public ClientRequestManager(ServiceClient client){
+    public ClientRequestManager(UniversalConnection client){
         super();
         this.client = client;
         this.ctx = client.getChannelHandlerContext();

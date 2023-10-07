@@ -1,13 +1,14 @@
 package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.IGlobalClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -41,7 +42,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Getter
     private ArrayList<CoreResponse> responses = new ArrayList<>();
 
-    @Getter private CallbackManager callbackManager;
     @Getter
     private static ArrayList<CoreResponse> globalResponses = new ArrayList<>();
     @Setter
@@ -49,7 +49,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     private boolean hasDevUtilSoftwareAccess = false;
     @Getter
     private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
-    private AuthentificationResponse authResponse;
+    private final AuthentificationResponse authResponse;
     @Getter
     private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
     //A PATCH
@@ -58,7 +58,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     public CoreHandler() {
         this.core = Core.getInstance();
-        this.callbackManager = new CallbackManager();
+       //this.callbackManager = new CallbackManager();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
         authResponse = new AuthentificationResponse(this);
@@ -126,6 +126,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         ByteBuf m = (ByteBuf) msg; // (1)
         byte[] bytes = new byte[m.readableBytes()];
+
 // Buffer data read into byte array
         m.readBytes(bytes);
         String s_to_decode = null;
@@ -134,6 +135,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+        System.out.println("Bytes: "+s_to_decode);
         //TO DECODE STRING IF ENCODED AS AES
 
         //ctx.channel().closeFuture();
@@ -146,21 +149,22 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         try {
             //ALLOWED CONNECTION
             if (allowedCTX.contains(ctx)) {
+                System.out.println("Allowed connection");
                 Message message = Message.createFromJsonString(s_to_decode);
                 if (message == null) {
                     return;
                 }
 
-                AServiceClient client = core.getClientManager().getClient(ctx);
+                UniversalConnection client = core.getClientManager().getClient(ctx);
 
                 if(client == null){
                     return;
                 }
 
-                if(client.getJvmService() != null){
-                    fine(Colors.YELLOW+"Received message from " +Colors.CYAN_BOLD+ client.getJvmService().getFullName() + " : " +Colors.RESET+ message.toString());
+                if(client instanceof AServiceClient && ((AServiceClient) client).getJvmService() != null){
+                    fine(Colors.YELLOW+"Received message from " +Colors.CYAN_BOLD+ ((AServiceClient)client).getJvmService().getFullName() + " : " +Colors.RESET+ message.toString());
                 }else {
-                    fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-CLIENT -> " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
+                    fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-SERVICE-CLIENT -> " + client.getName()+"/"+ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
                 }
                 //if message hasReceiver resend directly to the client
                 if(message.hasReceiver()){
@@ -204,7 +208,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             } else {
                 //NOT ALLOWED CONNECTION
                 try {
-
+                    System.out.println("Not allowed connection");
                     Message message = Message.createFromJsonString(s_to_decode);
                     authResponse.onAutoResponse(message, ctx, core.getClientManager().getClient(ctx));
                 } catch (Exception e) {
@@ -224,14 +228,20 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
         //LOG
         if (allowedCTX.contains(ctx)) {
-            HashMap<ChannelHandlerContext, AServiceClient> clientByConnexion = Core.getInstance().getClientManager().getClientsByConnection();
-            if (clientByConnexion.containsKey(ctx)) {
-                IService jvmService = clientByConnexion.get(ctx).getJvmService();
-                String name = null;
-                if (jvmService != null) {
-                    name = jvmService.getFullName();
+            HashMap<ChannelHandlerContext, UniversalConnection> clientByConnection = Core.getInstance().getClientManager().getClientsByConnection();
+            if (clientByConnection.containsKey(ctx)) {
+                String name = "UNKNOWN";
+                UniversalConnection client = clientByConnection.get(ctx);
+                if(client instanceof AServiceClient){
+                    AServiceClient serviceClient = (AServiceClient) clientByConnection.get(ctx);
+                    IService jvmService = serviceClient.getJvmService();
+                    name = null;
+                    if (jvmService != null) {
+                        name = jvmService.getFullName();
+                    }
                 }
-                if (clientByConnexion.get(ctx).isExternalTool()) {
+
+                if (clientByConnection.get(ctx) instanceof ExternalClient) {
                     name = "DEVTOOLS";
                 }
 
@@ -247,47 +257,43 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
             executorService.shutdown();
         }
         print(ctx.channel().remoteAddress(), Level.FINE);
-        AServiceClient client = Core.getInstance().getClientManager().getClient(ctx);
+        UniversalConnection client = Core.getInstance().getClientManager().getClient(ctx);
 
 
         //Remove Server
         printLang("connection.core.handler.removeClient", client);
         if (client != null) {
-            client.getClientManager().getExternalTools().remove(client);
-            if (!client.isExternalTool()) {
-                String server = client.getJvmService().getFullName();
-                for (AServiceClient c : Core.getInstance().getClientManager().getClients().values()) {
+
+            if (client instanceof AServiceClient) {
+                AServiceClient serviceClient = (AServiceClient) client;
+                String server = serviceClient.getJvmService().getFullName();
+                for (AServiceClient c : Core.getInstance().getClientManager().getServiceClients().values()) {
                     if (c.getJvmType() == JVMContainer.JVMType.SERVER) {
                         c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS, server);
                     }
                 }
-                for (AServiceClient c : Core.getInstance().getClientManager().getExternalTools().values()) {
+                for (ExternalClient c : Core.getInstance().getClientManager().getExternalTools().values()) {
                     if (c != null) {
                         //c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVER, server+";"+client.getJvmService().getJvmExecutor().getType()+";"+ client.getJvmService().getJvmExecutor().isProxy()+";false");
                         c.getRequestManager().sendRequest(RequestType.DEV_TOOLS_REMOVE_SERVERS, server);
                     }
                 }
-            }
-        }
-        //UNREGISTER CHANNEL
-        if (client != null) {
-            Core.getInstance().getChannelManager().unregisterAllClientToChannel(client);
-            //UNREGISTER PLAYER LISTENERS
-            Core.getInstance().getServicePlayersManager().removeUpdatingClient(client);
-        }
-
-
-        //REMOVE SERVICES
-        if (client != null && client.getJvmService() != null && !client.getJvmService().getScreen().isViewing()) {
-            System.out.println("Removing service by handler");
-            client.getJvmService().getJvmExecutor().removeService(client.getJvmService());
-        }
-
-
-        if (client != null && client.isExternalTool()) {
-            ScreenManager screenManager = ScreenManager.instance;
-            for (IScreen screen : screenManager.getScreens().values()) {
-                screen.getDevToolsReading().remove(client);
+                //UNREGISTER CHANNEL
+                Core.getInstance().getChannelManager().unregisterAllClientToChannel(serviceClient);
+                //UNREGISTER PLAYER LISTENERS
+                Core.getInstance().getServicePlayersManager().removeUpdatingClient(serviceClient);
+                //REMOVE SERVICES
+                if (client != null && serviceClient.getJvmService() != null && !serviceClient.getJvmService().getScreen().isViewing()) {
+                    System.out.println("Removing service by handler");
+                    serviceClient.getJvmService().getJvmExecutor().removeService(serviceClient.getJvmService());
+                }
+            }else {
+                // IF CLIENT IS EXTERNAL
+                client.getClientManager().getExternalTools().remove(client);
+                ScreenManager screenManager = ScreenManager.instance;
+                for (IScreen screen : screenManager.getScreens().values()) {
+                    screen.getDevToolsReading().remove(client);
+                }
             }
         }
     }
@@ -318,12 +324,12 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
     @Override
-    public void writeAndFlush(Message msg, IGlobalClient client) {
+    public void writeAndFlush(Message msg, UniversalConnection client) {
         this.writeAndFlush(msg, null, client);
     }
 
     @Override
-    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, IGlobalClient client) {
+    public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, UniversalConnection client) {
         if(client instanceof AServiceClient){
             AServiceClient serviceClient = (AServiceClient) client;
             if (serviceClient.getJvmService() != null) {

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.core.requests.proxy;
 
+import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestBuilder;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -10,7 +11,7 @@ public class DefaultBungeeRequest extends RequestBuilder {
     public DefaultBungeeRequest() {
         requestData.put(RequestType.PROXY_HANDSHAKE_SUCCESS,(message, client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", client.getJvmService().getFullName());
+            message.set("PROCESSNAME", ((AServiceClient)client).getJvmService().getFullName());
             return message;
         });
         requestData.put(RequestType.PROXY_REGISTER_SERVER,(message,client, args) -> {

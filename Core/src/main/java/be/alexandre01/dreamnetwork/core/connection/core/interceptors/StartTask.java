@@ -21,7 +21,7 @@ public class StartTask {
         AbstractRequestManager.getTasks().put("start", start = (message, ctx, client) -> {
             Optional<IJVMExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
 
-            System.out.println("Searching if start executor of "+ message.getString("SERVERNAME")+ "is present");
+            System.out.println("Searching if start executor of "+ message.getString("SERVERNAME")+ " is present");
             if (!startExecutor.isPresent()) {
                 return;
             }
@@ -31,7 +31,11 @@ public class StartTask {
             if(message.contains("DATA")){
                 ConfigData configData = message.get("DATA", ConfigData.class);
                 // merge with configData
+                System.out.println("Merging config data");
+                System.out.println(configData.getType());
                 config = IStartupConfigBuilder.builder(config).buildFrom(configData);
+                System.out.println("Merged => "+ config.getType());
+                System.out.println("Merged config data");
             }
 
             ExecutorCallbacks executorCallbacks = startExecutor.get().startServer(config);
@@ -41,6 +45,7 @@ public class StartTask {
                 executorCallbacks.whenStart(new ExecutorCallbacks.ICallbackStart() {
                     @Override
                     public void whenStart(IService service) {
+                        Console.debugPrint("STARTED");
                         callback.mergeAndSend(new Message().set("name",service.getFullName()), "STARTED");
                     }
                 });

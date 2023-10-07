@@ -1,4 +1,4 @@
-package be.alexandre01.dreamnetwork.core.service.screen.stream;
+package be.alexandre01.dreamnetwork.core.service.screen.stream.external;
 
 
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -13,7 +13,7 @@ import be.alexandre01.dreamnetwork.core.service.screen.commands.ScreenExit;
 import java.io.*;
 
 
-public class ScreenOutWriter implements IScreenOutWriter {
+public class ExternalScreenOutWriter implements IScreenOutWriter {
     ScreenCommands commands;
     BufferedWriter writer;
     private String[] args;
@@ -21,7 +21,7 @@ public class ScreenOutWriter implements IScreenOutWriter {
     private final Console console;
     //private final ConsoleReader consoleReader;
 
-    public ScreenOutWriter(IScreen screen, Console console) {
+    public ExternalScreenOutWriter(IScreen screen, Console console) {
         //  this.consoleReader = consoleReader;
         //Console.debugPrint(consoleReader.getCompleters());
 

@@ -50,7 +50,7 @@ public class DNCallback {
     }
 
     public void send(){
-        DNCoreAPI.getInstance().getCoreHandler().getCallbackManager().addCallback(id,handler);
+        DNCoreAPI.getInstance().getCallbackManager().addCallback(id,handler);
         packet.getReceiver().writeAndFlush(packet.getMessage());
     }
 

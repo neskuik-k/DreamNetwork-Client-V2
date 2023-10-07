@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.core.connection.core.communication;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -19,9 +21,9 @@ import java.util.logging.Level;
  */
 public class ClientManager implements IClientManager {
     private final HashMap<Integer, AServiceClient> clientByPort = new HashMap<>();
-    @Getter private final HashMap<String, AServiceClient> clients = new HashMap<>();
-    @Getter private final HashMap<ChannelHandlerContext, AServiceClient> clientsByConnection = new HashMap<>();
-    @Getter private final HashMap<String, AServiceClient> externalTools = new HashMap<>();
+    @Getter private final HashMap<String, AServiceClient> serviceClients = new HashMap<>();
+    @Getter private final HashMap<ChannelHandlerContext, UniversalConnection> clientsByConnection = new HashMap<>();
+    @Getter private final HashMap<String, ExternalClient> externalTools = new HashMap<>();
 
     private final Core main;
     @Getter @Setter
@@ -33,11 +35,6 @@ public class ClientManager implements IClientManager {
 
     @Override
     public AServiceClient registerClient(AServiceClient client){
-        if(client.isExternalTool()){
-            client.setClientManager(this);
-            clientsByConnection.put(client.getChannelHandlerContext(),client);
-            return client;
-        }
         IService jvmService = null;
         Console.print("PORT >> " + client.getPort(), Level.FINE);
         Console.print("PORTS >> "+ Arrays.toString(JVMExecutor.servicePort.keySet().toArray()),Level.FINE);
@@ -66,7 +63,7 @@ public class ClientManager implements IClientManager {
 
 
 
-        clients.put(jvmService.getFullName(),client);
+        serviceClients.put(jvmService.getFullName(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
         if(client instanceof ServiceClient){
             ((ServiceClient) client).setJvmService(jvmService);
@@ -78,12 +75,25 @@ public class ClientManager implements IClientManager {
 
     @Override
     public AServiceClient getClient(String processName){
-        return clients.get(processName);
+        return serviceClients.get(processName);
     }
     @Override
-    public AServiceClient getClient(ChannelHandlerContext ctx){
+    public <T> T getClient(ChannelHandlerContext ctx, Class<T> tClass){
+        UniversalConnection i = clientsByConnection.get(ctx);
+        if(tClass.isInstance(i)){
+            return tClass.cast(i);
+        }
+        return null;
+    }
+
+    @Override
+    public UniversalConnection getClient(ChannelHandlerContext ctx){
         return clientsByConnection.get(ctx);
     }
 
+    @Override
+    public AServiceClient getServiceClient(ChannelHandlerContext ctx){
+        return getClient(ctx, AServiceClient.class);
+    }
 
 }

@@ -5,23 +5,24 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
-import be.alexandre01.dreamnetwork.core.connection.external.requests.ExtResponse;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 
-public class ExternalTransmission extends ExtResponse {
+public class ExternalTransmission extends CoreResponse {
     public ExternalTransmission(){
         super.addRequestInterceptor(RequestType.CORE_HANDSHAKE_STATUS, new RequestInterceptor() {
+
             @Override
-            public void onRequest(Message message, ChannelHandlerContext ctx) throws Exception {
+            public void onRequest(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
                 if(message.getString("STATUS").equalsIgnoreCase("SUCCESS")){
                     System.out.println("I'm connected to the core YEEPEE");
                     ExternalCore.getInstance().setConnectionID(message.getString("ID"));
@@ -36,8 +37,9 @@ public class ExternalTransmission extends ExtResponse {
 
                     //list.add(new Test());
                     //list.add(new Test());
+                    System.out.println(client);
 
-                    ExternalCore.getInstance().getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTERNAL_EXECUTORS , list);
+                    client.getRequestManager().sendRequest(RequestType.CORE_REGISTER_EXTERNAL_EXECUTORS , list);
 
                     /*HashMap<String, ConfigData> map = new HashMap<>();
                     map.put("Server1", (ConfigData) DNCoreAPI.getInstance().getContainer().getJVMExecutors().get(0));
@@ -53,7 +55,7 @@ public class ExternalTransmission extends ExtResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx) throws Exception {
+    public void onResponse(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
         System.out.println(message);
         IDNChannelManager channelManager = DNCoreAPI.getInstance().getChannelManager();
         AChannelPacket receivedPacket = channelManager.createChannelPacket(message);

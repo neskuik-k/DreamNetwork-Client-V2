@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
+import be.alexandre01.dreamnetwork.core.connection.core.handler.CallbackManager;
 import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenuCore;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
 import be.alexandre01.dreamnetwork.core.addons.AddonsManager;
@@ -77,7 +78,9 @@ public class Core {
     private JavaIndex javaIndex;
     @Getter
     private IDNChannelManager channelManager;
+    @Getter private CallbackManager callbackManager = new CallbackManager();
     @Getter
+
     private BundleManager bundleManager;
     @Getter @Setter private boolean devToolsAccess = false;
     @Getter @Setter private String devToolsToken = null;
@@ -287,6 +290,7 @@ public class Core {
             }
             Console.setBlockConsole(false);
         }).start();
+
 
 
 

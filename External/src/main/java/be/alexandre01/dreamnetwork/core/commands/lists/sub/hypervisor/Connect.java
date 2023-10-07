@@ -24,19 +24,13 @@ public class Connect extends SubCommand {
 
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
-
-
         boolean b = when(sArgs -> {
             if(sArgs.length == 1){
                 Console.printLang("commands.hypervisor.specifyModule");
                 return true;
             }
-
             String ip = args[1];
-
-
             ExternalCore.getInstance().initialize(ip);
-
             return true;
         }, args,"connect","[ip]");
         return b;

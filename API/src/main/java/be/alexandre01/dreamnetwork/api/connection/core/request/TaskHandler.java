@@ -67,7 +67,7 @@ public abstract class TaskHandler {
     }
 
     public void destroy() {
-        DNCoreAPI.getInstance().getCoreHandler().getCallbackManager().removeCallback(MID,this);
+        DNCoreAPI.getInstance().getCallbackManager().removeCallback(MID,this);
         DNCallback.getCurrentId().remove(MID);
     }
     public void setupHandler(Message message){
@@ -82,6 +82,7 @@ public abstract class TaskHandler {
     static {
         Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
             Long l = System.currentTimeMillis();
+            if(timeStamps.isEmpty()) return;
             System.out.println("Executor check");
 
             //non blocking timeStamps loop

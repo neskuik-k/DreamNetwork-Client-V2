@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import lombok.Getter;
 
@@ -43,9 +43,11 @@ public class DNCallbackReceiver {
     }
 
     public Optional<Message> mergeAndSend(Message message, String custom){
+        System.out.println("Sending callback");
         if(isOutOfTime()) return Optional.empty();
+        System.out.println(this.message.getClientProvider().isPresent());
         if(this.message.getClientProvider().isPresent()){
-            AServiceClient client = this.message.getClientProvider().get();
+            UniversalConnection client = this.message.getClientProvider().get();
             message.setInRoot("RID",MID);
             message.setInRoot("tType",custom);
             client.writeAndFlush(message);

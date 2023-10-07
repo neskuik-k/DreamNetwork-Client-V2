@@ -47,6 +47,7 @@ public class ServiceClient extends AServiceClient {
 
     @Builder
     public ServiceClient(int port, String info, CoreHandler coreHandler, ChannelHandlerContext ctx, JVMContainer.JVMType jvmType, boolean isExternalTool, boolean isExternalService) {
+        super(port, info, ctx);
         this.port = port;
         this.info = info;
         this.isExternalTool = isExternalTool;
@@ -55,8 +56,6 @@ public class ServiceClient extends AServiceClient {
         this.channelHandlerContext = ctx;
         this.jvmType = jvmType;
         this.name = "Unknown-Client="+ ctx.channel().remoteAddress().toString()+":"+port;
-
-
         requestManager = new ClientRequestManager(this);
         Console.fine("Client : "+info);
         if (jvmType == null) {
