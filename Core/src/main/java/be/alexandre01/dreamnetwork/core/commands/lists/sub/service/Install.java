@@ -25,6 +25,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
     public Install(Command command){
         super(command);
         ArrayList<String> versions = new ArrayList<>();
+
         for(InstallationLinks s : InstallationLinks.values()) {
             versions.add(s.getVer());
         }
@@ -32,8 +33,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
         NodeBuilder nodeBuilder = new NodeBuilder(create(value,
                 create("install",
                         create(new BundlesNode(true,true,true),
-                                create(new ServersNode(),
-                                    create(versions.toArray()))))));
+                                    create(versions.toArray())))));
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {

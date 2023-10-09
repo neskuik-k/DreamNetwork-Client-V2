@@ -23,6 +23,7 @@ import be.alexandre01.dreamnetwork.api.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.api.console.language.ColorsConverter;
 import be.alexandre01.dreamnetwork.core.console.language.LanguageManager;
 import be.alexandre01.dreamnetwork.api.console.process.ProcessHistory;
+import be.alexandre01.dreamnetwork.core.console.language.ThemesMap;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployListLoader;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployManager;
@@ -54,7 +55,7 @@ public class Main {
     @Getter private static GlobalSettings globalSettings;
     @Getter private static FileCopyAsync fileCopyAsync;
     @Getter private static ConsoleReader consoleReader;
-    @Getter private static UtilsAPI utilsAPI;
+    @Getter @Setter private static UtilsAPI utilsAPI;
 
     @Getter private static TaskOperation taskOperation;
 
@@ -74,19 +75,14 @@ public class Main {
     @Getter private static LanguageManager languageManager;
 
     @Getter private static CDNFiles cdnFiles;
+    @Getter @Setter private static ThemesMap themesMap;
 
     @Getter private static ProcessHistory processHistory;
 
 
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
-        System.setProperty("illegal-access", "permit");
-        System.setProperty("file.encoding", "UTF-8");
 
-        Logger.getLogger("org.yaml.snakeyaml").setLevel(Level.OFF);
-
-
-        utilsAPI = new UtilsAPI();
         boolean dataCreated = Config.contains("data");
         if(!dataCreated)
             new File(Config.getPath("data")).mkdir();

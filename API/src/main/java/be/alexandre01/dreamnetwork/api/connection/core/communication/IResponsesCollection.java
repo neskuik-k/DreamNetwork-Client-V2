@@ -15,12 +15,6 @@ public abstract class IResponsesCollection {
     public void addResponse(String response, CoreResponse coreResponse){
         responses.put(response,coreResponse);
     }
-    public void addResponse( CoreResponse coreResponse){
-        responses.put(coreResponse.getClass().getSimpleName(),coreResponse);
-    }
-    public CoreResponse getResponses(Class<? extends CoreResponse> response){
-        return responses.get(response.getSimpleName());
-    }
     public CoreResponse getResponses(String response){
         return responses.get(response);
     }

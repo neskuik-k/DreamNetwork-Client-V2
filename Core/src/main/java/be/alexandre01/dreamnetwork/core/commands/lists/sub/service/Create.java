@@ -2,10 +2,12 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
+import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -28,14 +30,15 @@ public class Create extends SubCommand {
 
     public Create(Command command) {
         super(command);
-        NodeBuilder nodeBuilder = new NodeBuilder(
-                create(value,
-                        create("create",
-                                create(new BundlesNode(false,false,false),
-                                        create(Completers.AnyCompleter.INSTANCE,
-                                                create("STATIC","DYNAMIC",
-                                                        create("1G","2G",
-                                                                create("1G","2G"))))))));
+
+        NodeContainer create =  create("create",
+                create(new BundlesNode(false,false,false),
+                        create(Completers.AnyCompleter.INSTANCE,
+                                create("STATIC","DYNAMIC",
+                                        create(new RamNode(0), new RamNode(0))))));
+        new NodeBuilder(create(value,create));
+        new NodeBuilder(create);
+
     }
     String[] illegalChars = {"\\", "/", ":", "*", "?", "\"", "<", ">", "|","-","%"};
     @Override

@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import be.alexandre01.dreamnetwork.utils.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -145,13 +146,13 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public Optional<ExecutorCallbacks> restart() {
-        return Optional.empty();
+    public CompletableFuture<RestartResult> restart() {
+        return null;
     }
 
     @Override
-    public Optional<ExecutorCallbacks> restart(IConfig config) {
-        return Optional.empty();
+    public CompletableFuture<RestartResult> restart(IConfig config) {
+        return null;
     }
 
     @Override

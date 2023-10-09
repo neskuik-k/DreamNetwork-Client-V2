@@ -4,24 +4,27 @@ package be.alexandre01.dreamnetwork.api.commands.sub;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
 import org.jline.reader.Candidate;
-import org.jvnet.hk2.component.MultiMap;
 
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Getter @Setter
 public class NodeContainer {
 
-    private NodeBuilder linkNodeBuilder;
+    private final List<NodeBuilder> linksNodeBuilder = new ArrayList<>();
     private Object[] objects;
     @Getter private final HashMap<Object, Tuple<Integer,Integer>> index = new HashMap<>();
     @Getter private List<Object> list;
+    @Getter private HashMap<String,Object> strings = new HashMap<>();
     private List<Candidate> candidates;
-    private NodeContainer parent;
     //private List<String> stringList = new ArrayList<>();
     //private HashMap<String,NodeContainer> nodeContainerHashMap = new HashMap<>();
 

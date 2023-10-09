@@ -7,6 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 @Getter @Setter
@@ -16,6 +19,10 @@ public class GlobalSettings {
     boolean checkDefaultJVMVersion = true;
     boolean checkJVMVersionOnServiceStart = true;
     boolean rainbowText = false;
+
+    String[] authorizedIPS = new String[]{"127.0.0.1"};
+    @Ignore
+    List<String> authorizedIPList;
 
     boolean randomizePort = false;
     String portRange = "25565 -> 51130"; // max 65535
@@ -61,6 +68,7 @@ public class GlobalSettings {
 
         String random = randomString[(int) (Math.random() * randomString.length)];
         yml.addAnnotation("This is the global settings of the server | " + random);
+
         return yml.init(new File(Config.getPath("data/Global.yml")),false);
     }
 
@@ -76,6 +84,8 @@ public class GlobalSettings {
         portRange2 = portRange2.replace(" ","");
         if(portRange2.matches("[0-9]+"))
             portRangeInt[1] = Integer.parseInt(portRange2);
+
+        authorizedIPList = new ArrayList<>(Arrays.asList(authorizedIPS));
     }
 
 

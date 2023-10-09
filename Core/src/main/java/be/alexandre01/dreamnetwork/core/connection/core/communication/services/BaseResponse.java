@@ -43,7 +43,6 @@ public class BaseResponse extends CoreResponse {
     public BaseResponse() {
         this.core = Core.getInstance();
 
-        System.out.println("Init base response");
         addRequestInterceptor(CORE_START_SERVER, (message, ctx, c) -> {
             start.onRequest(message, ctx, c);
         });

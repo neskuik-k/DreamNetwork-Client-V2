@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.commands.sub;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.NullNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.TextNode;
@@ -45,6 +46,8 @@ public class NodeBuilder {
         this.console = console;
         this.nodeContainer = nodeContainer;
         node = genNode(nodeContainer,true);
+
+
         /*for (Map.Entry<CustomTreeCompleter.Node, Object[]> entry : nodes.entrySet()) {
             CustomTreeCompleter.Node key = entry.getKey();
             Object[] value = entry.getValue();
@@ -68,7 +71,7 @@ public class NodeBuilder {
             Object o = objects[i];
 
             if(o instanceof NodeContainer){
-                ((NodeContainer) o).setLinkNodeBuilder(this);
+                ((NodeContainer) o).getLinksNodeBuilder().add(this);
                 CustomTreeCompleter.Node node = genNode((NodeContainer) o,false);
                 list.add(node);
                 ((NodeContainer) o).setCandidates(node.getCandidates());
@@ -77,9 +80,11 @@ public class NodeBuilder {
 
             if(o instanceof CustomType){
                 CustomType customType = (CustomType) o;
-                customType.setLinkNodeContainer(nodeContainer);
+                customType.setLinkNodeContainers(nodeContainer);
                 customType.setGlobalObjects(list);
                 int currentSize = list.size();
+
+                Console.getConsoleReader().getDefaultHighlighter();
 
                 list.addAll(Arrays.asList((customType.reload())));
                 nodeContainer.getIndex().put(o,new Tuple<>(currentSize,list.size()));
@@ -96,6 +101,7 @@ public class NodeBuilder {
                 list.addAll(Arrays.asList(((TextNode) o).getTexts()));
                 continue;
             }
+
             list.add(o);
         }
         //System.out.println("AFTER");
@@ -129,18 +135,17 @@ public class NodeBuilder {
                 Object o = globalList.get(i);
                 if(o instanceof NodeContainer){
                     printContainers((NodeContainer) o);
-
                 }
                 //System.out.println(o);
             }
 
            // System.out.println(num);
             console.completorNodes.set(num, node = genNode(nodeContainer,true));
+
+
+            //Console.getConsoleReader().setNodes(console.completorNodes);
             //ConsoleReader.nodes.set(num, node = genNode(nodeContainer,true));
-            if(Console.getCurrent() == console){
-                IConsoleReader.reloadCompleters();
-            }
-            //Console.getCurrent().reloadCompletor();
+            //Console.getCurrent().reloadCompletors();
             //ConsoleReader.reloadCompleter();
         }catch (Exception e){
             Console.bug(e);

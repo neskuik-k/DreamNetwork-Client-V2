@@ -6,8 +6,11 @@ import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.console.IConsoleManager;
 import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
+import be.alexandre01.dreamnetwork.api.console.colors.ColorsData;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
+import lombok.Getter;
+import lombok.Setter;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -21,6 +24,10 @@ public abstract class DNUtils {
     public static DNUtils get(){
         return instance;
     }
+
+    @Getter @Setter
+    public ColorsData colorsData;
+
     public abstract AccessibilityMenu createAccessibilityMenu();
     public abstract IScreen createScreen(IService service);
     public abstract ICallbackManager createCallbackManager();

@@ -44,6 +44,7 @@ import java.net.DatagramSocket;
 import java.net.ServerSocket;
 import java.util.*;
 import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -657,11 +658,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         //t.start();
         Console.printLang("service.executor.serverStartProcess", Level.INFO, getFullName());
         if (jvmConfig.getType() == Mods.DYNAMIC) {
-            Console.print("Path : " + Colors.ANSI_RESET() + new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getName().toLowerCase() + "/" + getName() + "-" + servers)).getAbsolutePath(), Level.FINE);
+            Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getName().toLowerCase() + "/" + getName() + "-" + servers)).getAbsolutePath(), Level.FINE);
         }
         if (jvmConfig.getType() == Mods.STATIC) {
             staticService = jvmService;
-            Console.print("Path : " + Colors.ANSI_RESET() + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getName().toLowerCase())).getAbsolutePath(), Level.FINE);
+            Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getName().toLowerCase())).getAbsolutePath(), Level.FINE);
         }
 
         // Main.getInstance().processInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
@@ -749,6 +750,13 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
+
+            if(jvmService instanceof JVMService){
+                CompletableFuture<Boolean> future = ((JVMService) jvmService).getStopFuture();
+                if(future != null){
+                    future.complete(true);
+                }
+            }
 
             IJVMExecutor.super.removeService(jvmService);
         } catch (Exception e) {

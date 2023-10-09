@@ -6,8 +6,12 @@ import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlPreLoader;
 import com.google.gson.Gson;
 import lombok.Getter;
+import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
@@ -23,12 +27,14 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 @Getter
-public class BundleInfo implements IBundleInfo {
+public class BundleInfo implements IBundleInfo, YamlPreLoader {
     public ArrayList<BService> services;
     public String name;
     public IContainer.JVMType type;
     public ExecType execType = ExecType.SERVER;
-    transient private File file;
+    public boolean mergeBundle = false;
+    @Ignore transient private File file;
+    @Setter @Ignore transient private YamlFileUtils<BundleInfo> yaml;
 
     public BundleInfo(File file,String name, ExecType execType){
             this.file = file;
@@ -43,7 +49,16 @@ public class BundleInfo implements IBundleInfo {
         this.services = new ArrayList<>();
     }
 
-
+    @Override
+    public void whenLoaded() {
+        if(execType == null){
+            if(type == IContainer.JVMType.PROXY){
+                execType = ExecType.ANY_PROXY;
+            }else{
+                execType = ExecType.SERVER;
+            }
+        }
+    }
     @Override
     public ArrayList<BService> getBServices(){
         //list files directories stream
@@ -53,38 +68,18 @@ public class BundleInfo implements IBundleInfo {
     }
 
 
-    public static void updateFile(File file, BundleInfo bundleInfo) {
+    /*public static void updateFile(File file, BundleInfo bundleInfo) {
 
-        LoaderOptions loaderOptions = new LoaderOptions();
-        loaderOptions.setProcessComments(true);
-        DumperOptions dumperOptions = new DumperOptions();
-        dumperOptions.setProcessComments(true);
 
         try {
             if (!file.exists())
                 file.createNewFile();
-            Representer representer = new Representer(dumperOptions) {
-                @Override
-                protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
 
-
-                    if (BundleInfo.class.equals(property.getType())) {
-                        return null;
-                    } else {
-                        return super.representJavaBeanProperty(javaBean, property, propertyValue, customTag);
-                    }
-                }
-            };
-            Yaml yaml = new Yaml(new SafeConstructor(loaderOptions), representer);
-            FileWriter fileWriter = new FileWriter(file);
-            fileWriter.write(yaml.dumpAsMap(bundleInfo));
-            fileWriter.flush();
-            fileWriter.close();
         } catch (IOException e) {
             System.out.println("Erreur lors de l'écriture de .info");
             throw new RuntimeException(e);
         }
-    }
+    }*/
 
     public static BundleInfo loadFile(File file) {
         Yaml yaml = new Yaml(new SafeConstructor(new LoaderOptions()));
@@ -105,5 +100,6 @@ public class BundleInfo implements IBundleInfo {
             return null;
         }
     }
+
 
 }

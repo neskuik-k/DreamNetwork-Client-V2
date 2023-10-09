@@ -73,7 +73,7 @@ public class IntroMenuCore extends CoreAccessibilityMenu {
                             infos.error("bundleData = " + bundleData);
                             ((BundleInfo)bundleData.getBundleInfo()).execType = execType;
                             try {
-                                BundleInfo.updateFile(bundleData.getBundleInfo().getFile(),(BundleInfo)bundleData.getBundleInfo());
+                                ((BundleInfo) bundleData.getBundleInfo()).getYaml().saveFile();
                             }catch (Exception e){
                                 Console.bug(e);
                             }

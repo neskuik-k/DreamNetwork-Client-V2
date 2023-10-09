@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 
@@ -56,9 +57,14 @@ public class Create extends SubCommand {
                yaml.dump(new BundleFileInfo(sArgs[1], IContainer.JVMType.valueOf(sArgs[2])),new PrintWriter(file));*/
 
 
-            BundleInfo bundleInfo =  new BundleInfo(file,nArgs[1], ExecType.valueOf(nArgs[2]));
-            //bundleInfo.getServices().add(new BService("test",1,2));
-            BundleInfo.updateFile(file, bundleInfo);
+            YamlFileUtils<BundleInfo> bundleYaml = new YamlFileUtils<>(BundleInfo.class);
+            BundleInfo bundleInfo = bundleYaml.init(file,false).orElseThrow(() -> {
+                return new RuntimeException("Error while loading proxy bundle info");
+            });
+
+            bundleInfo.type = IContainer.JVMType.valueOf(nArgs[2]);
+            bundleInfo.execType = ExecType.valueOf(nArgs[2]);
+            bundleInfo.name = nArgs[1];
             BundleData bundleData = new BundleData(nArgs[1],bundleInfo);
             Main.getBundleManager().addBundleData(bundleData);
             if(nArgs[1].endsWith("/")){

@@ -39,6 +39,8 @@ public class ImplAPI extends DNCoreAPI {
 
     private final JVMUtils jvmUtils;
 
+    IResponsesCollection responsesCollection = new ResponsesCollection();
+
 
     public ImplAPI(){
         core = Core.getInstance();
@@ -68,7 +70,7 @@ public class ImplAPI extends DNCoreAPI {
 
     @Override
     public IResponsesCollection getResponsesCollection() {
-        return new ResponsesCollection();
+        return responsesCollection;
     }
 
     @Override

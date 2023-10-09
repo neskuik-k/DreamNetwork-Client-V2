@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
@@ -45,7 +46,6 @@ import java.util.function.Consumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public class Core {
     @Getter @Setter
@@ -288,13 +288,14 @@ public class Core {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            Console.setBlockConsole(false);
+
+            //Console.setBlockConsole(false);
         }).start();
 
 
 
 
-        Console.setBlockConsole(false);
+        ConsoleThread.resetAndRun();
     }
 
     public ArrayList<CoreResponse> getGlobalResponses(){

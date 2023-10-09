@@ -219,6 +219,7 @@ public abstract class AccessibilityMenu {
         }
 
         if(operation.type == Operation.OperationType.WAIT){
+            Console.debugPrint("Waiting for "+operation.returnValue);
             Console.setBlockConsole(true);
             return;
         }

@@ -38,7 +38,15 @@ public class ExternalCore implements IExternalCore {
         thread.start();
 
         ExternalConsole console = new ExternalConsole();
+
         this.console = console.getConsole();
+        System.out.println("Initialized external mode");
+        System.out.println(console.getConsole());
+        System.out.println(console.getConsole().getName());
+        System.out.println(console.getConsole().getConsoleAction());
+        System.out.println(console.getConsole().writing);
+
+        Console.setActualConsole(console.getConsole().getName());
     }
     @Override
     public void sendMessage(String message, Level level){
@@ -58,6 +66,7 @@ public class ExternalCore implements IExternalCore {
     @Override
     public void exitMode(){
         System.out.println("Exited external mode");
+        Console.setActualConsole("m:default");
         isInit = false;
     }
 

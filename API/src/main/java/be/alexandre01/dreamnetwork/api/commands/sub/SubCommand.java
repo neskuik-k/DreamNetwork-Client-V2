@@ -3,10 +3,17 @@ package be.alexandre01.dreamnetwork.api.commands.sub;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import lombok.NonNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public abstract class SubCommand extends SubCommandCompletor implements SubCommandExecutor {
     // EXTENDS
 
     SubCommandExecutor subCommandExecutor;
+
+    NodeBuilder nodeBuilder;
+
+    List<NodeContainer> colorNodes = new ArrayList<>();
 
     public SubCommand() {
         super();
@@ -37,6 +44,16 @@ public abstract class SubCommand extends SubCommandCompletor implements SubComma
             }
         }.onSubCommand(args);
     }
+
+    public NodeContainer registerColor(NodeContainer container){
+        colorNodes.add(container);
+        return container;
+    }
+
+    public void registerNode(NodeContainer container){
+        nodeBuilder = new NodeBuilder(container);
+    }
+
 
     public void fail(String... args){
         System.out.println("Wrong usage: "+String.join(" ",args));

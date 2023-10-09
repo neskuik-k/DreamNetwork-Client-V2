@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
@@ -26,6 +27,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Optional;
 
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
@@ -99,13 +101,27 @@ public class BundleManager implements IBundleManager {
                 File mainFile,proxyFile;
                 mainFile = new File("bundles/main/this-info.yml");
                 proxyFile = new File("bundles/proxies/this-info.yml");
-                BundleInfo main = new BundleInfo(mainFile,"main", ExecType.SERVER);
-                BundleInfo.updateFile(mainFile,main);
+                YamlFileUtils<BundleInfo> mainYaml = new YamlFileUtils<>(BundleInfo.class);
+                BundleInfo main = mainYaml.init(mainFile,false).orElseThrow(() -> {
+                    return new RuntimeException("Error while loading main bundle info");
+                });
+                main.execType = ExecType.SERVER;
+                main.name = "main";
+                main.type = JVMContainer.JVMType.SERVER;
+                main.setYaml(mainYaml);
+                mainYaml.saveFile();
                 BundleData mainBundle = new BundleData("main",main);
 
+                YamlFileUtils<BundleInfo> proxyYaml = new YamlFileUtils<>(BundleInfo.class);
+                BundleInfo proxy = proxyYaml.init(proxyFile,false).orElseThrow(() -> {
+                    return new RuntimeException("Error while loading proxy bundle info");
+                });
 
-                BundleInfo proxy = new BundleInfo(proxyFile,"proxies", ExecType.BUNGEECORD);
-                BundleInfo.updateFile(proxyFile,proxy);
+                proxy.execType = ExecType.BUNGEECORD;
+                proxy.name = "proxies";
+                proxy.type = JVMContainer.JVMType.PROXY;
+                proxy.setYaml(proxyYaml);
+                proxyYaml.saveFile();
                 BundleData proxyBundle = new BundleData("proxies",proxy);
 
                 addBundleData(mainBundle);

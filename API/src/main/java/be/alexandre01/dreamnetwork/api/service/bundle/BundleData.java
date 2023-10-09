@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 
 
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -21,7 +22,7 @@ public class BundleData {
     private boolean autoStart;
     private boolean isVirtual = false;
     private Optional<String> virtualName = Optional.empty();
-
+    private boolean merge = false;
     private final HashMap<String, IJVMExecutor> executors = new HashMap<>();
     private final IBundleInfo bundleInfo;
 
@@ -38,5 +39,10 @@ public class BundleData {
         this.name = name;
         //this.autoStart = autoStart;
         this.services = new ArrayList<>();
+    }
+
+
+    public String getPathName(){
+        return name+"/";
     }
 }

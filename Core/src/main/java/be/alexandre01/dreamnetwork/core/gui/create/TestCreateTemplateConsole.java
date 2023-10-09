@@ -158,9 +158,15 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                 }
               });
 
-              addValueInput(PromptText.create("port").setMacro(opt[5]), new ValueInput() {
+              addValueInput(PromptText.create("port"), new ValueInput() {
                 @Override
                 public void onTransition(ShowInfos infos) {
+                    if(jvmExecutor != null && jvmExecutor.isProxy()){
+                        infos.macro("25565");
+                    }else {
+                        infos.macro(opt[5]);
+                    }
+
                      infos.onEnter(getFromLang("service.creation.ask.port"));
                 }
 
@@ -182,7 +188,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                     String xmx = getOperation("xmx").getFrom(String.class);
                     // BEGIN OF ADDING SERVER
                     IBundleInfo bundleInfo = bundleData.getBundleInfo();
-                    Console.debugPrint(getFromLang("service.creation.addingServerOnBundle", serverName, bundleData.getName()));
+                    console.printNL(getFromLang("service.creation.addingServerOnBundle", serverName, bundleData.getName()));
 
                     IContainer.JVMType jvmType = bundleInfo.getType();
 
@@ -299,7 +305,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
 
         @Override
         public void drawInfos(){
-            ASCIIART.sendAdd();
+            ASCIIART.sendAdd(console);
            super.drawInfos();
         }
 

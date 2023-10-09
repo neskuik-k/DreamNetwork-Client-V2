@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.core.connection.core.communication.services.B
 */
 public class ResponsesCollection extends IResponsesCollection {
     public ResponsesCollection(){
-        addResponse(new BaseResponse());
+        System.out.println("BASE RESPONSE");
+        addResponse("BaseResponse",new BaseResponse());
     }
 }

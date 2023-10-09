@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -23,8 +24,9 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Kill extends SubCommandCompletor implements SubCommandExecutor {
     public Kill(Command command){
         super(command);
-        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
-                create("kill", create(new ScreensNode()),create("all",create(new BundlesNode(true,true,false))))));
+        NodeContainer kill =  create("kill", create(new ScreensNode()),create("all",create(new BundlesNode(true,true,false))));
+        new NodeBuilder(create(value, kill));
+        new NodeBuilder(kill);
         /*setCompletion(node("service",
                 node("kill",
                         node("server", "proxy"))));

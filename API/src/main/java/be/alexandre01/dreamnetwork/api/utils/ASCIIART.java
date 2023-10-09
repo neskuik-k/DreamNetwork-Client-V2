@@ -30,27 +30,27 @@ public class ASCIIART {
                         "|___/  |_|   \\___| \\__,_||_| |_| |_|\\_| \\_/ \\___| \\__|  \\_/\\_/  \\___/ |_|   |_|\\_\\      "+Colors.YELLOW_BRIGHT_UNDERLINE +"(BETA V2 - 1.11)\n" +Colors.RESET);
     }
 
-    public static void sendTutorial(){
-        Console.debugPrint(Colors.WHITE_BOLD_BRIGHT+"====================================================================================================");
-        Console.debugPrint(Colors.WHITE+"  _______      _                _         _ \n" +
+    public static void sendTutorial(Console console){
+        console.printNL(Colors.WHITE_BOLD_BRIGHT+"====================================================================================================");
+        console.printNL(Colors.WHITE+"  _______      _                _         _ \n" +
                 " |__   __|    | |              (_)       | |\n" +
                 "    | | _   _ | |_  ___   _ __  _   __ _ | |\n" +
                 "    | || | | || __|/ _ \\ | '__|| | / _` || |\n" +
                 "    | || |_| || |_| (_) || |   | || (_| || |\n" +
                 "    |_| \\__,_| \\__|\\___/ |_|   |_| \\__,_||_|\n" +
                 "                                            \n" );
-        Console.debugPrint(Colors.WHITE_BOLD_BRIGHT+"==================================================================================================== \n\n"+ Colors.RESET);
+        console.printNL(Colors.WHITE_BOLD_BRIGHT+"==================================================================================================== \n\n"+ Colors.RESET);
     }
-    public static void sendAdd(){
-        Console.debugPrint(Colors.WHITE_BOLD_BRIGHT+"====================================================================================================");
-        Console.debugPrint(Colors.WHITE+"               _      _ \n" +
+    public static void sendAdd(Console console){
+        console.printNL(Colors.WHITE_BOLD_BRIGHT+"====================================================================================================");
+        console.printNL(Colors.WHITE+"               _      _ \n" +
                 "     /\\       | |    | |\n" +
                 "    /  \\    __| |  __| |\n" +
                 "   / /\\ \\  / _` | / _` |\n" +
                 "  / ____ \\| (_| || (_| |\n" +
                 " /_/    \\_\\\\__,_| \\__,_|\n" +
                 "                        \n");
-        Console.debugPrint(Colors.WHITE_BOLD_BRIGHT+"==================================================================================================== \n\n"+ Colors.RESET);
+        console.printNL(Colors.WHITE_BOLD_BRIGHT+"==================================================================================================== \n\n"+ Colors.RESET);
     }
 
 }

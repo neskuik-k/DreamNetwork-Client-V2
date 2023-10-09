@@ -164,19 +164,19 @@ public class InstallerManager implements IInstallerManager {
                     if(calc == 0 || calc % slower == 0){
                         int currentSpace = space;
                         sb = new StringBuilder();
-                        sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"["+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
+                        sb.append(Colors.ANSI_YELLOW+Colors.BLACK_BACKGROUND+"["+Colors.ANSI_RESET+Colors.WHITE_BACKGROUND_BRIGHT);
                         for (int i = 0; i < calc/slower; i++) {
                             currentSpace--;
                             sb.append(" ");
                         }
-                        sb.append(Colors.ANSI_BLACK()+Colors.WHITE_BACKGROUND+bar+Colors.ANSI_RESET()+Colors.WHITE_BACKGROUND_BRIGHT);
+                        sb.append(Colors.ANSI_BLACK+Colors.WHITE_BACKGROUND+bar+Colors.ANSI_RESET+Colors.WHITE_BACKGROUND_BRIGHT);
 
                         for (int i = 0; i < currentSpace; i++) {
                             sb.append(" ");
                         }
 
 
-                        sb.append(Colors.RESET+Colors.ANSI_YELLOW+"]"+Colors.ANSI_RESET());
+                        sb.append(Colors.RESET+Colors.ANSI_YELLOW+"]"+Colors.ANSI_RESET);
                     }
                     if(calc <= space*slower && directionRight){
                         calc++;

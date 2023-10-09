@@ -158,7 +158,7 @@ addons.customClass.finalized=%var% - CL Finalized.
 addons.canUpdate=%green%You can update %var% addon. Type '%yellow%addon update %var%%green%' to update
 
 ## Commands
-commands.notFound=%redul%Command not found. | Type 'help' for assistance.
+commands.notFound=%redul%Command not found. | Type %whitebg%%blackul%help%reset%%redul% for assistance.
 commands.cantBeExecuted=%red%The command cannot be executed !
 
 commands.addon.titleUsage=How to manage addons

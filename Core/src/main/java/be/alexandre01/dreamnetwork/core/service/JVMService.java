@@ -2,6 +2,8 @@ package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
+import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
@@ -36,6 +38,7 @@ public class JVMService implements IService {
     public IConfig usedConfig;
     @Getter(AccessLevel.NONE) public ExecutorCallbacks executorCallbacks;
 
+    CompletableFuture<Boolean> stopFuture = new CompletableFuture<>();
 
     @Override
     public Optional<String> getUniqueCharactersID() {
@@ -62,7 +65,6 @@ public class JVMService implements IService {
 
     @Override @Synchronized
     public CompletableFuture<Boolean> stop(){
-        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
         if(screen != null){
             Console.fine("Stop screen");
             screen.destroy(true);
@@ -85,9 +87,16 @@ public class JVMService implements IService {
 
 
         if(client != null){
-            client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
-            //close with delay to let the server send the response
-            //set delay of 1 seconds without lock the thread
+            stopFuture = new CompletableFuture<>();
+            DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
+                        @Override
+                        public void onFailed() {
+                            stopFuture.complete(false);
+                        }
+            });
+
+                    //close with delay to let the server send the response
+                    //set delay of 1 seconds without lock the thread
             new Thread(() -> {
                 try {
                     Thread.sleep(1000);
@@ -96,6 +105,7 @@ public class JVMService implements IService {
                 }
                 client.getChannelHandlerContext().close();
             }).start();
+            return stopFuture;
         }else{
             process.destroy();
         }
@@ -117,28 +127,35 @@ public class JVMService implements IService {
     }
 
     @Override
-    public Optional<ExecutorCallbacks> restart(){
+    public CompletableFuture<RestartResult> restart(){
         if(usedConfig == null){
-
             return restart(jvmExecutor.getConfig());
         }
         return restart(usedConfig);
     }
     @Override
-    public Optional<ExecutorCallbacks> restart(IConfig iConfig){
+    public CompletableFuture<RestartResult> restart(IConfig iConfig){
+        CompletableFuture<RestartResult> completableFuture = new CompletableFuture<>();
         if(screen != null){
             Console.fine("Restart screen");
             screen.destroy(true);
         }
 
         if(client != null){
-            client.getRequestManager().sendRequest(RequestType.CORE_STOP_SERVER);
+            stop().whenComplete((aBoolean, throwable) -> {
+                if(aBoolean){
+                    completableFuture.complete(new RestartResult(true,getJvmExecutor().startServer(iConfig,new ExecutorCallbacks())));
+                }else{
+                    completableFuture.complete(new RestartResult(false,null));
+                }
+            });
             client.getChannelHandlerContext().close();
         }else{
             process.destroy();
         }
         //removeService();
-        return Optional.ofNullable(getJvmExecutor().startServer(iConfig, new ExecutorCallbacks()));
+        completableFuture.complete(new RestartResult(true,getJvmExecutor().startServer(iConfig,new ExecutorCallbacks())));
+        return completableFuture;
     }
 
     @Override

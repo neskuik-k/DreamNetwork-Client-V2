@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.console.language;
 
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.console.language.IEmojiManager;
 import be.alexandre01.dreamnetwork.core.Main;
 import com.google.gson.GsonBuilder;
@@ -15,6 +16,7 @@ import java.util.HashMap;
 public class EmojiManager implements IEmojiManager {
     public static HashMap<String, String> emojis = new HashMap<>();
     private boolean isLoaded = false;
+
 
     @Override
     @SneakyThrows

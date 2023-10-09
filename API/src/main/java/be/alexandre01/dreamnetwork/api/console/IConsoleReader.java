@@ -28,7 +28,7 @@ public interface IConsoleReader {
    }
 
    public static void reloadCompleters(){
-      DNUtils.get().getConsoleManager().getConsoleReader().reloadCompleter();
+      Console.getCurrent().reloadCompletors();
    }
 
 }

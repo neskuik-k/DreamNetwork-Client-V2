@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.console;
 
 
 import be.alexandre01.dreamnetwork.api.config.Config;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleHighlighter;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.widgets.DebugMod;
@@ -26,7 +27,6 @@ import java.util.List;
 public class ConsoleReader implements IConsoleReader {
     public LineReaderImpl sReader;
     public Terminal terminal;
-    @Setter
     public List<Completers.TreeCompleter.Node> nodes = new ArrayList<>();
     private AutosuggestionWidgets autosuggestionWidgets;
     @Getter
@@ -133,9 +133,14 @@ public class ConsoleReader implements IConsoleReader {
                 .build();
     }
 
+    @Override
+    public void setNodes(List<Completers.TreeCompleter.Node> list) {
+        this.nodes = list;
+    }
+
     public void reloadCompleter() {
-        Completers.TreeCompleter completer = new Completers.TreeCompleter(
-                nodes);
+        Completers.TreeCompleter completer = new Completers.TreeCompleter(nodes);
+
         LineReaderImpl reader = (LineReaderImpl) sReader;
         reader.setCompleter(completer);
     }

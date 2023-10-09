@@ -24,7 +24,7 @@ public class Install extends SubCommand {
     public Install(Command command) {
         super(command);
         cdnFiles = Main.getCdnFiles();
-        if(cdnFiles.isInstanced() && cdnFiles.getAddons() != null && cdnFiles.getAddons().size() != 0){
+        if(cdnFiles.isInstanced() && cdnFiles.getAddons() != null && !cdnFiles.getAddons().isEmpty()){
             NodeBuilder nodeBuilder = new NodeBuilder(
                     NodeBuilder.create("addon", NodeBuilder.create("install", NodeBuilder.create(cdnFiles.getAddons().keySet().toArray())))
             );

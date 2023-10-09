@@ -5,6 +5,7 @@ package be.alexandre01.dreamnetwork.core.commands;
 import be.alexandre01.dreamnetwork.api.commands.ICommandReader;
 import be.alexandre01.dreamnetwork.api.commands.ICommandsManager;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.api.events.list.commands.CoreCommandExecuteEvent;
@@ -76,8 +77,6 @@ public class CommandReader implements ICommandReader {
                     //DO NOTHING
                 }
             });
-
-            new Thread(console).start();
     }
 
 

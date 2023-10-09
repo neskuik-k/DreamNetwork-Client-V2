@@ -3,6 +3,8 @@ package be.alexandre01.dreamnetwork.core.console;
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.ICommand;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleHighlighter;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
@@ -10,15 +12,17 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.console.language.ColorsConverter;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
+import lombok.Getter;
 import lombok.Setter;
+import org.fusesource.jansi.Ansi;
 import org.jline.reader.LineReader;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -34,6 +38,11 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
 
     @Setter
     boolean enabled = true;
+
+    @Getter
+    HashMap<String, NodeContainer> nodeBuilders = new HashMap<>();
+
+
 
 
 
@@ -58,6 +67,10 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
 
             IConsoleReader.getReader().setPrompt(Console.getCurrent().writing);
             return asb.toAttributedString();
+        }
+
+        if(nodeBuilders.containsKey(args[0].toLowerCase())){
+            NodeContainer parent = nodeBuilders.get(args[0].toLowerCase());
         }
 
 
@@ -85,6 +98,13 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
                 asb.append(args[0]);
                 //  colorUsed.add(command.getBaseColor());
                 asb.ansiAppend(Colors.RESET);
+
+                if(args.length > 1){
+                    asb.ansiAppend(Colors.WHITE_BOLD);
+                    asb.append(" ");
+                    asb.append(args[1]);
+                    asb.ansiAppend(Colors.RESET);
+                }
                 if (DNCoreAPI.getInstance().getConfigManager().getGlobalSettings().isRainbowText()) {
                     List<String> used = new ArrayList<>(colorUsed);
                     colorUsed.clear();
@@ -92,7 +112,7 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
 
                     //Remove the base color from the rainbow
                     colors.remove(command.getBaseColor());
-                    if (args.length > 1) {
+                    if (args.length > 2) {
                         for (int i = 1; i < args.length; i++) {
                             String c;
                             if (used.isEmpty()) {
@@ -118,7 +138,7 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
                     }
                     Collections.shuffle(colors);
                 } else {
-                    for (int i = 1; i < args.length; i++) {
+                    for (int i = 2; i < args.length; i++) {
                         asb.append(" ");
                         asb.append(args[i]);
                     }

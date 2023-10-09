@@ -89,7 +89,6 @@ public class ExternalScreenInReader implements IScreenInReader {
             @Override
             public void onAccepted() {
                 Console.debugPrint("The request to stop to read the console has been accepted");
-                virtualService.getJvmExecutor().getExternalCore().getCoreHandler().getResponses().remove(coreResponse);
             }
 
             @Override
@@ -97,5 +96,6 @@ public class ExternalScreenInReader implements IScreenInReader {
                 Console.debugPrint("The request to stop to read the console has been rejected");
             }
         }).send();
+        virtualService.getJvmExecutor().getExternalCore().getCoreHandler().getResponses().remove(coreResponse);
     }
 }

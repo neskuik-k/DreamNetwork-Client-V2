@@ -21,7 +21,6 @@ public class DNCallback {
     Packet packet;
     TaskHandler handler;
     private final int id;
-
     private static DNCallback on(Packet packet, TaskHandler handler){
         Message message = packet.getMessage();
         int id = getNextId();

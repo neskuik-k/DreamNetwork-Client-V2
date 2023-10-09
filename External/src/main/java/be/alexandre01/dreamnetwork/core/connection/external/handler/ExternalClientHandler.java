@@ -11,6 +11,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreRespons
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.external.handler.IExternalClientHandler;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.api.connection.external.CoreNetServer;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalServer;
@@ -39,6 +40,7 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter implemen
         this.externalServer = externalServer;
         System.out.println("Hey !");
         responses.add(new ExternalTransmission());
+        System.out.println("Est ce que base response = "+DNCoreAPI.getInstance().getResponsesCollection().getResponses("BaseResponse"));
         responses.add(DNCoreAPI.getInstance().getResponsesCollection().getResponses("BaseResponse"));
 
         System.out.println("Init external client handler");
@@ -125,7 +127,7 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter implemen
                     try {
                         iResponse.onAutoResponse(message,ctx,ExternalCore.getInstance().getServer());
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        Console.bug(e);
                     }
                 }
             }

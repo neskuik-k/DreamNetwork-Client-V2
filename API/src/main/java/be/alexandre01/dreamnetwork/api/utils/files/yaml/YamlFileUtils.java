@@ -120,8 +120,6 @@ public class YamlFileUtils<T> {
                 t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
 
 
-
-
            // Gson gson = new Gson();
             //T t = gson.fromJson(gson.toJsonTree(map), clazz);
           //  YamlFileUtils.this.readFile();
@@ -135,7 +133,11 @@ public class YamlFileUtils<T> {
     }
     public Optional<T> init(File file, boolean skipNull){
         if(!config(file,clazz,skipNull)){
-            return Optional.ofNullable(obj = createObject());
+            obj = createObject();
+            if(obj instanceof YamlPreLoader){
+                ((YamlPreLoader) obj).whenLoaded();
+            }
+            return Optional.ofNullable(obj);
         }else {
             try {
                 return Optional.ofNullable(obj = readObject());
@@ -146,7 +148,11 @@ public class YamlFileUtils<T> {
                     }
                     System.out.println("Error reading file: "+file.getName());
                     System.out.println("Recreating the file and trying to put old data on it");
-                    return Optional.ofNullable(obj = replaceOldByNew());
+                    obj = replaceOldByNew();
+                    if(obj instanceof YamlPreLoader){
+                        ((YamlPreLoader) obj).whenLoaded();
+                    }
+                    return Optional.ofNullable(obj);
                 }catch (Exception cantReplace){
                     if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
                         e.printStackTrace();

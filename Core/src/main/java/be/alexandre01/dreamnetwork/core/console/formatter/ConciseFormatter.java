@@ -42,7 +42,7 @@ public class ConciseFormatter extends Formatter implements IConciseFormatter {
 
 
 
-            formatted.append( Colors.BLUE+"] "+Colors.ANSI_RESET());
+            formatted.append( Colors.BLUE+"] "+Colors.ANSI_RESET);
             ByteBuffer b = StandardCharsets.UTF_8.encode(formatMessage(record));
             new String(formatMessage( record ).getBytes(), StandardCharsets.UTF_8);
             String s = new String(b.array(), StandardCharsets.UTF_8);

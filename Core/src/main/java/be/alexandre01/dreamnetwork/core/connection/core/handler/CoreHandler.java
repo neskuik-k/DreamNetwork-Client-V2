@@ -28,6 +28,7 @@ import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
@@ -74,12 +75,15 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
       //  System.out.println(ctx.channel().remoteAddress().toString().split(":")[0]);
 
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
+        List<String> allowed = Main.getGlobalSettings().getAuthorizedIPList();
+        String ip = remote.replaceAll("/", "");
+        System.out.println(allowed);
         if (!hasDevUtilSoftwareAccess) {
-            if (!remote.replaceAll("/", "").equalsIgnoreCase("127.0.0.1")) {
+            if (!allowed.contains(ip)) {
                 ctx.close();
             }
         } else {
-            if (!remote.replaceAll("/", "").equalsIgnoreCase("127.0.0.1")) {
+            if (!allowed.contains(ip)) {
                 externalConnections.add(ctx);
             }
         }

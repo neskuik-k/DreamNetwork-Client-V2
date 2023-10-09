@@ -1,10 +1,12 @@
 package be.alexandre01.dreamnetwork.api.console;
 
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import org.jline.reader.Highlighter;
 import org.jline.reader.LineReader;
 import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStringBuilder;
 
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,4 +28,6 @@ public interface IConsoleHighlighter extends Highlighter {
     void setErrorIndex(int i);
 
     void setEnabled(boolean enabled);
+
+    HashMap<String, NodeContainer> getNodeBuilders();
 }

@@ -19,9 +19,13 @@ public class Start extends SubCommand {
         NodeContainer next = create("STATIC","DYNAMIC",
                 create(new RamNode(0,true),create(new RamNode(0,true))));
         NodeContainer profile =  create("profile");
-        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
-                create("start",
-                        create(new BundlesNode(true,true,true),profile,next))));
+
+        NodeContainer start = create("start",
+                create(new BundlesNode(true,true,true),profile,next));
+        new NodeBuilder(create(value,start));
+        new NodeBuilder(start);
+
+
        // addCompletor("service","start","server");
        // addCompletor("service","start","proxy");
     }

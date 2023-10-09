@@ -32,16 +32,18 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Console extends Thread{
+public class Console {
     @Getter @Setter private boolean showInput;
 
     public static Console MAIN;
-    private final ArrayList<Overlay> overlays = new ArrayList<>();
+    @Getter private final ArrayList<Overlay> overlays = new ArrayList<>();
 
     public interface IConsole{
         public void listener(String[] args);
         public void consoleChange();
     }
+
+
 
     public static String getEmoji(String emoji,String ifNot,String... args){
         return DNUtils.get().getConfigManager().getLanguageManager().getEmojiManager().getEmoji(emoji,ifNot,args);
@@ -86,8 +88,9 @@ public class Console extends Thread{
 
     public List<Completers.TreeCompleter.Node> completorNodes = new ArrayList<>();
     IConsole iConsole;
-    private static final HashMap<String, Console> instances = new HashMap<>();
-    public String name;
+    @Getter private static final HashMap<String, Console> instances = new HashMap<>();
+    @Getter public String name;
+
 
     @Getter @Setter private boolean noHistory = false;
 
@@ -95,13 +98,17 @@ public class Console extends Thread{
 
     public static void setBlockConsole(boolean blockConsole) {
         if(blockConsole == Console.blockConsole) return;
-
         Console.blockConsole = blockConsole;
-        Thread thread = Console.getConsole("m:default");
+
+        if(ConsoleThread.get() == null || blockConsole != ConsoleThread.get().isRunning) return; // si console bloqué (true) alors isRunning = false
+
+
+        Thread thread = ConsoleThread.get();
         if(blockConsole){
+            System.out.println("Stopping console");
             if(thread != null){
                 //thread.interrupt();
-                Console.getConsole("m:default").isRunning = false;// tell the thread to stop
+                ConsoleThread.stopCurrent();// tell the thread to stop
                 /*try {
                     thread.join(); // wait for the thread to stop
                 } catch (InterruptedException e) {
@@ -109,8 +116,8 @@ public class Console extends Thread{
                 }*/
             }
         }else {
-            Console.getConsole("m:default").isRunning = true;
-            Console.getConsole("m:default").run();
+            System.out.println("Rerun console");
+            ConsoleThread.startCurrent();
         }
         //reload();
     }
@@ -143,6 +150,7 @@ public class Console extends Thread{
                         return false;
                     }else {
                         Console.debugPrint(Console.getFromLang("cancelled"));
+                        //ConsoleThread.resetAndRun();
                         utils.getConsoleManager().getConsoleReader().getDefaultHighlighter().setEnabled(true);
                         return true;
                     }
@@ -181,7 +189,7 @@ public class Console extends Thread{
             clearConsole();
 
         if(console.defaultPrint != null && !isSilent)
-            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName())+Colors.RESET);
+            console.defaultPrint.println(Console.getFromLang("console.changed", console.getName()+"/"+ConsoleThread.instance)+Colors.RESET);
         if(!console.history.isEmpty()){
             if(console.defaultPrint != null){
                 List<ConsoleMessage> h = new ArrayList<>(console.history);
@@ -223,12 +231,16 @@ public class Console extends Thread{
     public static void setActualConsole(String name){
         setActualConsole(name,false,true);
     }
+
+
     public static void setActualConsole(String name,boolean isSilent){
         setActualConsole(name,isSilent,true);
     }
 
     public void reloadCompletors(){
         IConsoleReader consoleReader = DNUtils.get().getConsoleManager().getConsoleReader();
+
+        Console.fine("Reload completors of console");;
 
         if(completorNodes.isEmpty()){
             completorNodes.add(Completers.TreeCompleter.node(""));
@@ -237,8 +249,6 @@ public class Console extends Thread{
         consoleReader.reloadCompleter();
     }
     public static void setDefaultConsole(String defaultConsole) {
-        if(Console.defaultConsole != null)
-            instances.get(defaultConsole).stop();
         Console.defaultConsole = defaultConsole;
     }
 
@@ -275,7 +285,7 @@ public class Console extends Thread{
             FileHandler fh = DNUtils.get().getConsoleManager().getFileHandler();
             String msg = s == null ? "null": s.toString();
             if(DNUtils.get().getConfigManager().isDebug()){
-                instances.get(actualConsole).fPrint(s+ Colors.ANSI_RESET(),level);
+                instances.get(actualConsole).fPrint(s+ Colors.ANSI_RESET,level);
                 // print(msg,Level.FINE);
                 return;
             }
@@ -285,8 +295,8 @@ public class Console extends Thread{
             return;
         }
 
-        instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET(),level,false);
-        Console.getConsole(ConsolePath.Main.DEFAULT).refreshHistory(s + Colors.ANSI_RESET(),level);
+        instances.get(actualConsole).fPrint(s + Colors.ANSI_RESET,level,false);
+        Console.getConsole(ConsolePath.Main.DEFAULT).refreshHistory(s + Colors.ANSI_RESET,level);
         //instances.get("m:default").fPrint(s+Colors.ANSI_RESET(),level);
 
     }
@@ -299,7 +309,7 @@ public class Console extends Thread{
     }
     public static void print(String s, Level level,String name){
 
-        instances.get(name).fPrint(s + Colors.ANSI_RESET(),level);
+        instances.get(name).fPrint(s + Colors.ANSI_RESET,level);
     }
     public void forcePrint(String s, Level level){
         IConsoleManager consoleManager = DNUtils.get().getConsoleManager();
@@ -362,7 +372,7 @@ public class Console extends Thread{
         }
         sendToLog(s,level);
         if(saveHistory){
-            refreshHistory(s + Colors.ANSI_RESET(),level);
+            refreshHistory(s + Colors.ANSI_RESET,level);
         }
     }
     public void fPrint(Object s,Level level){
@@ -389,7 +399,7 @@ public class Console extends Thread{
     public static void print(Object s){
         DNUtils utils = DNUtils.get();
         IFormatter formatter = DNUtils.get().getConsoleManager().getFormatter();
-        String msg = formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET()));
+        String msg = formatter.getDefaultFormatter().format(new LogRecord(Level.INFO, s+Colors.ANSI_RESET));
         msg = msg.replaceAll("\\s+$", "");
         sendToLog(s,Level.INFO,"global");
         utils.getConsoleManager().getConsoleReader().getSReader().printAbove(msg);
@@ -437,6 +447,7 @@ public class Console extends Thread{
         clearConsole(DNUtils.get().getConsoleManager().getFormatter().getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
+        if(true) return;
         try
         {
             final String os = System.getProperty("os.name");
@@ -477,7 +488,7 @@ public class Console extends Thread{
 
     public static void reload(){
 
-        Thread thread = Console.getConsole("m:default");
+        Thread thread = ConsoleThread.get();
         if(thread != null){
             thread.interrupt();
             Console.getConsole("m:default").isRunning = false;// tell the thread to stop
@@ -534,81 +545,7 @@ public class Console extends Thread{
     public static void bug(Exception e){
         bug(e,false);
     }
-
-    @Override
-    public void run() {
-
-        boolean isWindows = Config.isWindows();
-        try {
-            String data;
-
-            if(actualConsole == null || !instances.containsKey(actualConsole)){
-                actualConsole = defaultConsole;
-            }
-
-
-
-            LineReader reader = DNUtils.get().getConsoleManager().getConsoleReader().getSReader();
-
-            PrintWriter out = new PrintWriter(reader.getTerminal().writer());
-
-            while (isRunning){
-                Console console = Console.getConsole(actualConsole);
-                //    System.out.println(blockConsole);
-
-              /* if(blockConsole){
-                    continue;
-                }else {
-                    Core.getInstance().getFileHandler().publish(new LogRecord(Level.INFO, "Console Blocked: "+blockConsole+""));
-                }
-
-               // System.out.println("Line Refresh");
-                if(true){
-                    continue;
-                }*/
-                if((data = reader.readLine(console.writing, readLineString1,maskingCallback,readLineString2)) == null)
-                    continue;
-
-                console = Console.getConsole(actualConsole);
-
-
-                sendToLog("> : "+data,Level.INFO);
-
-                try {
-                    if(console.collapseSpace)
-                        data = data.trim().replaceAll("\\s{2,}", " ");
-                    if(data.length() != 0 && console.showInput)
-                        out.println("=> "+ data);
-                    out.flush();
-
-
-                    if(overlays.size() > 0){
-                        overlays.get(0).on(data);
-                        continue;
-                    }
-                    //ConsoleReader.sReader.resetPromptLine(  ConsoleReader.sReader.getPrompt(),  "",  0);
-                    ReaderHistory.getLines().put(console.name, data);
-                    String[] args = new String[0];
-                    args = data.split(" ");
-                    console.iConsole.listener(args);
-                }catch (Exception e){
-                    bug(e);
-                }
-            }
-
-
-        }catch (UserInterruptException e){
-            SIG_IGN();
-        }
-        catch (EndOfFileException e){
-            SIG_IGN();
-        }
-        catch (Exception e){
-            Console.debugPrint(Console.getFromLang("console.closed"));
-            e.printStackTrace();
-        }
-    }
-    public void SIG_IGN(){
+    public static void SIG_IGN(){
         if(!DNUtils.get().getConfigManager().getGlobalSettings().isSIG_IGN_Handler()){
             Console.debugPrint(Console.getFromLang("console.closed"));
             System.exit(0);
@@ -627,8 +564,8 @@ public class Console extends Thread{
         // PrintWriter out = new PrintWriter(reader.getTerminal().writer());
 
         try {
-            if(Console.getConsole(actualConsole).killListener.onKill(reader))
-                Console.getConsole(actualConsole).run();
+           Console.getConsole(actualConsole).killListener.onKill(reader); // boolean
+               // ConsoleThread.resetAndRun();
         }catch (UserInterruptException e){
             SIG_IGN();
         }
@@ -646,23 +583,6 @@ public class Console extends Thread{
             readByte = consoleReader.reader.read();
         }*/
         return IConsoleReader.getReader().readLine();
-    }
-    private String interruptibleReadLine(BufferedReader reader)
-            throws InterruptedException, IOException {
-        Pattern line = Pattern.compile("^(.*)\\R");
-        Matcher matcher;
-        boolean interrupted = false;
-
-        StringBuilder result = new StringBuilder();
-        int chr = -1;
-        do {
-            if (reader.ready()) chr = reader.read();
-            if (chr > -1) result.append((char) chr);
-            matcher = line.matcher(result.toString());
-            interrupted = Thread.interrupted(); // resets flag, call only once
-        } while (!interrupted && !matcher.matches());
-        if (interrupted) throw new InterruptedException();
-        return (matcher.matches() ? matcher.group(1) : "");
     }
     public ArrayList<ConsoleMessage> getHistory() {
         return history;

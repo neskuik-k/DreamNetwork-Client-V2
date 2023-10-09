@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
+import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
@@ -20,9 +21,10 @@ import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 public class Screen extends SubCommandCompletor implements SubCommandExecutor {
     public Screen(Command command){
         super(command);
-        NodeBuilder nodeBuilder = new NodeBuilder(create(value,
-                create("screen",
-                        create(new ScreensNode()))));
+        NodeContainer screen =  create("screen", create(new ScreensNode()));
+        new NodeBuilder(create(value, screen));
+        new NodeBuilder(screen);
+        //new NodeBuilder(screen);
        /* setCompletion(node("service",
                 node("screen")));*/
            // addCompletor("service","screen","%screen%");

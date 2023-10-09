@@ -7,10 +7,10 @@ import java.util.HashMap;
 
 public enum ColorsConverter {
     // ANSI
-    ARESET(Colors.ANSI_RESET()),
-    ABLACK(Colors.ANSI_BLACK()),
-    ARED(Colors.ANSI_RED()),
-    AGREEN(Colors.ANSI_GREEN()),
+    ARESET(Colors.ANSI_RESET),
+    ABLACK(Colors.ANSI_BLACK),
+    ARED(Colors.ANSI_RED),
+    AGREEN(Colors.ANSI_GREEN),
     AYELLOW(Colors.ANSI_YELLOW),
     ABLUE(Colors.ANSI_BLUE),
     APURPLE(Colors.ANSI_PURPLE),
@@ -71,7 +71,7 @@ public enum ColorsConverter {
     // PURPLE
     PURPLE(Colors.PURPLE),
     PURPLEBO(Colors.PURPLE_BOLD),
-    PURPLEUL(Colors.PURPLE_UNDERLINED()),
+    PURPLEUL(Colors.PURPLE_UNDERLINED),
     PURPLEBG(Colors.PURPLE_BACKGROUND),
     PURPLEBR(Colors.PURPLE_BRIGHT),
     PURPLEBOBR(Colors.PURPLE_BOLD_BRIGHT),

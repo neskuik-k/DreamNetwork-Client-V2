@@ -49,9 +49,9 @@ public class CommandsManager implements ICommandsManager {
                     }
                     return;
                 }
-                Console.printLang("commands.notFound", Level.WARNING);
-                return;
             }
+            Console.printLang("commands.notFound", Level.WARNING);
+            return;
         }
 
     }

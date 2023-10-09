@@ -22,7 +22,7 @@ public class HelpBuilder {
 
     public HelpBuilder setCmdUsage(String usage, String... sub) {
         StringBuilder sb = new StringBuilder();
-        sb.append(Colors.ANSI_PURPLE + commandName + Colors.ANSI_RESET()).append(" ");
+        sb.append(Colors.ANSI_PURPLE + commandName + Colors.ANSI_RESET).append(" ");
         for (String s : sub)
             sb.append(s).append(" ");
 
