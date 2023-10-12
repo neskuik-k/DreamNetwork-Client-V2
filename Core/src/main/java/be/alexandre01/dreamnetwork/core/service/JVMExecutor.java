@@ -209,7 +209,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             if (callbacks != null) {
                 callbacks.setHasFailed(true);
                 if (callbacks.onFail != null)
-                    callbacks.onFail.whenFail();
+                    callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
             }
             if (!queue.isEmpty()) {
                 //get first insered of linkedhashmap
@@ -318,7 +318,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                 if (callbacks != null) {
                                     callbacks.setHasFailed(true);
                                     if (callbacks.onFail != null)
-                                        callbacks.onFail.whenFail();
+                                        callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                                 }
 
                                 if (!queue.isEmpty()) {
@@ -647,8 +647,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
         if (callbacks != null) {
-            if (callbacks.onStart != null)
-                callbacks.onStart.whenStart(jvmService);
+            if (callbacks.onStart != null){
+                callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
+            }
+
             callbacks.setJvmService(jvmService);
         }
         jvmServices.put(servers, jvmService);

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.console.jline.completors;
 
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.language.ColorsConverter;
 import lombok.Getter;
 import org.jline.builtins.Completers;
@@ -49,6 +50,10 @@ public class CustomTreeCompleter extends Completers.TreeCompleter {
 
         if (comp != null) {
             if (!cands.isEmpty()) {
+                Console.print("Cannot mix completers and candidates");
+                Console.print(cands);
+                Console.print("Value > "+ cands.get(0).value());
+                Console.print(cands.get(0).key());
                 throw new IllegalArgumentException();
             } else {
                 return new Node(cands,comp, nodes);

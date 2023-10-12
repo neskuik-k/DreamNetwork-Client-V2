@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -55,19 +56,45 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
 
 
             if(args[1].equalsIgnoreCase("all")){
+                ArrayList<IService> services = null;
                 if(args.length < 3){
-                    Console.printLang("commands.service.stop.incorrectService");
-                    return true;
+                    if(Core.getInstance().getJvmContainer().getJVMExecutors().stream().map(IJVMExecutor::getServices).allMatch(Collection::isEmpty)){
+                        Console.printLang("commands.service.stop.noService");
+                        return true;
+                    }
+                    services = new ArrayList<>();
+                    Collection<IJVMExecutor> executors = Core.getInstance().getJvmContainer().getJVMExecutors();
+                    for(IJVMExecutor executor : executors){
+                        services.addAll(executor.getServices());
+                    }
+                    Console.printLang("commands.service.stop.all");
                 }
-                Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
 
-                if(!exec.isPresent()){
-                    Console.printLang("commands.service.stop.incorrectService");
-                    return true;
+                if(services == null){
+                    if(args.length == 4){
+                        System.out.println("Please specify an executor name");
+                        return true;
+                    }
+                    Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                    if(!exec.isPresent()){
+                        Console.printLang("commands.service.stop.incorrectExecutor");
+                        return true;
+                    }
+                    //iService.removeService();
+                    services = new ArrayList<>(exec.get().getServices());
                 }
-                //iService.removeService();
-                new ArrayList<>(exec.get().getServices()).forEach(IService::stop);
 
+                ArrayList<IService> finalServices = services;
+                Console.getCurrent().addOverlay(new Console.Overlay() {
+                    @Override
+                    public void on(String data) {
+                        disable();
+                        if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
+                            finalServices.forEach(IService::stop);
+                            return;
+                        }
+                    }
+                }, Colors.YELLOW+"Are you sure you want to stop all the services ? [Y/N] > ");
                 return true;
             }
             Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);

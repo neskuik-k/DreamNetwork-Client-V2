@@ -3,19 +3,26 @@ package be.alexandre01.dreamnetwork.api.service;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExecutorCallbacks {
 
     @Setter private boolean hasFailed = false;
-    public ICallbackStart onStart;
-    public ICallbackStop onStop;
-    public ICallbackConnect onConnect;
+    public List<ICallbackStart> onStart;
+    public List<ICallbackStop> onStop;
+    public List<ICallbackConnect> onConnect;
+    public List<ICallbackFail> onFail;
 
     @Setter IService jvmService = null;
     boolean hasStarted = false;
 
-    public ICallbackFail onFail;
+
     public ExecutorCallbacks whenStart(ICallbackStart onStart){
-        this.onStart = onStart;
+        if(this.onStart == null){
+            this.onStart = new ArrayList<>();
+        }
+        this.onStart.add(onStart);
         if(jvmService != null && !hasStarted){
             onStart.whenStart(jvmService);
             hasStarted = !hasStarted;
@@ -24,17 +31,26 @@ public class ExecutorCallbacks {
     }
 
     public ExecutorCallbacks whenStop(ICallbackStop onStop){
-        this.onStop = onStop;
+        if(this.onStop == null){
+            this.onStop = new ArrayList<>();
+        }
+        this.onStop.add(onStop);
         return this;
     }
 
     public ExecutorCallbacks whenConnect(ICallbackConnect onConnect){
-        this.onConnect = onConnect;
+        if(this.onConnect == null){
+            this.onConnect = new ArrayList<>();
+        }
+        this.onConnect.add(onConnect);
         return this;
     }
 
     public ExecutorCallbacks whenFail(ICallbackFail onFail){
-        this.onFail = onFail;
+        if(this.onFail == null){
+            this.onFail = new ArrayList<>();
+        }
+        this.onFail.add(onFail);
         if(hasFailed){
             onFail.whenFail();
         }

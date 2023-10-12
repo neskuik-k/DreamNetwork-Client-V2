@@ -65,6 +65,11 @@ public class ExternalCore implements IExternalCore {
 
     @Override
     public void exitMode(){
+        if(getClientHandler() != null){
+            if(getClientHandler().getChannel() != null && getClientHandler().getChannel().isActive()){
+                getClientHandler().getChannel().close();
+            }
+        }
         System.out.println("Exited external mode");
         Console.setActualConsole("m:default");
         isInit = false;

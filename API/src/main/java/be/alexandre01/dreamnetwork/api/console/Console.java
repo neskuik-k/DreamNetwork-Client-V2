@@ -38,6 +38,8 @@ public class Console {
     public static Console MAIN;
     @Getter private final ArrayList<Overlay> overlays = new ArrayList<>();
 
+    private static final ArrayList<String> previousConsole = new ArrayList<>();
+
     public interface IConsole{
         public void listener(String[] args);
         public void consoleChange();
@@ -64,6 +66,7 @@ public class Console {
     }
     public void addOverlay(Overlay overlay,String writing){
         if(writing != null){
+            overlay.oldWriting = this.writing;
             this.writing = writing;
         }
         overlay.console = this;
@@ -76,10 +79,12 @@ public class Console {
 
     public abstract static class Overlay{
         private Console console;
+        private String oldWriting;
         public abstract void on(String data);
 
         public void disable(){
             console.overlays.remove(this);
+            console.writing = oldWriting;
         }
     }
 
@@ -182,6 +187,7 @@ public class Console {
         Console console = instances.get(name);
         IConsoleReader consoleReader = DNUtils.get().getConsoleManager().getConsoleReader();
         consoleReader.getSReader().setPrompt(console.writing);
+        String previous = actualConsole;
 
         Console.actualConsole = name;
         console.isRunning = true;
@@ -226,6 +232,8 @@ public class Console {
 
         console.iConsole.consoleChange();
         console.reloadCompletors();
+
+        previousConsole.add(previous);
     }
 
     public static void setActualConsole(String name){
@@ -235,6 +243,16 @@ public class Console {
 
     public static void setActualConsole(String name,boolean isSilent){
         setActualConsole(name,isSilent,true);
+    }
+
+    public static void goToPrevious(){
+        if(previousConsole.isEmpty()){
+            Console.print("No previous console");
+            return;
+        }
+        String previous = previousConsole.get(previousConsole.size()-1);
+        previousConsole.remove(previousConsole.size()-1);
+        setActualConsole(previous);
     }
 
     public void reloadCompletors(){

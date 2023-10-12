@@ -109,7 +109,7 @@ public class VirtualExecutor  implements IJVMExecutor {
                         Console.print("[EXTERNAL] => "+Console.getFromLang("service.executor.serverStartProcess", getFullName()));
                         if(callbacks != null){
                             if(callbacks.onStart != null)
-                                callbacks.onStart.whenStart(virtualService);
+                                callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(virtualService));
                         }
 
                         return;
@@ -121,7 +121,7 @@ public class VirtualExecutor  implements IJVMExecutor {
                     if(callbacks != null){
                         callbacks.setHasFailed(true);
                         if(callbacks.onFail != null){
-                            callbacks.onFail.whenFail();
+                            callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                         }
                     }
                 }

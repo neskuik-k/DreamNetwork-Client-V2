@@ -77,36 +77,33 @@ public class JVMService implements IService {
         if(executorCallbacks != null){
             if(!isConnected()){
                 if(executorCallbacks.onFail != null){
-                    executorCallbacks.onFail.whenFail();
+                    executorCallbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                 }
             }
             if(executorCallbacks.onStop != null){
-                executorCallbacks.onStop.whenStop(this);
+                executorCallbacks.onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(this));
             }
         }
 
 
-        if(client != null){
+        /*if(client != null && client.getJvmService() != null){
             stopFuture = new CompletableFuture<>();
-            DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
+           DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
                         @Override
                         public void onFailed() {
                             stopFuture.complete(false);
                         }
             });
 
+
+            stopFuture.complete(true);
+
+
                     //close with delay to let the server send the response
                     //set delay of 1 seconds without lock the thread
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                client.getChannelHandlerContext().close();
-            }).start();
-            return stopFuture;
-        }else{
+            return stopFuture;*/
+       // }else{
+        if(client == null && process.isAlive()){
             process.destroy();
         }
         return CompletableFuture.completedFuture(true);
@@ -140,22 +137,22 @@ public class JVMService implements IService {
             Console.fine("Restart screen");
             screen.destroy(true);
         }
-
-        if(client != null){
-            stop().whenComplete((aBoolean, throwable) -> {
+        stop().whenComplete((aBoolean, throwable) -> {
                 if(aBoolean){
-                    completableFuture.complete(new RestartResult(true,getJvmExecutor().startServer(iConfig,new ExecutorCallbacks())));
+                    System.out.println("Stop succeed");
+                    ExecutorCallbacks c = getJvmExecutor().startServer(iConfig);
+                    c.whenStart(new ExecutorCallbacks.ICallbackStart() {
+                        @Override
+                        public void whenStart(IService service) {
+                            completableFuture.complete(new RestartResult(true,c));
+                        }
+                    });
                 }else{
+                    System.out.println("Stop failed");
                     completableFuture.complete(new RestartResult(false,null));
                 }
             });
-            client.getChannelHandlerContext().close();
-        }else{
-            process.destroy();
-        }
-        //removeService();
-        completableFuture.complete(new RestartResult(true,getJvmExecutor().startServer(iConfig,new ExecutorCallbacks())));
-        return completableFuture;
+           return completableFuture;
     }
 
     @Override

@@ -115,7 +115,7 @@ public class ProcessScreenStream implements IScreenStream {
     }
 
     public void exitScreen(){
-        Console.setActualConsole("m:default");
+        Console.goToPrevious();
         if(screenInReader instanceof ExternalScreenInReader){
             screenInReader.stopReader();
         }

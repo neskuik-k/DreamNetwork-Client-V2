@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
@@ -27,11 +28,12 @@ public class ExternalConsole  {
     public ExternalConsole() {
         this.console = Console.load("m:external");
 
-        arguments.add(NodeBuilder.create("screen",new ScreensNode()));
-        arguments.add(NodeBuilder.create("stop",new ScreensNode()));
-        arguments.add(NodeBuilder.create("start",new BundlesNode(true, true,true)));
+        arguments.add(NodeBuilder.create("screen",NodeBuilder.create(new ScreensNode())));
+        arguments.add(NodeBuilder.create("stop",NodeBuilder.create(new ScreensNode())));
+        arguments.add(NodeBuilder.create("start",NodeBuilder.create(new BundlesNode(true, true,true))));
         setArgumentsBuilder(arguments.toArray(new NodeContainer[0]));
         List<String> acceptedSub = Arrays.asList("screen", "stop", "start");
+        console.setWriting(Colors.YELLOW+"* "+Colors.RED_BRIGHT+"External > "+Colors.RESET);
 
 
         console.setConsoleAction(new Console.IConsole() {
@@ -57,21 +59,23 @@ public class ExternalConsole  {
                 System.out.println("External mode SCREEN");
             }
         });
-
-        console.setKillListener(reader ->  {
-            String data;
-            while ((data = reader.readLine("Are you sure ? You gonna stop the communication between the main DreamNetwork: ")) != null) {
-                if (data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")) {
-                    for (IJVMExecutor executor : DNCoreAPI.getInstance().getContainer().getJVMExecutors()) {
-                        for (IService service : executor.getServices()){
-                            service.stop();
+        console.setKillListener(reader -> {
+            //Shutdown other things
+            console.addOverlay(new Console.Overlay() {
+                @Override
+                public void on(String data) {
+                    disable();
+                    if (data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")) {
+                        for (IJVMExecutor executor : DNCoreAPI.getInstance().getContainer().getJVMExecutors()) {
+                            for (IService service : executor.getServices()){
+                                service.stop();
+                            }
+                            ExternalCore.getInstance().exitMode();
                         }
+                        Console.setActualConsole("m:default");
                     }
-                    // stop all servers
-                    return true;
                 }
-                return true;
-            }
+            }, Colors.PURPLE_BOLD+"The communication will be closed and all servers closed (y/n) ? => ");
             return true;
         });
     }

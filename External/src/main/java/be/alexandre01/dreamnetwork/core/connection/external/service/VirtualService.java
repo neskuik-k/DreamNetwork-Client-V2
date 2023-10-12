@@ -147,7 +147,21 @@ public class VirtualService implements IService {
 
     @Override
     public CompletableFuture<RestartResult> restart() {
-        return null;
+        CompletableFuture<RestartResult> completableFuture = new CompletableFuture<>();
+        stop().whenComplete((aBoolean, throwable) -> {
+            if(aBoolean){
+                ExecutorCallbacks c = getJvmExecutor().startServer();
+                c.whenStart(new ExecutorCallbacks.ICallbackStart() {
+                    @Override
+                    public void whenStart(IService service) {
+                        completableFuture.complete(new RestartResult(true,c));
+                    }
+                });
+            }else {
+                completableFuture.complete(new RestartResult(false,null));
+            }
+        });
+        return completableFuture;
     }
 
     @Override

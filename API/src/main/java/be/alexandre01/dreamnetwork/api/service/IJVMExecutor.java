@@ -90,7 +90,7 @@ public interface IJVMExecutor {
     public default void removeService(IService service){
         service.getExecutorCallbacks().ifPresent(executorCallbacks -> {
             if (executorCallbacks.onStop != null) {
-                executorCallbacks.onStop.whenStop(service);
+                executorCallbacks.onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(service));
             }
         });
         DNCoreAPI api = DNCoreAPI.getInstance();

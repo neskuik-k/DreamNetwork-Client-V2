@@ -178,7 +178,7 @@ public class AuthentificationResponse extends CoreResponse {
                                 newClient.setJvmService(virtualService);
                                 virtualService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
                                     if(executorCallbacks.onConnect != null)
-                                        executorCallbacks.onConnect.whenConnect(virtualService, newClient);
+                                        executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(virtualService, newClient));
                                 });
                             }else {
                                 System.out.println("No bundle found");
@@ -222,7 +222,7 @@ public class AuthentificationResponse extends CoreResponse {
                         Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
                         newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
                             if(executorCallbacks.onConnect != null)
-                                executorCallbacks.onConnect.whenConnect(newClient.getJvmService(), newClient);
+                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getJvmService(), newClient));
                         });
 
                         if(newClient.getJvmService().getScreen() == null){
@@ -252,7 +252,7 @@ public class AuthentificationResponse extends CoreResponse {
                         Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
                         newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
                             if(executorCallbacks.onConnect != null)
-                                executorCallbacks.onConnect.whenConnect(newClient.getJvmService(), newClient);
+                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getJvmService(), newClient));
                         });
                         if(newClient.getJvmService().getScreen() == null){
                             new Screen(newClient.getJvmService());
