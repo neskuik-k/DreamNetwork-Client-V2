@@ -265,7 +265,7 @@ public class Message extends LinkedHashMap<String, Object> {
         if(provider.contains("core_")){
             // make code for multinode
         }
-        Console.debugPrint("FIND... "+ provider);
+        Console.fine("FIND... "+ provider);
 
         if(provider.equals("core")){
             return DNCoreAPI.getInstance().getExternalCore().map(IExternalCore::getServer);
@@ -444,7 +444,7 @@ public class Message extends LinkedHashMap<String, Object> {
 
         if(!containsKeyInRoot("MID")) return Optional.empty();
         AtomicReference<DNCallbackReceiver> callbackReceiver = new AtomicReference<>();
-        Console.debugPrint("Search client provider " + getClientProvider().isPresent());
+        Console.fine("Search client provider " + getClientProvider().isPresent());
         getClientProvider().ifPresent(new Consumer<UniversalConnection>() {
             @Override
             public void accept(UniversalConnection client) {

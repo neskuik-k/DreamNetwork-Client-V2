@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 import static be.alexandre01.dreamnetwork.api.connection.core.request.RequestType.*;
@@ -54,7 +55,38 @@ public class BaseResponse extends CoreResponse {
                 return;
             }
             Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
-            stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
+            CompletableFuture<Boolean> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
+
+            message.getCallback().ifPresent(receiver -> {
+                future.whenComplete((aBoolean, throwable) -> {
+                   if(aBoolean){
+                       receiver.send(TaskHandler.TaskType.ACCEPTED);
+                   }else {
+                       receiver.send(TaskHandler.TaskType.FAILED);
+                   }
+                });
+            });
+            //stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
+        });
+
+        addRequestInterceptor(CORE_RESTART_SERVER, (message, ctx, c) -> {
+            String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
+            Optional<IJVMExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
+            if (!stopExecutor.isPresent()) {
+                return;
+            }
+            Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
+            CompletableFuture<IService.RestartResult> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).restart();
+
+            message.getCallback().ifPresent(receiver -> {
+                future.whenComplete((result, throwable) -> {
+                    if(result.isSuccess()){
+                        receiver.send(TaskHandler.TaskType.ACCEPTED);
+                    }else {
+                        receiver.send(TaskHandler.TaskType.FAILED);
+                    }
+                });
+            });
             //stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
@@ -292,7 +324,6 @@ public class BaseResponse extends CoreResponse {
                 handler.onRejected();
                 break;
             case IGNORED:
-                handler.onFailed();
                 handler.onIgnored();
                 break;
             case FAILED:

@@ -77,7 +77,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
         String remote = ctx.channel().remoteAddress().toString().split(":")[0];
         List<String> allowed = Main.getGlobalSettings().getAuthorizedIPList();
         String ip = remote.replaceAll("/", "");
-        System.out.println(allowed);
+       // System.out.println(allowed);
         if (!hasDevUtilSoftwareAccess) {
             if (!allowed.contains(ip)) {
                 ctx.close();

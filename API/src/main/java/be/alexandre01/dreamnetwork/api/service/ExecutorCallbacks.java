@@ -59,20 +59,20 @@ public class ExecutorCallbacks {
 
 
 
-    public abstract static class ICallbackStart{
-        public abstract void whenStart(IService service);
+    public interface ICallbackStart{
+        void whenStart(IService service);
     }
 
-    public abstract static class ICallbackStop{
-        public abstract void whenStop(IService service);
+    public interface ICallbackStop{
+        void whenStop(IService service);
     }
 
-    public abstract static class ICallbackConnect{
-        public abstract void whenConnect(IService service, AServiceClient client);
+    public interface ICallbackConnect{
+        void whenConnect(IService service, AServiceClient client);
     }
 
-    public abstract static class ICallbackFail{
-        public abstract void whenFail();
+    public interface ICallbackFail{
+        void whenFail();
     }
 
 }
