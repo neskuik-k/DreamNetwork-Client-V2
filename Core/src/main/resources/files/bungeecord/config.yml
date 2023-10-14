@@ -26,6 +26,9 @@ permissions:
   - bungeecord.command.ip
   - bungeecord.command.reload
   - bungeecord.command.send
+  - maintenance.use
+  - slot.use
+  - tablist.use
 log_pings: true
 connection_throttle_limit: 3
 prevent_proxy_connections: false

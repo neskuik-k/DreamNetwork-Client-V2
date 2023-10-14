@@ -85,6 +85,9 @@ public class GlobalSettings {
         if(portRange2.matches("[0-9]+"))
             portRangeInt[1] = Integer.parseInt(portRange2);
 
+        if(authorizedIPS == null)
+            authorizedIPS = new String[]{"127.0.0.1"};
+
         authorizedIPList = new ArrayList<>(Arrays.asList(authorizedIPS));
     }
 

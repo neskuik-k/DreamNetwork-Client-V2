@@ -6,6 +6,7 @@ import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenInReader;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -86,19 +87,6 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
                         }
                     }
 
-
-                    for(File target : files){
-
-                        //check if idSplit is multiple numbers
-                        /*System.out.println(idSplit);
-                        if(idSplit.matches("[0-9]+")){
-                            System.out.println("Match");
-                            int idSplitInt = Integer.parseInt(idSplit);
-                            if(idSplitInt >= id){
-                                id = idSplitInt+1;
-                            }
-                        }*/
-                    }
                 }
 
                 String idToString = String.valueOf(id);
@@ -190,7 +178,7 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
                     }
                     data = sb.toString();
                     if(data.toString() != null){
-                        console.printNL(data);
+                        console.printNL(Colors.WHITE+data);
                         if(fileHandler != null){
                             fileHandler.publish(new LogRecord(Level.INFO, data));
                         }

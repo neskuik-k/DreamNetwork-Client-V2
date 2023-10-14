@@ -340,7 +340,7 @@ public class Console {
     public void printNL(Object s){
         if(Console.actualConsole.equals(name)){
             //  stashLine();
-           getConsoleReader().getSReader().printAbove(s.toString());
+            getConsoleReader().getSReader().printAbove(s.toString());
             // defaultPrint.print(s);
 
             //  ConsoleReader.sReader.setPrompt(writing);
