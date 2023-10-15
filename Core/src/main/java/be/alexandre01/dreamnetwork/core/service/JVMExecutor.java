@@ -183,7 +183,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            System.out.println(j);
             startServer(jvmConfig, c);
         }
         return c;
@@ -191,7 +190,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public ExecutorCallbacks startServers(int i, String profile) {
-        return null;
+        ExecutorCallbacks c = new ExecutorCallbacks();
+        for (int j = 0; j < i; j++) {
+            startServer(profile, c);
+        }
+        return c;
     }
 
     @Synchronized
@@ -360,7 +363,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         int i = 0;
         while (true) {
             Console.fine(port);
-
             if (reserved) {
                 if (portsReserved.containsKey(port)) {
                     boolean isAccessible = portsReserved.get(port).equals(this);
