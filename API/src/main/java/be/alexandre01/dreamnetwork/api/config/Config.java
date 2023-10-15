@@ -91,7 +91,6 @@ public class Config {
     public static boolean removeDir(String path){
         path = getPath(path);
         try {
-            String finalPath = path;
             long start = System.currentTimeMillis();
             Files.walkFileTree(Paths.get(path), new SimpleFileVisitor<Path>() {
                 @Override
@@ -108,7 +107,7 @@ public class Config {
                     return FileVisitResult.CONTINUE;
                 }
             });
-            Console.debugPrint("Deleting the directory... "+ finalPath);
+            Console.debugPrint("Deleting the directory... "+ path);
             long end = System.currentTimeMillis();
             // calculate how long it took to delete the directory
             long elapsedTime = end - start;

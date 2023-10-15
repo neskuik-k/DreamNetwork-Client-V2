@@ -225,7 +225,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
-
+        System.out.println("Channel unregistered");
         fine("UNREGISTERED");
 
         //LOG
@@ -246,10 +246,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 if (clientByConnection.get(ctx) instanceof ExternalClient) {
                     name = "DEVTOOLS";
                 }
-
                 printLang("connection.core.handler.processStopped", name);
-
-
                 //create an event for external stop event
                // core.getEventsFactory().callEvent(new CoreServiceStopEvent(core.getDnCoreAPI(), jvmService));
             }

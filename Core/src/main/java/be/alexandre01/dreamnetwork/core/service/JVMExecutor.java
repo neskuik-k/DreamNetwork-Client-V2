@@ -73,7 +73,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public HashMap<Integer, IService> jvmServices = new HashMap<>();
     @JsonIgnore public BundleData bundleData;
     @JsonIgnore private IdSet idSet = new IdSet();
-    @JsonIgnore private boolean isWorking = false;
 
     @JsonIgnore private ArrayList<String> charsIds = new ArrayList<>();
 
@@ -161,18 +160,16 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
     }
 
-    @Override @Synchronized
+    @Override
     public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks c) {
         Console.fine("Checking queing start information");
         boolean b = queue.isEmpty();
         Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
         queue.add(tuple);
-
-        if (!b && isWorking) {
-            Console.fine("Queue is not empty");
+        if (!b) {
+            System.out.println("Queue is not empty");
             return c;
         }
-
         startJVM(tuple);
         return c;
     }
@@ -186,6 +183,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
+            System.out.println(j);
             startServer(jvmConfig, c);
         }
         return c;
@@ -198,12 +196,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Synchronized
     private void startJVM(Tuple<IConfig, ExecutorCallbacks> tuple) {
-        isWorking = true;
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
         Console.printLang("service.executor.start", Level.FINE, jvmConfig.getName());
         if (!start(tuple)) {
-            isWorking = false;
             Console.printLang("service.executor.couldNotStart", Level.WARNING);
             queue.remove(tuple);
             if (callbacks != null) {
@@ -216,9 +212,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                 startJVM(renew);
             }
-            return;
         }
-        isWorking = false;
     }
 
 
@@ -320,7 +314,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                     if (callbacks.onFail != null)
                                         callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                                 }
-
                                 if (!queue.isEmpty()) {
                                     Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                                     startJVM(renew);
@@ -363,29 +356,43 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
         int max = Main.getGlobalSettings().getPortRangeInt()[1];
         int min = Main.getGlobalSettings().getPortRangeInt()[0];
+        int trying = 0;
+        int i = 0;
         while (true) {
             Console.fine(port);
-            int trying = 0;
+
             if (reserved) {
                 if (portsReserved.containsKey(port)) {
                     boolean isAccessible = portsReserved.get(port).equals(this);
                     if (!isAccessible || !PortUtils.isAvailable(port, false)) {
+                        Console.fine("Is accessible: " + isAccessible + " Is available: " + PortUtils.isAvailable(port, true));
                         port = portCheckIncrement(port,min,max,trying);
+                        i++;
                         continue;
                     }
                 }
 
                 if (portsBlackList.contains(port)) {
                     port = port + 1;
+                    i++;
                     continue;
                 }
+                break;
             }
             if (!PortUtils.isAvailable(port, false)) {
+                Console.fine("Port not available for " + port);
                 port = portCheckIncrement(port,min,max,trying);
+                i++;
                 continue;
             }
             break;
         }
+        if(i == 0){
+            Console.print("Port " + port + " is available");
+        }else {
+            Console.print("Port " + port + " is available (after " + i + " tries)");
+        }
+
         return port;
     }
 
@@ -700,6 +707,23 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
+        if(jvmService.isConnected() && jvmService.getProcess().isAlive()){
+            System.out.println("Process is alive");
+            jvmService.getProcess().destroy();
+        }
+        if(jvmService.getScreen() != null){
+            Console.fine("Stop screen");
+            jvmService.getScreen().destroy(true);
+        }
+
+
+
+        if(jvmService.getClient() != null){
+            jvmService.getClient().getChannelHandlerContext().close();
+        }else {
+            jvmService.getProcess().destroy();
+        }
+
         //   System.out.println("removing service");
         int i = jvmService.getId();
         String dirName = getName() + "-" + jvmService.getId();
@@ -708,7 +732,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
         String finalName = dirName;
         try {
-            Console.debugPrint(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName));
+            //Console.debugPrint(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName));
             if (Config.contains(Config.getPath(System.getProperty("user.dir") + "/runtimes/" + getPathName() + "/" + getName() + "/" + finalName))) {
                 new Thread() {
                     @Override
@@ -721,13 +745,11 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                                 e.printStackTrace();
                             }
                         }
-                        if (jvmService.getUniqueCharactersID().isPresent())
-                            charsIds.remove(jvmService.getUniqueCharactersID().get());
+                        jvmService.getUniqueCharactersID().ifPresent(string -> charsIds.remove(string));
                     }
                 }.start();
             } else {
-                if (jvmService.getUniqueCharactersID().isPresent())
-                    charsIds.remove(jvmService.getUniqueCharactersID().get());
+                jvmService.getUniqueCharactersID().ifPresent(string -> charsIds.remove(string));
             }
             if (jvmService.getType() == Mods.STATIC) {
                 staticService = null;
@@ -759,7 +781,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     future.complete(true);
                 }
             }
-
             IJVMExecutor.super.removeService(jvmService);
         } catch (Exception e) {
             Console.bug(e);

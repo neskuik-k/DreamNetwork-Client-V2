@@ -1,21 +1,24 @@
-# This is the global settings of the server | <3
+# This is the global settings of the server | :D
 SIG_IGN_Handler: true
+authorizedIPS:
+- 127.0.0.1
 checkDefaultJVMVersion: false
 checkJVMVersionOnServiceStart: false
 connectionMode: netty
 copyIOMethod: files
 emojiOnCommand: false
+externalScreenViewing: true
 findAllocatedPorts: true
 historySize: 3250
-language: en_EN
+language: fr_FR
 loggingService: true
 logsByExecutor: 15
 nettyBossThreads: 1
 nettyWorkerThreads: 4
 port: 14520
-portRange: 25565 -> 51130
+portRange: 40000 -> 51130
 rainbowText: false
-randomizePort: false
+randomizePort: true
 screenNameInConsoleChange: true
 terminalMode: ssh
 threadsPoolIO: 8

@@ -89,8 +89,14 @@ public interface IJVMExecutor {
     public ExecutorCallbacks startServers(int i, String profile);
     public default void removeService(IService service){
         service.getExecutorCallbacks().ifPresent(executorCallbacks -> {
-            if (executorCallbacks.onStop != null) {
-                executorCallbacks.onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(service));
+            if(!service.isConnected()){
+                if(executorCallbacks.onFail != null){
+                    executorCallbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
+                }
+            }else {
+                if (executorCallbacks.onStop != null) {
+                    executorCallbacks.onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(service));
+                }
             }
         });
         DNCoreAPI api = DNCoreAPI.getInstance();

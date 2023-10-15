@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class TaskOperation {
 
-    public Supplier<Void> createOperation(TaskData taskData) {
+    public Runnable createOperation(TaskData taskData) {
         if (taskData.getJvmExecutor() == null) {
             Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(taskData.getService());
             if (!jvmExecutor.isPresent()) {
@@ -40,43 +40,47 @@ public class TaskOperation {
                 }
             }
         }
-        int toStart = 0;
-        int count = taskData.getCount();
-        int actualCount = taskData.getActualCount();
-        TaskData.TaskType taskType = taskData.getTaskType();
-        if (!taskType.equals(TaskData.TaskType.MANUAL)) {
-            if ((count - actualCount) > 0)
+
+        return () -> {
+            int toStart = 0;
+            int count = taskData.getCount();
+            int actualCount = taskData.getActualCount();
+            TaskData.TaskType taskType = taskData.getTaskType();
+            if (!taskType.equals(TaskData.TaskType.MANUAL)) {
+                if ((count - actualCount) <= 0)
+                    return;
                 toStart = count - actualCount;
-        } else {
-            toStart = count;
-        }
-        if(toStart == 0){
-            return null;
-        }
-
-        if(taskData.getProfile() != null){
-            System.out.println("Starting " + (count - actualCount) + " " + taskData.getService() + " with profile " + taskData.getProfile());
-        }else {
-            System.out.println("Starting " + (count - actualCount) + " " + taskData.getService());
-        }
-
-        actualCount += toStart;
-
-        taskData.setActualCount(actualCount+toStart);
-
-
-        jvmExecutor.startServers(toStart, taskData.getIConfig()).whenFail(new ExecutorCallbacks.ICallbackFail() {
-            @Override
-            public void whenFail() {
-                taskData.decreaseCount();
+            } else {
+                toStart = count;
             }
-        }).whenStop(new ExecutorCallbacks.ICallbackStop() {
-            @Override
-            public void whenStop(IService service) {
-                taskData.decreaseCount();
+
+            if(taskData.getProfile() != null){
+                System.out.println("Starting " + (count - actualCount) + " " + taskData.getService() + " with profile " + taskData.getProfile());
+            }else {
+                System.out.println("Starting " + (count - actualCount) + " " + taskData.getService());
             }
-        });
-        return null;
+
+            //actualCount += toStart;
+            //toStart = count - actualCount;
+            taskData.setActualCount(actualCount+toStart);
+
+           // System.out.println("ActualCount = "+ taskData.getActualCount());
+
+
+            jvmExecutor.startServers(toStart, taskData.getIConfig()).whenFail(new ExecutorCallbacks.ICallbackFail() {
+                @Override
+                public void whenFail() {
+                   // System.out.println("Fail Decrease count to "+(taskData.getActualCount()-1));
+                    taskData.decreaseCount();
+                }
+            }).whenStop(new ExecutorCallbacks.ICallbackStop() {
+                @Override
+                public void whenStop(IService service) {
+                    //System.out.println("Stop Decrease count to "+(taskData.getActualCount()-1));
+                    taskData.decreaseCount();
+                }
+            });
+        };
     }
 
 }

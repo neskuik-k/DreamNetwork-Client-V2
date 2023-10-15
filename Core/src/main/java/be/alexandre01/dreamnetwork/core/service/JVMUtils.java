@@ -24,7 +24,7 @@ public class JVMUtils implements IJVMUtils {
     }
 
     @Override
-    public Supplier<Void> createOperation(TaskData taskData) {
+    public Runnable createOperation(TaskData taskData) {
         return Main.getTaskOperation().createOperation(taskData);
     }
 }

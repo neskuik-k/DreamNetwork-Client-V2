@@ -336,7 +336,7 @@ core.utils.process.isRunning.running=Le processus %var% est en cours d'éxecutio
 core.utils.process.isRunning.notRunning=Le processus %var% n'est pas en cours d'éxecution
 core.utils.process.isRunning.systemCommandError=Une exception est survenue en utilisant la commande système [%var%]
 
-core.utils.sockets.checkingPort=Vérification de la disponnibilité du port %var%...
+core.utils.sockets.checkingPort=Vérification de la disponibilité du port %var%...
 core.utils.sockets.invalidStartPort=Le port de lancement %var% est invalide
 
 core.utils.timers.hour=%var% heure(s)

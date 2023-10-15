@@ -72,8 +72,6 @@ public class Core {
 
     @Getter
     private ClientManager clientManager;
-    @Getter @Setter
-    private CoreHandler coreHandler;
     @Getter
     private JavaIndex javaIndex;
     @Getter

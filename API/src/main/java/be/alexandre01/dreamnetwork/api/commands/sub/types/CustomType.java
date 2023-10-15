@@ -29,7 +29,7 @@ public class CustomType extends NodeType {
     CustomTypeInterface customType;
 
     @Getter
-    private NodeContainer linkNodeContainers;
+    private NodeContainer linkNodeContainer;
 
     @Getter @Setter
     private Completers.TreeCompleter.Node nodeAbove;
@@ -38,8 +38,8 @@ public class CustomType extends NodeType {
     private ArrayList<Object> globalObjects = new ArrayList<>();
 
 
-    public void setLinkNodeContainers(NodeContainer linkNodeContainers){
-        this.linkNodeContainers = linkNodeContainers;
+    public void setLinkNodeContainers(NodeContainer linkNodeContainer){
+        this.linkNodeContainer = linkNodeContainer;
     }
 
     public CustomType(Object... objects){
@@ -53,8 +53,9 @@ public class CustomType extends NodeType {
         for(Class<? extends CustomType> customType : customTypeClass){
             for (Object o : customTypes.get(customType)) {
                 CustomType c = (CustomType) o;
-                if(c.getLinkNodeContainers() != null){
-                    nodeBuilders.addAll(c.getLinkNodeContainers().getLinksNodeBuilder());
+                if(c.getLinkNodeContainer() != null){
+                    nodeBuilders.addAll(c.getLinkNodeContainer().getLinksNodeBuilder());
+                    //c.getLinkNodeContainer().getLinksNodeBuilder().clear();
                 }
 
                 //  customType.reload();
@@ -77,6 +78,8 @@ public class CustomType extends NodeType {
                         i++;
                     }
                 });
+
+
                 Console.getCurrent().reloadCompletors();
 
             }catch (Exception e){
@@ -92,15 +95,8 @@ public class CustomType extends NodeType {
     }
 
     public Object[] reload(){
-
         Object[] objects = customType.find();
-
-        //System.out.println("Reload " + getClass().getSimpleName() + " " + Arrays.toString(objects));
-       // System.out.println(linkNodeContainer + "");
-       // System.out.println(linkNodeContainer.getIndex());
-        //System.out.println(linkNodeContainer.getList());
-
-        linkNodeContainers.getList().addAll(Arrays.asList(objects));
+        linkNodeContainer.getList().addAll(Arrays.asList(objects));
         return objects;
     }
 

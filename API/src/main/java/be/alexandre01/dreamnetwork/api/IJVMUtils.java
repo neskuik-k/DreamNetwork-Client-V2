@@ -15,5 +15,5 @@ public interface IJVMUtils {
     public IStartupConfig createStartupConfig(String pathname,String name, boolean b);
     public IConfig createConfig();
 
-    public Supplier<Void> createOperation(TaskData taskData);
+    public Runnable createOperation(TaskData taskData);
 }

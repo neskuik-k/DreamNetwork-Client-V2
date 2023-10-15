@@ -115,10 +115,7 @@ public class ImplAPI extends DNCoreAPI {
         return UtilsAPI.get().getConfigManager();
     }
 
-    @Override
-    public ICoreHandler getCoreHandler() {
-        return Core.getInstance().getCoreHandler();
-    }
+
 
     @Override
     public ICallbackManager getCallbackManager() {

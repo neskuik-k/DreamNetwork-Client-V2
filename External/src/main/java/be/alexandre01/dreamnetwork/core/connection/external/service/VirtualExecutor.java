@@ -83,9 +83,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     private void sendStartCallBack(ExternalClient client, ExecutorCallbacks callbacks, VirtualService virtualService, Object o){
         System.out.println("Sending start callback to "+ getTrueFullName());
         DNCallback.multiple(client.getRequestManager().getRequest(RequestType.CORE_START_SERVER, getTrueFullName(),o), new TaskHandler() {
-
             Integer id;
-
             @Override
             public void onCallback() {
                 if (hasType(TaskType.CUSTOM)) {

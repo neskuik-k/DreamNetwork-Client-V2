@@ -65,47 +65,7 @@ public class JVMService implements IService {
 
     @Override @Synchronized
     public CompletableFuture<Boolean> stop(){
-        if(screen != null){
-            Console.fine("Stop screen");
-            screen.destroy(true);
-        }
-
-        if(getJvmExecutor().getType() == JVMExecutor.Mods.DYNAMIC){
-            Config.removeDir("/runtimes/"+ getJvmExecutor().getBundleData().getName() + "/"+ getJvmExecutor().getName()+"/"+getJvmExecutor().getName()+"-"+getId());
-        }
-
-        if(executorCallbacks != null){
-            if(!isConnected()){
-                if(executorCallbacks.onFail != null){
-                    executorCallbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
-                }
-            }
-            if(executorCallbacks.onStop != null){
-                executorCallbacks.onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(this));
-            }
-        }
-
-
-        /*if(client != null && client.getJvmService() != null){
-            stopFuture = new CompletableFuture<>();
-           DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER), new TaskHandler() {
-                        @Override
-                        public void onFailed() {
-                            stopFuture.complete(false);
-                        }
-            });
-
-
-            stopFuture.complete(true);
-
-
-                    //close with delay to let the server send the response
-                    //set delay of 1 seconds without lock the thread
-            return stopFuture;*/
-       // }else{
-        if(client == null && process.isAlive()){
-            process.destroy();
-        }
+        removeService();
         return CompletableFuture.completedFuture(true);
     }
 

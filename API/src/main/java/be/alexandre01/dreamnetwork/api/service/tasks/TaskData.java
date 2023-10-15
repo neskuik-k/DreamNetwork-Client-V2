@@ -17,7 +17,7 @@ import java.util.function.Supplier;
 public class TaskData {
     public String name;
     public String service;
-    @Ignore private transient Supplier<Void> operation;
+    @Ignore private transient Runnable operation;
     public int count;
     public TaskData.TaskType taskType;
     public String profile = null;
@@ -34,7 +34,7 @@ public class TaskData {
 
     public void operate(){
         if(operation != null){
-            operation.get();
+            operation.run();
         }
     }
 

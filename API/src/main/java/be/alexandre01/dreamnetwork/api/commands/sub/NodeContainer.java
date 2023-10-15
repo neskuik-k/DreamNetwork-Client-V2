@@ -12,19 +12,16 @@ import org.jline.builtins.Completers;
 import org.jline.reader.Candidate;
 
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Getter @Setter
 public class NodeContainer {
 
-    private final List<NodeBuilder> linksNodeBuilder = new ArrayList<>();
+    private final Set<NodeBuilder> linksNodeBuilder = new LinkedHashSet<>();
     private Object[] objects;
     @Getter private final HashMap<Object, Tuple<Integer,Integer>> index = new HashMap<>();
     @Getter private List<Object> list;
     @Getter private HashMap<String,Object> strings = new HashMap<>();
-    private List<Candidate> candidates;
     //private List<String> stringList = new ArrayList<>();
     //private HashMap<String,NodeContainer> nodeContainerHashMap = new HashMap<>();
 

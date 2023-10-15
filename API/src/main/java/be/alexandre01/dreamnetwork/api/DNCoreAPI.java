@@ -57,7 +57,6 @@ public abstract class DNCoreAPI {
 
     public abstract IConfigManager getConfigManager();
 
-    public abstract ICoreHandler getCoreHandler();
 
     public abstract ICallbackManager getCallbackManager();
 

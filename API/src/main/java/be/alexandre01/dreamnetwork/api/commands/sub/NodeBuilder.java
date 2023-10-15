@@ -45,7 +45,7 @@ public class NodeBuilder {
     public NodeBuilder(NodeContainer nodeContainer, Console console){
         this.console = console;
         this.nodeContainer = nodeContainer;
-        node = genNode(nodeContainer,true);
+        node = genNode(nodeContainer,true,false);
 
 
         /*for (Map.Entry<CustomTreeCompleter.Node, Object[]> entry : nodes.entrySet()) {
@@ -63,7 +63,7 @@ public class NodeBuilder {
     private void addNode(CustomTreeCompleter.Node node, Object[] objects){
         nodes.put(node,objects);
     }
-    public CustomTreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead){
+    public CustomTreeCompleter.Node genNode(NodeContainer nodeContainer,boolean isHead,boolean isReloading){
         final Object objects[] = nodeContainer.getObjects();
         final ArrayList<Object> list = new ArrayList<>();
         nodeContainer.setList(list);
@@ -71,10 +71,10 @@ public class NodeBuilder {
             Object o = objects[i];
 
             if(o instanceof NodeContainer){
-                ((NodeContainer) o).getLinksNodeBuilder().add(this);
-                CustomTreeCompleter.Node node = genNode((NodeContainer) o,false);
+                if(!isReloading)
+                    ((NodeContainer) o).getLinksNodeBuilder().add(this);
+                CustomTreeCompleter.Node node = genNode((NodeContainer) o,false,isReloading);
                 list.add(node);
-                ((NodeContainer) o).setCandidates(node.getCandidates());
                 continue;
             }
 
@@ -108,7 +108,7 @@ public class NodeBuilder {
         if(isHead){
             globalList = list;
         }
-      //Console.print("Build Suggestion -> " + list);
+      //Console.print("Build Suggestion -> " + list);£
 
        CustomTreeCompleter.Node n = (CustomTreeCompleter.Node) CustomTreeCompleter.node(list.toArray());
         for (int i = 0; i < objects.length; i++) {
@@ -141,7 +141,7 @@ public class NodeBuilder {
             }
 
            // System.out.println(num);
-            console.completorNodes.set(num, node = genNode(nodeContainer,true));
+            console.completorNodes.set(num, node = genNode(nodeContainer,true,true));
 
 
             //Console.getConsoleReader().setNodes(console.completorNodes);

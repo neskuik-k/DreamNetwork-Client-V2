@@ -40,7 +40,8 @@ public class CustomTreeCompleter extends Completers.TreeCompleter {
                 nodes.add((Completers.TreeCompleter.Node)obj);
             } else {
                 if (!(obj instanceof org.jline.reader.Completer)) {
-                    System.out.println("obj: "+obj + ":"+obj.getClass().getSimpleName()+" is not a completer");
+                    if(obj != null)
+                        System.out.println("obj: "+obj + ":"+obj.getClass().getSimpleName()+" is not a completer");
                     throw new IllegalArgumentException();
                 }
 
