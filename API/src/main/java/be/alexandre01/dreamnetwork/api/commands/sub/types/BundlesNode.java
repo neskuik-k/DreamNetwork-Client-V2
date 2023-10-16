@@ -5,7 +5,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang3.ArrayUtils;
 import org.jline.builtins.Completers;
 
 import java.util.Map;

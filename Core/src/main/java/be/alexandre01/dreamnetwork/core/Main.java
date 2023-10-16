@@ -34,7 +34,6 @@ import be.alexandre01.dreamnetwork.api.utils.process.ProcessUtils;
 import be.alexandre01.dreamnetwork.core.service.tasks.TaskOperation;
 import com.github.tomaslanger.chalk.Chalk;
 
-import be.alexandre01.dreamnetwork.core.rest.DNAPI;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.core.config.SecretFile;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
@@ -188,7 +187,7 @@ public class Main {
             }
         }
 
-        DNAPI dnapi = new DNAPI();
+        // DNAPI dnapi = new DNAPI();
         PrintStream outputStream = System.out;
 
 

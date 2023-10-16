@@ -169,17 +169,18 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                     fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-SERVICE-CLIENT -> " + client.getName()+"/"+ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
                 }
                 //if message hasReceiver resend directly to the client
-                if(message.hasReceiver()){
+                if(message.hasReceiver() && client instanceof AServiceClient){
                     if(!message.getReceiver().equals("core")){
                         AServiceClient receiver = core.getClientManager().getClient(message.getReceiver());
+                        AServiceClient provider = (AServiceClient) client;
                         if(receiver == null){
                             Console.print("Receiver "+ message.getReceiver()+" is unknown");
                             return;
                         }
-                        if(receiver.getJvmService() != null){
-                            message.setProvider(receiver.getJvmService().getFullName());
+                        if(provider.getJvmService() != null){
+                            message.setProvider(provider.getJvmService().getFullName());
+                            System.out.println("Provider : "+message.getProvider());
                         }
-
                         receiver.writeAndFlush(message);
                         return;
                     }

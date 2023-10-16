@@ -55,6 +55,8 @@ public abstract class TaskHandler {
 
     public void onTimeout(){}
 
+    public void onCustom(String customType) {}
+
 
     public enum TaskType{
         IGNORED,

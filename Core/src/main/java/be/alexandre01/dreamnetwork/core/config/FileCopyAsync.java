@@ -130,7 +130,7 @@ public class FileCopyAsync implements IFileCopyAsync {
             queue.remove(0);
             execute(operation.getSource(),operation.getDestination(),operation.getCallback(),operation.isDeleteTarget(),true,operation.getExceptFiles());
         }else{
-            Console.fine("queue is empty, stopping");
+            Console.fine("queue is empty, stopping copy");
             running = false;
         }
     }

@@ -36,5 +36,4 @@ public class ConfigData implements Serializable {
     protected Boolean screenEnabled = null;
     @Getter
     protected List<String> deployers = new ArrayList<>();
-
 }

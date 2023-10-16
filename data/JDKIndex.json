@@ -1,3 +1,5 @@
 {
-  "default": "java"
+  "default": "C:/Users/altat/.jdks/openjdk-18.0.2.1/bin/java.exe",
+  "8": "java8",
+  "18": "C:/Users/altat/.jdks/openjdk-18.0.2.1/bin/java.exe"
 }

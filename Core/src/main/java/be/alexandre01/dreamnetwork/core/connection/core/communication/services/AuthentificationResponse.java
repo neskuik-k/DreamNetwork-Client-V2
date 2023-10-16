@@ -28,7 +28,7 @@ import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandlerContext;
-import org.apache.commons.lang.RandomStringUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 
 import java.util.ArrayList;
 import java.util.Base64;

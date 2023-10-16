@@ -57,8 +57,8 @@
     },
     {
       "path": "ch/qos/logback/logback-classic",
-      "version": "1.2.6",
-      "url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.2.6/logback-classic-1.2.6.jar"
+      "version": "1.4.11",
+      "url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.4.11/logback-classic-1.4.11.jar"
     },
     {
       "path": "org/jline/jline",
@@ -81,9 +81,9 @@
       "url": "  https://repo1.maven.org/maven2/org/asynchttpclient/async-http-client/2.12.3/async-http-client-2.12.3.jar"
     },
     {
-      "path": "org/apache/commons/commons-lang",
-      "version": "2.6",
-      "url": "https://repo1.maven.org/maven2/commons-lang/commons-lang/2.6/commons-lang-2.6.jar"
+      "path": "org/apache/commons/commons-lang3",
+      "version": "3.13.0",
+      "url": "https://repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.13.0/commons-lang3-3.13.0.jar"
     },
     {
       "path": "org/apache/commons/commons-io",

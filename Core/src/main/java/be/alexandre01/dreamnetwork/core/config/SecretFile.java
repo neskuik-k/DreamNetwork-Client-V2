@@ -5,11 +5,12 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.UtilsAPI;
 import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
-import kong.unirest.json.JSONObject;
 import lombok.Data;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
 import org.jline.reader.UserInterruptException;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 import java.io.*;
@@ -23,7 +24,11 @@ public class SecretFile {
     private Console console;
 
     public static void main(String[] args){
-        SecretFile.createSecretJson("048b1fdd-5cf8-45c6-8cc8-5e4cf35a973f","'[957z9!YmYqzng;T;w):L9we/Qw5k<~$nUZDS4j}!/d%q{8`:!pY)u:fGYu!E-;4wmww&7R(v-%[d2Cs<q#y*C\\j9)n;9Wt(C9H$S*$zz*_~$=Q(KYLMjj#Eb@9nXD\".~Sq/VQ!fr7YT7{)D{v[)=EpnJT_Pz\\Y;Re(ch@Sdyucn\\9sr&V~x]E?8&avM!$)QyL_~\"H3<&VKdP72Qm!7#r`}.;D\\xZ6[d\\D3Byg]Dcb'c63:CfAvZ]?kgg(j-5Bz");
+        try {
+            SecretFile.createSecretJson("048b1fdd-5cf8-45c6-8cc8-5e4cf35a973f","'[957z9!YmYqzng;T;w):L9we/Qw5k<~$nUZDS4j}!/d%q{8`:!pY)u:fGYu!E-;4wmww&7R(v-%[d2Cs<q#y*C\\j9)n;9Wt(C9H$S*$zz*_~$=Q(KYLMjj#Eb@9nXD\".~Sq/VQ!fr7YT7{)D{v[)=EpnJT_Pz\\Y;Re(ch@Sdyucn\\9sr&V~x]E?8&avM!$)QyL_~\"H3<&VKdP72Qm!7#r`}.;D\\xZ6[d\\D3Byg]Dcb'c63:CfAvZ]?kgg(j-5Bz");
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
     }
 
 
@@ -113,7 +118,7 @@ public class SecretFile {
     }
 
 
-    public static void createSecretJson(String uuid, String secret){
+    public static void createSecretJson(String uuid, String secret) throws JSONException {
         JSONObject json = new JSONObject();
         json.put("uuid",uuid).put("secret",secret);
 
