@@ -54,6 +54,7 @@ public class ConsoleReader implements IConsoleReader {
                     .nativeSignals(true)
                     .signalHandler(Terminal.SignalHandler.SIG_IGN)
                     .jansi(true)
+                    //.jna(true)
                     .dumb(true)
                     .build();
 
