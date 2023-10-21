@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 public class Message extends LinkedHashMap<String, Object> {
     ObjectMapper mapper;
     final char prefix = '$';
-
+    
     public Message(Map<String, Object> map) {
         this(map, createMapper());
     }
