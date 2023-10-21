@@ -179,7 +179,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                         }
                         if(provider.getJvmService() != null){
                             message.setProvider(provider.getJvmService().getFullName());
-                            System.out.println("Provider : "+message.getProvider());
+                           // System.out.println("Provider : "+message.getProvider());
                         }
                         receiver.writeAndFlush(message);
                         return;
