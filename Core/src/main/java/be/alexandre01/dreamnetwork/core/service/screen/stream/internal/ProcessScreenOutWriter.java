@@ -91,8 +91,6 @@ public class ProcessScreenOutWriter implements IScreenOutWriter {
     @Override
     public void writeOnConsole(String data) throws IOException {
         //Writer writer = new OutputStreamWriter(screen.getService().getProcess().getOutputStream());
-        Console.debugPrint(screen.getService().getProcess().getOutputStream());
-
         OutputStream writer = screen.getService().getProcess().getOutputStream();
         writer.write((data + "\n").getBytes());
         writer.flush();
