@@ -238,11 +238,6 @@ public class BaseResponse extends CoreResponse {
                 System.out.println("Channel found : " + dnChannel.getName());
                 ChannelPacket receivedPacket = new ChannelPacket(message);
                 dnChannel.received(receivedPacket);
-                if (!dnChannel.getDnChannelInterceptors().isEmpty()) {
-                    for (AChannelPacket.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()) {
-                        dnChannelInterceptor.received(receivedPacket);
-                    }
-                }
             }
         }
 
@@ -276,7 +271,7 @@ public class BaseResponse extends CoreResponse {
                     channelPacket.createResponse(message, client, "cAsk");
                 }
             }
-            if (message.getHeader().equals("channel") && message.getChannel() != null) {
+            if (message.getChannel() != null && !message.getHeader().equals("cAsk") && !message.getHeader().equals("cData")) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
                     final Collection<AServiceClient> clients = this.core.getChannelManager().getClientsRegistered().get(message.getChannel());
                     if (!clients.isEmpty()) {
