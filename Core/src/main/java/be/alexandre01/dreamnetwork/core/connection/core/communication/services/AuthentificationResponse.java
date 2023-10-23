@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.connection.core.communication.services;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlePathsNode;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
@@ -274,9 +275,12 @@ public class AuthentificationResponse extends CoreResponse {
                                     if (service.getClient() != null) {
                                         String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
                                         //System.out.println(service.);
+
+                                        // add servers (if not proxy)
                                         if(!jvmExecutor.isProxy()){
                                             service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
                                         }
+
                                         servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                                     }
                                 }
@@ -302,6 +306,8 @@ public class AuthentificationResponse extends CoreResponse {
                             }*/
 
                         newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, servers.toArray(new String[0]));
+                        // adding channels to the new service
+                        DNCoreAPI.getInstance().getChannelManager().sendAllChannels(newClient);
                        coreHandler.getAllowedCTX().add(ctx);
 
                     }

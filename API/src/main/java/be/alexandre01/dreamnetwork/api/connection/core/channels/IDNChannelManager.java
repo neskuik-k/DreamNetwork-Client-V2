@@ -1,7 +1,11 @@
 package be.alexandre01.dreamnetwork.api.connection.core.channels;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
+
+import java.util.List;
 
 public interface IDNChannelManager {
     AChannelPacket createChannelPacket(Message message);
@@ -28,6 +32,8 @@ public interface IDNChannelManager {
     java.util.ArrayList<AServiceClient> getDontResendsData();
 
     java.util.ArrayList<String> getChannelRegisteredInCore();
+    public void sendChannels(UniversalConnection connection, List<String> channels);
+    public void sendAllChannels(UniversalConnection connection);
 
     boolean equals(Object o);
 
