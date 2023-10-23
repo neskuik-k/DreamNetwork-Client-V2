@@ -234,6 +234,7 @@ public class BaseResponse extends CoreResponse {
 
         IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
         if (dnChannel != null) {
+            System.out.println("Channel found : " + dnChannel.getName());
             ChannelPacket receivedPacket = new ChannelPacket(message);
             dnChannel.received(receivedPacket);
             if (!dnChannel.getDnChannelInterceptors().isEmpty()) {
