@@ -258,7 +258,7 @@ public class BaseResponse extends CoreResponse {
                     } else {
                         channel.storeData(message.getString("key"), message.get("value"), message.getBoolean("update"), client);
                     }
-
+                    return;
                 }
             }
             if (message.getHeader().equals("cAsk") && message.getChannel() != null) {
@@ -270,8 +270,9 @@ public class BaseResponse extends CoreResponse {
                     ChannelPacket channelPacket = new ChannelPacket(message);
                     channelPacket.createResponse(message, client, "cAsk");
                 }
+                return;
             }
-            if (message.getChannel() != null && !message.getHeader().equals("cAsk") && !message.getHeader().equals("cData")) {
+            if (message.getChannel() != null) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
                     final Collection<AServiceClient> clients = this.core.getChannelManager().getClientsRegistered().get(message.getChannel());
                     if (!clients.isEmpty()) {
