@@ -72,7 +72,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
             for(Object o : args){
                 if(o instanceof Player){
                     Player p = (Player) o;
-                    Core.getInstance().formatter.prStr.println(p.getId());
+                  //  Core.getInstance().formatter.prStr.println(p.getId());
                     s.add((p.getId()));
                 }
             }

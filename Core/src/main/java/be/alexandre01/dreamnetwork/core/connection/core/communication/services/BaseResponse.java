@@ -231,18 +231,21 @@ public class BaseResponse extends CoreResponse {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
-
-        IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
-        if (dnChannel != null) {
-            System.out.println("Channel found : " + dnChannel.getName());
-            ChannelPacket receivedPacket = new ChannelPacket(message);
-            dnChannel.received(receivedPacket);
-            if (!dnChannel.getDnChannelInterceptors().isEmpty()) {
-                for (AChannelPacket.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()) {
-                    dnChannelInterceptor.received(receivedPacket);
+        if(message.hasChannel()){
+            System.out.println("Channel on message : " + message.getChannel());
+            IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
+            if (dnChannel != null) {
+                System.out.println("Channel found : " + dnChannel.getName());
+                ChannelPacket receivedPacket = new ChannelPacket(message);
+                dnChannel.received(receivedPacket);
+                if (!dnChannel.getDnChannelInterceptors().isEmpty()) {
+                    for (AChannelPacket.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()) {
+                        dnChannelInterceptor.received(receivedPacket);
+                    }
                 }
             }
         }
+
         if (message.getHeader() != null) {
             if (message.getHeader().equals("cData") && message.getChannel() != null) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
@@ -250,8 +253,8 @@ public class BaseResponse extends CoreResponse {
                     if (message.contains("init")) {
                         if (message.getBoolean("init")) {
                             String key = message.getString("key");
-                            if (!dnChannel.getObjects().containsKey(key)) {
-                                dnChannel.getObjects().put(key, message.get("value"));
+                            if (!channel.getObjects().containsKey(key)) {
+                                channel.getObjects().put(key, message.get("value"));
                             }
                         }
                     }
