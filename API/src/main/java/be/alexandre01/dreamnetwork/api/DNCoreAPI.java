@@ -17,7 +17,6 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 
-import jdk.nashorn.internal.runtime.regexp.joni.encoding.ObjPtr;
 import lombok.Getter;
 
 import java.util.ArrayList;

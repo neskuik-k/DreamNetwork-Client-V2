@@ -39,9 +39,6 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
     @Setter
     boolean enabled = true;
 
-    @Getter
-    HashMap<String, NodeContainer> nodeBuilders = new HashMap<>();
-
 
 
 
@@ -69,9 +66,6 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
             return asb.toAttributedString();
         }
 
-        if(nodeBuilders.containsKey(args[0].toLowerCase())){
-            NodeContainer parent = nodeBuilders.get(args[0].toLowerCase());
-        }
 
 
             if (Main.getCommandReader().getCommands().getExecutorsList().containsKey(args[0].toLowerCase())) {
@@ -127,8 +121,6 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
                                 used.remove(0);
                                 colors.remove(c);
                             }
-
-
                             asb.appendAnsi(c);
                             colorUsed.add(c);
                             asb.append(" ");

@@ -41,6 +41,7 @@ public class BaseResponse extends CoreResponse {
     private final Core core;
     HashMap<String, CoreResponse.RequestInterceptor> tasks = AbstractRequestManager.getTasks();
     RequestInterceptor start = StartTask.get();
+
     public BaseResponse() {
         this.core = Core.getInstance();
 
@@ -51,22 +52,29 @@ public class BaseResponse extends CoreResponse {
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
             Optional<IJVMExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
-            if (!stopExecutor.isPresent()) {
-                return;
-            }
-            Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
-            CompletableFuture<Boolean> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
+            if (stopExecutor.isPresent()) {
+            IService service = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1]));
+            if(service != null) {
+                Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
+                CompletableFuture<Boolean> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
 
-            message.getCallback().ifPresent(receiver -> {
-                future.whenComplete((aBoolean, throwable) -> {
-                   if(aBoolean){
-                       receiver.send(TaskHandler.TaskType.ACCEPTED);
-                   }else {
-                       receiver.send(TaskHandler.TaskType.FAILED);
-                   }
+
+                // Check if callback is present and send response.
+                message.getCallback().ifPresent(receiver -> {
+                    future.whenComplete((aBoolean, throwable) -> {
+                        if (aBoolean) {
+                            receiver.send(TaskHandler.TaskType.ACCEPTED);
+                        } else {
+                            receiver.send(TaskHandler.TaskType.FAILED);
+                        }
+                    });
                 });
+                 return;
+                }
+            }
+            message.getCallback().ifPresent(receiver -> {
+                receiver.send(TaskHandler.TaskType.FAILED);
             });
-            //stopExecutor.getService(Integer.valueOf(stopServerSplitted[1])).removeService();
         });
 
         addRequestInterceptor(CORE_RESTART_SERVER, (message, ctx, c) -> {
@@ -113,25 +121,6 @@ public class BaseResponse extends CoreResponse {
         addRequestInterceptor(DEV_TOOLS_SEND_COMMAND, (message, ctx, c) -> {
             String[] serv = message.getString("SERVICE").split("-");
             String cmd = message.getString("CMD");
-            /*
-            if (b) {
-
-                IJVMExecutor j = this.core.getJvmContainer().jvmExecutorsProxy.get(serv[0]);
-                if (j == null)
-                    return;
-                IService jvmService = j.getService(Integer.valueOf(serv[1]));
-                if (jvmService.getClient() != null) {
-                    jvmService.getClient().getRequestManager().sendRequest(BUNGEECORD_EXECUTE_COMMAND, cmd);
-                }
-            } else {
-                IJVMExecutor j = this.core.getJvmContainer().jvmExecutorsServers.get(serv[0]);
-                if (j == null)
-                    return;
-                IService jvmService = j.getService(Integer.valueOf(serv[1]));
-                if (jvmService.getClient() != null) {
-                    jvmService.getClient().getRequestManager().sendRequest(SPIGOT_EXECUTE_COMMAND, cmd);
-                }
-            }*/
         });
 
         addRequestInterceptor(CORE_REGISTER_CHANNEL, (message, ctx, c) -> {
@@ -226,6 +215,13 @@ public class BaseResponse extends CoreResponse {
         });
     }
 
+    /**
+     *
+     * @param message
+     * @param ctx
+     * @param client
+     * @throws Exception
+     */
     @Override
     public void onResponse(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
         //Console.debugPrint(message);

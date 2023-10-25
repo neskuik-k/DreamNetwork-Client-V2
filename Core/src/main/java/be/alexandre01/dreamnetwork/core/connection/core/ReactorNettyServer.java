@@ -53,8 +53,8 @@ public class ReactorNettyServer extends CoreServer{
             }
 
 
-                DisposableServer server =
-                TcpServer.create()
+            DisposableServer server =
+                    TcpServer.create()
                         .port(port)
                         .runOn(loop)
                         .doOnChannelInit((connectionObserver, channel, socketAddress) -> {

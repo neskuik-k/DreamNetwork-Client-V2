@@ -28,6 +28,4 @@ public interface IConsoleHighlighter extends Highlighter {
     void setErrorIndex(int i);
 
     void setEnabled(boolean enabled);
-
-    HashMap<String, NodeContainer> getNodeBuilders();
 }
