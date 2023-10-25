@@ -50,26 +50,25 @@ public class BaseResponse extends CoreResponse {
         });
 
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
+            // split SERVERNAME message
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
             Optional<IJVMExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
             if (stopExecutor.isPresent()) {
-            IService service = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1]));
-            if(service != null) {
-                Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
-                CompletableFuture<Boolean> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
-
-
-                // Check if callback is present and send response.
-                message.getCallback().ifPresent(receiver -> {
-                    future.whenComplete((aBoolean, throwable) -> {
-                        if (aBoolean) {
-                            receiver.send(TaskHandler.TaskType.ACCEPTED);
-                        } else {
-                            receiver.send(TaskHandler.TaskType.FAILED);
-                        }
+                IService service = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1]));
+                if (service != null) {
+                    Console.fine("Stopping server " + stopServerSplitted[0] + " with id " + stopServerSplitted[1]);
+                    CompletableFuture<Boolean> future = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1])).stop();
+                    // Check if callback is present and send response.
+                    message.getCallback().ifPresent(receiver -> {
+                        future.whenComplete((aBoolean, throwable) -> {
+                            if (aBoolean) {
+                                receiver.send(TaskHandler.TaskType.ACCEPTED);
+                            } else {
+                                receiver.send(TaskHandler.TaskType.FAILED);
+                            }
+                        });
                     });
-                });
-                 return;
+                    return;
                 }
             }
             message.getCallback().ifPresent(receiver -> {
@@ -88,9 +87,9 @@ public class BaseResponse extends CoreResponse {
 
             message.getCallback().ifPresent(receiver -> {
                 future.whenComplete((result, throwable) -> {
-                    if(result.isSuccess()){
+                    if (result.isSuccess()) {
                         receiver.send(TaskHandler.TaskType.ACCEPTED);
-                    }else {
+                    } else {
                         receiver.send(TaskHandler.TaskType.FAILED);
                     }
                 });
@@ -136,22 +135,21 @@ public class BaseResponse extends CoreResponse {
             ArrayList<ConfigData> executor = message.getList("executors", ConfigData.class);
 
 
-
             System.out.println("J'ai reçu");
             /*for (Test test : executor) {
                 System.out.println("Num " + test.age);
                 System.out.println(test.name);
                 System.out.println(test.e);
             }*/
-            if(!(client instanceof ExternalClient)){
-               return;
+            if (!(client instanceof ExternalClient)) {
+                return;
             }
             executor.forEach(configData -> {
                 BundleData virtualBundle = null;
 
-                Table<ExternalClient, String,BundleData> virtualBundles = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles();
+                Table<ExternalClient, String, BundleData> virtualBundles = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles();
 
-                if(!virtualBundles.containsRow(client) || !virtualBundles.row((ExternalClient) client).containsKey(configData.getBundleName())){
+                if (!virtualBundles.containsRow(client) || !virtualBundles.row((ExternalClient) client).containsKey(configData.getBundleName())) {
                     virtualBundle = new BundleData(configData.getBundleName(), new IBundleInfo() {
                         @Override
                         public ArrayList<BService> getBServices() {
@@ -193,22 +191,22 @@ public class BaseResponse extends CoreResponse {
                     DNCoreAPI.getInstance().getBundleManager().addVirtualBundleData(virtualBundle, (ExternalClient) client);
                     // a new name has been potentially created and setted on the bundle
 
-                    System.out.println(""+client);
-                    DNCoreAPI.getInstance().getBundleManager().getBundlesNamesByTool().put((ExternalClient) client,name,virtualBundle.getName());
+                    System.out.println("" + client);
+                    DNCoreAPI.getInstance().getBundleManager().getBundlesNamesByTool().put((ExternalClient) client, name, virtualBundle.getName());
                     CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 }
 
-                if(virtualBundle == null){
-                    virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(client,configData.getBundleName());
+                if (virtualBundle == null) {
+                    virtualBundle = DNCoreAPI.getInstance().getBundleManager().getVirtualBundles().get(client, configData.getBundleName());
                 }
 
-                VirtualExecutor virtualExecutor = new VirtualExecutor(configData,virtualBundle, (ExternalClient) client);
+                VirtualExecutor virtualExecutor = new VirtualExecutor(configData, virtualBundle, (ExternalClient) client);
                 virtualBundle.getExecutors().put(virtualExecutor.getName(), virtualExecutor);
                 DNCoreAPI.getInstance().getContainer().getJVMExecutors().add(virtualExecutor);
 
-                if(virtualBundle.getJvmType() == IContainer.JVMType.PROXY){
+                if (virtualBundle.getJvmType() == IContainer.JVMType.PROXY) {
                     DNCoreAPI.getInstance().getContainer().getProxiesExecutors().add(virtualExecutor);
-                }else {
+                } else {
                     DNCoreAPI.getInstance().getContainer().getServersExecutors().add(virtualExecutor);
                 }
             });
@@ -216,7 +214,6 @@ public class BaseResponse extends CoreResponse {
     }
 
     /**
-     *
      * @param message
      * @param ctx
      * @param client
@@ -227,7 +224,7 @@ public class BaseResponse extends CoreResponse {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
-        if(message.hasChannel()){
+        if (message.hasChannel()) {
             System.out.println("Channel on message : " + message.getChannel());
             IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
             if (dnChannel != null) {
@@ -293,11 +290,11 @@ public class BaseResponse extends CoreResponse {
         // if core send data and received callback
 
         if (message.containsKeyInRoot("RID")) {
-                    int id = (int) message.getInRoot("RID");
-                    ICallbackManager callbackManager = DNCoreAPI.getInstance().getCallbackManager();
-                    callbackManager.getHandlerOf(id).ifPresent(handler -> {
-                        handler(message, handler);
-                    });
+            int id = (int) message.getInRoot("RID");
+            ICallbackManager callbackManager = DNCoreAPI.getInstance().getCallbackManager();
+            callbackManager.getHandlerOf(id).ifPresent(handler -> {
+                handler(message, handler);
+            });
         }
 
         // verifier si single
@@ -305,10 +302,10 @@ public class BaseResponse extends CoreResponse {
             receiver.
         });*/
 
-            //RequestInfo request = message.getRequest();
+        //RequestInfo request = message.getRequest();
     }
 
-    private void handler(Message message, TaskHandler handler){
+    private void handler(Message message, TaskHandler handler) {
         handler.setupHandler(message);
         handler.onCallback();
 
@@ -335,7 +332,7 @@ public class BaseResponse extends CoreResponse {
                 handler.onCustom(handler.getCustomType());
                 break;
         }
-        if(handler.isSingle()){
+        if (handler.isSingle()) {
             handler.destroy();
         }
     }
