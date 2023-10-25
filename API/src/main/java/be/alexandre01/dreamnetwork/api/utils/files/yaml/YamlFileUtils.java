@@ -186,22 +186,51 @@ public class YamlFileUtils<T> {
                 linesAfter.add(line);
             }
         });
+        int bIndex = 0;
+        int aIndex = 0;
+        int totalIndex = 0;
+        for (int i = 0; i < Math.max(linesBefore.size(),linesAfter.size()); i++) {
+            String oldLine = linesBefore.get(bIndex);
+            String newLine = linesAfter.get(aIndex);
 
-        for (String oldL : linesBefore) {
-            for (String newL : linesAfter) {
-                if(newL.contains(":")){
-                    String[] newSplit = newL.split(":");
-                    String[] oldSplit = oldL.split(":");
-                    if(newSplit[0].equalsIgnoreCase(oldSplit[0])){
-                        if(!newSplit[1].equalsIgnoreCase(oldSplit[1])){
-                            System.out.println("Replace "+newL+" by "+oldL);
-                            linesAfter.set(linesAfter.indexOf(newL),oldL);
-                        }
-                    }
+            if(oldLine.equalsIgnoreCase(newLine)){
+                bIndex++;
+                aIndex++;
+                totalIndex++;
+                continue;
+            }
+
+            if(oldLine.contains(":") && newLine.contains(":")){
+                String[] oldSplit = oldLine.split(":");
+                String[] newSplit = newLine.split(":");
+                if(oldSplit[0].equalsIgnoreCase(newSplit[0])){
+                    System.out.println("Replace "+newLine+" by "+oldLine);
+                    linesAfter.set(totalIndex,oldLine);
+                    bIndex++;
+                    aIndex++;
+                    totalIndex++;
                     continue;
                 }
-                if(newL.startsWith("-")){
-                    linesAfter.set(linesAfter.indexOf(newL),oldL);
+            }else {
+                if(oldLine.contains("-")){
+                    String[] oldSplit = oldLine.split("-");
+                    if(!newLine.contains("-")){
+                        System.out.println("Replace "+newLine+" by "+oldLine);
+                        linesAfter.set(totalIndex,oldLine);
+                        bIndex++;
+                        totalIndex++;
+                        continue;
+                    }else {
+                        String[] newSplit = newLine.split("-");
+                        if(oldSplit[1].replace(" ","").equalsIgnoreCase(newSplit[1].replace(" ",""))){
+                            System.out.println("Replace "+newLine+" by "+oldLine);
+                            linesAfter.set(totalIndex,oldLine);
+                            bIndex++;
+                            aIndex++;
+                            totalIndex++;
+                            continue;
+                        }
+                    }
                 }
             }
         }
