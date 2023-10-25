@@ -149,6 +149,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     @Override
     public void unregisterPlayer(int id){
         Player player = getPlayer(id);
+        if(player == null) return;
         AServiceClient oldClient = player.getServer();
         if(oldClient != null){
             count.put(oldClient,count.get(oldClient)-1);
@@ -163,8 +164,4 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
             toRemove.put(c.getClient(),player);
         }
     }
-
-
-
-
 }

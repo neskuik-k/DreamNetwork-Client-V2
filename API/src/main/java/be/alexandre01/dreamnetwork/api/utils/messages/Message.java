@@ -28,7 +28,7 @@ import java.util.function.Consumer;
 public class Message extends LinkedHashMap<String, Object> {
     ObjectMapper mapper;
     final char prefix = '$';
-
+    
     public Message(Map<String, Object> map) {
         this(map, createMapper());
     }
@@ -249,7 +249,7 @@ public class Message extends LinkedHashMap<String, Object> {
 
 
     public String getChannel() {
-        return containsKey("channel") ? (String) super.get("channel") : "core";
+        return super.containsKey("channel") ? (String) super.get("channel") : "core";
     }
 
     public Message setChannel(String channel) {

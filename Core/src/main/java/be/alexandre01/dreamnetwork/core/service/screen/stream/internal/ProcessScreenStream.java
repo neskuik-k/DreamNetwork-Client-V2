@@ -66,6 +66,7 @@ public class ProcessScreenStream implements IScreenStream {
           //new BufferedOutputStream(screen.getService().getProcess().getOutputStream());
         if(console.getConsoleAction() == null){
             if(screen.getService() instanceof JVMService){
+                System.out.println();
                 screenOutWriter = new ProcessScreenOutWriter(screen, console,this);
             }else{
                 screenOutWriter = new ExternalScreenOutWriter(screen, console,this);

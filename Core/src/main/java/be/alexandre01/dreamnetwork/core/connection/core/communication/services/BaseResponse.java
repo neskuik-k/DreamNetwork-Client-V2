@@ -227,17 +227,16 @@ public class BaseResponse extends CoreResponse {
         //Console.debugPrint(message);
         Console.printLang("connection.core.communication.enteringRequest", Level.FINE);
 
-
-        IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
-        if (dnChannel != null) {
-            ChannelPacket receivedPacket = new ChannelPacket(message);
-            dnChannel.received(receivedPacket);
-            if (!dnChannel.getDnChannelInterceptors().isEmpty()) {
-                for (AChannelPacket.DNChannelInterceptor dnChannelInterceptor : dnChannel.getDnChannelInterceptors()) {
-                    dnChannelInterceptor.received(receivedPacket);
-                }
+        if(message.hasChannel()){
+            System.out.println("Channel on message : " + message.getChannel());
+            IDNChannel dnChannel = this.core.getChannelManager().getChannel(message.getChannel());
+            if (dnChannel != null) {
+                System.out.println("Channel found : " + dnChannel.getName());
+                ChannelPacket receivedPacket = new ChannelPacket(message);
+                dnChannel.received(receivedPacket);
             }
         }
+
         if (message.getHeader() != null) {
             if (message.getHeader().equals("cData") && message.getChannel() != null) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
@@ -245,8 +244,8 @@ public class BaseResponse extends CoreResponse {
                     if (message.contains("init")) {
                         if (message.getBoolean("init")) {
                             String key = message.getString("key");
-                            if (!dnChannel.getObjects().containsKey(key)) {
-                                dnChannel.getObjects().put(key, message.get("value"));
+                            if (!channel.getObjects().containsKey(key)) {
+                                channel.getObjects().put(key, message.get("value"));
                             }
                         }
                     }
@@ -255,7 +254,7 @@ public class BaseResponse extends CoreResponse {
                     } else {
                         channel.storeData(message.getString("key"), message.get("value"), message.getBoolean("update"), client);
                     }
-
+                    return;
                 }
             }
             if (message.getHeader().equals("cAsk") && message.getChannel() != null) {
@@ -267,8 +266,9 @@ public class BaseResponse extends CoreResponse {
                     ChannelPacket channelPacket = new ChannelPacket(message);
                     channelPacket.createResponse(message, client, "cAsk");
                 }
+                return;
             }
-            if (message.getHeader().equals("channel") && message.getChannel() != null) {
+            if (message.getChannel() != null) {
                 if (this.core.getChannelManager().getClientsRegistered().containsKey(message.getChannel())) {
                     final Collection<AServiceClient> clients = this.core.getChannelManager().getClientsRegistered().get(message.getChannel());
                     if (!clients.isEmpty()) {

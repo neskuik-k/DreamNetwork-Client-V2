@@ -72,7 +72,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
             for(Object o : args){
                 if(o instanceof Player){
                     Player p = (Player) o;
-                    Core.getInstance().formatter.prStr.println(p.getId());
+                  //  Core.getInstance().formatter.prStr.println(p.getId());
                     s.add((p.getId()));
                 }
             }
@@ -83,6 +83,10 @@ public class DefaultSpigotRequest extends RequestBuilder {
         requestData.put(RequestType.CORE_REGISTER_CHANNEL,(message, client, args) -> {
             message.set("CHANNEL", args[0]);
             message.set("MAP",args[1]);
+            return message;
+        });
+        requestData.put(RequestType.CORE_REGISTER_CHANNELS_INFOS,(message, client, args) -> {
+            message.set("CHANNELS", args[0]);
             return message;
         });
     }

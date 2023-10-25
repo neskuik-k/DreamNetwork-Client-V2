@@ -1,9 +1,11 @@
 package be.alexandre01.dreamnetwork.core.connection.core.channels;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -11,8 +13,8 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Data;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Data
 public class DNChannelManager implements IDNChannelManager {
@@ -49,13 +51,22 @@ public class DNChannelManager implements IDNChannelManager {
     @Override
     public void registerClientToChannel(AServiceClient client, String channel, boolean resend){
         clientsRegistered.put(channel,client);
+        IDNChannel c;
         if(!hasChannel(channel)){
-            createChannel(new DNChannel(channel));
+            createChannel(c = new DNChannel(channel));
+            //Send new channel to everyone except the client
+            List<String> l = Collections.singletonList(channel);
+            for (AServiceClient clients : DNCoreAPI.getInstance().getClientManager().getServiceClients().values()){
+                if(clients.equals(client))
+                    continue;
+                sendChannels(clients, l);
+            }
         }else {
-            getChannel(channel);
+            c = getChannel(channel);
         }
 
         client.getRequestManager().sendRequest(RequestType.CORE_REGISTER_CHANNEL,channel,getChannel(channel).getObjects());
+
         if(!resend)
             dontResendsData.add(client);
 
@@ -91,5 +102,13 @@ public class DNChannelManager implements IDNChannelManager {
     @Override
     public void unregisterCoreToChannel(String channel){
         channelRegisteredInCore.remove(channel);
+    }
+
+    public void sendChannels(UniversalConnection connection, List<String> channels){
+        connection.getRequestManager().sendRequest(RequestType.CORE_REGISTER_CHANNELS_INFOS,channels);
+    }
+
+    public void sendAllChannels(UniversalConnection connection){
+        connection.getRequestManager().sendRequest(RequestType.CORE_REGISTER_CHANNELS_INFOS,new ArrayList<>(channels.keySet()));
     }
 }
