@@ -58,8 +58,8 @@ jobs:
         source_file: 'target/DreamNetwork.jar'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
         destination_folder: 'hypervisor/builds/${{ steps.project.outputs.version }}/${{github.run_number}}'
-        user_email: 'ata@taillet.net'
-        user_name: 'DreamNetBot'
+        user_email: 'altata01@hotmail.com'
+        user_name: 'Alexandre01Dev'
         commit_message: 'Pushing new build ${{ steps.project.outputs.version }}#${{github.run_number}}.'
     - name: Pushing version.txt to CDN
       id: push_version
@@ -70,7 +70,7 @@ jobs:
         source_file: 'version.txt'
         destination_repo: 'DreamNetworkCloud/DreamNetwork-CDN'
         destination_folder: 'hypervisor/builds/'
-        user_email: 'ata@taillet.net'
-        user_name: 'DreamNetBot'
+        user_email: 'altata01@hotmail.com'
+        user_name: 'Alexandre01Dev'
         commit_message: 'Updating version.txt -> ${{ steps.project.outputs.version }}#${{github.run_number}}.'    
  
