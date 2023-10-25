@@ -223,7 +223,6 @@ public class YamlFileUtils<T> {
                         if(oldSplit[1].replace(" ","").equalsIgnoreCase(newSplit[1].replace(" ",""))){
                             System.out.println("Replace "+newLine+" by "+oldLine);
                             linesAfter.set(totalIndex,oldLine);
-                            bIndex++;
                             aIndex++;
                             totalIndex++;
                             continue;
