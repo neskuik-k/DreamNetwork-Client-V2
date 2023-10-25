@@ -57,30 +57,18 @@ public class BundlesLoading {
 
             //Yaml yaml = new Yaml(new Constructor(BundleInfo.class));
             File bundleFile = new File(Config.getPath(file.getAbsolutePath()+"/this-info.yml"));
-
             BundleInfo bundleInfo;
-
             if(!bundleFile.exists()){
                 loadTemplate(new File[]{file},currentBundle.getName(),currentBundle);
                 continue;
             }
             System.out.println(Console.getFromLang("bundle.loading", prefix,file.getName()));
-
             bundleInfo = BundleInfo.loadFile(bundleFile);
-
-
 
             if(bundleInfo == null){
                 continue;
             }
-            if(bundleInfo.getServices() != null){
-                //System.out.println(bundleFileInfo.getServices());
-                if(bundleInfo.getServices().size() > 0){
-                   // System.out.println( bundleFileInfo.getServices().get(0).getServiceName());
-                }
-            }
-
-            System.out.println("Le nom en question > "+bundleInfo.name);
+          //  System.out.println("Le nom en question > "+bundleInfo.name);
             BundleData bundleData = new BundleData(bundleInfo.name,bundleInfo);
 
             Main.getBundleManager().addBundleData(bundleData);
