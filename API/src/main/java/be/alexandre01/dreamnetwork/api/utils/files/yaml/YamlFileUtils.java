@@ -189,6 +189,7 @@ public class YamlFileUtils<T> {
         int bIndex = 0;
         int aIndex = 0;
         int totalIndex = 0;
+
         for (int i = 0; i < Math.max(linesBefore.size(),linesAfter.size()); i++) {
             String oldLine = linesBefore.get(bIndex);
             String newLine = linesAfter.get(aIndex);
@@ -212,6 +213,24 @@ public class YamlFileUtils<T> {
                     continue;
                 }
             }else {
+                if(newLine.contains("-") && !oldLine.contains("-")  && linesAfter.size() > totalIndex+1 && linesBefore.size() > totalIndex+1){
+                    String lastAfterLine = linesAfter.get(totalIndex-1);
+                    String lastBeforeLine = linesBefore.get(totalIndex-1);
+
+                    if(lastBeforeLine.equalsIgnoreCase(lastAfterLine)){
+                        String[] newSplit = newLine.split("-");
+                        String[] oldSplit = oldLine.split("-");
+                        if(oldSplit[1].replace(" ","").equalsIgnoreCase(newSplit[1].replace(" ",""))){
+                            System.out.println("Replace "+newLine+" by "+oldLine);
+                            linesAfter.set(totalIndex,oldLine);
+                            bIndex++;
+                            aIndex++;
+                            totalIndex++;
+                            continue;
+                        }
+                    }
+
+                }
                 if(oldLine.contains("-")){
                     String[] oldSplit = oldLine.split("-");
                     if(!newLine.contains("-")){
@@ -232,6 +251,7 @@ public class YamlFileUtils<T> {
                         }
                     }
                 }
+
             }
         }
 
