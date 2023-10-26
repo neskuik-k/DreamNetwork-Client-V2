@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
+import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.introspector.Property;
@@ -18,6 +19,7 @@ public class CustomRepresenter extends Representer {
 
     @Setter private Object obj;
     @Setter private boolean thisClassOnly = false;
+
 
     public CustomRepresenter(boolean skipNull,Object obj,Class<?>... clazz) {
         super(new DumperOptions());
@@ -50,7 +52,8 @@ public class CustomRepresenter extends Representer {
         //check if field has annotation @Ignore
 
 
-        if (propertyValue == null && skipNull) {
+
+        if (propertyValue == null && !skipNull) {
             return null;
         }
         ArrayList<Field> fields = new ArrayList<>();
@@ -79,6 +82,7 @@ public class CustomRepresenter extends Representer {
 
            // System.out.println(field.getName()+propertyValue);
             if (field.getName().equals(property.getName())) {
+               // System.out.println("Finded field "+field.getName()+" because it's equals to "+property.getName());
                 isFinded = true;
                 break;
             }

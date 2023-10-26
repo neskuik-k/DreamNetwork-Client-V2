@@ -81,7 +81,7 @@ public class ProcessUtils {
         return isProcessIdRunning(pidStr, command); // call generic implementation
     }
     private static boolean isProcessIdRunning(String pid, String command) {
-        Console.fine(Console.getFromLang("core.utils.process.isRunning.command", command));
+      //  Console.fine(Console.getFromLang("core.utils.process.isRunning.command", command));
         try {
             Runtime rt = Runtime.getRuntime();
             Process pr = rt.exec(command);

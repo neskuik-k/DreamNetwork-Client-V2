@@ -465,7 +465,7 @@ public class Console {
         clearConsole(DNUtils.get().getConsoleManager().getFormatter().getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-      //  if(true) return;
+       if(true) return;
         try
         {
             final String os = System.getProperty("os.name");

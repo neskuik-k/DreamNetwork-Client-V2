@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.config;
 
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.SkipInitCheck;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -35,7 +36,7 @@ public class GlobalSettings {
     String copyIOMethod = "files";
 
     boolean screenNameInConsoleChange= true;
-    String username = null;
+    @SkipInitCheck String username = null;
     int port = 14520;
     String language = "en_EN";
     private boolean useEmoji = false;

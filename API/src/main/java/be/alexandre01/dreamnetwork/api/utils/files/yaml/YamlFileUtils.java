@@ -1,11 +1,7 @@
 package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.DNUtils;
-import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.api.console.accessibility.AcceptOrRefuse;
-import be.alexandre01.dreamnetwork.api.console.accessibility.AccessibilityMenu;
-import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.utils.files.FileScan;
 import lombok.Getter;
 import lombok.Setter;
@@ -19,8 +15,10 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.nio.file.Files;
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class YamlFileUtils<T> {
 
@@ -92,8 +90,8 @@ public class YamlFileUtils<T> {
             }
         };*/
         Yaml yaml;
-        if(constructor == null){
-            yaml = new Yaml(new Constructor(loaderOptions),new CustomRepresenter(skipNull,null,clazz)/*,representer*/);
+        if(constructor == null || representer == null){
+            yaml = new Yaml(constructor = new CustomConstructor(loaderOptions,skipNull,clazz),representer = new CustomRepresenter(skipNull,clazz)/*,representer*/);
         }else {
             yaml = new Yaml(constructor,this.representer);
         }
@@ -117,7 +115,44 @@ public class YamlFileUtils<T> {
                 }else {
                     toLoad = this.toLoad;
                 }
-                t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
+        t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
+
+        //System.out.println("Load as "+toLoad.getName());
+        if(!skipNull){
+            // System.out.println("Check if there is missing fields in the file of "+clazz.getName());
+           // System.out.println(representer.getClass().getName());
+           // System.out.println(representer);
+            if(constructor instanceof CustomConstructor){
+               // System.out.println("Check if there is missing fields in the file of "+clazz.getName());
+                CustomConstructor c = (CustomConstructor) constructor;
+                List<Field> l = new ArrayList<>();
+                // add getDeclaredFields
+                l.addAll(Arrays.asList(clazz.getDeclaredFields()));
+               /* boolean isDifferent = l.stream()
+                        .filter(field -> field.getAnnotation(Ignore.class) == null)
+                        .filter(field -> field.isSynthetic())
+                        .anyMatch(item -> !l.contains(item) || !c.getSettedFields().contains(item));*/
+
+                for (Field field : l) {
+                    // is Ignored
+                    if(field.isAnnotationPresent(Ignore.class)) continue;
+                    if(field.isAnnotationPresent(SkipInitCheck.class)) continue;
+                    // is static
+                    if(Modifier.isStatic(field.getModifiers())) continue;
+
+
+                    //  System.out.println(field.getName());
+                   // System.out.println(c.getSettedFields());
+                    if(!c.getSettedFields().contains(field)){
+                        //System.out.println("Missing field "+field.getName()+" in the file of "+clazz.getName());
+                        throw new YAMLException("There is missing fields "+ field.getName()+" in the file of "+clazz.getName());
+                    }
+                }
+                //if(isDifferent){
+                  //  throw new RuntimeException("There is missing fields in the file of "+clazz.getName());
+                //}
+            }
+        }
 
 
            // Gson gson = new Gson();
@@ -142,8 +177,10 @@ public class YamlFileUtils<T> {
             try {
                 return Optional.ofNullable(obj = readObject());
             }catch (Exception e) {
+                //System.out.println("Error reading file: "+file.getName());
                 try {
                     if(!(e instanceof YAMLException)){
+                        System.out.println("Error is an YamlException");
                         throw new RuntimeException(e);
                     }
                     System.out.println("Error reading file: "+file.getName());
@@ -156,6 +193,7 @@ public class YamlFileUtils<T> {
                 }catch (Exception cantReplace){
                     if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
                         e.printStackTrace();
+                        cantReplace.printStackTrace();
                         return null;
                     }
                     Console.printLang("core.utils.yaml.loadFileError", file.getName());
@@ -166,12 +204,60 @@ public class YamlFileUtils<T> {
         }
     }
 
+    private void fillInMap(List<String> list, Map<String,Object> map){
+        for (int i = 0; i < list.size(); i++) {
+            String s = list.get(i);
+            while (s.startsWith(" ")){
+                s = s.replaceFirst(" ","");
+            }
+            if(s.startsWith("#")) continue;
+            if(s.contains(":")){
+                String[] split = s.split(":");
+                String key = split[0];
+
+                if(split.length == 1 || split[1].replace(" ","").isEmpty()){
+                    ArrayList<String> listOfList = new ArrayList<>();
+                    while (true){
+                        if(list.size()-1 < i+1){
+                            break;
+                        }
+                        String nextLine = list.get(i+1);
+                        if(nextLine.contains(":")){
+                            break;
+                        }else {
+                            if(nextLine.contains("-")){
+                                listOfList.add(nextLine);
+                                i++;
+                            }
+                        }
+                    }
+                    map.put(key,listOfList);
+                }else {
+                    while (split[1].startsWith(" ")){
+                        split[1] = split[1].replaceFirst(" ","");
+                    }
+                    map.put(key,split[1]);
+                }
+            }
+        }
+    }
     public T replaceOldByNew() throws Exception{
+        System.out.println("Replace old by new");
         ArrayList<String> linesBefore = new ArrayList<>();
         FileScan fileScan = new FileScan(getFile());
         fileScan.scan(new FileScan.LangScanListener() {
             @Override
             public void onScan(String line) {
+                if(line.contains(":")){
+                    //  System.out.println("Line contains : "+line);
+                    String[] split = line.split(":");
+                    if(split.length == 1){
+                        linesBefore.add(split[0].replace(" ","")+":");
+                    }else {
+                        linesBefore.add(split[0].replace(" ","")+": "+split[1]);
+                    }
+                    return;
+                }
                 linesBefore.add(line);
             }
         });
@@ -183,75 +269,60 @@ public class YamlFileUtils<T> {
         fileScan.scan(new FileScan.LangScanListener() {
             @Override
             public void onScan(String line) {
+                if(line.contains(":")){
+                  //  System.out.println("Line contains : "+line);
+                    String[] split = line.split(":");
+                    if(split.length == 1){
+                        linesAfter.add(split[0].replace(" ","")+":");
+                    }else {
+                        linesAfter.add(split[0].replace(" ","")+": "+split[1]);
+                    }
+                    return;
+                }
                 linesAfter.add(line);
             }
         });
-        int bIndex = 0;
-        int aIndex = 0;
-        int totalIndex = 0;
 
-        for (int i = 0; i < Math.max(linesBefore.size(),linesAfter.size()); i++) {
-            String oldLine = linesBefore.get(bIndex);
-            String newLine = linesAfter.get(aIndex);
+        HashMap<String,Object> oldMap = new HashMap<>();
+        HashMap<String,Object> newMap = new HashMap<>();
 
-            if(oldLine.equalsIgnoreCase(newLine)){
-                bIndex++;
-                aIndex++;
-                totalIndex++;
-                continue;
-            }
+        fillInMap(linesBefore,oldMap);
+        fillInMap(linesAfter,newMap);
 
-            if(oldLine.contains(":") && newLine.contains(":")){
-                String[] oldSplit = oldLine.split(":");
-                String[] newSplit = newLine.split(":");
-                if(oldSplit[0].equalsIgnoreCase(newSplit[0])){
-                    System.out.println("Replace "+newLine+" by "+oldLine);
-                    linesAfter.set(totalIndex,oldLine);
-                    bIndex++;
-                    aIndex++;
-                    totalIndex++;
-                    continue;
+        //System.out.println("Old map "+oldMap);
+        //System.out.println("New map "+newMap);
+
+        for (String s : newMap.keySet()) {
+            if(oldMap.containsKey(s)){
+                Object o = oldMap.get(s);
+                if(o instanceof String){
+                    //System.out.println(o);
+                    //System.out.println(s+": "+oldMap.get(s));
+                    int index = IntStream.range(0, linesAfter.size())
+                            .filter(i -> linesAfter.get(i).contains(s+":"))
+                            .findFirst().orElse(-1);
+                    linesAfter.set(index,s+": "+oldMap.get(s));
                 }
-            }else {
-                if(newLine.contains("-") && !oldLine.contains("-")  && linesAfter.size() > totalIndex+1 && linesBefore.size() > totalIndex+1){
-                    String lastAfterLine = linesAfter.get(totalIndex-1);
-                    String lastBeforeLine = linesBefore.get(totalIndex-1);
+                if( o instanceof List){
+                    List<String> list = (List<String>) oldMap.get(s);
+                    int index = linesAfter.indexOf(s+":");
+                  //   System.out.println("List to add to index "+index);
+                    linesAfter.set(index,s+":");
 
-                    if(lastBeforeLine.equalsIgnoreCase(lastAfterLine)){
-                        String[] newSplit = newLine.split("-");
-                        String[] oldSplit = oldLine.split("-");
-                        if(oldSplit[1].replace(" ","").equalsIgnoreCase(newSplit[1].replace(" ",""))){
-                            System.out.println("Replace "+newLine+" by "+oldLine);
-                            linesAfter.set(totalIndex,oldLine);
-                            aIndex++;
-                            totalIndex++;
-                            continue;
-                        }
-                    }
+                    int sizeToOverride = newMap.get(s) instanceof List ? ((List) newMap.get(s)).size() : 0;
 
-                }
-                if(oldLine.contains("-")){
-                    String[] oldSplit = oldLine.split("-");
-                    if(!newLine.contains("-")){
-                        System.out.println("Replace "+newLine+" by "+oldLine);
-                        linesAfter.set(totalIndex,oldLine);
-                        bIndex++;
-                        totalIndex++;
-                        continue;
-                    }else {
-                        String[] newSplit = newLine.split("-");
-                        if(oldSplit[1].replace(" ","").equalsIgnoreCase(newSplit[1].replace(" ",""))){
-                            System.out.println("Replace "+newLine+" by "+oldLine);
-                            linesAfter.set(totalIndex,oldLine);
-                            bIndex++;
-                            aIndex++;
-                            totalIndex++;
-                            continue;
-                        }
+
+                    for (int i = 1; i <= list.size(); i++) {
+                      if(sizeToOverride >= i){
+                          linesAfter.set(index+i,list.get(i-1));
+                        }else {
+                          linesAfter.add(index+i,list.get(i-1));
+                         }
+
                     }
                 }
-
             }
+
         }
 
         try {
@@ -318,7 +389,7 @@ public class YamlFileUtils<T> {
     }
     public void saveFile(File file, Object obj, Class<?> clazz, boolean skipNull){
         try {
-
+            System.out.println("Try to save file "+file.getName());
             if(!file.exists())
                 file.createNewFile();
             Representer representer;
@@ -354,7 +425,7 @@ public class YamlFileUtils<T> {
             //substring to remove last \n new line
             String dump = yaml.dumpAsMap(obj);
             fileWriter.write(dump.substring(0,dump.length()-1));
-
+            System.out.println("Save yml file: "+file.getName());
             fileWriter.close();
         } catch (IOException e) {
             if(DNUtils.get().getConfigManager().getLanguageManager() == null){
