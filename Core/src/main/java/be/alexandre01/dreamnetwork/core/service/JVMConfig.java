@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.io.File;
+import java.util.List;
 
 @Setter @Getter @JsonIgnoreProperties @JsonIgnoreType
 public class JVMConfig extends ConfigData implements IConfig {
@@ -26,13 +27,13 @@ public class JVMConfig extends ConfigData implements IConfig {
     }
 
     public void config(File file){
-        ymlFile.init(file,true);
-        ymlFile.representer = new CustomRepresenter(true,ConfigData.class);
-        ((CustomRepresenter)ymlFile.representer).setThisClassOnly(true);
-        ymlFile.config(file,ConfigData.class,true);
+        ymlFile.init(file,true,false);
+        //ymlFile.representer = new CustomRepresenter(true,ConfigData.class);
+      //  ((CustomRepresenter)ymlFile.representer).setThisClassOnly(true);
+       // ymlFile.config(file,ConfigData.class,true);
     }
     public JVMConfig(File file){
-        ymlFile.config(file,ConfigData.class,true);
+       // ymlFile.config(file,ConfigData.class,true);
         // Empty constructor
     }
 
@@ -50,4 +51,5 @@ public class JVMConfig extends ConfigData implements IConfig {
         this.port = port;
         this.bundleName = bundleName;
     }
+
 }

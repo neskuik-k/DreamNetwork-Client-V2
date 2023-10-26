@@ -4,13 +4,11 @@ import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStartEvent;
-import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceStopEvent;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
@@ -40,46 +38,72 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
 import java.util.*;
-import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
 
 
-@Ignore @JsonIgnoreProperties(value = {"startupConfig"}, ignoreUnknown = true) @Getter() @Setter
+@Ignore
+@JsonIgnoreProperties(value = {"startupConfig"}, ignoreUnknown = true)
+@Getter()
+@Setter
 public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
-    @JsonIgnore @Getter private static ArrayList<String> serverList = new ArrayList<>();
-    @JsonIgnore @Getter private static ArrayList<String> startServerList = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    private static ArrayList<String> serverList = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    private static ArrayList<String> startServerList = new ArrayList<>();
 
-    @JsonIgnore  @Getter private static ConcurrentMap<String, BufferedReader> processServersInput = new ConcurrentHashMap<>();
-    @JsonIgnore @Getter  public static ArrayList<Integer> serversPortList = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    private static ConcurrentMap<String, BufferedReader> processServersInput = new ConcurrentHashMap<>();
+    @JsonIgnore
+    @Getter
+    public static ArrayList<Integer> serversPortList = new ArrayList<>();
 
-    @JsonIgnore @Getter public static ArrayList<Integer> portsBlackList = new ArrayList<>();
-    @JsonIgnore @Getter private static HashMap<Integer, JVMExecutor> portsReserved = new HashMap<>();
-    @JsonIgnore @Getter public static HashMap<String, Integer> serversPort = new HashMap<>();
-    @JsonIgnore @Getter public static HashMap<Integer, IService> servicePort = new HashMap<>();
-    @JsonIgnore @Getter @Setter public static Integer cache = 0;
-    @JsonIgnore @Getter private final ArrayList<Tuple<IConfig, ExecutorCallbacks>> queue = new ArrayList<>();
-    @Ignore @JsonIgnore
+    @JsonIgnore
+    @Getter
+    public static ArrayList<Integer> portsBlackList = new ArrayList<>();
+    @JsonIgnore
+    @Getter
+    private static HashMap<Integer, JVMExecutor> portsReserved = new HashMap<>();
+    @JsonIgnore
+    @Getter
+    public static HashMap<String, Integer> serversPort = new HashMap<>();
+    @JsonIgnore
+    @Getter
+    public static HashMap<Integer, IService> servicePort = new HashMap<>();
+    @JsonIgnore
+    @Getter
+    @Setter
+    public static Integer cache = 0;
+    @JsonIgnore
+    @Getter
+    private final ArrayList<Tuple<IConfig, ExecutorCallbacks>> queue = new ArrayList<>();
+    @Ignore
+    @JsonIgnore
     public HashMap<Integer, IService> jvmServices = new HashMap<>();
-    @JsonIgnore public BundleData bundleData;
-    @JsonIgnore private IdSet idSet = new IdSet();
+    @JsonIgnore
+    public BundleData bundleData;
+    @JsonIgnore
+    private IdSet idSet = new IdSet();
 
-    @JsonIgnore private ArrayList<String> charsIds = new ArrayList<>();
+    @JsonIgnore
+    private ArrayList<String> charsIds = new ArrayList<>();
 
 
-    @JsonIgnore public IService staticService = null;
+    @JsonIgnore
+    public IService staticService = null;
 
-    @JsonIgnore @Getter(AccessLevel.NONE) JVMProfiles jvmProfiles = new JVMProfiles();
+    @JsonIgnore
+    @Getter(AccessLevel.NONE)
+    JVMProfiles jvmProfiles = new JVMProfiles();
 
     public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData) {
         super(pathName, name, type, xms, xmx, port, proxy, updateFile);
@@ -121,7 +145,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
 
-    @Override @Synchronized
+    @Override
+    @Synchronized
     public ExecutorCallbacks startServer() {
         return startServer(this);
     }
@@ -136,12 +161,14 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         return startServer(profile, new ExecutorCallbacks());
     }
 
-    @Override @Synchronized
+    @Override
+    @Synchronized
     public ExecutorCallbacks startServer(IConfig jvmConfig) {
         return startServer(jvmConfig, new ExecutorCallbacks());
     }
 
-    @Override @Synchronized
+    @Override
+    @Synchronized
     public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
         IConfig iConfig = null;
         if (profile != null && getJvmProfiles().isPresent()) {
@@ -202,20 +229,52 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
         Console.printLang("service.executor.start", Level.FINE, jvmConfig.getName());
-        if (!start(tuple)) {
-            Console.printLang("service.executor.couldNotStart", Level.WARNING);
-            queue.remove(tuple);
-            if (callbacks != null) {
-                callbacks.setHasFailed(true);
-                if (callbacks.onFail != null)
-                    callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
+        // update deploys on static
+
+        List<DeployContainer> l;
+        CompletableFuture<Boolean> future = new CompletableFuture<>();
+        if (getStartupConfig().getStaticDeployers() != null) {
+            l = getStartupConfig().getStaticDeployers().stream().map(string -> Main.getDeployManager().getDeploy(string)).collect(Collectors.toList());
+            AtomicInteger j = new AtomicInteger();
+            AtomicBoolean b = new AtomicBoolean(true);
+            for (int i = 0; i < l.size(); i++) {
+                DeployContainer deployContainer = l.get(i);
+
+                deployContainer.updateStaticFolder(getFileRootDir()).thenAccept(aBoolean -> {
+                    j.getAndIncrement();
+                    if (!aBoolean) {
+                        b.set(false);
+                        System.out.println("Failed to update static folder " + deployContainer.getDeployData().getName());
+                    }
+
+                    if (j.get() == l.size()) {
+                        future.complete(b.get());
+                    }
+                });
             }
-            if (!queue.isEmpty()) {
-                //get first insered of linkedhashmap
-                Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
-                startJVM(renew);
-            }
+        } else {
+            l = null;
         }
+
+        if (l == null || l.isEmpty()) {
+            future.complete(true);
+        }
+        future.whenComplete((aBoolean, throwable) -> {
+            if (!aBoolean || !start(tuple)) {
+                Console.printLang("service.executor.couldNotStart", Level.WARNING);
+                queue.remove(tuple);
+                if (callbacks != null) {
+                    callbacks.setHasFailed(true);
+                    if (callbacks.onFail != null)
+                        callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
+                }
+                if (!queue.isEmpty()) {
+                    //get first insered of linkedhashmap
+                    Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
+                    startJVM(renew);
+                }
+            }
+        });
     }
 
 
@@ -247,6 +306,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         if (this.getConfigSize() != getConfigSize() && !isFixedData()) {
             saveFile();
         }
+
+        // update deploys on static folder
+
 
         Console.fine("ID creation...");
 
@@ -351,7 +413,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             return false;
         }
     }
-    private int whilePortCheck(int port){
+
+    private int whilePortCheck(int port) {
         boolean reserved = false;
         if (portsReserved.containsKey(port)) {
             reserved = true;
@@ -368,7 +431,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     boolean isAccessible = portsReserved.get(port).equals(this);
                     if (!isAccessible || !PortUtils.isAvailable(port, false)) {
                         Console.fine("Is accessible: " + isAccessible + " Is available: " + PortUtils.isAvailable(port, true));
-                        port = portCheckIncrement(port,min,max,trying);
+                        port = portCheckIncrement(port, min, max, trying);
                         i++;
                         continue;
                     }
@@ -383,35 +446,35 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             }
             if (!PortUtils.isAvailable(port, false)) {
                 Console.fine("Port not available for " + port);
-                port = portCheckIncrement(port,min,max,trying);
+                port = portCheckIncrement(port, min, max, trying);
                 i++;
                 continue;
             }
             break;
         }
-        if(i == 0){
+        if (i == 0) {
             Console.print("Port " + port + " is available");
-        }else {
+        } else {
             Console.print("Port " + port + " is available (after " + i + " tries)");
         }
 
         return port;
     }
 
-    private int portCheckIncrement(int port,int min,int max,int trying){
-            if(port == max){
-                if(trying == 1){
-                    Console.printLang("service.executor.noPortAvailable", Level.SEVERE);
-                    throw new RuntimeException("No port available");
-                }
-                trying = 1;
-                port = min-1;
+    private int portCheckIncrement(int port, int min, int max, int trying) {
+        if (port == max) {
+            if (trying == 1) {
+                Console.printLang("service.executor.noPortAvailable", Level.SEVERE);
+                throw new RuntimeException("No port available");
             }
-            port = port + 1;
-            return port;
+            trying = 1;
+            port = min - 1;
+        }
+        port = port + 1;
+        return port;
     }
 
-    public Integer findPort(IConfig jvmConfig,String finalname, Integer port){
+    public Integer findPort(IConfig jvmConfig, String finalname, Integer port) {
         if (port == 0) {
             GlobalSettings globalSettings = Main.getGlobalSettings();
             if (!serversPortList.isEmpty() && !globalSettings.isRandomizePort()) {
@@ -446,10 +509,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     }
                     int min = globalSettings.getPortRangeInt()[0];
                     int max = globalSettings.getPortRangeInt()[1];
-                    if(port < min || port > max){
+                    if (port < min || port > max) {
                         port = new Random().nextInt((max - min) + 1) + min;
                     }
-                    if(globalSettings.isRandomizePort()){
+                    if (globalSettings.isRandomizePort()) {
                         port = new Random().nextInt((max - min) + 1) + min;
                     }
                     port = whilePortCheck(port);
@@ -463,7 +526,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                             Console.printLang("service.executor.notFoundPort", finalname);
                             return null;
                         }
-                        if(globalSettings.isRandomizePort()){
+                        if (globalSettings.isRandomizePort()) {
                             int min = globalSettings.getPortRangeInt()[0];
                             int max = globalSettings.getPortRangeInt()[1];
                             port = new Random().nextInt((max - min) + 1) + min;
@@ -475,7 +538,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 }
                 int currentPort = getCurrentPort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, bundleData.getJvmType(), jvmConfig.getType());
 
-                changePort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, port,currentPort, bundleData.getJvmType(), jvmConfig.getType());
+                changePort(jvmConfig.getType().getPath() + jvmConfig.getPathName(), finalname, port, currentPort, bundleData.getJvmType(), jvmConfig.getType());
             }
         } else {
             if (!serversPortList.contains(port)) {
@@ -499,6 +562,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
         return port;
     }
+
     private boolean proceedStarting(String finalname, int servers, String charsId, Tuple<IConfig, ExecutorCallbacks> tuple) throws IOException {
         IConfig jvmConfig = tuple.a();
         ExecutorCallbacks callbacks = tuple.b();
@@ -510,8 +574,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             return false;
         }*/
-        port = findPort(jvmConfig,finalname, port);
-        if(port == null){
+        port = findPort(jvmConfig, finalname, port);
+        if (port == null) {
             return false;
         }
 
@@ -577,12 +641,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         String customArgs = "";
-        if(ExternalCore.getInstance().isConnected()){
+        if (ExternalCore.getInstance().isConnected()) {
             String connectionId = ExternalCore.getInstance().getConnectionID();
             customArgs += "-DNHost=" + ExternalCore.getInstance().getIp();
-            customArgs += " -DNInfo=" + bundleData.getName()+"/"+jvmConfig.getName() + "-" + servers+"+"+connectionId;
-        }else{
-            customArgs += "-DNHost=" + "this:"+Core.getInstance().getPort();
+            customArgs += " -DNInfo=" + bundleData.getName() + "/" + jvmConfig.getName() + "-" + servers + "+" + connectionId;
+        } else {
+            customArgs += "-DNHost=" + "this:" + Core.getInstance().getPort();
         }
         if (preProcessEvent.getCustomArguments() != null) {
             customArgs += " " + preProcessEvent.getCustomArguments();
@@ -656,7 +720,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
 
         if (callbacks != null) {
-            if (callbacks.onStart != null){
+            if (callbacks.onStart != null) {
                 callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
             }
 
@@ -709,20 +773,19 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
-        if(jvmService.isConnected() && jvmService.getProcess().isAlive()){
+        if (jvmService.isConnected() && jvmService.getProcess().isAlive()) {
             System.out.println("Process is alive");
             jvmService.getProcess().destroy();
         }
-        if(jvmService.getScreen() != null){
+        if (jvmService.getScreen() != null) {
             Console.fine("Stop screen");
             jvmService.getScreen().destroy(true);
         }
 
 
-
-        if(jvmService.getClient() != null){
+        if (jvmService.getClient() != null) {
             jvmService.getClient().getChannelHandlerContext().close();
-        }else {
+        } else {
             jvmService.getProcess().destroy();
         }
 
@@ -777,9 +840,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             getStartServerList().remove(jvmService.getFullName());
             idSet.remove(i);
 
-            if(jvmService instanceof JVMService){
+            if (jvmService instanceof JVMService) {
                 CompletableFuture<Boolean> future = ((JVMService) jvmService).getStopFuture();
-                if(future != null){
+                if (future != null) {
                     future.complete(true);
                 }
             }
@@ -788,7 +851,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             Console.bug(e);
         }
     }
-
 
 
     public IService getService(Integer i) {

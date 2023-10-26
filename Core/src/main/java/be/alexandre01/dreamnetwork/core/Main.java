@@ -129,9 +129,6 @@ public class Main {
 
         fileCopyAsync = new FileCopyAsync();
 
-
-
-
         commandReader = new CommandReader();
         consoleReader = new ConsoleReader();
         consoleReader.init();

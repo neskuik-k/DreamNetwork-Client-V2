@@ -28,6 +28,7 @@ import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.core.installer.InstallerManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
+import be.alexandre01.dreamnetwork.core.service.deployment.StaticUpdater;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;

@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.deployment;
 
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.SkipInitCheck;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
@@ -15,11 +16,14 @@ public class DeployData implements Deploy{
 
     @Ignore private String name;
     @Ignore private File directory;
+    @Ignore private YamlFileUtils<DeployData> yamlFileUtils;
 
     private String author = Main.getGlobalSettings().getUsername();
     private String[] types =  new String[]{"CONFIGURATION"};
     private String compatibleVersions = "UNKNOWN";
     private String version = "1.0";
+    @SkipInitCheck private Long lastSize = null;
+
 
 
 
@@ -36,6 +40,7 @@ public class DeployData implements Deploy{
         d.ifPresent(deployData -> {
             deployData.setDirectory(file.getParentFile());
             deployData.setName(deployData.getDirectory().getName());
+            deployData.setYamlFileUtils(yml);
         });
         return d;
 

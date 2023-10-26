@@ -19,6 +19,7 @@ import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 
 import be.alexandre01.dreamnetwork.core.service.deployment.Deploy;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployContainer;
+import be.alexandre01.dreamnetwork.core.service.deployment.DeployData;
 import be.alexandre01.dreamnetwork.core.service.deployment.Deployer;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.api.utils.clients.NumberArgumentCheck;
@@ -234,12 +235,22 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                                   if(args[0].equalsIgnoreCase(":OK")){
                                         if(!deployList.isEmpty()){
                                             Deployer deployer = new Deployer();
-                                            deployList.forEach(deployer::addDeploy);
+                                            deployList.forEach(deploy -> {
+                                                deployer.addDeploy(deploy);
+                                                if(deploy instanceof DeployData){
+                                                    if(jvmExecutor.getStartupConfig().getStaticDeployers() == null) {
+                                                        jvmExecutor.setStaticDeployers(new ArrayList<>());
+                                                    }
+                                                    jvmExecutor.getStaticDeployers().add(((DeployData) deploy).getName());
+                                                }
+                                            });
                                             try {
+
                                                 deployer.deploys(jvmExecutor.getFileRootDir(), new Deployer.DeployAction() {
                                                     @Override
                                                     public void completed() {
                                                         Console.debugPrint("Deploys added !");
+                                                        jvmExecutor.getYmlFile().saveFile();
                                                     }
 
                                                     @Override

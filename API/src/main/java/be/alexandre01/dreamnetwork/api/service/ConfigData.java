@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.service;
 
 
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -36,4 +37,7 @@ public class ConfigData implements Serializable {
     protected Boolean screenEnabled = null;
     @Getter
     protected List<String> deployers = new ArrayList<>();
+    @Getter @Setter
+    protected List<String> staticDeployers = new ArrayList<>();
+
 }

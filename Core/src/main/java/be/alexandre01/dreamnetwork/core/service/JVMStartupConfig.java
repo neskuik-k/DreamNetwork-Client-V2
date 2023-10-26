@@ -112,11 +112,12 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
     public void saveFile(){
-        Optional<ConfigData> opt = super.getYmlFile().init(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"),true);
+       Optional<ConfigData> opt = super.getYmlFile().init(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml"),true);
 
         if(!opt.isPresent()) return;
 
         ConfigData config = opt.get();
+
 
         // Copy all data from config to this class
         // get declaredfields and fields

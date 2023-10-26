@@ -10,15 +10,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 class CustomConstructor extends Constructor {
-    private final boolean skipNull;
+    private final boolean ignorePatch;
     private final Class<?> clazz;
 
     @Getter
     private final List<Field> settedFields = new ArrayList<>();
 
-    CustomConstructor(LoaderOptions loaderOptions, boolean skipNull, Class<?> clazz) {
+    CustomConstructor(LoaderOptions loaderOptions, boolean ignorePatch, Class<?> clazz) {
         super(loaderOptions);
-        this.skipNull = skipNull;
+        this.ignorePatch = ignorePatch;
         this.clazz = clazz;
         yamlClassConstructors.put(NodeId.mapping, new NodesConstructor());
     }
@@ -27,11 +27,13 @@ class CustomConstructor extends Constructor {
         @Override
         protected Object constructJavaBean2ndStep(MappingNode node, Object object) {
 
-            if (!skipNull) {
+            if (!ignorePatch) {
                 Class type = node.getType();
 
-              //  System.out.println("Construct object " + node.getNodeId().name());
+               // System.out.println("Construct object " + node.getNodeId().name());
+
                 for (NodeTuple n : node.getValue()) {
+                 //   System.out.println("Construct object " + n.getKeyNode());
                     if (n.getKeyNode() instanceof ScalarNode) {
 
                         ScalarNode scalarNode = (ScalarNode) n.getKeyNode();

@@ -110,7 +110,7 @@ public class Console {
 
         Thread thread = ConsoleThread.get();
         if(blockConsole){
-            System.out.println("Stopping console");
+        //    System.out.println("Stopping console");
             if(thread != null){
                 //thread.interrupt();
                 ConsoleThread.stopCurrent();// tell the thread to stop
@@ -121,7 +121,7 @@ public class Console {
                 }*/
             }
         }else {
-            System.out.println("Rerun console");
+           // System.out.println("Rerun console");
             ConsoleThread.startCurrent();
         }
         //reload();
@@ -465,7 +465,7 @@ public class Console {
         clearConsole(DNUtils.get().getConsoleManager().getFormatter().getDefaultStream());
     }
     public static void clearConsole(PrintStream printStream){
-       if(true) return;
+       //if(true) return;
         try
         {
             final String os = System.getProperty("os.name");

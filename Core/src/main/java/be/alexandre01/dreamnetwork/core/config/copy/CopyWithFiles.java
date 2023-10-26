@@ -15,6 +15,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class CopyWithFiles implements FileCopy {
+
+    private final boolean skipIfSameName;
+    private final boolean overrideIfChanged;
+
+    public CopyWithFiles(boolean skipIfSameName, boolean overrideIfChanged){
+        this.skipIfSameName = skipIfSameName;
+        this.overrideIfChanged = overrideIfChanged;
+    }
     @Override
     public boolean copyFile(Path source, Path destination) throws IOException {
         if(Files.isDirectory(source)){
@@ -23,13 +31,20 @@ public class CopyWithFiles implements FileCopy {
             return true;
         }
 
-        if(Files.exists(destination)){
+        if(Files.exists(destination) && !skipIfSameName){
             if(!Config.isWindows())
                 makeWritable(destination);
-            Files.delete(destination);
-            if(Files.exists(destination)){
-                System.out.println(Colors.ANSI_PURPLE+"The file "+destination.getFileName()+" already exist");
-                return false;
+            if(overrideIfChanged){
+                if(Files.size(destination) == Files.size(source))
+                   return true;
+                Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+                return true;
+            }else {
+                Files.delete(destination);
+                if(Files.exists(destination)){
+                    System.out.println(Colors.ANSI_PURPLE+"The file "+destination.getFileName()+" already exist");
+                    return false;
+                }
             }
         }
         Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);

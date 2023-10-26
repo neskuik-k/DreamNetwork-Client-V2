@@ -41,6 +41,9 @@ public class FileCopyAsync implements IFileCopyAsync {
 
     Path source;
     Path destination;
+
+    @Setter @Getter boolean skipIfSameName = false;
+    @Setter @Getter boolean overrideIfChanged = false;
     long delay = -1;
 
     public FileCopyAsync(){
@@ -48,11 +51,11 @@ public class FileCopyAsync implements IFileCopyAsync {
         String method = Main.getGlobalSettings().getCopyIOMethod();
 
         if(method.equalsIgnoreCase("files")){
-            copy = new CopyWithFiles();
+            copy = new CopyWithFiles(skipIfSameName,overrideIfChanged);
         }else if(method.equalsIgnoreCase("channels")){
             copy = new CopyWithChannel();
         }else{
-            copy = new CopyWithFiles();
+            copy = new CopyWithFiles(skipIfSameName,overrideIfChanged);
         }
     }
     @Override

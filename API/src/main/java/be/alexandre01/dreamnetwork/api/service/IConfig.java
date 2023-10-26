@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
+import be.alexandre01.dreamnetwork.utils.Tuple;
 import lombok.Getter;
 
 import java.util.HashMap;
@@ -50,5 +51,6 @@ public interface IConfig {
     public void setScreenEnabled(Boolean screenEnabled);
 
     public List<String> getDeployers();
+    public List<String> getStaticDeployers();
     public void setDeployers(List<String> deployers);
 }

@@ -29,6 +29,7 @@ public class YamlFileUtils<T> {
     transient private T obj;
     transient @Getter File file;
     transient boolean skipNull;
+    transient boolean ignorePatch;
     public transient DumperOptions dumperOptions = new DumperOptions();
     public transient LoaderOptions loaderOptions = new LoaderOptions();
 
@@ -47,8 +48,9 @@ public class YamlFileUtils<T> {
         tags.put(clazz, tag);
     }
 
-    public boolean config(File file,Class<T> clazz,boolean skipNull){
+    public boolean config(File file,Class<T> clazz,boolean skipNull,boolean ignorePatch){
         this.skipNull = skipNull;
+        this.ignorePatch = ignorePatch;
         this.clazz = clazz;
         this.file = file;
         if(!file.exists()){
@@ -63,7 +65,12 @@ public class YamlFileUtils<T> {
         }
         return true;
     }
-
+    public boolean config(File file,Class<T> clazz,boolean skipNull){
+        return config(file,clazz,skipNull,false);
+    }
+    public boolean config(File file,Class<T> clazz){
+        return config(file,clazz,false,false);
+    }
     public Object read() throws Exception{
         return loadFile(file, clazz);
     }
@@ -91,7 +98,7 @@ public class YamlFileUtils<T> {
         };*/
         Yaml yaml;
         if(constructor == null || representer == null){
-            yaml = new Yaml(constructor = new CustomConstructor(loaderOptions,skipNull,clazz),representer = new CustomRepresenter(skipNull,clazz)/*,representer*/);
+            yaml = new Yaml(constructor = new CustomConstructor(loaderOptions,ignorePatch,clazz),representer = new CustomRepresenter(skipNull,clazz)/*,representer*/);
         }else {
             yaml = new Yaml(constructor,this.representer);
         }
@@ -118,7 +125,7 @@ public class YamlFileUtils<T> {
         t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
 
         //System.out.println("Load as "+toLoad.getName());
-        if(!skipNull){
+        if(!ignorePatch){
             // System.out.println("Check if there is missing fields in the file of "+clazz.getName());
            // System.out.println(representer.getClass().getName());
            // System.out.println(representer);
@@ -166,8 +173,8 @@ public class YamlFileUtils<T> {
         representer = new CustomRepresenter(true,clazz);
         representer.addClassTag(clazz, Tag.MAP);
     }
-    public Optional<T> init(File file, boolean skipNull){
-        if(!config(file,clazz,skipNull)){
+    public Optional<T> init(File file, boolean skipNull,boolean ignorePatch){
+        if(!config(file,clazz,skipNull,ignorePatch)){
             obj = createObject();
             if(obj instanceof YamlPreLoader){
                 ((YamlPreLoader) obj).whenLoaded();
@@ -203,6 +210,12 @@ public class YamlFileUtils<T> {
             }
         }
     }
+
+    public Optional<T> init(File file, boolean skipNull){
+        return init(file,skipNull,false);
+    }
+
+
 
     private void fillInMap(List<String> list, Map<String,Object> map){
         for (int i = 0; i < list.size(); i++) {
