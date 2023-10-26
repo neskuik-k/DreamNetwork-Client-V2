@@ -239,6 +239,10 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             AtomicBoolean b = new AtomicBoolean(true);
             for (int i = 0; i < l.size(); i++) {
                 DeployContainer deployContainer = l.get(i);
+                if(deployContainer == null){
+                    System.out.println("There is a deploy who is null");
+                    continue;
+                }
 
                 deployContainer.updateStaticFolder(getFileRootDir()).thenAccept(aBoolean -> {
                     j.getAndIncrement();
