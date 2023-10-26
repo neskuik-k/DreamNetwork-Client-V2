@@ -229,6 +229,13 @@ public class YamlFileUtils<T> {
                 String key = split[0];
 
                 if(split.length == 1 || split[1].replace(" ","").isEmpty()){
+
+                    for (int j = 2; j < split.length; j++) {
+                        split[1] = split[1]+":"+split[j];
+                    }
+
+
+
                     ArrayList<String> listOfList = new ArrayList<>();
                     while (true){
                         if(list.size()-1 < i+1){
@@ -267,7 +274,10 @@ public class YamlFileUtils<T> {
                     if(split.length == 1){
                         linesBefore.add(split[0].replace(" ","")+":");
                     }else {
-                        linesBefore.add(split[0].replace(" ","")+": "+split[1]);
+                        for (int j = 2; j < split.length; j++) {
+                            split[1] = split[1]+":"+split[j];
+                        }
+                        linesBefore.add(split[0]+":"+split[1]);
                     }
                     return;
                 }
@@ -288,7 +298,10 @@ public class YamlFileUtils<T> {
                     if(split.length == 1){
                         linesAfter.add(split[0].replace(" ","")+":");
                     }else {
-                        linesAfter.add(split[0].replace(" ","")+": "+split[1]);
+                        for (int j = 2; j < split.length; j++) {
+                            split[1] = split[1]+":"+split[j];
+                        }
+                        linesAfter.add(split[0]+":"+split[1]);
                     }
                     return;
                 }
