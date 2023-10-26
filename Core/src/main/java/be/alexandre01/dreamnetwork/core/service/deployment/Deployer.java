@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.service.deployment;
 
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.service.deployment.Deploy;
 import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 
 import java.io.File;

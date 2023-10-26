@@ -5,7 +5,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.core.commands.lists.DeployCommand;
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.core.service.deployment.DeployData;
+import be.alexandre01.dreamnetwork.api.service.deployment.DeployData;
 import lombok.NonNull;
 
 import java.io.File;

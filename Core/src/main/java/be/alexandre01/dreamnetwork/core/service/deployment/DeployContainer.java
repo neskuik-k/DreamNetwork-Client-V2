@@ -1,12 +1,12 @@
 package be.alexandre01.dreamnetwork.core.service.deployment;
 
 
+import be.alexandre01.dreamnetwork.api.service.deployment.DeployData;
 import lombok.Data;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 

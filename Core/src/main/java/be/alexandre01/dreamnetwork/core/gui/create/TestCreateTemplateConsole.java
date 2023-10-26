@@ -17,9 +17,9 @@ import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityM
 import be.alexandre01.dreamnetwork.core.gui.install.InstallTemplateConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 
-import be.alexandre01.dreamnetwork.core.service.deployment.Deploy;
+import be.alexandre01.dreamnetwork.api.service.deployment.Deploy;
 import be.alexandre01.dreamnetwork.core.service.deployment.DeployContainer;
-import be.alexandre01.dreamnetwork.core.service.deployment.DeployData;
+import be.alexandre01.dreamnetwork.api.service.deployment.DeployData;
 import be.alexandre01.dreamnetwork.core.service.deployment.Deployer;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.api.utils.clients.NumberArgumentCheck;

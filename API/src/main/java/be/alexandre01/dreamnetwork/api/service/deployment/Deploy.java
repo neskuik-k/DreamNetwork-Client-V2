@@ -1,4 +1,6 @@
-package be.alexandre01.dreamnetwork.core.service.deployment;
+package be.alexandre01.dreamnetwork.api.service.deployment;
+
+import be.alexandre01.dreamnetwork.api.service.deployment.DeployData;
 
 import java.io.File;
 

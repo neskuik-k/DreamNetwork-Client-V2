@@ -1,7 +1,7 @@
-package be.alexandre01.dreamnetwork.core.service.deployment;
+package be.alexandre01.dreamnetwork.api.service.deployment;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.SkipInitCheck;
-import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
@@ -18,7 +18,7 @@ public class DeployData implements Deploy{
     @Ignore private File directory;
     @Ignore private YamlFileUtils<DeployData> yamlFileUtils;
 
-    private String author = Main.getGlobalSettings().getUsername();
+    private String author = DNUtils.get().getConfigManager().getGlobalSettings().getUsername();
     private String[] types =  new String[]{"CONFIGURATION"};
     private String compatibleVersions = "UNKNOWN";
     private String version = "1.0";
