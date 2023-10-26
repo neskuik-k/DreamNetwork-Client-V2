@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.service;
 
 
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.SkipInitCheck;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -33,8 +34,8 @@ public class ConfigData implements Serializable {
     @Getter protected String xmx;
     protected String javaVersion = "default";
     protected int port = 0;
-    protected String installInfo = null;
-    protected Boolean screenEnabled = null;
+    @SkipInitCheck protected String installInfo = null;
+    @SkipInitCheck protected Boolean screenEnabled = null;
     @Getter
     protected List<String> deployers = new ArrayList<>();
     @Getter @Setter
