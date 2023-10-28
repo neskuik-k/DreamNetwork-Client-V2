@@ -106,7 +106,7 @@ public class ConsoleHighlighter implements IConsoleHighlighter {
 
                     //Remove the base color from the rainbow
                     colors.remove(command.getBaseColor());
-                    if (args.length > 3) {
+                    if (args.length > 2) {
                         for (int i = 2; i < args.length; i++) {
                             String c;
                             if (used.isEmpty()) {
