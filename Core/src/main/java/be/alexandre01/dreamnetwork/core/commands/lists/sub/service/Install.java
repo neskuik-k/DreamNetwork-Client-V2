@@ -97,7 +97,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
                             jvmExecutor.getPort(),
                             jvmExecutor.isProxy(),
                             installationLinks.name().toLowerCase()+".jar",
-                            jvmExecutor.getStartup(),
+                            //jvmExecutor.getStartup(),
                             javaVersion
                             );
 

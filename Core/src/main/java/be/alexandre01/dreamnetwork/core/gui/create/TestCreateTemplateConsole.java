@@ -201,7 +201,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName,false);
                         jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, mods, xms,  xmx,  port, proxy, true,bundleData);
                     }else {
-                        jvmExecutor.updateConfigFile(bundleData.getName(), serverName, mods,xms, xmx, port, proxy, null, null, null);
+                        jvmExecutor.updateConfigFile(bundleData.getName(), serverName, mods,xms, xmx, port, proxy, null, null);
                     }
                     CustomType.reloadAll(BundlesNode.class);
 

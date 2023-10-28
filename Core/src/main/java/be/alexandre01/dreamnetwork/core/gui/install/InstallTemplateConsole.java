@@ -146,7 +146,6 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
                         jvmExecutor.getPort(),
                         jvmExecutor.isProxy(),
                         installationLinks.name().toLowerCase()+".jar",
-                        jvmExecutor.getStartup(),
                         javaVersion
                 );
 

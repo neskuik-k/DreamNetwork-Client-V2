@@ -61,7 +61,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
         if(updateFile){
-            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,null);
+            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null);
             Console.printLang("service.startupConfig.updatingFile");
         }
 
@@ -445,16 +445,15 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @Override
     public void updateConfigFile(){
 
-        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,startup,javaVersion);
+        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,javaVersion);
     }
     @Override
-    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String startup, String javaVersion){
+    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion){
         this.type = type;
         this.xms = Xms;
         this.xmx = Xmx;
         this.port = port;
         this.proxy = proxy;
-        this.startup = startup;
         this.javaVersion = javaVersion;
         this.executable = exec;
         this.pathName = pathName;
