@@ -28,6 +28,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @JsonIgnore boolean proxy = false;
     @JsonIgnore boolean fixedData = false;
     @JsonIgnore File fileRootDir;
+    String startup;
 
     public static ConfigBuilder builder(){
         return new ConfigBuilder();
@@ -41,6 +42,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     public JVMStartupConfig(String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile){
         super();
         config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"network.yml"));
+        this.startup = super.startup;
         this.name = name;
         this.type = type;
         this.xms = xms;
