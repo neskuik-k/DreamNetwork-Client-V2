@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 @Getter @Setter
-@Builder
 public class JVMService implements IService {
     private int id;
     private int port;
