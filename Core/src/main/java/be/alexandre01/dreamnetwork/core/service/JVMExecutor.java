@@ -239,7 +239,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             AtomicBoolean b = new AtomicBoolean(true);
             for (int i = 0; i < l.size(); i++) {
                 DeployContainer deployContainer = l.get(i);
-                if(deployContainer == null){
+                if (deployContainer == null) {
                     System.out.println("There is a deploy who is null");
                     continue;
                 }
@@ -705,22 +705,24 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             }
         }
-        long processID = IJVMExecutor.getProcessID(proc);
-        Console.fine("PROCESS ID >" + processID);
-        Console.fine(port);
 
-        System.out.println("Process: " + proc);
-        System.out.println("id " + servers);
-        System.out.println("port" + port);
-        System.out.println("xms" + jvmConfig.getXms());
-        System.out.println("xmx" + jvmConfig.getXmx());
-        System.out.println("type" + jvmConfig.getType());
-        System.out.println("type" + jvmConfig);
-        System.out.println("ExecutorCallback" + callbacks);
-        System.out.println("charsId" + charsId);
-        System.out.println("processID" + processID);
-        JVMService jvmService;
         try {
+            long processID = IJVMExecutor.getProcessID(proc);
+            Console.fine("PROCESS ID >" + processID);
+            Console.fine(port);
+
+            System.out.println("Process: " + proc);
+            System.out.println("id " + servers);
+            System.out.println("port" + port);
+            System.out.println("xms" + jvmConfig.getXms());
+            System.out.println("xmx" + jvmConfig.getXmx());
+            System.out.println("type" + jvmConfig.getType());
+            System.out.println("type" + jvmConfig);
+            System.out.println("ExecutorCallback" + callbacks);
+            System.out.println("charsId" + charsId);
+            System.out.println("processID" + processID);
+            JVMService jvmService;
+            try {
             /* jvmService = JVMService.builder()
                     .process(proc)
                     .jvmExecutor(this)
@@ -734,57 +736,58 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     .uniqueCharactersID(charsId)
                     .processID(processID)
                     .build();*/
-            System.out.println("Before");
-            jvmService = new JVMService(servers,port,this,proc,jvmConfig.getType(),jvmConfig.getXmx(),jvmConfig.getXms(),charsId,processID,jvmConfig,callbacks);
-            System.out.println("After");
-        }catch (Exception e){
-            Console.bug(e);
-            return false;
-        }
-
-
-       System.out.println("JvmService instanciate");
-
-
-
-        if (callbacks != null) {
-            System.out.println("Callback not null");
-            if (callbacks.onStart != null) {
-                System.out.println("Callback onStart not null");
-                callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
+                System.out.println("Before");
+                jvmService = new JVMService(servers, port, this, proc, jvmConfig.getType(), jvmConfig.getXmx(), jvmConfig.getXms(), charsId, processID, jvmConfig, callbacks);
+                System.out.println("After");
+            } catch (Exception e) {
+                Console.bug(e);
+                return false;
             }
-            callbacks.setJvmService(jvmService);
-        }
-        System.out.println("Putting port");
-        jvmServices.put(servers, jvmService);
-        servicePort.put(port, jvmService);
-
-        // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
-        //t.start();
-        Console.printLang("service.executor.serverStartProcess", Level.INFO, getFullName());
-        if (jvmConfig.getType() == Mods.DYNAMIC) {
-            Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getName().toLowerCase() + "/" + getName() + "-" + servers)).getAbsolutePath(), Level.FINE);
-        }
-        if (jvmConfig.getType() == Mods.STATIC) {
-            staticService = jvmService;
-            Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getName().toLowerCase())).getAbsolutePath(), Level.FINE);
-        }
-
-        // Main.getInstance().processInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
 
 
-        getStartServerList().add(jvmService.getFullName());
-        //idSet.add(servers);
-
-        //CONNECTION TO SERVER
-        // Connect connect = new Connect("localhost",port+1,"Console","8HetY4474XisrZ2FGwV5z",finalname);
-        //   connect.setServer(this);
+            System.out.println("JvmService instanciate");
 
 
-        core.getEventsFactory().callEvent(new CoreServiceStartEvent(core.getDnCoreAPI(), jvmService));
-        //SCREEN SYSTEM
+            if (callbacks != null) {
+                System.out.println("Callback not null");
+                if (callbacks.onStart != null) {
+                    System.out.println("Callback onStart not null");
+                    callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
+                }
+                callbacks.setJvmService(jvmService);
+            }
 
-        new Screen(jvmService);
+
+            System.out.println("Putting port");
+            jvmServices.put(servers, jvmService);
+            servicePort.put(port, jvmService);
+
+            // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
+            //t.start();
+            Console.printLang("service.executor.serverStartProcess", Level.INFO, getFullName());
+            if (jvmConfig.getType() == Mods.DYNAMIC) {
+                Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getName().toLowerCase() + "/" + getName() + "-" + servers)).getAbsolutePath(), Level.FINE);
+            }
+            if (jvmConfig.getType() == Mods.STATIC) {
+                staticService = jvmService;
+                Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + getName().toLowerCase())).getAbsolutePath(), Level.FINE);
+            }
+
+            // Main.getInstance().processInput = new BufferedWriter(new OutputStreamWriter(proc.getOutputStream()));
+
+
+            getStartServerList().add(jvmService.getFullName());
+            //idSet.add(servers);
+
+            //CONNECTION TO SERVER
+            // Connect connect = new Connect("localhost",port+1,"Console","8HetY4474XisrZ2FGwV5z",finalname);
+            //   connect.setServer(this);
+
+
+            core.getEventsFactory().callEvent(new CoreServiceStartEvent(core.getDnCoreAPI(), jvmService));
+            //SCREEN SYSTEM
+
+            new Screen(jvmService);
         /*ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
         executorService.scheduleAtFixedRate(() -> {
 
@@ -792,13 +795,17 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }, 0, 1, TimeUnit.SECONDS);
 */
 
-        queue.remove(tuple);
-        if (!queue.isEmpty()) {
-            Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
-            startJVM(renew);
-        }
+            queue.remove(tuple);
+            if (!queue.isEmpty()) {
+                Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
+                startJVM(renew);
+            }
 
-        return true;
+            return true;
+        } catch (Exception e) {
+            Console.bug(e);
+            return false;
+        }
     }
 
     @Override
