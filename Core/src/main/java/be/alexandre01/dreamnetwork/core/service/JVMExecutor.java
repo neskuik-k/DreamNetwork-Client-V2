@@ -721,7 +721,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         System.out.println("processID" + processID);
         JVMService jvmService;
         try {
-             jvmService = JVMService.builder()
+            /* jvmService = JVMService.builder()
                     .process(proc)
                     .jvmExecutor(this)
                     .id(servers)
@@ -733,7 +733,9 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     .executorCallbacks(callbacks)
                     .uniqueCharactersID(charsId)
                     .processID(processID)
-                    .build();
+                    .build();*/
+
+            jvmService = new JVMService(servers,port,this,proc,jvmConfig.getType(),jvmConfig.getXmx(),jvmConfig.getXms(),charsId,processID,jvmConfig,callbacks);
         }catch (Exception e){
             Console.bug(e);
             return false;

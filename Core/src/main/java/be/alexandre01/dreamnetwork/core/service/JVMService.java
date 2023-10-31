@@ -40,6 +40,21 @@ public class JVMService implements IService {
 
     CompletableFuture<Boolean> stopFuture = new CompletableFuture<>();
 
+
+    public JVMService(int id, int port, JVMExecutor jvmExecutor, Process process, IJVMExecutor.Mods type, String xmx, String xms, String uniqueCharactersID, long processID, IConfig usedConfig, ExecutorCallbacks executorCallbacks) {
+        this.id = id;
+        this.port = port;
+        this.jvmExecutor = jvmExecutor;
+        this.process = process;
+        this.type = type;
+        this.xmx = xmx;
+        this.xms = xms;
+        this.uniqueCharactersID = uniqueCharactersID;
+        this.processID = processID;
+        this.usedConfig = usedConfig;
+        this.executorCallbacks = executorCallbacks;
+    }
+
     @Override
     public Optional<String> getUniqueCharactersID() {
         return Optional.ofNullable(uniqueCharactersID);
