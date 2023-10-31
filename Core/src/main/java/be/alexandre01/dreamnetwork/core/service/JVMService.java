@@ -41,17 +41,29 @@ public class JVMService implements IService {
 
 
     public JVMService(int id, int port, JVMExecutor jvmExecutor, Process process, IJVMExecutor.Mods type, String xmx, String xms, String uniqueCharactersID, long processID, IConfig usedConfig, ExecutorCallbacks executorCallbacks) {
+        System.out.println("1");
         this.id = id;
+        System.out.println("2");
         this.port = port;
+        System.out.println("3");
         this.jvmExecutor = jvmExecutor;
+        System.out.println("4");
         this.process = process;
+        System.out.println("5");
         this.type = type;
+        System.out.println("6");
         this.xmx = xmx;
+        System.out.println("7");
         this.xms = xms;
+        System.out.println("8");
         this.uniqueCharactersID = uniqueCharactersID;
+        System.out.println("9");
         this.processID = processID;
+        System.out.println("10");
         this.usedConfig = usedConfig;
+        System.out.println("11");
         this.executorCallbacks = executorCallbacks;
+        System.out.println("12");
     }
 
     @Override

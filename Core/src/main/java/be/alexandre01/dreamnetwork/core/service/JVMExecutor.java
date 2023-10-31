@@ -148,7 +148,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     @Synchronized
     public ExecutorCallbacks startServer() {
-        return startServer(IStartupConfigBuilder.builder().buildFrom(getStartupConfig()));
+        return startServer(this);
     }
 
     @Override
@@ -734,15 +734,16 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     .uniqueCharactersID(charsId)
                     .processID(processID)
                     .build();*/
-
+            System.out.println("Before");
             jvmService = new JVMService(servers,port,this,proc,jvmConfig.getType(),jvmConfig.getXmx(),jvmConfig.getXms(),charsId,processID,jvmConfig,callbacks);
+            System.out.println("After");
         }catch (Exception e){
             Console.bug(e);
             return false;
         }
 
 
-        Console.fine("JvmService instanciate");
+       System.out.println("JvmService instanciate");
 
 
 
