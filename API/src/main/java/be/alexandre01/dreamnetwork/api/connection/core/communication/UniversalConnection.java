@@ -16,14 +16,13 @@ import java.util.ArrayList;
 
 @Getter
 @Setter
-public class UniversalConnection {
+public abstract class UniversalConnection {
     private String name;
     private int port;
     private String info;
     private ChannelHandlerContext channelHandlerContext;
 
     private IRequestManager requestManager;
-    private ICoreHandler coreHandler;
     private IClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
 
@@ -37,23 +36,24 @@ public class UniversalConnection {
 
     @Deprecated
     public Packet writeAndFlush(Message message) {
-        coreHandler.writeAndFlush(message, this);
+        getCoreHandler().writeAndFlush(message, this);
         return message.toPacket(this);
     }
 
     @Deprecated
     public Packet writeAndFlush(Message message, GenericFutureListener<? extends Future<? super Void>> listener) {
-        coreHandler.writeAndFlush(message, listener, this);
+        getCoreHandler().writeAndFlush(message, listener, this);
         return message.toPacket(this);
     }
 
     public Packet dispatch(Packet packet) {
-        coreHandler.writeAndFlush(packet.getMessage(), this);
+        getCoreHandler().writeAndFlush(packet.getMessage(), this);
         return packet;
     }
 
     public Packet dispatch(Packet packet, GenericFutureListener<? extends Future<? super Void>> future) {
-        coreHandler.writeAndFlush(packet.getMessage(),future, this);
+        getCoreHandler().writeAndFlush(packet.getMessage(),future, this);
         return packet;
     }
+    public abstract ICoreHandler getCoreHandler();
 }

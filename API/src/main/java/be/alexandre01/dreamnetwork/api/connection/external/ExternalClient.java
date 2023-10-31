@@ -10,9 +10,15 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ExternalClient extends UniversalConnection {
+    ICoreHandler coreHandler;
     public ExternalClient(int port, String info, ChannelHandlerContext ctx, ICoreHandler coreHandler) {
         super(port, info, ctx);
         setRequestManager(DNUtils.get().createClientRequestManager(this));
         setCoreHandler(coreHandler);
+    }
+
+    @Override
+    public ICoreHandler getCoreHandler() {
+        return coreHandler;
     }
 }
