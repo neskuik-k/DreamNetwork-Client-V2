@@ -148,7 +148,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Override
     @Synchronized
     public ExecutorCallbacks startServer() {
-        return startServer(this);
+        return startServer(IStartupConfigBuilder.builder().buildFrom(getStartupConfig()));
     }
 
     @Override
