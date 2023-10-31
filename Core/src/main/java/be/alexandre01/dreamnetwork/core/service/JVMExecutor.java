@@ -719,19 +719,26 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         System.out.println("ExecutorCallback" + callbacks);
         System.out.println("charsId" + charsId);
         System.out.println("processID" + processID);
-        JVMService jvmService = JVMService.builder()
-                .process(proc)
-                .jvmExecutor(this)
-                .id(servers)
-                .port(port)
-                .xms(jvmConfig.getXms())
-                .xmx(jvmConfig.getXmx())
-                .type(jvmConfig.getType())
-                .usedConfig(jvmConfig)
-                .executorCallbacks(callbacks)
-                .uniqueCharactersID(charsId)
-                .processID(processID)
-                .build();
+        JVMService jvmService;
+        try {
+             jvmService = JVMService.builder()
+                    .process(proc)
+                    .jvmExecutor(this)
+                    .id(servers)
+                    .port(port)
+                    .xms(jvmConfig.getXms())
+                    .xmx(jvmConfig.getXmx())
+                    .type(jvmConfig.getType())
+                    .usedConfig(jvmConfig)
+                    .executorCallbacks(callbacks)
+                    .uniqueCharactersID(charsId)
+                    .processID(processID)
+                    .build();
+        }catch (Exception e){
+            Console.bug(e);
+            return false;
+        }
+
 
         Console.fine("JvmService instanciate");
 
