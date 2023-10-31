@@ -708,8 +708,19 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         long processID = IJVMExecutor.getProcessID(proc);
         Console.fine("PROCESS ID >" + processID);
         Console.fine(port);
-        JVMService jvmService = JVMService.builder().
-                process(proc)
+
+        System.out.println("Process: " + proc);
+        System.out.println("id " + servers);
+        System.out.println("port" + port);
+        System.out.println("xms" + jvmConfig.getXms());
+        System.out.println("xmx" + jvmConfig.getXmx());
+        System.out.println("type" + jvmConfig.getType());
+        System.out.println("type" + jvmConfig);
+        System.out.println("ExecutorCallback" + callbacks);
+        System.out.println("charsId" + charsId);
+        System.out.println("processID" + processID);
+        JVMService jvmService = JVMService.builder()
+                .process(proc)
                 .jvmExecutor(this)
                 .id(servers)
                 .port(port)
@@ -718,9 +729,12 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 .type(jvmConfig.getType())
                 .usedConfig(jvmConfig)
                 .executorCallbacks(callbacks)
-                .uniqueCharactersID(Optional.ofNullable(charsId))
+                .uniqueCharactersID(charsId)
                 .processID(processID)
                 .build();
+
+        Console.fine("JvmService instanciate");
+
 
 
         if (callbacks != null) {
@@ -730,6 +744,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             callbacks.setJvmService(jvmService);
         }
+        Console.fine("Putting port");
         jvmServices.put(servers, jvmService);
         servicePort.put(port, jvmService);
 

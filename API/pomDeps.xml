@@ -3,11 +3,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>be.alexandre01.dreamnetwork</groupId>
-        <artifactId>DreamNetworkV2</artifactId>
-        <version>1.11.0-SNAPSHOT</version>
-    </parent>
 
     <groupId>be.alexandre01.dreamnetwork</groupId>
     <artifactId>Core-API</artifactId>
@@ -53,7 +48,7 @@
                             <file>${project.basedir}/target/${project.artifactId}-1.11.0-SNAPSHOT.jar</file>
                             <url>https://repo.dreamnetwork.cloud/repository/maven-snapshots/</url>
                             <repositoryId>maven-snapshots</repositoryId>
-                            <pomFile>${project.basedir}/pomDeps.xml</pomFile>
+                            <pomFile>${project.basedir}/pom.xml</pomFile>
                             <groupId>be.alexandre01.dreamnetwork</groupId>
                             <artifactId>${project.artifactId}</artifactId>
                             <version>${project.version}</version>

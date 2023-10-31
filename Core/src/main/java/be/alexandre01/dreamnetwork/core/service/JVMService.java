@@ -31,7 +31,7 @@ public class JVMService implements IService {
     private String xmx;
     private String xms;
 
-    private Optional<String> uniqueCharactersID;
+    private String uniqueCharactersID;
     private long processID;
     private IScreen screen = null;
 
@@ -42,7 +42,7 @@ public class JVMService implements IService {
 
     @Override
     public Optional<String> getUniqueCharactersID() {
-        return uniqueCharactersID;
+        return Optional.ofNullable(uniqueCharactersID);
     }
 
     @Override
