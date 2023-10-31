@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.connection.external;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -74,6 +75,11 @@ public class CoreNetServer extends UniversalConnection {
             iExternalCore.getClientHandler().writeAndFlush(message, listener);
         });
         return packet;
+    }
+
+    @Override
+    public ICoreHandler getCoreHandler() {
+        return null;
     }
 
     @Override
