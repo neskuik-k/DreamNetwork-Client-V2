@@ -19,8 +19,8 @@
     </properties>
     <dependencies>
         <dependency>
-            <groupId>be.dreamnetwork</groupId>
-            <artifactId>API</artifactId>
+            <groupId>be.alexandre01.dreamnetwork</groupId>
+            <artifactId>Core-API</artifactId>
             <version>1.11.0-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
