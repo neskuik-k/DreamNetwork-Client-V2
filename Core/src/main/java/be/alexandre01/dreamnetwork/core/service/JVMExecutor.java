@@ -711,19 +711,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             Console.fine("PROCESS ID >" + processID);
             Console.fine(port);
 
-            System.out.println("Process: " + proc);
-            System.out.println("id " + servers);
-            System.out.println("port" + port);
-            System.out.println("xms" + jvmConfig.getXms());
-            System.out.println("xmx" + jvmConfig.getXmx());
-            System.out.println("type" + jvmConfig.getType());
-            System.out.println("type" + jvmConfig);
-            System.out.println("ExecutorCallback" + callbacks);
-            System.out.println("charsId" + charsId);
-            System.out.println("processID" + processID);
-            JVMService jvmService;
-            try {
-            /* jvmService = JVMService.builder()
+            JVMService jvmService = JVMService.builder()
                     .process(proc)
                     .jvmExecutor(this)
                     .id(servers)
@@ -735,30 +723,21 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     .executorCallbacks(callbacks)
                     .uniqueCharactersID(charsId)
                     .processID(processID)
-                    .build();*/
-                System.out.println("Before");
-                jvmService = new JVMService(servers, port, this, proc, jvmConfig.getType(), jvmConfig.getXmx(), jvmConfig.getXms(), charsId, processID, jvmConfig, callbacks);
-                System.out.println("After");
-            } catch (Exception e) {
-                Console.bug(e);
-                return false;
-            }
+                    .build();
 
 
-            System.out.println("JvmService instanciate");
+            Console.fine("JvmService instanciate");
 
 
             if (callbacks != null) {
-                System.out.println("Callback not null");
+               Console.fine("Callback not null");
                 if (callbacks.onStart != null) {
-                    System.out.println("Callback onStart not null");
                     callbacks.onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
                 }
                 callbacks.setJvmService(jvmService);
             }
 
 
-            System.out.println("Putting port");
             jvmServices.put(servers, jvmService);
             servicePort.put(port, jvmService);
 
