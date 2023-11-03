@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.request;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.util.concurrent.Future;

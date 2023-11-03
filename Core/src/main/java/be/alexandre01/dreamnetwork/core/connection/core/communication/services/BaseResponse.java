@@ -102,9 +102,6 @@ public class BaseResponse extends CoreResponse {
             if (cmdClient != null) {
                 cmdClient.getRequestManager().sendRequest(SERVER_EXECUTE_COMMAND, message.getString("CMD"));
             }
-
-            String server = (String) message.getInRoot("RETRANS");
-            this.core.getClientManager().getClient(server).writeAndFlush(message);
         });
 
         addRequestInterceptor(CORE_RETRANSMISSION, (message, ctx, c) -> {

@@ -624,7 +624,6 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             if (Config.isWindows()) {
                 if (getInstallLink().isPresent()) {
                     if (getInstallLink().get().getExecType() == ExecType.BUNGEECORD) {
-
                         startup = "cmd /c start " + javaPath + " -Xms" + jvmConfig.getXms() + " -Xmx" + jvmConfig.getXmx() + " %args% -jar %exec% nogui";
                         jvmConfig.setScreenEnabled(false);
                         Console.print(Colors.PURPLE_BOLD_BRIGHT + "Changing startup mode, Screen Viewer for BungeeCord is not good supported on Windows\n Switch to terminal console mode", Level.WARNING);

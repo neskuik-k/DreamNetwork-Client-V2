@@ -38,7 +38,7 @@ public class ServiceClient extends AServiceClient {
     private ChannelHandlerContext channelHandlerContext;
 
     private final ClientRequestManager requestManager;
-    private ICoreHandler coreHandler;
+    @Getter private ICoreHandler coreHandler;
     private IService jvmService;
     private IClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
