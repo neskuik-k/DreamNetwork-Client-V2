@@ -87,7 +87,6 @@ public abstract class TaskHandler {
         Executors.newScheduledThreadPool(2).scheduleAtFixedRate(() -> {
             Long l = System.currentTimeMillis();
             if(timeStamps.isEmpty()) return;
-            System.out.println("Executor check");
 
             //non blocking timeStamps loop
             List<TaskHandler> handlersToRemove = new ArrayList<>();

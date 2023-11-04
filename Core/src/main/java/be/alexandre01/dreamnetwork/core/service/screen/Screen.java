@@ -67,7 +67,7 @@ public class Screen extends Thread implements IScreen {
         }
 
         //close logging
-        if(getScreenStream().getScreenInReader().getFileHandler() != null)
+        if(getScreenStream() != null && getScreenStream().getScreenInReader() != null && getScreenStream().getScreenInReader().getFileHandler() != null)
             getScreenStream().getScreenInReader().getFileHandler().close();
         running = false;
         if(Console.actualConsole.equals("s:"+screenName)){

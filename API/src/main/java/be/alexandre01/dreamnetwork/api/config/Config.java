@@ -107,11 +107,11 @@ public class Config {
                     return FileVisitResult.CONTINUE;
                 }
             });
-            Console.debugPrint("Deleting the directory... "+ path);
+            Console.fine("Deleting the directory... "+ path);
             long end = System.currentTimeMillis();
             // calculate how long it took to delete the directory
             long elapsedTime = end - start;
-            Console.debugPrint("Elapsed Time: " + elapsedTime + " ms");
+            Console.fine("Elapsed Time: " + elapsedTime + " ms");
             return true;
         } catch (IOException e) {
             return false;

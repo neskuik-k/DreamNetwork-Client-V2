@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceCli
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
 import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
@@ -16,6 +17,8 @@ import lombok.*;
 
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 @Getter @Setter @Builder
 public class JVMService implements IService {
@@ -66,8 +69,58 @@ public class JVMService implements IService {
 
     @Override @Synchronized
     public CompletableFuture<Boolean> stop(){
-        removeService();
-        return CompletableFuture.completedFuture(true);
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+        safeStop().whenComplete((aBoolean, throwable) -> {
+            if(!aBoolean) {
+                removeService();
+                completableFuture.complete(false);
+                return;
+            }
+            ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
+
+            scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
+                int trying = 0;
+                @Override
+                public void run() {
+                    trying ++;
+                    if(!process.isAlive() || trying > 10){
+                        if(trying > 10){
+                            Console.fine("Process is not dead, killing it");
+                            process.destroy();
+                            process.destroyForcibly();
+                        }
+                        scheduledExecutorService.shutdown();
+                        removeService();
+                        completableFuture.complete(true);
+                    }
+                }
+            }, 1000, 1000, java.util.concurrent.TimeUnit.MILLISECONDS);
+        });
+        return completableFuture;
+    }
+
+
+    public CompletableFuture<Boolean> safeStop(){
+        CompletableFuture<Boolean> completableFuture = new CompletableFuture<>();
+
+        if(client == null){
+            completableFuture.complete(false);
+            return completableFuture;
+        }
+
+        Console.print(Colors.PURPLE+"Safe stopping the process "+getFullName());
+        DNCallback.single(client.getRequestManager().getRequest(RequestType.CORE_STOP_SERVER, getFullName()), new TaskHandler() {
+            @Override
+            public void onAccepted() {
+                completableFuture.complete(true);
+            }
+
+            @Override
+            public void onFailed() {
+                completableFuture.complete(false);
+            }
+        }).send();
+        return completableFuture;
     }
 
 
@@ -81,6 +134,7 @@ public class JVMService implements IService {
     public CompletableFuture<Boolean> kill() {
         process.destroy();
         process.destroyForcibly();
+        removeService();
         return CompletableFuture.completedFuture(true);
     }
 

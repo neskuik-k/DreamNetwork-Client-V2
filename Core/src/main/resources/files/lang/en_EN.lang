@@ -300,7 +300,6 @@ connection.core.handler.localAddress=Local ADDRESS: %var%
 connection.core.handler.remoteAddress=Remote ADDRESS: %var%
 connection.core.handler.channelActive=Channel Active
 connection.core.handler.processStopped=%redbo%A process '%var%' has just stopped :stop_button():.
-connection.core.handler.removeClient=Remove server, client : %var%
 
 connection.request.sent=Request %var% sent with success!
 connection.request.exception.requestNotFound=The request %var% isn't foundable for client %var%.

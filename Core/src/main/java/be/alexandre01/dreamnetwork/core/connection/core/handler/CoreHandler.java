@@ -261,7 +261,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
         //Remove Server
-        printLang("connection.core.handler.removeClient", client);
         if (client != null) {
 
             if (client instanceof AServiceClient) {
