@@ -42,6 +42,16 @@ public class Message extends LinkedHashMap<String, Object> {
         this(new LinkedHashMap<>(), createMapper());
     }
 
+    public Message(String key, Object value, boolean objectFormat, Class<?>... overrideChild) {
+        this();
+        set(key, value, objectFormat, overrideChild);
+    }
+
+    public Message(String key, Object value, Class<?>... overrideChild) {
+        this();
+        set(key, value, overrideChild);
+    }
+
     public static Gson createGson() {
         GsonBuilder gsonBuilder = new GsonBuilder();
         //   gsonBuilder.setLenient();
@@ -103,26 +113,35 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
 
-    public Message set(String id, Object value, Class<?>... overrideChild) {
-        GsonBuilder gsonBuilder = new GsonBuilder();
+    public Message set(String id, Object value, boolean objectFormat, Class<?>... overrideChild) {
+        if(objectFormat){
+            GsonBuilder gsonBuilder = null;
+            if (overrideChild.length != 0) {
+                gsonBuilder = new GsonBuilder();
+                List<Class<?>> classes = Arrays.asList(overrideChild);
+                gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
+                    public boolean shouldSkipField(FieldAttributes field) {
+                        return classes.stream().noneMatch(field.getDeclaringClass()::equals);
+                    }
 
-        if (overrideChild.length != 0) {
-            List<Class<?>> classes = Arrays.asList(overrideChild);
-            gsonBuilder.setExclusionStrategies(new ExclusionStrategy() {
-                public boolean shouldSkipField(FieldAttributes field) {
-                    return classes.stream().noneMatch(field.getDeclaringClass()::equals);
-                }
-
-                @Override
-                public boolean shouldSkipClass(Class<?> aClass) {
-                    return false;
-                }
-            });
-            value = gsonBuilder.create().toJson(value);
+                    @Override
+                    public boolean shouldSkipClass(Class<?> aClass) {
+                        return false;
+                    }
+                });
+            }
+            if(!value.getClass().isPrimitive() || value.getClass().isEnum()){
+                if(gsonBuilder == null)
+                    gsonBuilder = new GsonBuilder();
+                value = gsonBuilder.create().toJson(value);
+            }
         }
         super.put(prefix + id, value);
-        //System.out.println("Value to be set " + value);
         return this;
+    }
+
+    public Message set(String id, Object value, Class<?>... overrideChild) {
+        return set(id, value, false, overrideChild);
     }
 
     public Message setCustomObject(String id, Object value, Class<?> tClass) {

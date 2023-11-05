@@ -114,7 +114,6 @@ public class JVMService implements IService {
             public void onAccepted() {
                 completableFuture.complete(true);
             }
-
             @Override
             public void onFailed() {
                 completableFuture.complete(false);

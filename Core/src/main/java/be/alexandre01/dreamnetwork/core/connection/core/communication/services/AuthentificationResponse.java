@@ -78,7 +78,6 @@ public class AuthentificationResponse extends CoreResponse {
                         ctx.channel().close();
                         return;
                     }
-
                     String info = message.getString("INFO");
                     if(info.contains("ExternalDream")){
                         Console.print(Colors.GREEN_UNDERLINED+"ExternalDream CONNECTION DETECTED !", Level.INFO);
