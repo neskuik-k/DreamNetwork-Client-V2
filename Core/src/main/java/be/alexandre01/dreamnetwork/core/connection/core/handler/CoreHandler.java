@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.ListReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -9,8 +10,8 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationResponse;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationReceiver;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
@@ -41,16 +42,16 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
 
     @Getter
-    private ArrayList<CoreResponse> responses = new ArrayList<>();
+    private ListReceiver responses = new ListReceiver();
 
     @Getter
-    private static ArrayList<CoreResponse> globalResponses = new ArrayList<>();
+    private static ArrayList<CoreReceiver> globalResponses = new ArrayList<>();
     @Setter
     @Getter
     private boolean hasDevUtilSoftwareAccess = false;
     @Getter
     private ArrayList<ChannelHandlerContext> allowedCTX = new ArrayList<>();
-    private final AuthentificationResponse authResponse;
+    private final AuthentificationReceiver authResponse;
     @Getter
     private ArrayList<ChannelHandlerContext> externalConnections = new ArrayList<>();
     //A PATCH
@@ -62,7 +63,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
        //this.callbackManager = new CallbackManager();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
-        authResponse = new AuthentificationResponse(this);
+        authResponse = new AuthentificationReceiver(this);
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -192,17 +193,17 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
                // core.getFileHandler().publish(new LogRecord(Level.INFO, "Received message from " + ctx.channel().remoteAddress().toString().split(":")[0] + " : " + message.toString()));
                 for (int i = 0; i < responses.size(); i++) {
-                    CoreResponse iBasicClientResponse = responses.get(i);
+                    CoreReceiver iBasicClientResponse = responses.get(i);
                     try {
-                        iBasicClientResponse.onAutoResponse(message, ctx, client);
+                        iBasicClientResponse.onAutoReceive(message, ctx, client);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 for (int i = 0; i < globalResponses.size(); i++) {
-                    CoreResponse iBasicClientResponse = globalResponses.get(i);
+                    CoreReceiver iBasicClientResponse = globalResponses.get(i);
                     try {
-                        iBasicClientResponse.onAutoResponse(message, ctx, client);
+                        iBasicClientResponse.onAutoReceive(message, ctx, client);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -213,7 +214,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 try {
 
                     Message message = Message.createFromJsonString(s_to_decode);
-                    authResponse.onAutoResponse(message, ctx, core.getClientManager().getClient(ctx));
+                    authResponse.onAutoReceive(message, ctx, core.getClientManager().getClient(ctx));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -357,5 +358,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
         ctx.writeAndFlush(entry).addListener(listener);
         //buf.release();
+    }
+
+    @Override
+    public void addResponse(CoreReceiver coreReceiver) {
+        responses.add(coreReceiver);
     }
 }

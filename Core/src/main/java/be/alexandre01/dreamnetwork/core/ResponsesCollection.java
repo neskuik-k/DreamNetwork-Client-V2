@@ -1,9 +1,8 @@
 package be.alexandre01.dreamnetwork.core;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IResponsesCollection;
-import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
-import be.alexandre01.dreamnetwork.core.connection.core.communication.services.BaseResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.packets.handler.PacketRequestConverter;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.services.BaseReceiver;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -12,6 +11,7 @@ import be.alexandre01.dreamnetwork.core.connection.core.communication.services.B
 public class ResponsesCollection extends IResponsesCollection {
     public ResponsesCollection(){
         System.out.println("BASE RESPONSE");
-        addResponse("BaseResponse",new BaseResponse());
+        addResponse("BaseResponse",new BaseReceiver());
+        addResponse("PacketRequestConverter",new PacketRequestConverter());
     }
 }

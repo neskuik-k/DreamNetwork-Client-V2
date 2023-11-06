@@ -84,6 +84,12 @@ public abstract class RequestType {
     public final static RequestInfo DEV_TOOLS_NEW_SERVERS = new RequestInfo(95,"DEV_TOOLS_NEW_SERVERS");
     public final static RequestInfo DEV_TOOLS_REMOVE_SERVERS = new RequestInfo(96,"DEV_TOOLS_REMOVE_SERVERS");
 
+    public final static RequestInfo UNIVERSAL_CALL_DATA = new RequestInfo(111,"UNIVERSAL_CALL_DATA");
+    public final static RequestInfo UNIVERSAL_SEND_DATA = new RequestInfo(111,"UNIVERSAL_CALL_DATA");
+    public final static RequestInfo UNIVERSAL_OVERWRITE_DATA = new RequestInfo(112,"UNIVERSAL_OVERWRITE_DATA");
+    public final static RequestInfo UNIVERSAL_SUBSCRIBE_DATA = new RequestInfo(113,"UNIVERSAL_SUBSCRIBE_DATA");
+    public final static RequestInfo UNIVERSAL_UNSUBSCRIBE_DATA = new RequestInfo(114,"UNIVERSAL_UNSUBSCRIBE_DATA");
+
 
     @Getter private int id;
 

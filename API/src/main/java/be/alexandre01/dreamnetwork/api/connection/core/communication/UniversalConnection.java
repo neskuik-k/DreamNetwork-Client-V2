@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
+import be.alexandre01.dreamnetwork.api.connection.core.datas.DataManager;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.request.IRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.Packet;
@@ -25,6 +26,7 @@ public abstract class UniversalConnection {
     private IRequestManager requestManager;
     private IClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
+    private DataManager dataManager = new DataManager(this);
 
 
     public UniversalConnection(int port, String info, ChannelHandlerContext ctx) {

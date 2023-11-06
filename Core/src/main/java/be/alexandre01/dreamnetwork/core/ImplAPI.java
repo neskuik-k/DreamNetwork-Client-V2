@@ -5,11 +5,12 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.IJVMUtils;
 import be.alexandre01.dreamnetwork.api.config.IConfigManager;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IClientManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.IResponsesCollection;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.packets.PacketHandlingFactory;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
-import be.alexandre01.dreamnetwork.api.connection.core.handler.ICoreHandler;
 import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.connection.external.IExternalCore;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -19,13 +20,14 @@ import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenManager;
 
 import be.alexandre01.dreamnetwork.api.commands.ICommandReader;
-import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.service.JVMUtils;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
+import com.google.common.collect.Multimap;
 import lombok.Getter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 
 public class ImplAPI extends DNCoreAPI {
@@ -39,13 +41,14 @@ public class ImplAPI extends DNCoreAPI {
 
     private final JVMUtils jvmUtils;
 
-    IResponsesCollection responsesCollection = new ResponsesCollection();
+    IResponsesCollection responsesCollection;
 
 
-    public ImplAPI(){
-        core = Core.getInstance();
-        jvmUtils = new JVMUtils();
-        instance = this;
+    public ImplAPI(Core core){
+       this.core = core;
+       jvmUtils = new JVMUtils();
+       instance = this;
+       responsesCollection = new ResponsesCollection();
     }
 
     @Override
@@ -56,6 +59,11 @@ public class ImplAPI extends DNCoreAPI {
     @Override
     public IDNChannelManager getChannelManager(){
         return core.getChannelManager();
+    }
+
+    @Override
+    public PacketHandlingFactory getPacketFactory() {
+        return core.getPacketHandlingFactory();
     }
 
     @Override
@@ -82,7 +90,7 @@ public class ImplAPI extends DNCoreAPI {
         return core.getDevToolsToken();
     }
     @Override
-    public ArrayList<CoreResponse> getGlobalResponses(){
+    public ArrayList<CoreReceiver> getGlobalResponses(){
         return core.getGlobalResponses();
     }
 
@@ -119,12 +127,37 @@ public class ImplAPI extends DNCoreAPI {
 
     @Override
     public ICallbackManager getCallbackManager() {
-        return Core.getInstance().getCallbackManager();
+        return core.getCallbackManager();
     }
 
     @Override
     public Optional<IExternalCore> getExternalCore() {
         return Optional.of(ExternalCore.getInstance());
+    }
+
+    @Override
+    public void setLocalData(String key, Object data) {
+        core.getDataLocalObjects().setLocalData(key,data);
+    }
+
+    @Override
+    public Object getLocalData(String key) {
+        return core.getDataLocalObjects().getLocalData(key);
+    }
+
+    @Override
+    public <T> T getLocalData(String key, Class<T> tClass) {
+        return core.getDataLocalObjects().getLocalData(key,tClass);
+    }
+
+    @Override
+    public HashMap<String, Object> getLocalDatas() {
+        return core.getDataLocalObjects().getLocalDatas();
+    }
+
+    @Override
+    public Multimap<String, UniversalConnection> getDataSubscribers() {
+        return core.getDataLocalObjects().getDataSubscribers();
     }
 
 

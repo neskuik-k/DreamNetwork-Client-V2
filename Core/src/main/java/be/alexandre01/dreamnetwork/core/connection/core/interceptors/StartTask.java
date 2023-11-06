@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.connection.core.interceptors;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.request.AbstractRequestManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.console.Console;
@@ -16,8 +16,8 @@ import java.util.Optional;
  ↬   done on 03/10/2023 at 23:09
 */
 public class StartTask {
-    public static CoreResponse.RequestInterceptor get(){
-        CoreResponse.RequestInterceptor start;
+    public static CoreReceiver.RequestInterceptor get(){
+        CoreReceiver.RequestInterceptor start;
         AbstractRequestManager.getTasks().put("start", start = (message, ctx, client) -> {
             Optional<IJVMExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
 

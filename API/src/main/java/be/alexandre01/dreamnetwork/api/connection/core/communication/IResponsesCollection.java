@@ -1,7 +1,5 @@
 package be.alexandre01.dreamnetwork.api.connection.core.communication;
 
-import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
-
 import java.util.HashMap;
 
 /*
@@ -9,13 +7,13 @@ import java.util.HashMap;
  ↬   done on 07/10/2023 at 14:04
 */
 public abstract class IResponsesCollection {
-    final HashMap<String, CoreResponse> responses = new HashMap<>();
+    final HashMap<String, CoreReceiver> responses = new HashMap<>();
 
 
-    public void addResponse(String response, CoreResponse coreResponse){
-        responses.put(response,coreResponse);
+    public void addResponse(String response, CoreReceiver coreReceiver){
+        responses.put(response, coreReceiver);
     }
-    public CoreResponse getResponses(String response){
+    public CoreReceiver getResponses(String response){
         return responses.get(response);
     }
 }

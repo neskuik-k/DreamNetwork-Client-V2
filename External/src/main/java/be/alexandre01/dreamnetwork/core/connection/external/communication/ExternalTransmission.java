@@ -5,7 +5,7 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.AChannelPacket;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannel;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestInfo;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 
-public class ExternalTransmission extends CoreResponse {
+public class ExternalTransmission extends CoreReceiver {
     public ExternalTransmission(){
         super.addRequestInterceptor(RequestType.CORE_HANDSHAKE_STATUS, new RequestInterceptor() {
 
@@ -96,7 +96,7 @@ public class ExternalTransmission extends CoreResponse {
     }
 
     @Override
-    public void onResponse(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
+    public void onReceive(Message message, ChannelHandlerContext ctx, UniversalConnection client) throws Exception {
         System.out.println(message);
         IDNChannelManager channelManager = DNCoreAPI.getInstance().getChannelManager();
         AChannelPacket receivedPacket = channelManager.createChannelPacket(message);

@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.api.connection.core.handler;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import io.netty.channel.ChannelHandler;
@@ -42,5 +42,7 @@ public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
 
     void setHasDevUtilSoftwareAccess(boolean hasDevUtilSoftwareAccess);
 
-    public ArrayList<CoreResponse> getResponses();
+    public ArrayList<CoreReceiver> getResponses();
+
+    public void addResponse(CoreReceiver coreReceiver);
 }

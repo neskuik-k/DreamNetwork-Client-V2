@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.DNUtils;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.handler.ICallbackManager;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.external.handler.IExternalClientHandler;
@@ -29,7 +28,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class ExternalClientHandler extends ChannelInboundHandlerAdapter implements IExternalClientHandler {
-    private ArrayList<CoreResponse> responses = new ArrayList<>();
+    private ArrayList<CoreReceiver> responses = new ArrayList<>();
     private HashMap<Message, GenericFutureListener<? extends Future<? super Void>>> queue = new HashMap<>();
     private ExternalServer externalServer;
     @Getter private ICallbackManager callbackManager; //DNCoreAPI.getInstance().getCoreHandler().getCallbackManager();
@@ -42,6 +41,7 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter implemen
         responses.add(new ExternalTransmission());
         System.out.println("Est ce que base response = "+DNCoreAPI.getInstance().getResponsesCollection().getResponses("BaseResponse"));
         responses.add(DNCoreAPI.getInstance().getResponsesCollection().getResponses("BaseResponse"));
+        responses.add(DNCoreAPI.getInstance().getResponsesCollection().getResponses(""));
 
         System.out.println("Init external client handler");
         ExternalCore.getInstance().setClientHandler(this);
@@ -123,9 +123,9 @@ public class ExternalClientHandler extends ChannelInboundHandlerAdapter implemen
                 return;
             }
             if(!responses.isEmpty()){
-                for(CoreResponse iResponse : responses){
+                for(CoreReceiver iResponse : responses){
                     try {
-                        iResponse.onAutoResponse(message,ctx,ExternalCore.getInstance().getServer());
+                        iResponse.onAutoReceive(message,ctx,ExternalCore.getInstance().getServer());
                     } catch (Exception e) {
                         Console.bug(e);
                     }

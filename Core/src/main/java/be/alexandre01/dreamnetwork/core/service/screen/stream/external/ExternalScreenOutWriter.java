@@ -1,8 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.screen.stream.external;
 
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
-import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
 import be.alexandre01.dreamnetwork.api.console.Console;

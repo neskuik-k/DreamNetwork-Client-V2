@@ -5,13 +5,15 @@ import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.addons.Addon;
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreResponse;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
+import be.alexandre01.dreamnetwork.api.connection.core.communication.packets.PacketHandlingFactory;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
+import be.alexandre01.dreamnetwork.core.connection.core.datas.DataLocalObjects;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CallbackManager;
 import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenuCore;
 import be.alexandre01.dreamnetwork.core.addons.AddonsLoader;
@@ -28,7 +30,6 @@ import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
 import be.alexandre01.dreamnetwork.core.installer.InstallerManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
-import be.alexandre01.dreamnetwork.core.service.deployment.StaticUpdater;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
 import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;
@@ -91,6 +92,9 @@ public class Core {
 
     @Getter private EventsFactory eventsFactory;
     @Getter private ServicePlayersManager servicePlayersManager;
+
+    @Getter private final PacketHandlingFactory packetHandlingFactory = new PacketHandlingFactory();
+    @Getter private final DataLocalObjects dataLocalObjects = new DataLocalObjects();
 
     static {
         instance = new Core();
@@ -190,7 +194,7 @@ public class Core {
         //LOAD ADDONS
         addonsLoader = new AddonsLoader();
         addonsManager = new AddonsManager(this);
-        this.dnCoreAPI = new ImplAPI();
+        this.dnCoreAPI = new ImplAPI(this);
         addonsLoader.getAddons().forEach(addon -> {
             Class<?> c = addon.getDefaultClass();
             DreamExtension extension = null;
@@ -297,7 +301,7 @@ public class Core {
         ConsoleThread.resetAndRun();
     }
 
-    public ArrayList<CoreResponse> getGlobalResponses(){
+    public ArrayList<CoreReceiver> getGlobalResponses(){
         return CoreHandler.getGlobalResponses();
     }
 }
