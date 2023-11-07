@@ -27,7 +27,7 @@ public class ASCIIART {
                         "| | | | _ __  ___   __ _  _ __ ___  |  \\| |  ___ | |_ __      __ ___   _ __ | | __\n" +
                         "| | | || '__|/ _ \\ / _` || '_ ` _ \\ | . ` | "+Colors.CYAN_BRIGHT+"/ _ \\| __|\\ \\ /\\ / // _ \\ | '__|| |/ /\n" +
                         "| |/ / | |  |  __/| (_| || | | | | || |\\  ||  __/| |_  \\ V"+Colors.PURPLE_BOLD_BRIGHT+"  V /| (_) || |   |   <     "+Colors.WHITE_BOLD_UNDERLINED+"2023"+Colors.RESET+Colors.PURPLE_BOLD_BRIGHT+"\n" +
-                        "|___/  |_|   \\___| \\__,_||_| |_| |_|\\_| \\_/ \\___| \\__|  \\_/\\_/  \\___/ |_|   |_|\\_\\      "+Colors.YELLOW_BRIGHT_UNDERLINE +"(BETA V2 - 1.11)\n" +Colors.RESET);
+                        "|___/  |_|   \\___| \\__,_||_| |_| |_|\\_| \\_/ \\___| \\__|  \\_/\\_/  \\___/ |_|   |_|\\_\\      "+Colors.YELLOW_BRIGHT_UNDERLINE +"(BETA V2 - PRE 1.12)\n" +Colors.RESET);
     }
 
     public static void sendTutorial(Console console){
