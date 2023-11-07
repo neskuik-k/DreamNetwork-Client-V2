@@ -32,6 +32,7 @@ import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaReader;
+import be.alexandre01.dreamnetwork.core.service.screen.ServicesIndexing;
 import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.api.utils.process.ProcessUtils;
@@ -66,6 +67,9 @@ public class Core {
     private InstallerManager installerManager;
     @Getter
     private GlobalTasks globalTasks;
+
+    @Getter
+    private ServicesIndexing servicesIndexing;
     private StatsConsole statsConsole;
     @Getter @Setter
     private static String username;
@@ -216,6 +220,8 @@ public class Core {
         bundleManager.init();
 
         bundleManager.onReady();
+
+        servicesIndexing = new ServicesIndexing();
 
         servicePlayersManager = new ServicePlayersManager();
 

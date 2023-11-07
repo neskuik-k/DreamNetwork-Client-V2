@@ -28,8 +28,20 @@ public class ScreensNode extends CustomType {
                 }else {
                     color = Colors.CYAN;
                 }
-                String bundle = service.getJvmExecutor().getBundleData().getName();
-                return color+bundle+ Colors.YELLOW_BOLD+"/"+Colors.WHITE_BOLD_BRIGHT+service.getJvmExecutor().getName()+Colors.YELLOW_BOLD+"-"+Colors.WHITE_BOLD_BRIGHT+iScreen.getScreenId();
+                String name = iScreen.getScreenName();
+                StringBuilder sb = new StringBuilder();
+                sb.append(color);
+                if(name.contains("/")){
+                    String[] split = name.split("/");
+                    sb.append(split[0]).append(Colors.YELLOW_BOLD).append("/").append(Colors.WHITE_BOLD_BRIGHT).append(split[1]);
+                }
+                if(name.contains("-")){
+                    String[] split = name.split("-");
+                    sb.append(split[0]).append(Colors.YELLOW_BOLD).append("-").append(Colors.WHITE_BOLD_BRIGHT).append(split[1]);
+                }else{
+                    sb.append(name);
+                }
+                return sb.toString();
             }).toArray(String[]::new);
             if(values.length == 0){
                 return new Object[]{Completers.AnyCompleter.INSTANCE};

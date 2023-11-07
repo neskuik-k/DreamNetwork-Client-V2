@@ -9,7 +9,7 @@ import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.ClientRequestManager;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.devtool.DefaultDevToolRequest;
-import be.alexandre01.dreamnetwork.core.connection.core.requests.proxy.DefaultBungeeRequest;
+import be.alexandre01.dreamnetwork.core.connection.core.requests.proxy.DefaultProxyRequest;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.spigot.DefaultSpigotRequest;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
@@ -79,7 +79,7 @@ public class ServiceClient extends AServiceClient {
                         }, 3, 3, TimeUnit.SECONDS);
                     }
                     core.getClientManager().setProxy(this);
-                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
+                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultProxyRequest());
                     break;
                 case "VELOCITY":
                     this.jvmType = JVMContainer.JVMType.PROXY;
@@ -92,7 +92,7 @@ public class ServiceClient extends AServiceClient {
                         }, 3, 3, TimeUnit.SECONDS);
                     }
                     c.getClientManager().setProxy(this);
-                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultBungeeRequest());
+                    requestManager.getRequestBuilder().addRequestBuilder(new DefaultProxyRequest());
                     break;
             }
         }

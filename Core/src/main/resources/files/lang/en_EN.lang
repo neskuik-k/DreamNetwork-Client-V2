@@ -128,7 +128,7 @@ service.bundle.manager.noBundleFound=%red%No bundle found !%reset%
 service.bundle.manager.cantFindService=%red%- Bundle %var% can't find %var% service
 
 service.screen.killedHimself=The PROCESS %var% has just killed himself :skull():.
-service.screen.opened=%yellowbo%Screen opened :desktop_computer(): with the name -> %greenbo%%var%-%var%
+service.screen.opened=%yellowbo%Screen opened :desktop_computer(): with the name -> %greenbo%%var%
 service.screen.closed=%red%Screen closed :arrow_right(->): %var%
 
 ## Tutorial

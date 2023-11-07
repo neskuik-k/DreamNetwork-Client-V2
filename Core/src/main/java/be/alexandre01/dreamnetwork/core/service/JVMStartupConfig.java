@@ -39,7 +39,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
 
-    public JVMStartupConfig(String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile){
+    public JVMStartupConfig(String pathName,String name, JVMExecutor.Mods type, String xms, String xmx, int port, boolean proxy,boolean updateFile,String customName){
         super();
         config(new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/"+"network.yml"));
         this.startup = super.startup;
@@ -52,7 +52,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.pathName = pathName;
         this.fixedData = true;
         this.fileRootDir =  new File(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/");
-
+        this.defaultName = customName;
         if(proxy){
             executable = "Proxy.jar";
         }else {
@@ -61,7 +61,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
 
 
         if(updateFile){
-            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null);
+            updateConfigFile(pathName,name,type,xms,xmx,port,proxy,null,null,customName);
             Console.printLang("service.startupConfig.updatingFile");
         }
 
@@ -445,10 +445,10 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @Override
     public void updateConfigFile(){
 
-        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,javaVersion);
+        updateConfigFile(pathName,name,type,xms,xmx,port,proxy,executable,javaVersion,defaultName);
     }
     @Override
-    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion){
+    public void updateConfigFile(String pathName, String finalName, JVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion,String customName){
         this.type = type;
         this.xms = Xms;
         this.xmx = Xmx;
@@ -458,6 +458,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
         this.executable = exec;
         this.pathName = pathName;
         this.name = finalName;
+        this.defaultName = customName;
         fine(this.installInfo);
         /*Console.print("PN>"+pathName, Level.FINE);
         Console.print("FN>"+finalName,Level.FINE);

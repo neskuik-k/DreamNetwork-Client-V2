@@ -15,6 +15,10 @@ public class IdSet {
         ids.remove(id);
     }
 
+    public boolean contains(int id) {
+        return ids.contains(id);
+    }
+
     @Synchronized
     public int getNextId() {
         int nextId = 1;

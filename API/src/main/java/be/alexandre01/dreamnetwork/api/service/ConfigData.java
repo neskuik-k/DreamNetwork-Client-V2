@@ -22,6 +22,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConfigData implements Serializable {
+    protected String defaultName = null;
     @Ignore
     protected String name;
     @Ignore protected String bundleName;
@@ -41,4 +42,8 @@ public class ConfigData implements Serializable {
     @Getter @Setter
     protected List<String> staticDeployers = new ArrayList<>();
 
+
+    public Optional<String> getCustomName(){
+        return Optional.ofNullable(defaultName);
+    }
 }

@@ -53,6 +53,16 @@ public class VirtualService implements IService {
     }
 
     @Override
+    public int getIndexingId() {
+        return 0;
+    }
+
+    @Override
+    public String getFullIndexedName() {
+        return null;
+    }
+
+    @Override
     public long getProcessID() {
         return -1;
     }
@@ -64,6 +74,11 @@ public class VirtualService implements IService {
 
     @Override
     public Optional<String> getUniqueCharactersID() {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<String> getCustomName() {
         return Optional.empty();
     }
 
@@ -105,6 +120,11 @@ public class VirtualService implements IService {
     @Override
     public String getFullName(boolean withBundlePath) {
         return virtualExecutor.getName()+"-"+id;
+    }
+
+    @Override
+    public String getName() {
+        return null;
     }
 
     @Override // to optional

@@ -27,7 +27,7 @@ public interface IStartupConfig extends IConfig {
 
     void updateConfigFile();
 
-    void updateConfigFile(String pathName, String finalName, IJVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion);
+    void updateConfigFile(String pathName, String finalName, IJVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion,String customName);
 
     @JsonIgnore long getConfigSize();
 

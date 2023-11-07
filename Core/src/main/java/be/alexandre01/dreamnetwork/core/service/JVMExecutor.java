@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServicePreProcessEvent;
@@ -25,6 +26,7 @@ import be.alexandre01.dreamnetwork.api.utils.timers.DateBuilderTimer;
 
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 
+import be.alexandre01.dreamnetwork.core.service.screen.ServicesIndexing;
 import be.alexandre01.dreamnetwork.utils.Tuple;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -105,8 +107,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     @Getter(AccessLevel.NONE)
     JVMProfiles jvmProfiles = new JVMProfiles();
 
-    public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData) {
-        super(pathName, name, type, xms, xmx, port, proxy, updateFile);
+    public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData,String customName) {
+        super(pathName, name, type, xms, xmx, port, proxy, updateFile,customName);
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
         bundleName = bundleData.getName();
@@ -121,6 +123,15 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     public JVMExecutor(String pathName, String name, BundleData bundleData) {
         super(pathName, name, false);
+
+        if(defaultName == null){
+            if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
+                this.defaultName = getName();
+            }else {
+               this.defaultName = getFullName();
+            }
+            getYmlFile().saveFile((ConfigData) this);
+        }
         this.bundleData = bundleData;
         this.proxy = bundleData.getJvmType() == JVMContainer.JVMType.PROXY;
         this.bundleName = bundleData.getName();
@@ -422,7 +433,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         boolean reserved = false;
         if (portsReserved.containsKey(port)) {
             reserved = true;
-            Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getFullName());
+            Console.fine("Port reserved on port " + port + " by " + portsReserved.get(port).getPathName());
         }
         int max = Main.getGlobalSettings().getPortRangeInt()[1];
         int min = Main.getGlobalSettings().getPortRangeInt()[0];
@@ -684,7 +695,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     startup = startup.replace("%args%", customArgs);
                     Console.print("JavaLine >" + startup, Level.FINE);
 
-                    ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
+                    //ProcessBuilder.Redirect redirect = ProcessBuilder.Redirect.appendTo(new File(System.getProperty("user.dir") + Config.getPath("/logs/" + jvmConfig.getPathName() + "/" + jvmConfig.getName() + "/" + finalname) + "/logs.txt"));
 
                     proc = new ProcessBuilder(startup.split(" ")).directory(new File(System.getProperty("user.dir") + Config.getPath("/bundles/" + jvmConfig.getPathName() + "/" + jvmConfig.getName()))).redirectErrorStream(true).start();
 
@@ -710,7 +721,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
             Console.fine("PROCESS ID >" + processID);
             Console.fine(port);
 
-            JVMService jvmService = JVMService.builder()
+            JVMService.JVMServiceBuilder builder = JVMService.builder()
                     .process(proc)
                     .jvmExecutor(this)
                     .id(servers)
@@ -721,8 +732,21 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     .usedConfig(jvmConfig)
                     .executorCallbacks(callbacks)
                     .uniqueCharactersID(charsId)
-                    .processID(processID)
-                    .build();
+                    .processID(processID);
+
+            if(defaultName != null){
+                if(!defaultName.equals(getFullName())){
+                    builder.customName(defaultName);
+                }
+            }
+
+            JVMService jvmService = builder.build();
+            ServicesIndexing servicesIndexing = Core.getInstance().getServicesIndexing();
+            servicesIndexing.registerService(jvmService,(name, id) -> {
+                jvmService.setFullIndexedName(name+"-"+id);
+                jvmService.setIndexingId(id);
+            });
+
 
 
             Console.fine("JvmService instanciate");
@@ -742,7 +766,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             // Thread t = new Thread(JVMReader.builder().jvmService(jvmService).build());
             //t.start();
-            Console.printLang("service.executor.serverStartProcess", Level.INFO, getFullName());
+            Console.printLang("service.executor.serverStartProcess", Level.INFO, getPathName());
             if (jvmConfig.getType() == Mods.DYNAMIC) {
                 Console.print("Path : " + Colors.ANSI_RESET + new File(System.getProperty("user.dir") + Config.getPath("/runtimes/" + getName().toLowerCase() + "/" + getName() + "-" + servers)).getAbsolutePath(), Level.FINE);
             }
@@ -764,6 +788,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
             core.getEventsFactory().callEvent(new CoreServiceStartEvent(core.getDnCoreAPI(), jvmService));
             //SCREEN SYSTEM
+
 
             new Screen(jvmService);
         /*ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -788,6 +813,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     public void removeService(IService jvmService) {
+        Core.getInstance().getServicesIndexing().unregisterService(jvmService);
+
         if (jvmService.isConnected() && jvmService.getProcess().isAlive()) {
             System.out.println("Process is alive");
             jvmService.getProcess().destroy();
@@ -890,6 +917,8 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public String getFullName() {
         return getBundleData().getName() + "/" + getName();
     }
+
+
 
 
     @Override

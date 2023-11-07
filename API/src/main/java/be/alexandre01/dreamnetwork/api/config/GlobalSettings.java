@@ -41,6 +41,7 @@ public class GlobalSettings {
     String language = "en_EN";
     private boolean useEmoji = false;
     private boolean emojiOnCommand= false;
+    private boolean simplifiedNamingService = true;
 
     private int nettyWorkerThreads = 4;
     private int nettyBossThreads = 1;

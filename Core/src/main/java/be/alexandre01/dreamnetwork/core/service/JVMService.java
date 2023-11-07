@@ -34,8 +34,11 @@ public class JVMService implements IService {
     private String xms;
 
     private String uniqueCharactersID;
+    private String customName;
     private long processID;
     private IScreen screen = null;
+    private int indexingId;
+    private String fullIndexedName;
 
     public IConfig usedConfig;
     @Getter(AccessLevel.NONE) public ExecutorCallbacks executorCallbacks;
@@ -43,6 +46,22 @@ public class JVMService implements IService {
     CompletableFuture<Boolean> stopFuture = new CompletableFuture<>();
 
 
+
+
+    @Override
+    public int getIndexingId() {
+        return indexingId;
+    }
+
+    @Override
+    public Optional<String> getCustomName() {
+        return Optional.ofNullable(customName);
+    }
+
+    @Override
+    public String getFullIndexedName() {
+        return fullIndexedName;
+    }
 
     @Override
     public Optional<String> getUniqueCharactersID() {
@@ -59,6 +78,7 @@ public class JVMService implements IService {
         return getJvmExecutor().getFullName()+"-"+getId();
     }
 
+
     @Override
     public String getFullName(boolean withBundlePath) {
         if(withBundlePath){
@@ -66,6 +86,12 @@ public class JVMService implements IService {
         }
         return getJvmExecutor().getName()+"-"+getId();
     }
+
+    @Override
+    public String getName(){
+        return customName != null ? customName : getJvmExecutor().getName();
+    }
+
 
     @Override @Synchronized
     public CompletableFuture<Boolean> stop(){

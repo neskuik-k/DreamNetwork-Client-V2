@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.commands.lists.sub.service;
 
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
@@ -106,15 +107,22 @@ public class Create extends SubCommand {
                 Console.printLang("service.creation.creatingServerOnBundle", name, bundle);
                 Config.createDir("bundles/"+bundle+"/"+name);
                 System.out.println("?");
-                jvmExecutor = new JVMExecutor(bundle, name, mods, xms, xmx, port, proxy, true,bundleData);
+                String customName = jvmExecutor.getFullName();
+                if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
+                    customName = jvmExecutor.getName();
+                }
+                jvmExecutor = new JVMExecutor(bundle, name, mods, xms, xmx, port, proxy, true,bundleData,customName);
                 jvmExecutor.addConfigsFiles();
                 Console.printLang("service.creation.serverConfigured");
                 CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
                 return true;
             }
             jvmExecutor.addConfigsFiles();
-
-            jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null);
+            String customName = jvmExecutor.getFullName();
+            if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
+                customName = jvmExecutor.getName();
+            }
+            jvmExecutor.updateConfigFile(args[1], args[2], mods, args[4], args[5], Integer.parseInt(args[6]), proxy, null, null,customName);
             Console.printLang("service.creation.serverConfigured");
             CustomType.reloadAll(BundlePathsNode.class, BundlesNode.class);
 

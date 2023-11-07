@@ -44,8 +44,8 @@ public class Screen extends Thread implements IScreen {
         this.service = service;
         this.history = new ArrayList<>();
         ScreenManager screenManager = ScreenManager.instance;
-        screenId = screenManager.getId(service);
-        screenName = service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
+        screenId = getService().getIndexingId();
+        screenName = getService().getFullIndexedName();//service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
         if(viewing){
             this.screenStream = new ProcessScreenStream(screenName,this);
         }

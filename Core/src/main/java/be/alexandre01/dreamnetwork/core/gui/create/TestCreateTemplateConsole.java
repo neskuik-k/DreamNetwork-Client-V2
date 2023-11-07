@@ -1,5 +1,7 @@
 package be.alexandre01.dreamnetwork.core.gui.create;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
@@ -199,9 +201,17 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                     if (jvmExecutor == null) {
                         Console.printLang("service.creation.creatingServerOnBundle", serverName, bundleInfo.getName());
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName,false);
-                        jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, mods, xms,  xmx,  port, proxy, true,bundleData);
+                        String customName = jvmExecutor.getFullName();
+                        if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
+                            customName = jvmExecutor.getName();
+                        }
+                        jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, mods, xms,  xmx,  port, proxy, true,bundleData,customName);
                     }else {
-                        jvmExecutor.updateConfigFile(bundleData.getName(), serverName, mods,xms, xmx, port, proxy, null, null);
+                        String customName = jvmExecutor.getFullName();
+                        if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
+                            customName = jvmExecutor.getName();
+                        }
+                        jvmExecutor.updateConfigFile(bundleData.getName(), serverName, mods,xms, xmx, port, proxy, null, null,customName);
                     }
                     CustomType.reloadAll(BundlesNode.class);
 

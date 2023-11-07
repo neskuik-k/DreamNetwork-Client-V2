@@ -224,6 +224,12 @@ public class VirtualExecutor  implements IJVMExecutor {
     }
 
     @Override
+    public Optional<String> getCustomName() {
+        return configData.getCustomName();
+    }
+
+
+    @Override
     public String getXmx() {
         return configData.getXmx();
     }

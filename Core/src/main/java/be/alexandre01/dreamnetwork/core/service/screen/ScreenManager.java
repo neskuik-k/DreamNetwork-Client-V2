@@ -18,12 +18,10 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     @Getter private final ArrayList<Integer> screenIds;
     @Getter private final ArrayList<Integer> availableScreenIds;
 
-   @Getter private final HashMap<String,Integer> screenCurrentId;
     public static ScreenManager instance;
 
     public ScreenManager(){
         screens = new HashMap<>();
-        screenCurrentId = new HashMap<>();
         availableScreenIds = new ArrayList<>();
         screenIds = new ArrayList<>();
     }
@@ -34,23 +32,10 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
 
     @Override
-    public int getId(IService service){
-        return service.getId();
-
-        /*
-        if(!screenCurrentId.containsKey(processName)){
-            return 0;
-        }
-        if(!availableScreenIds.isEmpty()){
-            return availableScreenIds.get(0);
-        }
-       return screenCurrentId.get(processName)+1;*/
-    }
-    @Override
     public void addScreen(IScreen screen){
-        Console.printLang("service.screen.opened", screen.getService().getJvmExecutor().getBundleData().getName()+"/"+screen.getService().getJvmExecutor().getName(), screen.getScreenId());
+        Console.printLang("service.screen.opened", screen.getScreenName(), screen.getScreenId());
         screens.put(screen.getScreenName(), (Screen) screen);
-        screenCurrentId.put(screen.getService().getJvmExecutor().getBundleData().getName()+"/"+screen.getService().getJvmExecutor().getName(),screen.getScreenId());
+
         //remove if available screen is taken
         availableScreenIds.remove(screen.getScreenId());
         screenIds.add(screen.getScreenId());
@@ -71,9 +56,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     }
     @Override
     public boolean containsScreen(String s){
-        if(screenCurrentId.containsKey(s) && screenCurrentId.size() == 1){
+       /* if(screenCurrentId.containsKey(s) && screenCurrentId.size() == 1){
             s += "-"+0;
-        }
+        }*/
         return screens.containsKey(s);
     }
     @Override
@@ -85,9 +70,9 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
         }
 
         //A PATCH
-        if(screenCurrentId.containsKey(server) && screenCurrentId.size() == 1){
+        /*if(screenCurrentId.containsKey(server) && screenCurrentId.size() == 1){
             server += "-"+1;
-        }
+        }*/
 
 
        screens.get(server).getScreenStream().init(server,screens.get(server));
@@ -98,8 +83,4 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
         return screens.get(screenName);
     }
 
-    @Override
-    public int getScreenId(String screenName) {
-        return screenCurrentId.get(screenName);
-    }
 }

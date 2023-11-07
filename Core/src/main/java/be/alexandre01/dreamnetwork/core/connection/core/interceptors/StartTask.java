@@ -46,7 +46,9 @@ public class StartTask {
                     @Override
                     public void whenStart(IService service) {
                         Console.debugPrint("STARTED");
-                        callback.mergeAndSend(new Message().set("name",service.getFullName()), "STARTED");
+                        Message msg = new Message().set("name",service.getFullName());
+                        service.getCustomName().ifPresent(s -> msg.set("customName",s));
+                        callback.mergeAndSend(msg, "STARTED");
                     }
                 });
 

@@ -6,24 +6,12 @@ import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.api.utils.sockets.PortUtils;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CorePipeline;
-import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelOption;
-import io.netty.channel.EventLoopGroup;
-import io.netty.channel.nio.NioEventLoopGroup;
-import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
-import io.netty.util.ResourceLeakDetector;
 import reactor.core.publisher.Mono;
-import reactor.netty.Connection;
 import reactor.netty.DisposableServer;
 import reactor.netty.resources.LoopResources;
-import reactor.netty.tcp.TcpClient;
 import reactor.netty.tcp.TcpServer;
-
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class ReactorNettyServer extends CoreServer{
 

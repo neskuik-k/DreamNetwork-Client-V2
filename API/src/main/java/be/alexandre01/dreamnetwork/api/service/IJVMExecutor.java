@@ -106,7 +106,7 @@ public interface IJVMExecutor {
             if (!isProxy()) {
                 AServiceClient proxy = api.getClientManager().getProxy();
                 if (proxy != null) {
-                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getFullName());
+                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getCustomName().orElse(service.getFullName()));
                 }
             }
         }
@@ -138,6 +138,8 @@ public interface IJVMExecutor {
 
     @JsonIgnore public String getExecutable();
 
+    @JsonIgnore public Optional<String> getCustomName();
+
     @JsonIgnore public String getXmx();
 
     @JsonIgnore public String getPathName();
@@ -151,6 +153,7 @@ public interface IJVMExecutor {
     @JsonIgnore public BundleData getBundleData();
 
     @JsonIgnore public String getFullName();
+
 
 
     @JsonIgnore public Optional<ExecType> getExecType();

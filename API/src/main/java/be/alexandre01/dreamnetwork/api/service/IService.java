@@ -10,9 +10,15 @@ import java.util.concurrent.CompletableFuture;
 
 public interface IService {
     int getId();
+
+    int getIndexingId();
+
+    String getFullIndexedName();
     long getProcessID();
     int getPort();
     Optional<String> getUniqueCharactersID();
+
+    Optional<String> getCustomName();
     String getXmx();
     String getXms();
     IJVMExecutor.Mods getType();
@@ -22,6 +28,8 @@ public interface IService {
 
     String getFullName();
     String getFullName(boolean withBundlePath);
+
+    String getName();
     Process getProcess();
     IScreen getScreen();
     IConfig getUsedConfig();

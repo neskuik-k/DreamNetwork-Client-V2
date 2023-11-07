@@ -1,4 +1,4 @@
-# This is the global settings of the server | :D
+# This is the global settings of the server | <3
 SIG_IGN_Handler: true
 authorizedIPS:
 - 127.0.0.1
@@ -21,7 +21,8 @@ portRange: 25565 -> 51130
 rainbowText: false
 randomizePort: false
 screenNameInConsoleChange: true
+simplifiedNamingService: true
 terminalMode: ssh
 threadsPoolIO: 18
 useEmoji: false
-username: altat
+username: itsmasterpiece.local

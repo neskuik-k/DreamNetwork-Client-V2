@@ -1,13 +1,17 @@
 {
   "history": "NDtoZWxw",
   "s:main/lobby-1": "Mi0xLTEtMS0xLTAtMC0xLTAtNC0wLTEtMS0xLTE7ZGRkZGRkbXN0b3BtbW1t",
-  "m:default": "MjctMjctMjctMjctMjctMjctMjctMjctMjctMjctMjctMjctMjctMjctMjc7c2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0xc2VydmljZSBzY3JlZW4gbWFpbi9sb2JieS0y",
+  "m:default": "MTktMTktMjItMjItMTktMjItMjItMTktMjItMjItMTUtMjItMjItMjctMjI7c2VydmljZSBzdGFydCBwcm94eXNlcnZpY2Ugc3RhcnQgcHJveHlzZXJ2aWNlIHNjcmVlbiBwcm94eS0xc2VydmljZSBzY3JlZW4gbG9iYnktMXNlcnZpY2Ugc3RhcnQgcHJveHlzZXJ2aWNlIHNjcmVlbiBsb2JieS0xc2VydmljZSBzY3JlZW4gcHJveHktMXNlcnZpY2Ugc3RhcnQgcHJveHlzZXJ2aWNlIHNjcmVlbiBwcm94eS0xc2VydmljZSBzY3JlZW4gbG9iYnktMXNlcnZpY2UgaW5zdGFsbHNlcnZpY2Ugc2NyZWVuIGxvYmJ5LTFzZXJ2aWNlIHNjcmVlbiBsb2JieS0xc2VydmljZSBzdGFydCBwcm94aWVzL3Byb3h5c2VydmljZSBzY3JlZW4gcHJveHktMQ==",
   "s:main/t-1": "MS0wLTEtMS00LTAtMC0xLTEtMS00LTAtMC0wLTA7ZGRkaGVscGRkZHF1aXQ=",
-  "m:installTemplate": "MS03O3QxLjIwLjEg",
-  "m:createTemplate": "MC00LTQtMy0zLTUtNS03LTUtNS00LTQtNC0zLTM7eWVzIGxvbCA6T0t5ZXNtYWluIHRlc3QxU1RBVElDIDI1Nk0gMjU2TSBhdXRveWVzIGxvbCA6T0t5ZXM=",
+  "m:installTemplate": "MS03LTExLTYtMTEtNy0xMS02O3QxLjIwLjEgbWFpbi9sb2JieSAxLjguOCBtYWluL2xvYmJ5IDEuMjAuMSBtYWluL2xvYmJ5IDEuOC44IA==",
+  "m:createTemplate": "OC01LTUtNC0zLTMtOC0wLTUtNy01LTUtNC0zLTQ7RFlOQU1JQyAyNTZNIDI1Nk0gYXV0b25vIHllc3Byb3hpZXMgcHJveHlTVEFUSUMgMjU2TSAyNTZNIGF1dG9ubyB5ZXMg",
   "s:main/t-2": "MDs=",
   "s:main@1/lobby-1": "MS0xLTQtNC00LTYtMi00LTEtMS0xLTEtNC0wLTA7ZGRoZWxwaGVscGhlbHBzcGlnZXR4cGhlbHBmZmRkaGVscA==",
-  "m:install": "NS02LTYtNi02LTY7MS44LjgxLjguOCAxLjguOCAxLjguOCAxLjguOCAxLjguOCA=",
+  "m:install": "NS02LTYtNi02LTYtNy03LTExOzEuOC44MS44LjggMS44LjggMS44LjggMS44LjggMS44LjggMS4yMC4xIDEuMjAuMSBCVU5HRUVDT1JEIA==",
   "m:tasks": "Ni0xMC0xLTY7dGFzay0xQUxXQVlTX09OIDJsb2JieSA=",
-  "s:main/lobby-2": "MC0wLTAtMDs="
+  "s:main/lobby-2": "MC0wLTAtMDs=",
+  "s:lobby-1": "Mi0xLTEtMS0xLTEtMS0xLTEtMS00LTQtMS0yLTE7cGxlZWVlZWVlZWVzdG9wa2lsbGxgbGg=",
+  "s:lobby-3": "MDs=",
+  "s:lobby-2": "MC0xLTEtMS0yO2RkZGRk",
+  "s:proxy-1": "Ni0xLTYtMS0xLTYtMS0xLTEtMS02LTYtMS0xLTY7c2VydmVyc3NlcnZlcm1tc2VydmVybGxsbHNlcnZlcnNlcnZlcmRtc2VydmVy"
 }

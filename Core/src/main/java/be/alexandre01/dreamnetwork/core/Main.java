@@ -217,7 +217,7 @@ public class Main {
                         for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
                             if(!jvmExecutor.getServices().isEmpty()){
                                 ArrayList<Long> pIDs = new ArrayList<>();
-                                for(IService service : jvmExecutor.getServices()){
+                                for(IService service : new ArrayList<>(jvmExecutor.getServices())){
                                     if(!service.isConnected()){
                                         service.kill();
                                     }

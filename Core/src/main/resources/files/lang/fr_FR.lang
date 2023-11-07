@@ -117,7 +117,7 @@ service.bundle.manager.noBundleFound=%red%Aucun bundle n'a été trouvé !%reset
 service.bundle.manager.cantFindService=%red%- Le bundle %var% n'arrive pas à trouver le service %var%
 
 service.screen.killedHimself=Le PROCESSUS %var% s'est tué de lui même :skull():.
-service.screen.opened=%yellowbo%Une console :desktop_computer(): a été ouverte sous le nom -> %greenbo%%var%-%var%
+service.screen.opened=%yellowbo%Une console :desktop_computer(): a été ouverte sous le nom -> %greenbo%%var%
 service.screen.closed=Console fermée :arrow_right(->): %var%
 
 ## Tutorial

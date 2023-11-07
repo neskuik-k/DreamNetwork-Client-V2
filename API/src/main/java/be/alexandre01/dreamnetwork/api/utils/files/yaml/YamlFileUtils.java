@@ -220,6 +220,8 @@ public class YamlFileUtils<T> {
     private void fillInMap(List<String> list, Map<String,Object> map){
         for (int i = 0; i < list.size(); i++) {
             String s = list.get(i);
+            if(s.length() > 1)
+                if(s.charAt(1) == ' ') continue;
             while (s.startsWith(" ")){
                 s = s.replaceFirst(" ","");
             }
@@ -233,6 +235,7 @@ public class YamlFileUtils<T> {
                     for (int j = 2; j < split.length; j++) {
                         split[1] = split[1]+":"+split[j];
                     }
+                    System.out.println("Split 2 total: "+split[1]);
 
 
 
@@ -256,6 +259,11 @@ public class YamlFileUtils<T> {
                     while (split[1].startsWith(" ")){
                         split[1] = split[1].replaceFirst(" ","");
                     }
+
+                    for (int j = 2; j < split.length; j++) {
+                        split[1] = split[1]+":"+split[j];
+                    }
+                    System.out.println("Split 1 total: "+split[1]);
                     map.put(key,split[1]);
                 }
             }
@@ -298,10 +306,13 @@ public class YamlFileUtils<T> {
                     if(split.length == 1){
                         linesAfter.add(split[0].replace(" ","")+":");
                     }else {
-                        for (int j = 2; j < split.length; j++) {
-                            split[1] = split[1]+":"+split[j];
+                        for (int j = 1; j < split.length; j++) {
+                            split[0] = split[0]+":"+split[j];
+                            System.out.printf("Split %d: %s%n", j, split[j]);
+
                         }
-                        linesAfter.add(split[0]+":"+split[1]);
+                        System.out.println("Split total: "+split[0]);
+                        linesAfter.add(split[0]);
                     }
                     return;
                 }
@@ -325,8 +336,12 @@ public class YamlFileUtils<T> {
                     //System.out.println(o);
                     //System.out.println(s+": "+oldMap.get(s));
                     int index = IntStream.range(0, linesAfter.size())
-                            .filter(i -> linesAfter.get(i).contains(s+":"))
+                            .filter(i -> {
+                                System.out.printf("Check if %s is in %s%n", s+":", linesAfter.get(i));
+                                return linesAfter.get(i).contains(s+":");
+                            })
                             .findFirst().orElse(-1);
+                    System.out.printf("Index of %s: %d%n", s+":", index);
                     linesAfter.set(index,s+": "+oldMap.get(s));
                 }
                 if( o instanceof List){

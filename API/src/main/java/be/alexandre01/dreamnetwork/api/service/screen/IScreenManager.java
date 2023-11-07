@@ -4,11 +4,12 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public interface IScreenManager {
 
 
-    int getId(IService service);
+
 
     void addScreen(IScreen screen);
 
@@ -18,14 +19,12 @@ public interface IScreenManager {
 
     HashMap<String,IScreen> getScreens();
 
-    ArrayList<Integer> getScreenIds();
+
+    List<Integer> getScreenIds();
 
     void watch(String server);
 
     IScreen getScreen(String screenName);
-
-    int getScreenId(String screenName);
-
 
 
 }

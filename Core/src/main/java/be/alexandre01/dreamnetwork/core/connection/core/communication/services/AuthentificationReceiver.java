@@ -33,6 +33,7 @@ import org.apache.commons.lang3.RandomStringUtils;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.Base64.Decoder;
+import java.util.List;
 import java.util.logging.Level;
 
 public class AuthentificationReceiver extends CoreReceiver {
@@ -214,6 +215,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                                 jvmService.getFullName(),
+                                                jvmService.getCustomName().orElse(null),
                                                 remoteAdress[0].replaceAll("/", ""),
                                                 jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
                                     }
@@ -246,6 +248,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                         if(proxy != null){
                             proxy.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                     newClient.getJvmService().getFullName(),
+                                    newClient.getJvmService().getFullIndexedName(),
                                     remoteAdress[0].replaceAll("/", ""),
                                     newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
                         }
@@ -261,7 +264,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                         }
                         this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
 
-                        ArrayList<String> servers = new ArrayList<>();
+                        List<String> servers = new ArrayList<>();
 
 
 
@@ -273,7 +276,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                 for (IService service : jvmExecutor.getServices()) {
 
                                     if (service.getClient() != null) {
-                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
+                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getCustomName().orElse("n")+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
                                         //System.out.println(service.);
 
                                         // add servers (if not proxy)
@@ -281,13 +284,13 @@ public class AuthentificationReceiver extends CoreReceiver {
                                             service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
                                         }
 
-                                        servers.add(service.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
+                                        servers.add(service.getFullName() +";"+ newClient.getJvmService().getCustomName().orElse("n") +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                                     }
                                 }
                             } else {
                                 //services non démarrés
                                 if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
-                                    servers.add(jvmExecutor.getFullName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
+                                    servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getCustomName().orElse("n") + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
                                 }
                             }
                         }
@@ -305,7 +308,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                 }
                             }*/
 
-                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, servers.toArray(new String[0]));
+                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, (Object[]) servers.toArray(new String[0]));
                         // adding channels to the new service
                         DNCoreAPI.getInstance().getChannelManager().sendAllChannels(newClient);
                        coreHandler.getAllowedCTX().add(ctx);
@@ -361,20 +364,20 @@ public class AuthentificationReceiver extends CoreReceiver {
                 ArrayList<String> devServers = new ArrayList<>();
                 for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
-                        devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
+                        devServers.add(jvmExecutor.getName()+";"+ jvmExecutor.getCustomName().orElse("n") +";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(service.getFullName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
                     }
                 }
 
 
                 for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
-                        devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
+                        devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(service.getFullName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
                     }
                 }
                 String str = String.join(",", devServers);
