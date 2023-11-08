@@ -235,8 +235,8 @@ public class YamlFileUtils<T> {
                     for (int j = 2; j < split.length; j++) {
                         split[1] = split[1]+":"+split[j];
                     }
-                    System.out.println("Split 2 total: "+split[1]);
-
+                    //System.out.println("Split 2 total: "+split[1]);
+                    System.out.println("Line split 2 detected");
 
 
                     ArrayList<String> listOfList = new ArrayList<>();

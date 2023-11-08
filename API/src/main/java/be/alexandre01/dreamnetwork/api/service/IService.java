@@ -14,6 +14,7 @@ public interface IService {
     int getIndexingId();
 
     String getFullIndexedName();
+
     long getProcessID();
     int getPort();
     Optional<String> getUniqueCharactersID();
