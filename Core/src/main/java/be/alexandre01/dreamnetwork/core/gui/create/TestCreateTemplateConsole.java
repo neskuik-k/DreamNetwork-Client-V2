@@ -201,11 +201,11 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                     if (jvmExecutor == null) {
                         Console.printLang("service.creation.creatingServerOnBundle", serverName, bundleInfo.getName());
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName,false);
-                        String customName = jvmExecutor.getFullName();
+                        String customName = bundleData+"/"+serverName;
                         if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
-                            customName = jvmExecutor.getName();
+                            customName = serverName;
                         }
-                        jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, mods, xms,  xmx,  port, proxy, true,bundleData,customName);
+                        jvmExecutor = new JVMExecutor(bundleData.getName(), serverName, mods, xms,  xmx,  port, proxy, true,bundleData,null);
                     }else {
                         String customName = jvmExecutor.getFullName();
                         if(DNUtils.get().getConfigManager().getGlobalSettings().isSimplifiedNamingService()){
