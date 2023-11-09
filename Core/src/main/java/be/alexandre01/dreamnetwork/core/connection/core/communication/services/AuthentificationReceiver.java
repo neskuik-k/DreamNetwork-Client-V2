@@ -215,7 +215,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                                 jvmService.getFullName(),
-                                                jvmService.getCustomName().orElse(null),
+                                                jvmService.getFullIndexedName(),
                                                 remoteAdress[0].replaceAll("/", ""),
                                                 jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
                                     }
@@ -276,7 +276,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                 for (IService service : jvmExecutor.getServices()) {
 
                                     if (service.getClient() != null) {
-                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getCustomName().orElse("n")+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
+                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getFullIndexedName()+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
                                         //System.out.println(service.);
 
                                         // add servers (if not proxy)
@@ -284,13 +284,13 @@ public class AuthentificationReceiver extends CoreReceiver {
                                             service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
                                         }
 
-                                        servers.add(service.getFullName() +";"+ newClient.getJvmService().getCustomName().orElse("n") +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
+                                        servers.add(service.getFullName() +";"+ newClient.getJvmService().getFullIndexedName() +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                                     }
                                 }
                             } else {
                                 //services non démarrés
                                 if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
-                                    servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getCustomName().orElse("n") + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
+                                    servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getFullIndexedName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
                                 }
                             }
                         }
