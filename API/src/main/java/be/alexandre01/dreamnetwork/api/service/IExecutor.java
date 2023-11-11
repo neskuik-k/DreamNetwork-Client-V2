@@ -106,7 +106,7 @@ public interface IExecutor {
             if (!isProxy()) {
                 AServiceClient proxy = api.getClientManager().getProxy();
                 if (proxy != null) {
-                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getCustomName().orElse(service.getFullName()));
+                    proxy.getRequestManager().sendRequest(RequestType.PROXY_UNREGISTER_SERVER, service.getFullIndexedName());
                 }
             }
         }

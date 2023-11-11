@@ -367,7 +367,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                         devServers.add(jvmExecutor.getName()+";"+ jvmExecutor.getCustomName().orElse("n") +";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(service.getFullName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+service.getFullIndexedName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";"+ (service.getClient() != null));
                     }
                 }
 
@@ -377,7 +377,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
                     for(IService service : jvmExecutor.getServices()){
-                        devServers.add(service.getFullName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
+                        devServers.add(service.getFullName()+";"+service.getFullIndexedName()+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";" + (service.getClient() != null));
                     }
                 }
                 String str = String.join(",", devServers);
