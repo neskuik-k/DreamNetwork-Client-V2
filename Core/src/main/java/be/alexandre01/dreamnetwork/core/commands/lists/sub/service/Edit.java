@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.*;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.utils.clients.RamArgumentsChecker;
@@ -31,12 +31,12 @@ public class Edit extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
-            Optional<IJVMExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
+            Optional<IExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
             if(!execOpt.isPresent()){
                 System.out.println("Cannot find executor");
                 return false;
             }
-            IJVMExecutor jvmExecutor = execOpt.get();
+            IExecutor jvmExecutor = execOpt.get();
 
             if(args[3].equalsIgnoreCase("set")){
                 switch (args[2]){
@@ -54,7 +54,7 @@ public class Edit extends SubCommand {
                         break;
                     case "mode":
                         if(args[4].equalsIgnoreCase("DYNAMIC") || args[4].equalsIgnoreCase("STATIC")){
-                            jvmExecutor.getConfig().setType(IJVMExecutor.Mods.valueOf(args[4]));
+                            jvmExecutor.getConfig().setType(IExecutor.Mods.valueOf(args[4]));
                             jvmExecutor.getStartupConfig().updateConfigFile();
                         }else{
                             System.out.println("Cannot parse mode");

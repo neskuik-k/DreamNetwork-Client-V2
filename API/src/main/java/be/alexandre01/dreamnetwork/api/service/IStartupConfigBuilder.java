@@ -16,7 +16,7 @@ public interface IStartupConfigBuilder {
 
     IStartupConfigBuilder pathName(String pathName);
 
-    IStartupConfigBuilder type(IJVMExecutor.Mods type);
+    IStartupConfigBuilder type(IExecutor.Mods type);
 
     IStartupConfigBuilder xms(String Xms);
 

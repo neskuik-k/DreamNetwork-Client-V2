@@ -4,7 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import lombok.NonNull;
@@ -24,13 +24,13 @@ public class Infos extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
-            Optional<IJVMExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
+            Optional<IExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
             if(!execOpt.isPresent()){
                 System.out.println("Cannot find executor");
                 return false;
             }
 
-            IJVMExecutor jvmExecutor = execOpt.get();
+            IExecutor jvmExecutor = execOpt.get();
             int p = jvmExecutor.getConfig().getPort();
             String port = p == 0 ? "auto" : String.valueOf(p);
             System.out.println(Colors.GREEN+"Name: "+Colors.RESET+jvmExecutor.getName());

@@ -17,14 +17,14 @@ public class FileDispatcher {
     // It is not multithread safe, to use on startup only
     public void sendCustomsFileToProxies(InputStream in, String fileName){
         File[] dir;
-        Collection<IJVMExecutor> executors = DNCoreAPI.getInstance().getContainer().getProxiesExecutors();
-        dir = executors.stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
+        Collection<IExecutor> executors = DNCoreAPI.getInstance().getContainer().getProxiesExecutors();
+        dir = executors.stream().map(IExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
         createCustomFiles(dir,in,fileName);
     }
     public void sendCustomsFileToServers(InputStream in,String fileName){
         File[] dir;
-        Collection<IJVMExecutor> executors = DNCoreAPI.getInstance().getContainer().getServersExecutors();
-        dir = executors.stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
+        Collection<IExecutor> executors = DNCoreAPI.getInstance().getContainer().getServersExecutors();
+        dir = executors.stream().map(IExecutor::getFileRootDir).collect(Collectors.toList()).toArray(dir = new File[executors.size()]);
         createCustomFiles(dir,in,fileName);
     }
     public void createCustomFiles(File[] directory,InputStream in,String fileName){

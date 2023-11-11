@@ -11,14 +11,13 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.core.gui.create.TestCreateTemplateConsole;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
-import be.alexandre01.dreamnetwork.core.service.bundle.BundleInfo;
 import be.alexandre01.dreamnetwork.api.utils.clients.NumberArgumentCheck;
 import be.alexandre01.dreamnetwork.api.utils.clients.RamArgumentsChecker;
 import be.alexandre01.dreamnetwork.api.utils.clients.ModsArgumentChecker;
@@ -72,7 +71,7 @@ public class Create extends SubCommand {
                 Console.printLang("commands.service.create.invalidMod");
                 return false;
             }
-            IJVMExecutor.Mods mods = IJVMExecutor.Mods.valueOf(mod);
+            IExecutor.Mods mods = IExecutor.Mods.valueOf(mod);
             IBundleInfo bundleInfo;
 
            if(!Core.getInstance().getBundleManager().getBundleDatas().containsKey(bundle.toLowerCase())) {

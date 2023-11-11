@@ -2,7 +2,7 @@ package be.alexandre01.dreamnetwork.api.utils.messages.mapper;
 
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.utils.messages.ObjectConverterMapper;
 
 /*
@@ -10,14 +10,14 @@ import be.alexandre01.dreamnetwork.api.utils.messages.ObjectConverterMapper;
  ↬   done on 04/11/2023 at 23:37
 */
 
-public class MapperOfExecutor extends ObjectConverterMapper<IJVMExecutor,String> {
+public class MapperOfExecutor extends ObjectConverterMapper<IExecutor,String> {
     @Override
-    public String convert(IJVMExecutor object) {
+    public String convert(IExecutor object) {
         return object.getFullName();
     }
 
     @Override
-    public IJVMExecutor read(String object) {
+    public IExecutor read(String object) {
         return DNCoreAPI.getInstance().getContainer().tryToGetJVMExecutor(object).orElse(null);
     }
 }

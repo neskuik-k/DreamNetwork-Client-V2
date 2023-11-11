@@ -1,12 +1,9 @@
 package be.alexandre01.dreamnetwork.api.service.bundle;
 
-import be.alexandre01.dreamnetwork.api.console.language.IEmojiManager;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
 
 
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
-import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
-import lombok.Data;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -23,7 +20,7 @@ public class BundleData {
     private boolean isVirtual = false;
     private Optional<String> virtualName = Optional.empty();
     private boolean merge = false;
-    private final HashMap<String, IJVMExecutor> executors = new HashMap<>();
+    private final HashMap<String, IExecutor> executors = new HashMap<>();
     private final IBundleInfo bundleInfo;
 
     public BundleData(IContainer.JVMType jvmType,String name,  ArrayList<BService> services,boolean autoStart, IBundleInfo bundleInfo) {

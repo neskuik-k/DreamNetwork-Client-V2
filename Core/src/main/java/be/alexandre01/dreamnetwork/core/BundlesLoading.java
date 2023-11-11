@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.request.CustomRequestInfo
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.FileDispatcher;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.connection.core.requests.RequestFile;
@@ -114,7 +114,7 @@ public class BundlesLoading {
                         fileDispatcher.replaceFile(is,System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/plugins/","DreamNetwork-Plugin.jar");
                 }
 
-                IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
+                IExecutor jvmExecutor = Core.getInstance().getJvmContainer().initIfPossible(pathName,name,false,bundleData);
                 if(jvmExecutor == null){
                     notConfigured(dir);
                     continue;
@@ -135,8 +135,8 @@ public class BundlesLoading {
     }
 
     public void createCustomRequestsFile(){
-        File[] servers = Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
-        File[] proxies =  Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IJVMExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
+        File[] servers = Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
+        File[] proxies =  Core.getInstance().getJvmContainer().getServersExecutors().stream().map(IExecutor::getFileRootDir).collect(Collectors.toList()).toArray(new File[0]);
         createCustomRequestsFile(servers);
         createCustomRequestsFile(proxies);
         Console.printLang("bundle.customRequest.fileCreated");

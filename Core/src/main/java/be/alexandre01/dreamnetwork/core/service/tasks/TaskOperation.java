@@ -5,14 +5,12 @@ import be.alexandre01.dreamnetwork.api.service.tasks.TaskData;
 import be.alexandre01.dreamnetwork.core.Core;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 public class TaskOperation {
 
     public Runnable createOperation(TaskData taskData) {
         if (taskData.getJvmExecutor() == null) {
-            Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(taskData.getService());
+            Optional<IExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(taskData.getService());
             if (!jvmExecutor.isPresent()) {
                 System.out.println("Service " + taskData.getService() + " not found");
                 return null;
@@ -20,7 +18,7 @@ public class TaskOperation {
             taskData.setJvmExecutor(jvmExecutor.get());
         }
 
-        IJVMExecutor jvmExecutor = taskData.getJvmExecutor();
+        IExecutor jvmExecutor = taskData.getJvmExecutor();
         if (taskData.getIConfig() == null) {
             String profile = taskData.getProfile();
             if (profile != null && taskData.getJvmExecutor().getJvmProfiles().isPresent()) {

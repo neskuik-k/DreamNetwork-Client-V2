@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalCo
 import be.alexandre01.dreamnetwork.api.connection.core.communication.packets.handler.PacketRequestConverter;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.services.CoreServiceLinkedEvent;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -206,7 +206,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.PROXY)) {
                         newClient.getRequestManager().sendRequest(RequestType.PROXY_HANDSHAKE_SUCCESS);
-                        for (IJVMExecutor service : Core.getInstance().getJvmContainer().getServersExecutors()) {
+                        for (IExecutor service : Core.getInstance().getJvmContainer().getServersExecutors()) {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
@@ -268,7 +268,7 @@ public class AuthentificationReceiver extends CoreReceiver {
 
 
 
-                        for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getJVMExecutors()) {
+                        for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getJVMExecutors()) {
                             String type = jvmExecutor.isProxy() ? "p" : "s";
 
                             //services démarrés
@@ -362,7 +362,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                         .build());
 
                 ArrayList<String> devServers = new ArrayList<>();
-                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()){
+                for(IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getServersExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+ jvmExecutor.getCustomName().orElse("n") +";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 
@@ -372,7 +372,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                 }
 
 
-                for(IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
+                for(IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
                     if(jvmExecutor.getServices().isEmpty())
                         devServers.add(jvmExecutor.getName()+";"+jvmExecutor.getCustomName().orElse("n")+";"+jvmExecutor.getType()+";"+jvmExecutor.isProxy()+";false");
 

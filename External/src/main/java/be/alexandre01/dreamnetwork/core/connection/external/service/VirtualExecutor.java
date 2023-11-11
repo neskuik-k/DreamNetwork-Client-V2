@@ -18,7 +18,7 @@ import lombok.Getter;
 import java.io.File;
 import java.util.*;
 
-public class VirtualExecutor  implements IJVMExecutor {
+public class VirtualExecutor  implements IExecutor {
     ConfigData configData;
     BundleData bundleData;
     HashMap<Integer,IService> serviceList = new HashMap<>();
@@ -47,34 +47,34 @@ public class VirtualExecutor  implements IJVMExecutor {
 
 
     @Override
-    public ExecutorCallbacks startServer() {
-        return startServer(":this:", new ExecutorCallbacks());
+    public ExecutorCallbacks startService() {
+        return startService(":this:", new ExecutorCallbacks());
     }
 
     @Override
-    public ExecutorCallbacks startServer(String profile) {
-        return startServer(profile, new ExecutorCallbacks());
+    public ExecutorCallbacks startService(String profile) {
+        return startService(profile, new ExecutorCallbacks());
     }
 
     @Override
-    public ExecutorCallbacks startServer(IConfig jvmConfig) {
-        return startServer(jvmConfig, new ExecutorCallbacks());
+    public ExecutorCallbacks startService(IConfig jvmConfig) {
+        return startService(jvmConfig, new ExecutorCallbacks());
     }
 
     @Override
-    public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
+    public ExecutorCallbacks startService(String profile, ExecutorCallbacks callbacks) {
         VirtualService virtualService = new VirtualService( null, this);
         sendStartCallBack(externalCore, callbacks, virtualService, profile);
         return null;
     }
 
     @Override
-    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks){
-        return startServer(":this:",callbacks);
+    public ExecutorCallbacks startService(ExecutorCallbacks callbacks){
+        return startService(":this:",callbacks);
     }
 
     @Override
-    public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks callbacks) {
+    public ExecutorCallbacks startService(IConfig jvmConfig, ExecutorCallbacks callbacks) {
         VirtualService virtualService = new VirtualService( null, this);
         sendStartCallBack(externalCore, callbacks, virtualService, jvmConfig);
         return callbacks;
@@ -138,7 +138,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks callbacks = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            startServer(jvmConfig,callbacks);
+            startService(jvmConfig,callbacks);
         }
         return callbacks;
     }
@@ -147,7 +147,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, String profile) {
         ExecutorCallbacks callbacks = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            startServer(profile,callbacks);
+            startService(profile,callbacks);
         }
         return callbacks;
     }
@@ -155,7 +155,7 @@ public class VirtualExecutor  implements IJVMExecutor {
     @Override
     public void removeService(IService service) {
         serviceList.remove(service.getId());
-        IJVMExecutor.super.removeService(service);
+        IExecutor.super.removeService(service);
     }
 
     @Override

@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
@@ -46,7 +46,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
             Console.printLang("commands.service.screen.refreshing");
             Console.printLang("commands.service.screen.tryRefresh");
 
-            for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors){
+            for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors){
                 for (IService service : jvmExecutor.getServices()) {
                     if(service.getScreen() == null){
                         new be.alexandre01.dreamnetwork.core.service.screen.Screen(service);

@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.NodeContainer;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -53,7 +53,7 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-                Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                Optional<IExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
 
                 if(!exec.isPresent()){
                     Console.printLang("commands.service.stop.incorrectService");

@@ -1,16 +1,11 @@
 package be.alexandre01.dreamnetwork.api.service;
 
-import be.alexandre01.dreamnetwork.utils.Tuple;
-import lombok.Getter;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public interface IConfig {
     public String getName();
 
-    public IJVMExecutor.Mods getType();
+    public IExecutor.Mods getType();
 
     public String getXms();
 
@@ -28,7 +23,7 @@ public interface IConfig {
 
     public void setName(String name);
 
-    public void setType(IJVMExecutor.Mods type);
+    public void setType(IExecutor.Mods type);
 
     public void setXms(String xms);
 

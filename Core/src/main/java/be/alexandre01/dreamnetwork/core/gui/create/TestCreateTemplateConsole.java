@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.gui.create;
 
-import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
@@ -8,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.RamNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.service.IContainer;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleInfo;
 import be.alexandre01.dreamnetwork.core.Core;
@@ -102,9 +101,9 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
 
                @Override
                public Operation received(PromptText value, String[] args, ShowInfos infos) {
-                   IJVMExecutor.Mods mods;
+                   IExecutor.Mods mods;
                      try {
-                          mods = IJVMExecutor.Mods.valueOf(args[0]);
+                          mods = IExecutor.Mods.valueOf(args[0]);
                      }catch (Exception e){
                             infos.error(getFromLang("service.creation.badMode"));
                             return errorAndRetry(infos);
@@ -185,7 +184,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
                     }
                     String serverName = getOperation("serviceName").getFrom(String.class);
 
-                    IJVMExecutor.Mods mods = getOperation("mode").getFrom(IJVMExecutor.Mods.class);
+                    IExecutor.Mods mods = getOperation("mode").getFrom(IExecutor.Mods.class);
 
                     String xms = getOperation("xms").getFrom(String.class);
                     String xmx = getOperation("xmx").getFrom(String.class);

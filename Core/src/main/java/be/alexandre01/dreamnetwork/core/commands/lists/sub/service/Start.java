@@ -37,7 +37,7 @@ public class Start extends SubCommand {
 
         if(!when(sArgs -> {
             String serverPath = sArgs[1];
-            IJVMExecutor jvmExecutor = null;
+            IExecutor jvmExecutor = null;
             if(serverPath.contains("/")){
                 String[] splitPath = serverPath.split("/");
                 String serverName = splitPath[splitPath.length - 1];
@@ -51,7 +51,7 @@ public class Start extends SubCommand {
 
             if(jvmExecutor == null){
 
-                IJVMExecutor[] array = Core.getInstance().getJvmContainer().getJVMExecutorsFromName(serverPath);
+                IExecutor[] array = Core.getInstance().getJvmContainer().getJVMExecutorsFromName(serverPath);
                 if(array.length == 1){
                     jvmExecutor = array[0];
                 }else {
@@ -69,7 +69,7 @@ public class Start extends SubCommand {
             //System.out.println("jvmExecutor = " + jvmExecutor);
 
             if(sArgs.length < 3){
-                jvmExecutor.startServer();
+                jvmExecutor.startService();
                 return true;
             }
             if(args[2].equalsIgnoreCase("profile")){
@@ -80,7 +80,7 @@ public class Start extends SubCommand {
                 }
                 String profile = sArgs[3];
 
-                jvmExecutor.startServer(profile);
+                jvmExecutor.startService(profile);
                 System.out.println("Starting your server with profile " + profile);
                 return true;
             }
@@ -117,7 +117,7 @@ public class Start extends SubCommand {
                 builder.port(port);
             }
             IStartupConfig config = builder.buildFrom(jvmExecutor.getStartupConfig());
-            jvmExecutor.startServer(config);
+            jvmExecutor.startService(config);
             return true;
         },args,"start","serverPath", "[mods]","[XMS]","[XMX]","[port]")){
             fail("service","start", "serverPath", "[mods]" ,"[XMS]" ,"[XMX]", "[port]");

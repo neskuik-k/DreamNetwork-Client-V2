@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.core.connection.core.players;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -90,20 +90,11 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     @Override
     public void udpatePlayerServer(int id, String server,String bundle){
         Player player = getPlayer(id);
-        String[] args = server.split("-");
 
-        Optional<IJVMExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
-        int i;
-        try {
-            i = Integer.parseInt(args[1]);
-        }catch (Exception e){
-            return;
-        }
 
-        jvmExecutor.ifPresent(ijvmExecutor -> {
-            IService jvmService = ijvmExecutor.getService(i);
-            if(jvmService != null){
-                AServiceClient client = jvmService.getClient();
+
+        Core.getInstance().getServicesIndexing().getService(server).ifPresent(service -> {
+                AServiceClient client = service.getClient();
                 AServiceClient oldClient = player.getServer();
                 if(oldClient != null){
                     count.put(oldClient,count.get(oldClient)-1);
@@ -134,8 +125,6 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                         toUpdates.put(c.getClient(),player);
                     }
                 }
-
-            }
         });
 
     }

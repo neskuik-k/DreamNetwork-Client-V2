@@ -10,7 +10,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
 
@@ -66,7 +66,7 @@ public class ExternalConsole  {
                 public void on(String data) {
                     disable();
                     if (data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")) {
-                        for (IJVMExecutor executor : DNCoreAPI.getInstance().getContainer().getJVMExecutors()) {
+                        for (IExecutor executor : DNCoreAPI.getInstance().getContainer().getJVMExecutors()) {
                             for (IService service : executor.getServices()){
                                 service.stop();
                             }

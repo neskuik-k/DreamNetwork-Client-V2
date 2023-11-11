@@ -1,12 +1,10 @@
 package be.alexandre01.dreamnetwork.api.service.tasks;
 
 import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.function.Supplier;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -25,7 +23,7 @@ public class TaskData {
     @Ignore
     protected int actualCount = 0;
     @Ignore
-    protected IJVMExecutor jvmExecutor;
+    protected IExecutor jvmExecutor;
     @Ignore
     protected IConfig iConfig;
     public static enum TaskType {

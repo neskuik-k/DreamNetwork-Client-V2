@@ -19,7 +19,7 @@ public class StartTask {
     public static CoreReceiver.RequestInterceptor get(){
         CoreReceiver.RequestInterceptor start;
         AbstractRequestManager.getTasks().put("start", start = (message, ctx, client) -> {
-            Optional<IJVMExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
+            Optional<IExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
 
             System.out.println("Searching if start executor of "+ message.getString("SERVERNAME")+ " is present");
             if (!startExecutor.isPresent()) {
@@ -38,7 +38,7 @@ public class StartTask {
                 System.out.println("Merged config data");
             }
 
-            ExecutorCallbacks executorCallbacks = startExecutor.get().startServer(config);
+            ExecutorCallbacks executorCallbacks = startExecutor.get().startService(config);
             Console.debugPrint("RECEIVED REQUEST");
             message.getCallback().ifPresent(callback -> {
                 Console.debugPrint("Callback present");

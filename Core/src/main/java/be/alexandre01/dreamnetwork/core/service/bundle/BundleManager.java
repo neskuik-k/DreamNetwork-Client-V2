@@ -6,7 +6,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.bundle.BService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
@@ -27,7 +27,6 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Optional;
 
 public class BundleManager implements IBundleManager {
     @Getter private final HashMap<String, BundleData> bundleDatas = new HashMap<>();
@@ -155,13 +154,13 @@ public class BundleManager implements IBundleManager {
                 if(!bundleData.isAutoStart())
                     return;
                 for(BService bService : bundleData.getServices()){
-                    IJVMExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData);
+                    IExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData);
                     if(jvmExecutor == null){
                         Console.debugPrint(Console.getFromLang("service.bundle.manager.cantFindService", bundleData.getName(), bService.getServiceName()));
                         continue;
                     }
                     for (int i = 0; i < bService.getTotalCount(); i++) {
-                        jvmExecutor.startServer();
+                        jvmExecutor.startService();
                     }
                 }
             }

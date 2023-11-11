@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 
-import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.io.File;
@@ -17,9 +16,9 @@ public interface IStartupConfig extends IConfig {
     }
     void saveFile();
 
-    boolean changePort(String pathName, String finalname, int port,int defaultPort, IContainer.JVMType jvmType, IJVMExecutor.Mods mods);
+    boolean changePort(String pathName, String finalname, int port,int defaultPort, IContainer.JVMType jvmType, IExecutor.Mods mods);
 
-    Integer getCurrentPort(String pathName, String finalname, IContainer.JVMType jvmType, IJVMExecutor.Mods mods);
+    Integer getCurrentPort(String pathName, String finalname, IContainer.JVMType jvmType, IExecutor.Mods mods);
 
     String getLine(String finalname);
 
@@ -27,7 +26,7 @@ public interface IStartupConfig extends IConfig {
 
     void updateConfigFile();
 
-    void updateConfigFile(String pathName, String finalName, IJVMExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion,String customName);
+    void updateConfigFile(String pathName, String finalName, IExecutor.Mods type, String Xms, String Xmx, int port, boolean proxy, String exec, String javaVersion, String customName);
 
     @JsonIgnore long getConfigSize();
 

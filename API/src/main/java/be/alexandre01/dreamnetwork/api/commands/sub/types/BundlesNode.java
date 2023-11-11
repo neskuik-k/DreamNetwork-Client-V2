@@ -3,7 +3,7 @@ package be.alexandre01.dreamnetwork.api.commands.sub.types;
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.bundle.IBundleManager;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jline.builtins.Completers;
@@ -24,7 +24,7 @@ public class BundlesNode extends CustomType {
                 for(String bundle : bundleManager.getBundleDatas().keySet()){
                     //Console.fine("+Bundle : "+bundle);
                     //bundles = ArrayUtils.add(bundles,bundle);
-                    for(Map.Entry<String,IJVMExecutor> executor : bundleManager.getBundleData(bundle).getExecutors().entrySet()){
+                    for(Map.Entry<String, IExecutor> executor : bundleManager.getBundleData(bundle).getExecutors().entrySet()){
                         //Console.fine("+Executor : "+executor);
                         String color;
                         if(executor.getValue().isProxy()){
@@ -36,7 +36,7 @@ public class BundlesNode extends CustomType {
                     }
                 }
                 if(withSimplifiedName){
-                    for(IJVMExecutor exec: DNCoreAPI.getInstance().getContainer().getJVMExecutors()){
+                    for(IExecutor exec: DNCoreAPI.getInstance().getContainer().getJVMExecutors()){
                         if(exec.getBundleData() != null){
                             //Check if the executor is the only one with this name
                             if(DNCoreAPI.getInstance().getContainer().getJVMExecutorsFromName(exec.getName()).length == 1){

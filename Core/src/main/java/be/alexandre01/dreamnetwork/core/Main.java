@@ -10,11 +10,10 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.commands.CommandReader;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.config.FileCopyAsync;
 import be.alexandre01.dreamnetwork.api.config.GlobalSettings;
@@ -214,7 +213,7 @@ public class Main {
                     disabling = true;
                     if(instance != null){
                         boolean isReady = false;
-                        for(IJVMExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
+                        for(IExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
                             if(!jvmExecutor.getServices().isEmpty()){
                                 ArrayList<Long> pIDs = new ArrayList<>();
                                 for(IService service : new ArrayList<>(jvmExecutor.getServices())){

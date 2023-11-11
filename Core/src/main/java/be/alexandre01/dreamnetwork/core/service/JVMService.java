@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.service;
 
-import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
@@ -8,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.service.ExecutorCallbacks;
 import be.alexandre01.dreamnetwork.api.service.IConfig;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.ServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -28,7 +27,7 @@ public class JVMService implements IService {
     private JVMExecutor jvmExecutor;
     private Process process;
 
-    private IJVMExecutor.Mods type;
+    private IExecutor.Mods type;
 
     private String xmx;
     private String xms;
@@ -180,7 +179,7 @@ public class JVMService implements IService {
         stop().whenComplete((aBoolean, throwable) -> {
                 if(aBoolean){
                     System.out.println("Stop succeed");
-                    ExecutorCallbacks c = getJvmExecutor().startServer(iConfig);
+                    ExecutorCallbacks c = getJvmExecutor().startService(iConfig);
                     c.whenStart(new ExecutorCallbacks.ICallbackStart() {
                         @Override
                         public void whenStart(IService service) {

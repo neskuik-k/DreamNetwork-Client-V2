@@ -5,12 +5,9 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.enums.ExecType;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.Main;
-import be.alexandre01.dreamnetwork.core.UtilsAPI;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.console.accessibility.CoreAccessibilityMenu;
 import be.alexandre01.dreamnetwork.api.installer.enums.InstallationLinks;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
@@ -30,12 +27,12 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
 
                 @Override
                 public Operation received(PromptText value, String[] args, ShowInfos infos) {
-                    Optional<IJVMExecutor> executorOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
+                    Optional<IExecutor> executorOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
                     if(!executorOpt.isPresent()){
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                         return errorAndRetry(infos);
                     }
-                    IJVMExecutor executor = executorOpt.get();
+                    IExecutor executor = executorOpt.get();
                     if(!(executor instanceof JVMExecutor)){
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                         return errorAndRetry(infos);

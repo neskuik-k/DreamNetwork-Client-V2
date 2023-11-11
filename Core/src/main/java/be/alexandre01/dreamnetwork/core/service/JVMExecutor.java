@@ -54,7 +54,7 @@ import java.util.stream.Collectors;
 @JsonIgnoreProperties(value = {"startupConfig"}, ignoreUnknown = true)
 @Getter()
 @Setter
-public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
+public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     @JsonIgnore
     @Getter
     private static ArrayList<String> serverList = new ArrayList<>();
@@ -158,29 +158,29 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
 
     @Override
     @Synchronized
-    public ExecutorCallbacks startServer() {
-        return startServer(this);
+    public ExecutorCallbacks startService() {
+        return startService(this);
     }
 
     @Override
-    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks) {
-        return startServer(this, callbacks);
+    public ExecutorCallbacks startService(ExecutorCallbacks callbacks) {
+        return startService(this, callbacks);
     }
 
     @Override
-    public ExecutorCallbacks startServer(String profile) {
-        return startServer(profile, new ExecutorCallbacks());
-    }
-
-    @Override
-    @Synchronized
-    public ExecutorCallbacks startServer(IConfig jvmConfig) {
-        return startServer(jvmConfig, new ExecutorCallbacks());
+    public ExecutorCallbacks startService(String profile) {
+        return startService(profile, new ExecutorCallbacks());
     }
 
     @Override
     @Synchronized
-    public ExecutorCallbacks startServer(String profile, ExecutorCallbacks callbacks) {
+    public ExecutorCallbacks startService(IConfig jvmConfig) {
+        return startService(jvmConfig, new ExecutorCallbacks());
+    }
+
+    @Override
+    @Synchronized
+    public ExecutorCallbacks startService(String profile, ExecutorCallbacks callbacks) {
         IConfig iConfig = null;
         if (profile != null && getJvmProfiles().isPresent()) {
             IProfiles profiles = getJvmProfiles().get();
@@ -191,7 +191,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                 return null;
             }
             iConfig = JVMStartupConfig.builder(iConfig).buildFrom((IStartupConfig) this);
-            return startServer(iConfig, callbacks);
+            return startService(iConfig, callbacks);
         } else {
             Console.print(Colors.RED + "The profile is null and doesn't exist", Level.SEVERE);
             return null;
@@ -199,7 +199,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     }
 
     @Override
-    public ExecutorCallbacks startServer(IConfig jvmConfig, ExecutorCallbacks c) {
+    public ExecutorCallbacks startService(IConfig jvmConfig, ExecutorCallbacks c) {
         Console.fine("Checking queing start information");
         boolean b = queue.isEmpty();
         Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
@@ -221,7 +221,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            startServer(jvmConfig, c);
+            startService(jvmConfig, c);
         }
         return c;
     }
@@ -230,7 +230,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
     public ExecutorCallbacks startServers(int i, String profile) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
-            startServer(profile, c);
+            startService(profile, c);
         }
         return c;
     }
@@ -717,7 +717,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
         }
 
         try {
-            long processID = IJVMExecutor.getProcessID(proc);
+            long processID = IExecutor.getProcessID(proc);
             Console.fine("PROCESS ID >" + processID);
             Console.fine(port);
 
@@ -888,7 +888,7 @@ public class JVMExecutor extends JVMStartupConfig implements IJVMExecutor {
                     future.complete(true);
                 }
             }
-            IJVMExecutor.super.removeService(jvmService);
+            IExecutor.super.removeService(jvmService);
         } catch (Exception e) {
             Console.bug(e);
         }

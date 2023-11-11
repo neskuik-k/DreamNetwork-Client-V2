@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.utils.clients.IdSet;
 import lombok.Data;
 
 import java.util.HashMap;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -38,15 +39,33 @@ public class ServicesIndexing {
         }
     }
 
+    public IService getService(String name, int id){
+        if(index.containsKey(name)){
+            return index.get(name).getServiceListById().get(id);
+        }
+        return null;
+    }
+
+    public Optional<IService> getService(String name){
+        String[] split = name.split("-");
+        name = split[0];
+        int id = Integer.parseInt(split[1]);
+        if(index.containsKey(name)){
+            return Optional.ofNullable(index.get(name).getServiceListById().get(id));
+        }
+        return Optional.empty();
+    }
+
 
     @Data
     public static class IndexOf{
         IdSet idSet = new IdSet();
         HashMap<IService,Integer> serviceList = new HashMap<>();
-
+        HashMap<Integer,IService> serviceListById = new HashMap<>();
         public int addService(IService service){
             int id = idSet.getNextId();
             serviceList.put(service,id);
+            serviceListById.put(id,service);
             idSet.add(id);
             return id;
         }
@@ -55,6 +74,7 @@ public class ServicesIndexing {
             System.out.print("Remove service from indexing");
             int id = service.getIndexingId();
             serviceList.remove(service);
+            serviceListById.remove(id);
             idSet.remove(id);
         }
     }

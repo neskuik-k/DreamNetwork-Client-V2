@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.connection.external.service;
 
-import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
@@ -8,7 +7,6 @@ import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
 import be.alexandre01.dreamnetwork.api.service.*;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
-import be.alexandre01.dreamnetwork.utils.Tuple;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -94,7 +92,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public IJVMExecutor.Mods getType() {
+    public IExecutor.Mods getType() {
         return virtualExecutor.getType();
     }
 
@@ -171,7 +169,7 @@ public class VirtualService implements IService {
         CompletableFuture<RestartResult> completableFuture = new CompletableFuture<>();
         stop().whenComplete((aBoolean, throwable) -> {
             if(aBoolean){
-                ExecutorCallbacks c = getJvmExecutor().startServer();
+                ExecutorCallbacks c = getJvmExecutor().startService();
                 c.whenStart(new ExecutorCallbacks.ICallbackStart() {
                     @Override
                     public void whenStart(IService service) {

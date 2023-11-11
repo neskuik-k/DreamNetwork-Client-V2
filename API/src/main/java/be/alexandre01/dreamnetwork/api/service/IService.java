@@ -22,10 +22,10 @@ public interface IService {
     Optional<String> getCustomName();
     String getXmx();
     String getXms();
-    IJVMExecutor.Mods getType();
+    IExecutor.Mods getType();
     AServiceClient getClient();
     boolean isConnected();
-    IJVMExecutor getJvmExecutor();
+    IExecutor getJvmExecutor();
 
     String getFullName();
     String getFullName(boolean withBundlePath);

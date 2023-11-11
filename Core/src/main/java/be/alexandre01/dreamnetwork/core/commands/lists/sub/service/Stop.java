@@ -7,7 +7,7 @@ import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.ScreensNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
@@ -58,13 +58,13 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
             if(args[1].equalsIgnoreCase("all")){
                 ArrayList<IService> services = null;
                 if(args.length < 3){
-                    if(Core.getInstance().getJvmContainer().getJVMExecutors().stream().map(IJVMExecutor::getServices).allMatch(Collection::isEmpty)){
+                    if(Core.getInstance().getJvmContainer().getJVMExecutors().stream().map(IExecutor::getServices).allMatch(Collection::isEmpty)){
                         Console.printLang("commands.service.stop.noService");
                         return true;
                     }
                     services = new ArrayList<>();
-                    Collection<IJVMExecutor> executors = Core.getInstance().getJvmContainer().getJVMExecutors();
-                    for(IJVMExecutor executor : executors){
+                    Collection<IExecutor> executors = Core.getInstance().getJvmContainer().getJVMExecutors();
+                    for(IExecutor executor : executors){
                         services.addAll(executor.getServices());
                     }
                     Console.printLang("commands.service.stop.all");
@@ -75,7 +75,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                         System.out.println("Please specify an executor name");
                         return true;
                     }
-                    Optional<IJVMExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                    Optional<IExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
                     if(!exec.isPresent()){
                         Console.printLang("commands.service.stop.incorrectExecutor");
                         return true;

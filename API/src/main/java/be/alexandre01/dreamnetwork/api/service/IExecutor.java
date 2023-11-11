@@ -19,7 +19,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Optional;
 
-public interface IJVMExecutor {
+public interface IExecutor {
 
 
     //LINUX ONLY
@@ -74,14 +74,14 @@ public interface IJVMExecutor {
 
 
 
-    public ExecutorCallbacks startServer();
-    public ExecutorCallbacks startServer(ExecutorCallbacks callbacks);
-    public ExecutorCallbacks startServer(String profile);
+    public ExecutorCallbacks startService();
+    public ExecutorCallbacks startService(ExecutorCallbacks callbacks);
+    public ExecutorCallbacks startService(String profile);
 
-    public ExecutorCallbacks startServer(IConfig jvmConfig);
-    public ExecutorCallbacks startServer(String profile,ExecutorCallbacks callbacks);
+    public ExecutorCallbacks startService(IConfig jvmConfig);
+    public ExecutorCallbacks startService(String profile, ExecutorCallbacks callbacks);
 
-    public ExecutorCallbacks startServer(IConfig jvmConfig,ExecutorCallbacks callbacks);
+    public ExecutorCallbacks startService(IConfig jvmConfig, ExecutorCallbacks callbacks);
 
     public ExecutorCallbacks startServers(int i);
 

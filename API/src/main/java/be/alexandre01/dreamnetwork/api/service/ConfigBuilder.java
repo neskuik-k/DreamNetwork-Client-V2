@@ -1,7 +1,6 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.DNUtils;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
 public class ConfigBuilder implements IStartupConfigBuilder {
     protected String name;
     protected String pathName;
-    protected IJVMExecutor.Mods type;
+    protected IExecutor.Mods type;
     protected String Xms;
     protected String Xmx;
     protected int port;
@@ -58,7 +57,7 @@ public class ConfigBuilder implements IStartupConfigBuilder {
 
 
     @Override
-    public ConfigBuilder type(IJVMExecutor.Mods type) {
+    public ConfigBuilder type(IExecutor.Mods type) {
         this.type = type;
         return this;
     }

@@ -6,10 +6,9 @@ import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IStartupConfig;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.console.ConsoleReader;
 import be.alexandre01.dreamnetwork.core.service.JVMProfiles;
 import lombok.NonNull;
 
@@ -41,7 +40,7 @@ public class Reload extends SubCommand {
             }
             if(sArgs[1].equalsIgnoreCase("services")){
                 System.out.println("Reloading services");
-                for (IJVMExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors) {
+                for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().jvmExecutors) {
                     IStartupConfig config = jvmExecutor.getStartupConfig();
                     config.saveFile();
 

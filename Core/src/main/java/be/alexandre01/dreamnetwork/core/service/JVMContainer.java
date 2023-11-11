@@ -1,7 +1,7 @@
 package be.alexandre01.dreamnetwork.core.service;
 
 import be.alexandre01.dreamnetwork.api.service.IContainer;
-import be.alexandre01.dreamnetwork.api.service.IJVMExecutor;
+import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Main;
@@ -15,25 +15,25 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JVMContainer implements IContainer {
-    public volatile ArrayList<IJVMExecutor> jvmExecutors = new ArrayList<>();
+    public volatile ArrayList<IExecutor> jvmExecutors = new ArrayList<>();
 
 
-    public Collection<IJVMExecutor> getServersExecutors() {
+    public Collection<IExecutor> getServersExecutors() {
         return jvmExecutors.stream().filter(ijvmExecutor -> !(ijvmExecutor.isProxy())).collect(Collectors.toList());
     }
 
-    public Collection<IJVMExecutor> getProxiesExecutors() {
-        return jvmExecutors.stream().filter(IJVMExecutor::isProxy).collect(Collectors.toList());
+    public Collection<IExecutor> getProxiesExecutors() {
+        return jvmExecutors.stream().filter(IExecutor::isProxy).collect(Collectors.toList());
     }
 
 
     @Override
-    public synchronized IJVMExecutor getJVMExecutor(String processName, BundleData bundleData) {
+    public synchronized IExecutor getJVMExecutor(String processName, BundleData bundleData) {
         return bundleData.getExecutors().get(processName);
     }
 
     @Override
-    public synchronized IJVMExecutor getJVMExecutor(String processName, String bundleData) throws NullPointerException{
+    public synchronized IExecutor getJVMExecutor(String processName, String bundleData) throws NullPointerException{
         //System.out.println("getJVMExecutor");
         //System.out.println(Main.getBundleManager().getBundleDatas().keySet());
         return Main.getBundleManager().getBundleDatas().get(bundleData).getExecutors().get(processName);
@@ -42,18 +42,18 @@ public class JVMContainer implements IContainer {
 
 
     @Override
-    public IJVMExecutor[] getJVMExecutorsFromName(String processName) {
+    public IExecutor[] getJVMExecutorsFromName(String processName) {
         return jvmExecutors.stream().filter(ijvmExecutor -> {
             if(ijvmExecutor.getCustomName().isPresent()) {
                 return ijvmExecutor.getCustomName().get().equals(processName);
             }else {
                 return ijvmExecutor.getName().equals(processName);
             }
-        }).toArray(IJVMExecutor[]::new);
+        }).toArray(IExecutor[]::new);
     }
 
     @Override
-    public Optional<IJVMExecutor> tryToGetJVMExecutor(String processName) {
+    public Optional<IExecutor> tryToGetJVMExecutor(String processName) {
         try {
             if(processName.contains("/")){
                 String[] split = processName.split("/");
@@ -63,14 +63,14 @@ public class JVMContainer implements IContainer {
                 }
                 return Optional.ofNullable(getJVMExecutor(split[split.length - 1], bundle.toString()));
             }
-            IJVMExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
+            IExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
             if(jvmExecutors.length == 0){
                 return Optional.empty();
             }
 
             if(jvmExecutors.length > 1){
                 System.out.println(Colors.RED+ "Can't identifiate JVMExecutor found for the name: "+processName+" please use the full path like:");
-                for(IJVMExecutor jvmExecutor : jvmExecutors){
+                for(IExecutor jvmExecutor : jvmExecutors){
                     System.out.println(Colors.YELLOW+ "> "+jvmExecutor.getFullName());
                 }
                 return Optional.empty();
@@ -95,19 +95,19 @@ public class JVMContainer implements IContainer {
     }
     @Override
     public Optional<IService> tryToGetService(String processName, int id){
-        Optional<IJVMExecutor> jvmExecutor = tryToGetJVMExecutor(processName);
+        Optional<IExecutor> jvmExecutor = tryToGetJVMExecutor(processName);
         return jvmExecutor.flatMap(ijvmExecutor -> Optional.ofNullable(ijvmExecutor.getService(id)));
     }
 
 
     @Override
-    public ArrayList<IJVMExecutor> getJVMExecutors() {
+    public ArrayList<IExecutor> getJVMExecutors() {
         return jvmExecutors;
     }
 
 
     @Override
-    public IJVMExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData) {
+    public IExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData) {
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
         try {
             return new JVMExecutor(pathName, name, bundleData);
