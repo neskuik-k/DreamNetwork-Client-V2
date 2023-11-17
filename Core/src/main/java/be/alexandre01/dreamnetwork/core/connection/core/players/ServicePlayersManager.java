@@ -88,7 +88,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     }
 
     @Override
-    public void udpatePlayerServer(int id, String server,String bundle){
+    public void udpatePlayerServer(int id, String server){
         Player player = getPlayer(id);
 
 

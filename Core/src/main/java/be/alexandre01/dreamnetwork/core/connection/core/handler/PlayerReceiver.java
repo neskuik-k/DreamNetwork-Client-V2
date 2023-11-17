@@ -35,7 +35,7 @@ public class PlayerReceiver extends CoreReceiver {
             }
 
             if (message.contains("S")) {
-                s.udpatePlayerServer(id, message.getString("S"),message.getString("B"));
+                s.udpatePlayerServer(id, message.getString("S"));
             }
         });
         addRequestInterceptor(CORE_REMOVE_PLAYER,(message, ctx, c) -> {

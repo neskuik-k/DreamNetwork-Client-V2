@@ -11,7 +11,7 @@ public interface IServicePlayersManager {
 
     void addUpdatingClient(AServiceClient client, long time, DataType dataType);
 
-    void udpatePlayerServer(int id, String server,String bundle);
+    void udpatePlayerServer(int id, String server);
 
     Player getPlayer(int id);
 

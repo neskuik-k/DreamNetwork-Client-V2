@@ -38,7 +38,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
             for(Object o : args){
                 if(o instanceof Player){
                     Player p = (Player) o;
-                    if(p.getServer().getJvmService() == null){
+                    if(p.getServer() == null || p.getServer().getJvmService() == null){
                         continue;
                     }
                     IService service = p.getServer().getJvmService();
