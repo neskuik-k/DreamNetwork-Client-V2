@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.screen;
 
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.utils.clients.IdSet;
 import lombok.Data;
@@ -73,7 +74,7 @@ public class ServicesIndexing {
         public void removeService(IService service){
             int id = service.getIndexingId();
             if(serviceList.containsKey(service)){
-                System.out.print("Remove service from indexing");
+                Console.fine("Remove service from indexing");
                 serviceList.remove(service);
                 serviceListById.remove(id,service);
                 idSet.remove(id);
