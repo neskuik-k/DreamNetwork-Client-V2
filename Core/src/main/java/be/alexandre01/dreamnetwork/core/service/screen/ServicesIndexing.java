@@ -71,11 +71,13 @@ public class ServicesIndexing {
         }
 
         public void removeService(IService service){
-            System.out.print("Remove service from indexing");
             int id = service.getIndexingId();
-            serviceList.remove(service);
-            serviceListById.remove(id);
-            idSet.remove(id);
+            if(serviceList.containsKey(service)){
+                System.out.print("Remove service from indexing");
+                serviceList.remove(service);
+                serviceListById.remove(id,service);
+                idSet.remove(id);
+            }
         }
     }
 }

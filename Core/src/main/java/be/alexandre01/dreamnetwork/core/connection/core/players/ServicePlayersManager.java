@@ -91,15 +91,21 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     public void udpatePlayerServer(int id, String server){
         Player player = getPlayer(id);
 
+        System.out.println("Updating player on server "+server);
 
+        System.out.println(Core.getInstance().getServicesIndexing().getService(server));
 
         Core.getInstance().getServicesIndexing().getService(server).ifPresent(service -> {
                 AServiceClient client = service.getClient();
                 AServiceClient oldClient = player.getServer();
+            System.out.println("Updating player on server "+client.getName());
                 if(oldClient != null){
+                    System.out.println("from  "+oldClient.getName());
                     count.put(oldClient,count.get(oldClient)-1);
                     services.remove(oldClient,player);
                 }
+
+
                 player.setServer(client);
 
                 if(services.containsKey(client)){
@@ -114,6 +120,9 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
                 }
                 services.put(client, player);
 
+
+            System.out.println("Want to be informed "+wantToBeInformed.size());
+            System.out.println("Want to be directly informed "+wantToBeDirectlyInformed.size());
                 if(!wantToBeDirectlyInformed.isEmpty()){
                     for(ServicePlayersObject c : wantToBeDirectlyInformed){
                         c.getClient().getRequestManager().sendRequest(RequestType.SERVER_UPDATE_PLAYERS,player);
