@@ -831,6 +831,10 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
             jvmService.getProcess().destroy();
         }
 
+        if(jvmService.getJvmExecutor().isProxy()){
+            Core.getInstance().getServicePlayersManager().getPlayersMap().clear();
+        }
+
         //   System.out.println("removing service");
         int i = jvmService.getId();
         String dirName = getName() + "-" + jvmService.getId();
