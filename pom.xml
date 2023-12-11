@@ -168,13 +168,11 @@
                     <groupId>io.projectreactor.netty</groupId>
                     <artifactId>reactor-netty</artifactId>
                     <version>1.1.12</version>
-                    <scope>compile</scope>
                 </dependency>
                 <dependency>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
                     <version>2.15.3</version>
-                    <scope>compile</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -308,7 +306,6 @@
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.3</version>
-            <scope>provided</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
@@ -368,7 +365,13 @@
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
             <version>1.1.12</version>
-            <scope>provided</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-dns -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-codec-dns</artifactId>
+            <version>4.1.101.Final</version>
+        </dependency>
+
     </dependencies>
 </project>

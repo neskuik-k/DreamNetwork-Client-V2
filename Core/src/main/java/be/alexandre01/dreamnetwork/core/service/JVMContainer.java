@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
+import lombok.Synchronized;
 
 
 import java.util.ArrayList;
@@ -15,9 +16,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class JVMContainer implements IContainer {
-    public volatile ArrayList<IExecutor> jvmExecutors = new ArrayList<>();
-
-
+    public final ArrayList<IExecutor> jvmExecutors = new ArrayList<>();
     public Collection<IExecutor> getServersExecutors() {
         return jvmExecutors.stream().filter(ijvmExecutor -> !(ijvmExecutor.isProxy())).collect(Collectors.toList());
     }
@@ -27,13 +26,13 @@ public class JVMContainer implements IContainer {
     }
 
 
-    @Override
-    public synchronized IExecutor getJVMExecutor(String processName, BundleData bundleData) {
+    @Override @Synchronized
+    public IExecutor getExecutor(String processName, BundleData bundleData) {
         return bundleData.getExecutors().get(processName);
     }
 
-    @Override
-    public synchronized IExecutor getJVMExecutor(String processName, String bundleData) throws NullPointerException{
+    @Override @Synchronized
+    public synchronized IExecutor getExecutor(String processName, String bundleData) throws NullPointerException{
         //System.out.println("getJVMExecutor");
         //System.out.println(Main.getBundleManager().getBundleDatas().keySet());
         return Main.getBundleManager().getBundleDatas().get(bundleData).getExecutors().get(processName);
@@ -42,7 +41,7 @@ public class JVMContainer implements IContainer {
 
 
     @Override
-    public IExecutor[] getJVMExecutorsFromName(String processName) {
+    public IExecutor[] getExecutorsFromName(String processName) {
         return jvmExecutors.stream().filter(ijvmExecutor -> {
             if(ijvmExecutor.getCustomName().isPresent()) {
                 return ijvmExecutor.getCustomName().get().equals(processName);
@@ -53,19 +52,24 @@ public class JVMContainer implements IContainer {
     }
 
     @Override
-    public Optional<IExecutor> tryToGetJVMExecutor(String processName) {
-        try {
+    public Optional<IExecutor> findExecutor(String processName) {
+        return Optional.empty().map(object -> {
             if(processName.contains("/")){
                 String[] split = processName.split("/");
                 StringBuilder bundle = new StringBuilder();
                 for(int i = 0; i < split.length-1; i++){
                     bundle.append(split[i]);
                 }
-                return Optional.ofNullable(getJVMExecutor(split[split.length - 1], bundle.toString()));
+                try {
+                    return getExecutor(split[split.length - 1], bundle.toString());
+                }catch (NullPointerException e){
+                    System.out.println(Colors.RED+"Can't find the bundle: "+bundle.toString());
+                    return null;
+                }
             }
-            IExecutor[] jvmExecutors = getJVMExecutorsFromName(processName);
+            IExecutor[] jvmExecutors = getExecutorsFromName(processName);
             if(jvmExecutors.length == 0){
-                return Optional.empty();
+                return null;
             }
 
             if(jvmExecutors.length > 1){
@@ -73,16 +77,14 @@ public class JVMContainer implements IContainer {
                 for(IExecutor jvmExecutor : jvmExecutors){
                     System.out.println(Colors.YELLOW+ "> "+jvmExecutor.getFullName());
                 }
-                return Optional.empty();
+                return null;
             }
-            return Optional.ofNullable(jvmExecutors[0]);
-        }catch (Exception e){
-            return Optional.empty();
-        }
+            return jvmExecutors[0];
+        });
     }
 
     @Override
-    public Optional<IService> tryToGetService(String serviceName){
+    public Optional<IService> findService(String serviceName){
         String[] split = serviceName.split("-");
         int id;
         try {
@@ -91,17 +93,17 @@ public class JVMContainer implements IContainer {
             System.out.println(Colors.RED+"The id is not a number");
             return Optional.empty();
         }
-        return tryToGetService(split[0],id);
+        return findService(split[0],id);
     }
     @Override
-    public Optional<IService> tryToGetService(String processName, int id){
-        Optional<IExecutor> jvmExecutor = tryToGetJVMExecutor(processName);
-        return jvmExecutor.flatMap(ijvmExecutor -> Optional.ofNullable(ijvmExecutor.getService(id)));
+    public Optional<IService> findService(String processName, int id){
+        return findExecutor(processName)
+                .flatMap(iExecutor -> Optional.ofNullable(iExecutor.getService(id)));
     }
 
 
     @Override
-    public ArrayList<IExecutor> getJVMExecutors() {
+    public ArrayList<IExecutor> getExecutors() {
         return jvmExecutors;
     }
 

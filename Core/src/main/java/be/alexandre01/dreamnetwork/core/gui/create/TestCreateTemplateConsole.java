@@ -196,7 +196,7 @@ public class TestCreateTemplateConsole extends CoreAccessibilityMenu {
 
                     boolean proxy = bundleInfo.getType() == IContainer.JVMType.PROXY;
 
-                    jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(serverName, bundleData);
+                    jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getExecutor(serverName, bundleData);
                     if (jvmExecutor == null) {
                         Console.printLang("service.creation.creatingServerOnBundle", serverName, bundleInfo.getName());
                         Config.createDir("bundles/"+bundleData.getName()+"/"+serverName,false);

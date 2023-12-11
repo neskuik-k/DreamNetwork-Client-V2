@@ -11,7 +11,7 @@ public class AllServersNode extends CustomType {
         IContainer jvmContainer = DNCoreAPI.getInstance().getContainer();
         setCustomType(() -> {
             //Completers.TreeCompleter
-            String[] servers = jvmContainer.getJVMExecutors().toArray(new String[0]);
+            String[] servers = jvmContainer.getExecutors().toArray(new String[0]);
            // String[] proxies = jvmContainer.getJVMExecutorsProxy().keySet().toArray(new String[0]);
 
             if(servers.length == 0 /*&& proxies.length == 0*/){

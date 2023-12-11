@@ -18,7 +18,7 @@ public class MapperOfService extends ObjectConverterMapper<IService,String> {
 
     @Override
     public IService read(String object) {
-        return DNCoreAPI.getInstance().getContainer().tryToGetService(object).orElse(null);
+        return DNCoreAPI.getInstance().getContainer().findService(object).orElse(null);
     }
 }
 

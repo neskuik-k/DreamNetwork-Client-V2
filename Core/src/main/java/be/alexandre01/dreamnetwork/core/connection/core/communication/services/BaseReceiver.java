@@ -54,7 +54,7 @@ public class BaseReceiver extends CoreReceiver {
         addRequestInterceptor(CORE_STOP_SERVER, (message, ctx, c) -> {
             // split SERVERNAME message
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
-            Optional<IExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
+            Optional<IExecutor> stopExecutor = this.core.getJvmContainer().findExecutor(stopServerSplitted[0]);
             if (stopExecutor.isPresent()) {
                 IService service = stopExecutor.get().getService(Integer.valueOf(stopServerSplitted[1]));
                 if (service != null) {
@@ -80,7 +80,7 @@ public class BaseReceiver extends CoreReceiver {
 
         addRequestInterceptor(CORE_RESTART_SERVER, (message, ctx, c) -> {
             String[] stopServerSplitted = message.getString("SERVERNAME").split("-");
-            Optional<IExecutor> stopExecutor = this.core.getJvmContainer().tryToGetJVMExecutor(stopServerSplitted[0]);
+            Optional<IExecutor> stopExecutor = this.core.getJvmContainer().findExecutor(stopServerSplitted[0]);
             if (!stopExecutor.isPresent()) {
                 return;
             }
@@ -201,7 +201,7 @@ public class BaseReceiver extends CoreReceiver {
 
                 VirtualExecutor virtualExecutor = new VirtualExecutor(configData, virtualBundle, (ExternalClient) client);
                 virtualBundle.getExecutors().put(virtualExecutor.getName(), virtualExecutor);
-                DNCoreAPI.getInstance().getContainer().getJVMExecutors().add(virtualExecutor);
+                DNCoreAPI.getInstance().getContainer().getExecutors().add(virtualExecutor);
 
                 if (virtualBundle.getJvmType() == IContainer.JVMType.PROXY) {
                     DNCoreAPI.getInstance().getContainer().getProxiesExecutors().add(virtualExecutor);

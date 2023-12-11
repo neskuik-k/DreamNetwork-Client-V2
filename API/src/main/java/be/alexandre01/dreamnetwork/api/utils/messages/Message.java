@@ -365,7 +365,7 @@ public class Message extends LinkedHashMap<String, Object> {
             return DNCoreAPI.getInstance().getExternalCore().map(IExternalCore::getServer);
         }
 
-        Optional<IService> service = DNCoreAPI.getInstance().getContainer().tryToGetService(provider);
+        Optional<IService> service = DNCoreAPI.getInstance().getContainer().findService(provider);
         return service.map(IService::getClient);
     }
 

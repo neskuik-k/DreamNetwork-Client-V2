@@ -11,8 +11,10 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
+import be.alexandre01.dreamnetwork.api.utils.optional.Facultative;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
 import be.alexandre01.dreamnetwork.core.connection.core.datas.DataLocalObjects;
 import be.alexandre01.dreamnetwork.core.connection.core.handler.CallbackManager;
 import be.alexandre01.dreamnetwork.core.gui.intro.IntroMenuCore;
@@ -45,6 +47,7 @@ import lombok.Setter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -100,6 +103,8 @@ public class Core {
     @Getter private final PacketHandlingFactory packetHandlingFactory = new PacketHandlingFactory();
     @Getter private final DataLocalObjects dataLocalObjects = new DataLocalObjects();
 
+    @Getter private final RateLimiter rateLimiter = new RateLimiter();
+
     static {
         instance = new Core();
     }
@@ -109,14 +114,11 @@ public class Core {
         //JVM ARGUMENTS
     }
 
-    public void afterConstructor(){
 
+    public void afterConstructor(){
         String s = System.getProperty("ebug");
         System.setProperty("com.sun.jndi.rmi.object.trustURLCodeBase","true");
         System.setProperty("com.sun.jndi.ldap.object.trustURLCodebase","true");
-
-
-
 
         fileHandler = null;
         try {

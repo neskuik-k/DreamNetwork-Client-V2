@@ -14,7 +14,7 @@ public class ProxiesNode extends CustomType {
         setCustomType(() -> {
             //Completers.TreeCompleter
 
-            String[] proxies = (String[]) jvmContainer.getJVMExecutors().stream().filter(ijvmExecutor -> ijvmExecutor.isProxy()).collect(Collectors.toList()).toArray(new String[0]);
+            String[] proxies = (String[]) jvmContainer.getExecutors().stream().filter(ijvmExecutor -> ijvmExecutor.isProxy()).collect(Collectors.toList()).toArray(new String[0]);
 
             if(proxies.length == 0){
                 return new Object[]{Completers.AnyCompleter.INSTANCE};

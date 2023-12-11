@@ -1,5 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
@@ -43,7 +44,6 @@ public class JVMService implements IService {
     @Getter(AccessLevel.NONE) public ExecutorCallbacks executorCallbacks;
 
     CompletableFuture<Boolean> stopFuture = new CompletableFuture<>();
-
 
 
 
@@ -190,6 +190,7 @@ public class JVMService implements IService {
                     System.out.println("Stop failed");
                     completableFuture.complete(new RestartResult(false,null));
                 }
+
             });
            return completableFuture;
     }

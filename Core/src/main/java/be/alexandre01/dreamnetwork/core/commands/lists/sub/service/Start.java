@@ -42,7 +42,7 @@ public class Start extends SubCommand {
                 String[] splitPath = serverPath.split("/");
                 String serverName = splitPath[splitPath.length - 1];
                 String bundlePath = serverPath.substring(0,(serverPath.length()-serverName.length())-1);
-                 jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(serverName, bundlePath);
+                 jvmExecutor = Core.getInstance().getJvmContainer().getExecutor(serverName, bundlePath);
             }
 
            /* System.out.println(bundlePath);
@@ -51,7 +51,7 @@ public class Start extends SubCommand {
 
             if(jvmExecutor == null){
 
-                IExecutor[] array = Core.getInstance().getJvmContainer().getJVMExecutorsFromName(serverPath);
+                IExecutor[] array = Core.getInstance().getJvmContainer().getExecutorsFromName(serverPath);
                 if(array.length == 1){
                     jvmExecutor = array[0];
                 }else {

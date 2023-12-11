@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.api.utils.optional.Facultative;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandCompletor;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommandExecutor;
@@ -46,14 +47,14 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                 System.out.println(Chalk.on("[!] service kill proxy [" + Console.getFromLang("name") + "]").red());
                 return true;
             }
-            BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
+          //  BundleData bundleData = Core.getInstance().getBundleManager().getBundleData(args[1]);
 
             if(args[1].equalsIgnoreCase("all")){
                 if(args.length < 3){
                     Console.printLang("commands.service.stop.incorrectService");
                     return true;
                 }
-                Optional<IExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                Optional<IExecutor> exec = Core.getInstance().getJvmContainer().findExecutor(args[2]);
 
                 if(!exec.isPresent()){
                     Console.printLang("commands.service.stop.incorrectService");
@@ -62,14 +63,15 @@ public class Kill extends SubCommandCompletor implements SubCommandExecutor {
                 new ArrayList<>(exec.get().getServices()).forEach(IService::kill);
                 return true;
             }
-
-            Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
-
-            if(service.isPresent()){
+            //Optional<IService> service = Core.getInstance().getJvmContainer().findService(args[1]);
+            Facultative.ifPresentOrElse(Core.getInstance().getJvmContainer().findService(args[1]),
+                    iService -> iService.getProcess().destroy(),
+                    () -> Console.printLang("commands.service.kill.incorrectService"));
+           /* if(service.isPresent()){
                 service.get().getProcess().destroy();
             }else {
                 Console.printLang("commands.service.kill.incorrectService");
-            }
+            }*/
 
 
             return true;

@@ -12,7 +12,7 @@ public class TemplatesNode extends CustomType{
             setCustomType(() -> {
                 //Completers.TreeCompleter
 
-                String[] bundles = DNCoreAPI.getInstance().getContainer().getJVMExecutors().toArray(new String[0]);
+                String[] bundles = DNCoreAPI.getInstance().getContainer().getExecutors().toArray(new String[0]);
 
                 if(bundles.length == 0){
                     return new Object[]{Completers.AnyCompleter.INSTANCE};

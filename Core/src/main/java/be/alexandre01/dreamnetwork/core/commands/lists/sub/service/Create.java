@@ -101,7 +101,7 @@ public class Create extends SubCommand {
 
             boolean proxy = bundleInfo.getType() == IContainer.JVMType.PROXY;
 
-            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(name, bundleData);
+            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getExecutor(name, bundleData);
             if (jvmExecutor == null) {
                 Console.printLang("service.creation.creatingServerOnBundle", name, bundle);
                 Config.createDir("bundles/"+bundle+"/"+name);

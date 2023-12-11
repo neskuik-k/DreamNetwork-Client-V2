@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core.websocket;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
+import lombok.Setter;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -11,6 +12,9 @@ public class WebSocketServer extends Thread{
     private int port;
     private String host;
 
+   @Setter
+   private String secretKey;
+
     // using netty
     public WebSocketServer(int port, String host) {
         this.port = port;
@@ -19,7 +23,6 @@ public class WebSocketServer extends Thread{
 
     @Override
     public void run() {
-
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         try {

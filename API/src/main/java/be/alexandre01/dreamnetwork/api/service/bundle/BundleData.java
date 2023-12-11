@@ -10,6 +10,7 @@ import lombok.Setter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Getter @Setter
 public class BundleData {
@@ -20,7 +21,7 @@ public class BundleData {
     private boolean isVirtual = false;
     private Optional<String> virtualName = Optional.empty();
     private boolean merge = false;
-    private final HashMap<String, IExecutor> executors = new HashMap<>();
+    private final ConcurrentHashMap<String, IExecutor> executors = new ConcurrentHashMap<>();
     private final IBundleInfo bundleInfo;
 
     public BundleData(IContainer.JVMType jvmType,String name,  ArrayList<BService> services,boolean autoStart, IBundleInfo bundleInfo) {

@@ -154,7 +154,7 @@ public class BundleManager implements IBundleManager {
                 if(!bundleData.isAutoStart())
                     return;
                 for(BService bService : bundleData.getServices()){
-                    IExecutor jvmExecutor = Core.getInstance().getJvmContainer().getJVMExecutor(bService.getServiceName(),bundleData);
+                    IExecutor jvmExecutor = Core.getInstance().getJvmContainer().getExecutor(bService.getServiceName(),bundleData);
                     if(jvmExecutor == null){
                         Console.debugPrint(Console.getFromLang("service.bundle.manager.cantFindService", bundleData.getName(), bService.getServiceName()));
                         continue;

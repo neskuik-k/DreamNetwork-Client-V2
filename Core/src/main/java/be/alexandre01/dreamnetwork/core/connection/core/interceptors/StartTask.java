@@ -19,7 +19,7 @@ public class StartTask {
     public static CoreReceiver.RequestInterceptor get(){
         CoreReceiver.RequestInterceptor start;
         AbstractRequestManager.getTasks().put("start", start = (message, ctx, client) -> {
-            Optional<IExecutor> startExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(message.getString("SERVERNAME"));
+            Optional<IExecutor> startExecutor = Core.getInstance().getJvmContainer().findExecutor(message.getString("SERVERNAME"));
 
             System.out.println("Searching if start executor of "+ message.getString("SERVERNAME")+ " is present");
             if (!startExecutor.isPresent()) {

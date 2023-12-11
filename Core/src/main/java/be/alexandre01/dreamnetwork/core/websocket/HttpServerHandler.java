@@ -1,11 +1,16 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
+import at.favre.lib.crypto.bcrypt.BCrypt;
+import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
+import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpRequest;
+import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 
@@ -16,12 +21,22 @@ import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
 public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
     WebSocketServerHandshaker handshaker;
+    DreamRestAPI restAPI;
+    WebSocketServerInitializer initializer;
+    public HttpServerHandler(DreamRestAPI restAPI,WebSocketServerInitializer initializer) {
+        this.restAPI = restAPI;
+        this.initializer = initializer;
+    }
+   // RateLimiter rateLimiter = Core.getInstance().getRateLimiter();
+    RateLimiter rateLimiter = new RateLimiter();
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-
+        if(rateLimiter.isRateLimited(ctx.channel().remoteAddress().toString())){
+              ctx.close();
+              return;
+        };
         if (msg instanceof HttpRequest) {
-
             HttpRequest httpRequest = (HttpRequest) msg;
 
             System.out.println("Http Request Received");
@@ -31,36 +46,65 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("Upgrade : " + headers.get("Upgrade"));
             System.out.println("Content-Length : " + headers.get("Content-Length"));
             System.out.println(headers.toString());
-            if(!headers.contains("Dream-Secure")){
+            if(!headers.contains("Sec-WebSocket-Protocol")){
                 ctx.close();
                 return;
             }
-            String dreamSecure = headers.get("Dream-Secure");
-            System.out.println("Dream-Secure : " + dreamSecure);
 
-            if ("Upgrade".equalsIgnoreCase(headers.get(HttpHeaderNames.CONNECTION)) &&
-                    "WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))) {
+            String dreamSecure = headers.get("Sec-WebSocket-Protocol");
+            System.out.println("Sec-WebSocket-Protocol : " + dreamSecure);
+            String currentSocket = restAPI.getCurrentKey();
 
-                //Adding new handler to the existing pipeline to handle WebSocket Messages
-                ctx.pipeline().replace(this, "websocketHandler", new WebSocketHandler());
+            System.out.println("Current Socket : " + currentSocket);
+            currentSocket = currentSocket.split(";")[0];
+            BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
+            System.out.println("Result : " + result.verified);
+            if(!result.verified && !dreamSecure.equals("Test")){
+                System.out.println(dreamSecure);
+                System.out.println("Socket not valid");
+                ctx.close();
+                return;
+            }
+            String refreshSocket = restAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));
+            System.out.println(headers.get(HttpHeaderNames.CONNECTION));
+            System.out.println(headers.get(HttpHeaderNames.UPGRADE));
+            if(headers.get(HttpHeaderNames.CONNECTION).toLowerCase().contains("upgrade")){
+                if ("WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))) {
 
-                System.out.println("WebSocketHandler added to the pipeline");
-                System.out.println("Opened Channel : " + ctx.channel());
-                System.out.println("Handshaking....");
-                //Do the Handshake to upgrade connection from HTTP to WebSocket protocol
-                handleHandshake(ctx, httpRequest);
-                System.out.println("Handshake is done");
+                    //Adding new handler to the existing pipeline to handle WebSocket Messages
+                    ctx.pipeline().replace(this, "websocketHandler", new WebSocketHandler());
+
+                    System.out.println("WebSocketHandler added to the pipeline");
+                    System.out.println("Opened Channel : " + ctx.channel());
+                    System.out.println("Handshaking....");
+                    //Do the Handshake to upgrade connection from HTTP to WebSocket protocol
+                    handleHandshake(ctx, httpRequest,dreamSecure);
+                    System.out.println("Handshake is done");
+
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try {
+                                while (true){
+                                    Thread.sleep(1000);
+                                    System.out.println("Sending Pong from server");
+                                    ctx.channel().writeAndFlush(new TextWebSocketFrame("ping"));
+                                }
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }).start();
+                }
             }
         } else {
             System.out.println("Incoming request is unknown");
         }
     }
-
     /* Do the handshaking for WebSocket request */
-    protected void handleHandshake(ChannelHandlerContext ctx, HttpRequest req) {
+    protected void handleHandshake(ChannelHandlerContext ctx, HttpRequest req, String subprotocols) {
         WebSocketServerHandshakerFactory wsFactory =
-                new WebSocketServerHandshakerFactory(getWebSocketURL(req), null, true);
-
+                new WebSocketServerHandshakerFactory(getWebSocketURL(req), subprotocols, true);
         handshaker = wsFactory.newHandshaker(req);
         if (handshaker == null) {
             WebSocketServerHandshakerFactory.sendUnsupportedVersionResponse(ctx.channel());

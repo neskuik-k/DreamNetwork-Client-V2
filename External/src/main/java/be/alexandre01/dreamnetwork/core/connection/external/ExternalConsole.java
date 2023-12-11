@@ -66,7 +66,7 @@ public class ExternalConsole  {
                 public void on(String data) {
                     disable();
                     if (data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")) {
-                        for (IExecutor executor : DNCoreAPI.getInstance().getContainer().getJVMExecutors()) {
+                        for (IExecutor executor : DNCoreAPI.getInstance().getContainer().getExecutors()) {
                             for (IService service : executor.getServices()){
                                 service.stop();
                             }

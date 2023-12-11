@@ -520,7 +520,7 @@ public class Console {
         }
     }
 
-    public static void bug(Exception e,boolean isSilent){
+    public static void bug(Throwable e,boolean isSilent){
         if(Console.actualConsole == null){
             e.printStackTrace();
             return;
@@ -559,8 +559,7 @@ public class Console {
             consoleManager.getFileHandler().publish(new LogRecord(Level.SEVERE, Console.getFromLang("console.contactDNDevError")));
         }
     }
-
-    public static void bug(Exception e){
+    public static void bug(Throwable e){
         bug(e,false);
     }
     public static void SIG_IGN(){

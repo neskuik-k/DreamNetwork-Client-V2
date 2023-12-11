@@ -4,7 +4,6 @@ import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.BundlesNode;
-import be.alexandre01.dreamnetwork.api.commands.sub.types.ServersNode;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.installer.ContentInstaller;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
@@ -57,7 +56,7 @@ public class Install extends SubCommandCompletor implements SubCommandExecutor {
             BundleData bundleData = Main.getBundleManager().getBundleData(args[1]);
             System.out.println(bundleData);
             System.out.println(args[2]);
-            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getJVMExecutor(args[2],bundleData);
+            JVMExecutor jvmExecutor = (JVMExecutor) Core.getInstance().getJvmContainer().getExecutor(args[2],bundleData);
             if(jvmExecutor == null){
                 Console.printLang("commands.service.install.notConfigured");
                 return true;

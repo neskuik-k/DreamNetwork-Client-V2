@@ -18,7 +18,7 @@ public class MapperOfExecutor extends ObjectConverterMapper<IExecutor,String> {
 
     @Override
     public IExecutor read(String object) {
-        return DNCoreAPI.getInstance().getContainer().tryToGetJVMExecutor(object).orElse(null);
+        return DNCoreAPI.getInstance().getContainer().findExecutor(object).orElse(null);
     }
 }
 

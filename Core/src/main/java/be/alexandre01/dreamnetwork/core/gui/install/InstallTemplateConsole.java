@@ -27,7 +27,7 @@ public class InstallTemplateConsole extends CoreAccessibilityMenu {
 
                 @Override
                 public Operation received(PromptText value, String[] args, ShowInfos infos) {
-                    Optional<IExecutor> executorOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[0]);
+                    Optional<IExecutor> executorOpt = Core.getInstance().getJvmContainer().findExecutor(args[0]);
                     if(!executorOpt.isPresent()){
                         infos.error(Console.getFromLang("service.creation.install.incorrectExecutor"));
                         return errorAndRetry(infos);

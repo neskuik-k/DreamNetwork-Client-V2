@@ -36,10 +36,10 @@ public class BundlesNode extends CustomType {
                     }
                 }
                 if(withSimplifiedName){
-                    for(IExecutor exec: DNCoreAPI.getInstance().getContainer().getJVMExecutors()){
+                    for(IExecutor exec: DNCoreAPI.getInstance().getContainer().getExecutors()){
                         if(exec.getBundleData() != null){
                             //Check if the executor is the only one with this name
-                            if(DNCoreAPI.getInstance().getContainer().getJVMExecutorsFromName(exec.getName()).length == 1){
+                            if(DNCoreAPI.getInstance().getContainer().getExecutorsFromName(exec.getName()).length == 1){
                                 bundles = ArrayUtils.add(bundles, Colors.WHITE_BOLD_BRIGHT_UNDERLINED+exec.getName());
                             }
                         }

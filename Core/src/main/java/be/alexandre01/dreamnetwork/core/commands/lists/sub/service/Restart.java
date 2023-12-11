@@ -50,7 +50,7 @@ public class Restart extends SubCommandCompletor implements SubCommandExecutor {
                 return true;
             }*/
 
-            Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+            Optional<IService> service = Core.getInstance().getJvmContainer().findService(args[1]);
             if(!service.isPresent()){
                 System.out.println(Colors.RED+"[!] The service choosed is invalid...");
                 return true;

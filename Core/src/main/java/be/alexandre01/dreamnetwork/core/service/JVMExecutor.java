@@ -57,14 +57,8 @@ import java.util.stream.Collectors;
 public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     @JsonIgnore
     @Getter
-    private static ArrayList<String> serverList = new ArrayList<>();
-    @JsonIgnore
-    @Getter
     private static ArrayList<String> startServerList = new ArrayList<>();
 
-    @JsonIgnore
-    @Getter
-    private static ConcurrentMap<String, BufferedReader> processServersInput = new ConcurrentHashMap<>();
     @JsonIgnore
     @Getter
     public static ArrayList<Integer> serversPortList = new ArrayList<>();
@@ -90,7 +84,7 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     private final ArrayList<Tuple<IConfig, ExecutorCallbacks>> queue = new ArrayList<>();
     @Ignore
     @JsonIgnore
-    public HashMap<Integer, IService> jvmServices = new HashMap<>();
+    public ConcurrentHashMap<Integer, IService> jvmServices = new ConcurrentHashMap<>();
     @JsonIgnore
     public BundleData bundleData;
     @JsonIgnore

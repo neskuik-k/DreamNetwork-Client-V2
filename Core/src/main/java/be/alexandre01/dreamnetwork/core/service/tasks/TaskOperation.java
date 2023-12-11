@@ -10,7 +10,7 @@ public class TaskOperation {
 
     public Runnable createOperation(TaskData taskData) {
         if (taskData.getJvmExecutor() == null) {
-            Optional<IExecutor> jvmExecutor = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(taskData.getService());
+            Optional<IExecutor> jvmExecutor = Core.getInstance().getJvmContainer().findExecutor(taskData.getService());
             if (!jvmExecutor.isPresent()) {
                 System.out.println("Service " + taskData.getService() + " not found");
                 return null;

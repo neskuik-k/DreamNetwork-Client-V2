@@ -268,7 +268,7 @@ public class AuthentificationReceiver extends CoreReceiver {
 
 
 
-                        for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getJVMExecutors()) {
+                        for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getExecutors()) {
                             String type = jvmExecutor.isProxy() ? "p" : "s";
 
                             //services démarrés

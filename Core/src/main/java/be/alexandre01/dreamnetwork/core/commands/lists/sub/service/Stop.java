@@ -58,12 +58,12 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
             if(args[1].equalsIgnoreCase("all")){
                 ArrayList<IService> services = null;
                 if(args.length < 3){
-                    if(Core.getInstance().getJvmContainer().getJVMExecutors().stream().map(IExecutor::getServices).allMatch(Collection::isEmpty)){
+                    if(Core.getInstance().getJvmContainer().getExecutors().stream().map(IExecutor::getServices).allMatch(Collection::isEmpty)){
                         Console.printLang("commands.service.stop.noService");
                         return true;
                     }
                     services = new ArrayList<>();
-                    Collection<IExecutor> executors = Core.getInstance().getJvmContainer().getJVMExecutors();
+                    Collection<IExecutor> executors = Core.getInstance().getJvmContainer().getExecutors();
                     for(IExecutor executor : executors){
                         services.addAll(executor.getServices());
                     }
@@ -75,7 +75,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                         System.out.println("Please specify an executor name");
                         return true;
                     }
-                    Optional<IExecutor> exec = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[2]);
+                    Optional<IExecutor> exec = Core.getInstance().getJvmContainer().findExecutor(args[2]);
                     if(!exec.isPresent()){
                         Console.printLang("commands.service.stop.incorrectExecutor");
                         return true;
@@ -97,7 +97,7 @@ public class Stop extends SubCommandCompletor implements SubCommandExecutor {
                 }, Colors.YELLOW+"Are you sure you want to stop all the services ? [Y/N] > ");
                 return true;
             }
-            Optional<IService> service = Core.getInstance().getJvmContainer().tryToGetService(args[1]);
+            Optional<IService> service = Core.getInstance().getJvmContainer().findService(args[1]);
 
             if(!service.isPresent()){
                 Console.printLang("commands.service.stop.incorrectService");

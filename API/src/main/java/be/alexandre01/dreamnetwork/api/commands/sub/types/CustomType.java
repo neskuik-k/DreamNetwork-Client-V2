@@ -24,7 +24,6 @@ public class CustomType extends NodeType {
     @Getter private static final Multimap<Class<? extends CustomType>,Object> customTypes = ArrayListMultimap.create();
 
     private int[] index;
-
     @Getter @Setter
     CustomTypeInterface customType;
 

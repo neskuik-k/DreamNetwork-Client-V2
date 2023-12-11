@@ -12,14 +12,15 @@ import lombok.NonNull;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
+
 public class Connect extends SubCommand {
+
     public Connect(Command command) {
         super(command);
         String[] nodeClazz = CustomType.getCustomTypes().keySet().stream().map(Class::getSimpleName).toArray(String[]::new);
         NodeBuilder nodeBuilder = new NodeBuilder(
                 create(value,
                         create("connect")));
-
     }
 
     @Override

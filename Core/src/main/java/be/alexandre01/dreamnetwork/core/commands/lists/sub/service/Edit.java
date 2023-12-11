@@ -31,7 +31,7 @@ public class Edit extends SubCommand {
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(!when(sArgs -> {
-            Optional<IExecutor> execOpt = Core.getInstance().getJvmContainer().tryToGetJVMExecutor(args[1]);
+            Optional<IExecutor> execOpt = Core.getInstance().getJvmContainer().findExecutor(args[1]);
             if(!execOpt.isPresent()){
                 System.out.println("Cannot find executor");
                 return false;

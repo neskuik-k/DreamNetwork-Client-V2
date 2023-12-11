@@ -36,7 +36,7 @@ public class ExternalTransmission extends CoreReceiver {
                     ExternalCore.getInstance().setConnected(true);
 
                     ArrayList<ConfigData> list = new ArrayList<>();
-                    DNCoreAPI.getInstance().getContainer().getJVMExecutors().forEach(ijvmExecutor -> {
+                    DNCoreAPI.getInstance().getContainer().getExecutors().forEach(ijvmExecutor -> {
                         if(ijvmExecutor.getConfig() instanceof ConfigData){
                             list.add((ConfigData) ijvmExecutor.getConfig());
                         }
@@ -64,7 +64,7 @@ public class ExternalTransmission extends CoreReceiver {
             String serverName = message.getString("DATA");
             IContainer container = DNCoreAPI.getInstance().getContainer();
             message.getCallback().ifPresent(receiver -> {
-                Optional<IService> optionalService = container.tryToGetService(serverName);
+                Optional<IService> optionalService = container.findService(serverName);
                 if(optionalService.isPresent()){
                     IService iService = optionalService.get();
                     IScreen screen = iService.getScreen();
@@ -84,7 +84,7 @@ public class ExternalTransmission extends CoreReceiver {
             String serverName = message.getString("SERVICE");
             String command = message.getString("CMD");
             IContainer container = DNCoreAPI.getInstance().getContainer();
-               container.tryToGetService(serverName).ifPresent(iService -> {
+               container.findService(serverName).ifPresent(iService -> {
                     IScreen screen = iService.getScreen();
                     try {
                         screen.getScreenStream().getScreenOutWriter().writeOnConsole(command);
