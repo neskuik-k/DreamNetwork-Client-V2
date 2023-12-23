@@ -201,11 +201,11 @@ public class YamlFileUtils<T> {
                     if(DNUtils.get().getConfigManager().getLanguageManager() == null || Console.getFormatter() == null){
                         e.printStackTrace();
                         cantReplace.printStackTrace();
-                        return null;
+                        return Optional.empty();
                     }
                     Console.printLang("core.utils.yaml.loadFileError", file.getName());
                     Console.bug(e,true);
-                    return null;
+                    return Optional.empty();
                 }
             }
         }

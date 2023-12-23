@@ -44,16 +44,16 @@ public class CustomRepresenter extends Representer {
     @Override
     protected NodeTuple representJavaBeanProperty(Object javaBean, Property property, Object propertyValue, Tag customTag) {
 
-                  /*  System.out.println(property.getType());
+                 /*  System.out.println(property.getType());
                     System.out.println(propertyValue);
-*/
 
+*/
 
         //check if field has annotation @Ignore
 
 
 
-        if (propertyValue == null && !skipNull) {
+        if (propertyValue == null && skipNull) {
             return null;
         }
         ArrayList<Field> fields = new ArrayList<>();

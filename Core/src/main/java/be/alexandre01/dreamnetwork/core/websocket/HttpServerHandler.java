@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import be.alexandre01.dreamnetwork.api.utils.messages.WebMessage;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
 import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
@@ -88,7 +89,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                                 while (true){
                                     Thread.sleep(1000);
                                     System.out.println("Sending Pong from server");
-                                    ctx.channel().writeAndFlush(new TextWebSocketFrame("ping"));
+                                    ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
