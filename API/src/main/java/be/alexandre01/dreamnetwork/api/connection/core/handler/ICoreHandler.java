@@ -45,4 +45,6 @@ public interface ICoreHandler extends ChannelHandler, ChannelInboundHandler {
     public ArrayList<CoreReceiver> getResponses();
 
     public void addResponse(CoreReceiver coreReceiver);
+
+    public long getBytesRead();
 }

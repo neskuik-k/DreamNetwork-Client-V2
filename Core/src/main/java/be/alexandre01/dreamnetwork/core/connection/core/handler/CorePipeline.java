@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.core.connection.core.handler;
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreByteDecoder;
 import be.alexandre01.dreamnetwork.core.connection.core.CoreMessageEncoder;
 import io.netty.channel.Channel;
@@ -15,9 +16,11 @@ import java.util.function.Function;
 public class CorePipeline extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
+        ByteCountingHandler byteCountingHandler = new ByteCountingHandler();
+        ch.pipeline().addLast("byteCounter",byteCountingHandler);
         ch.pipeline().addLast("decoder",new CoreByteDecoder());
         ch.pipeline().addLast("encoder",new CoreMessageEncoder());
-        CoreHandler coreHandler = new CoreHandler();
+        CoreHandler coreHandler = new CoreHandler(byteCountingHandler);
         ch.pipeline().addLast(coreHandler);
     }
 }

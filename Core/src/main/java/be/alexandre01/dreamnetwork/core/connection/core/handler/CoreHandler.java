@@ -10,6 +10,7 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -30,6 +31,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
@@ -58,12 +60,19 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     private HashMap<Message, Tuple<Channel, GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Core core;
 
-    public CoreHandler() {
+    private Optional<ByteCountingHandler> byteCountingHandler = Optional.empty();
+
+    public CoreHandler(ByteCountingHandler byteCountingHandler) {
         this.core = Core.getInstance();
        //this.callbackManager = new CallbackManager();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
         authResponse = new AuthentificationReceiver(this);
+        this.byteCountingHandler = Optional.ofNullable(byteCountingHandler);
+    }
+
+    public CoreHandler(){
+        this(null);
     }
 
     ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
@@ -363,5 +372,10 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     @Override
     public void addResponse(CoreReceiver coreReceiver) {
         responses.add(coreReceiver);
+    }
+
+    @Override
+    public long getBytesRead() {
+        return byteCountingHandler.map(ByteCountingHandler::getBytesRead).orElse(-1L);
     }
 }

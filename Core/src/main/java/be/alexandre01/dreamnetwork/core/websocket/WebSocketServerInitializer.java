@@ -10,6 +10,7 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
+import lombok.Setter;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -20,6 +21,8 @@ public class WebSocketServerInitializer implements Runnable {
     private final EventLoopGroup workerGroup;
     @Getter private DreamRestAPI dreamRestAPI;
     @Getter private final int port;
+   @Getter @Setter
+   private String prefix = "wss://";
     private final String host;
 
     public WebSocketServerInitializer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, int port, String host) {
