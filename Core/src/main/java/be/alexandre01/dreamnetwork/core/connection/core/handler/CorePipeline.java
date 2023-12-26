@@ -1,26 +1,20 @@
 package be.alexandre01.dreamnetwork.core.connection.core.handler;
 
-import be.alexandre01.dreamnetwork.api.DNCoreAPI;
-import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
-import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingHandler;
-import be.alexandre01.dreamnetwork.core.connection.core.CoreByteDecoder;
-import be.alexandre01.dreamnetwork.core.connection.core.CoreMessageEncoder;
+import be.alexandre01.dreamnetwork.core.connection.core.*;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
-
-import java.util.Date;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class CorePipeline extends ChannelInitializer<Channel> {
     @Override
     protected void initChannel(Channel ch) throws Exception {
-        ByteCountingHandler byteCountingHandler = new ByteCountingHandler();
-        ch.pipeline().addLast("byteCounter",byteCountingHandler);
+        ByteCounting byteCounting = new ByteCounting();
+        ByteCountingInboundHandler byteCountingInboundHandler = new ByteCountingInboundHandler(byteCounting);
+        ByteCountingOutboundHandler byteCountingOutboundHandler = new ByteCountingOutboundHandler(byteCounting);
+        ch.pipeline().addLast("byteCounterIn", byteCountingInboundHandler);
+        ch.pipeline().addLast("byteCounterOut", byteCountingOutboundHandler);
         ch.pipeline().addLast("decoder",new CoreByteDecoder());
         ch.pipeline().addLast("encoder",new CoreMessageEncoder());
-        CoreHandler coreHandler = new CoreHandler(byteCountingHandler);
+        CoreHandler coreHandler = new CoreHandler(byteCountingInboundHandler);
         ch.pipeline().addLast(coreHandler);
     }
 }

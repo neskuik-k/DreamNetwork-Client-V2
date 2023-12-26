@@ -100,23 +100,23 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                     System.out.println("Handshake is done");
 
 
-                    /*new Thread(new Runnable() {
+                    new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 while (true){
-                                    Thread.sleep(5000);
+                                    Thread.sleep(5);
                                     //System.out.println("Sending Pong from server");
                                     if(!ctx.channel().isOpen()){
                                         break;
                                     }
-                                    ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
+                                  //  ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                             }
                         }
-                    }).start();*/
+                    }).start();
                 }
             }
         } else {

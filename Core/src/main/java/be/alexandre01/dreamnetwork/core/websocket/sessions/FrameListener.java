@@ -13,15 +13,12 @@ public class FrameListener implements WebSession.MessageListener {
 
     @Override
     public void onRead(WebMessage message) {
-        System.out.println("Yey !");
         if (message.containsKey("frame")) {
             if (message.containsKey("type")) {
-                System.out.println("Yey 2 !");
                 String frameName = message.getString("frame");
                 String type = message.getString("type");
 
                 if (type.equalsIgnoreCase("enter")) {
-                    System.out.println("Yey 3 !");
                     System.out.println(session.getFrameManager().getFrame(frameName).map(Collection::size).orElse(0));
                     session.getFrameManager().getFrame(frameName).ifPresent(frames -> frames.forEach(frame -> {
                         System.out.println("Found frame !");

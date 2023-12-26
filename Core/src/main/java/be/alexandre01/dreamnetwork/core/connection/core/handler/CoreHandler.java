@@ -10,7 +10,7 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.connection.external.ExternalClient;
-import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingHandler;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingInboundHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.services.AuthentificationReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
@@ -60,15 +60,15 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     private HashMap<Message, Tuple<Channel, GenericFutureListener<? extends Future<? super Void>>>> queue = new HashMap<>();
     private final Core core;
 
-    private Optional<ByteCountingHandler> byteCountingHandler = Optional.empty();
+    private Optional<ByteCountingInboundHandler> byteCountingHandler = Optional.empty();
 
-    public CoreHandler(ByteCountingHandler byteCountingHandler) {
+    public CoreHandler(ByteCountingInboundHandler byteCountingInboundHandler) {
         this.core = Core.getInstance();
        //this.callbackManager = new CallbackManager();
         this.hasDevUtilSoftwareAccess = Core.getInstance().isDevToolsAccess();
 
         authResponse = new AuthentificationReceiver(this);
-        this.byteCountingHandler = Optional.ofNullable(byteCountingHandler);
+        this.byteCountingHandler = Optional.ofNullable(byteCountingInboundHandler);
     }
 
     public CoreHandler(){
@@ -376,6 +376,6 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
     @Override
     public long getBytesRead() {
-        return byteCountingHandler.map(ByteCountingHandler::getBytesRead).orElse(-1L);
+        return byteCountingHandler.map(handler -> handler.getByteCounting().getBytesRead()).orElse(-1L);
     }
 }

@@ -21,25 +21,26 @@ public class WebSocketHandler extends ChannelInboundHandlerAdapter  {
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.println("WebSocketHandler channelRead");
-        System.out.println("WebSocketHandler channelRead : " + msg);
+        //System.out.println("WebSocketHandler channelRead");
+        //System.out.println("WebSocketHandler channelRead : " + msg);
         if (msg instanceof WebSocketFrame) {
-            System.out.println("This is a WebSocket frame");
-            System.out.println("Client Channel : " + ctx.channel());
+          //  System.out.println("This is a WebSocket frame");
+           // System.out.println("Client Channel : " + ctx.channel());
             if (msg instanceof BinaryWebSocketFrame) {
                 System.out.println("BinaryWebSocketFrame Received : ");
                 System.out.println(((BinaryWebSocketFrame) msg).content());
             } else if (msg instanceof TextWebSocketFrame) {
-                System.out.println("TextWebSocketFrame Received : ");
+               // System.out.println("TextWebSocketFrame Received : ");
                 /*ctx.channel().writeAndFlush(
                         new TextWebSocketFrame("Message recieved : " + ((TextWebSocketFrame) msg).text()));*/
 
-                System.out.println("New message detect !");
+               // System.out.println("New message detect !");
                 WebMessage webMessage = WebMessage.fromString(((TextWebSocketFrame) msg).text());
                 if(webMessage != null){
-                    System.out.println("Message is not null");
-                    System.out.println("Message : " + webMessage);
+                    //  System.out.println("Message is not null");
+                    //System.out.println("Message : " + webMessage);
                     webSession.getMessageListeners().forEach(messageListener -> messageListener.onRead(webMessage));
+                    webSession.send(webMessage);
                     return;
                 }
                 System.out.println(((TextWebSocketFrame) msg).text());

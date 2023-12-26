@@ -51,7 +51,7 @@ public class GlobalSettings {
     private int logsByExecutor = 15;
 
     private boolean externalScreenViewing = true;
-    private int historySize = 3250;
+    private int historySize = 300;
 
     @Ignore private TerminalMode termMode;
 

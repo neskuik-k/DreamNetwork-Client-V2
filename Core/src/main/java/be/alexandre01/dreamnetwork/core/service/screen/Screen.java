@@ -1,6 +1,6 @@
 package be.alexandre01.dreamnetwork.core.service.screen;
 
-import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
@@ -9,6 +9,7 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.api.utils.buffers.FixedSizeRingBuffer;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.internal.ProcessScreenStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 @Getter @Setter
 public class Screen extends Thread implements IScreen {
     IService service;
-    ArrayList<String> history;
+    FixedSizeRingBuffer<String> history;
     ArrayList<UniversalConnection> devToolsReading = new ArrayList<>();
     IScreenStream screenStream;
     volatile Integer screenId;
@@ -42,7 +43,8 @@ public class Screen extends Thread implements IScreen {
             }
         }
         this.service = service;
-        this.history = new ArrayList<>();
+        int historySize = DNUtils.get().getConfigManager().getGlobalSettings().getHistorySize();
+        this.history = new FixedSizeRingBuffer<String>(new String[historySize]);
         ScreenManager screenManager = ScreenManager.instance;
         screenId = getService().getIndexingId();
         screenName = getService().getFullIndexedName();//service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
@@ -97,7 +99,7 @@ public class Screen extends Thread implements IScreen {
     }
 
     @Override
-    public ArrayList<String> getHistory() {
+    public FixedSizeRingBuffer<String> getHistory() {
         return history;
     }
 

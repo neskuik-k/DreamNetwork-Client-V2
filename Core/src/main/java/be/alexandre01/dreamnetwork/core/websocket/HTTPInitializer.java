@@ -1,9 +1,8 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
-import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingHandler;
-import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
-import io.netty.channel.ChannelHandler;
-import io.netty.channel.ChannelHandlerContext;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCounting;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingInboundHandler;
+import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingOutboundHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
@@ -44,7 +43,11 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
         if(sslContext != null){
             pipeline.addLast(sslContext.newHandler(socketChannel.alloc()));
         }
-        pipeline.addLast("byteCounting", new ByteCountingHandler());
+        ByteCounting byteCounting = new ByteCounting();
+        ByteCountingInboundHandler byteCountingInboundHandler = new ByteCountingInboundHandler(byteCounting);
+        ByteCountingOutboundHandler byteCountingOutboundHandler = new ByteCountingOutboundHandler(byteCounting);
+        pipeline.addLast("byteCountingIn", byteCountingInboundHandler);
+        pipeline.addLast("byteCountingOut", byteCountingOutboundHandler);
         pipeline.addLast("httpServerCodec", new HttpServerCodec());
 
        // dreamRestAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));

@@ -363,20 +363,20 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <version>4.1.95.Final</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
             <version>1.1.12</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-dns -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-dns</artifactId>
             <version>4.1.101.Final</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
@@ -389,7 +389,7 @@
             <groupId>at.favre.lib</groupId>
             <artifactId>bcrypt</artifactId>
             <version>0.10.2</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

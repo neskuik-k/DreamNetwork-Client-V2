@@ -4,6 +4,8 @@ import lombok.AccessLevel;
 import lombok.Getter;
 
 import java.util.Optional;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 @Getter
@@ -11,6 +13,7 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     WebSession session;
     String frameName;
     @Getter(AccessLevel.NONE) FrameTester frameTester = null;
+    ScheduledExecutorService executorService;
 
 
     public FrameAbstraction(WebSession session, String frameName) {
@@ -36,6 +39,9 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     public void onEnter(){}
 
     public void execLeave(){
+        if (executorService != null) {
+            executorService.shutdown();
+        }
         getFrameTester().ifPresent(FrameTester::testLeave);
         onLeave();
     }
@@ -46,5 +52,15 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
 
     public void onLeave(){}
 
-    public void setRefreshRate(int refreshRate){}
+    public void setRefreshRate(long refreshRate){
+        if(executorService != null){
+            executorService.shutdown();
+        }
+
+        executorService = Executors.newSingleThreadScheduledExecutor();
+
+        executorService.scheduleAtFixedRate(this::refresh, 0, refreshRate, java.util.concurrent.TimeUnit.MILLISECONDS);
+    }
+
+    public void refresh(){}
 }

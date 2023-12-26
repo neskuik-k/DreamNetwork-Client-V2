@@ -3,6 +3,7 @@ package be.alexandre01.dreamnetwork.api.service.screen;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.service.IService;
+import be.alexandre01.dreamnetwork.api.utils.buffers.FixedSizeRingBuffer;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,7 @@ public interface IScreen extends Runnable {
 
     IService getService();
 
-    ArrayList<String> getHistory();
+    FixedSizeRingBuffer<String> getHistory();
 
     IScreenStream getScreenStream();
 
@@ -27,7 +28,7 @@ public interface IScreen extends Runnable {
     void setService(IService service);
     void setViewing(boolean viewing);
 
-    void setHistory(ArrayList<String> history);
+
 
     void setDevToolsReading(ArrayList<UniversalConnection> devToolsReading);
 
