@@ -23,22 +23,22 @@ public class List extends SubCommandCompletor implements SubCommandExecutor {
 
     public void showServices(IExecutor executor){
         executor.getServices().forEach(service -> {
-            System.out.println("  - " + Colors.GREEN_BOLD_BRIGHT + service.getFullIndexedName() + " : (" + service.getName() + "- " + service.getId() + ")");
+            System.out.println(" - " + Colors.GREEN_BOLD_BRIGHT + service.getFullIndexedName() + " : (" + service.getName() + "- " + service.getId() + ")");
         });
     }
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
         if(args[0].equalsIgnoreCase("list")){
             Console.printLang("commands.service.list.proxy");
-            for(IExecutor executor : Core.getInstance().getJvmContainer().getExecutors()){
+            for(IExecutor executor : Core.getInstance().getJvmContainer().getProxiesExecutors()){
                 String statusColor = executor.getServices().isEmpty() ? Colors.RED_BOLD_BRIGHT : Colors.GREEN_BOLD_BRIGHT;
-                System.out.println(Colors.RED+executor.getBundleData().getName()+Colors.YELLOW+"/"+statusColor+executor.getName());
+                System.out.println(Colors.RED+executor.getBundleData().getName()+Colors.YELLOW+"/"+Colors.WHITE_BOLD_BRIGHT+executor.getName() + statusColor + " (" + executor.getServices().size() + ")");
                 showServices(executor);
             }
             Console.printLang("commands.service.list.spigot");
             for(IExecutor executor : Core.getInstance().getJvmContainer().getServersExecutors()){
                 String statusColor = executor.getServices().isEmpty() ? Colors.RED_BOLD_BRIGHT : Colors.GREEN_BOLD_BRIGHT;
-                System.out.println(Colors.CYAN+executor.getBundleData().getName()+Colors.YELLOW+"/"+Colors.WHITE_BOLD_BRIGHT+executor.getName());
+                System.out.println(Colors.CYAN+executor.getBundleData().getName()+Colors.YELLOW+"/"+Colors.WHITE_BOLD_BRIGHT+executor.getName() + statusColor + " (" + executor.getServices().size() + ")");
                 showServices(executor);
             }
             return true;
