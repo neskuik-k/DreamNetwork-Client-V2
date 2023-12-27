@@ -51,6 +51,11 @@ public class Facultative {
         }
     }
 
+    public static <T> Optional<T> map(Class<T> clazz, Supplier<T> supplier){
+
+        return  Optional.ofNullable(supplier.get());
+    }
+
 
 
 }

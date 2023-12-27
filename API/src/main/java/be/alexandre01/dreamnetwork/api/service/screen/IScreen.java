@@ -15,7 +15,7 @@ public interface IScreen extends Runnable {
 
     IService getService();
 
-    FixedSizeRingBuffer<String> getHistory();
+
 
     IScreenStream getScreenStream();
 

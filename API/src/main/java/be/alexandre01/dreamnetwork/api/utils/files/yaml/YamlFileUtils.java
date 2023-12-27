@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.api.utils.files.yaml;
 
 import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.service.ConfigData;
 import be.alexandre01.dreamnetwork.api.utils.files.FileScan;
 import lombok.Getter;
 import lombok.Setter;
@@ -122,7 +123,9 @@ public class YamlFileUtils<T> {
                 }else {
                     toLoad = this.toLoad;
                 }
+
         t = yaml.loadAs(Files.newInputStream(file.toPath()),toLoad);
+
 
         //System.out.println("Load as "+toLoad.getName());
         if(!ignorePatch){
@@ -144,6 +147,7 @@ public class YamlFileUtils<T> {
                     // is Ignored
                     if(field.isAnnotationPresent(Ignore.class)) continue;
                     if(field.isAnnotationPresent(SkipInitCheck.class)) continue;
+                    if(skipNull && field.isAnnotationPresent(CanBeNull.class)) continue;
                     // is static
                     if(Modifier.isStatic(field.getModifiers())) continue;
 
@@ -190,8 +194,10 @@ public class YamlFileUtils<T> {
                         System.out.println("Error is an YamlException");
                         throw new RuntimeException(e);
                     }
-                    System.out.println("Error reading file: "+file.getName());
+                    System.out.println("Error reading file: "+file.getAbsolutePath());
                     System.out.println("Recreating the file and trying to put old data on it");
+                    System.out.println(e.getCause());
+                    System.out.println(e.getMessage());
                     obj = replaceOldByNew();
                     if(obj instanceof YamlPreLoader){
                         ((YamlPreLoader) obj).whenLoaded();
@@ -470,11 +476,11 @@ public class YamlFileUtils<T> {
             fileWriter.close();
         } catch (IOException e) {
             if(DNUtils.get().getConfigManager().getLanguageManager() == null){
-                System.out.println("Error writing file: "+file.getName());
+                System.out.println("Error writing file: "+file.getAbsoluteFile());
                 e.printStackTrace();
                 return;
             }
-            Console.printLang("core.utils.yaml.errorWritingFile", file.getName());
+            Console.printLang("core.utils.yaml.errorWritingFile", file.getAbsoluteFile());
             Console.bug(e);
         }
     }

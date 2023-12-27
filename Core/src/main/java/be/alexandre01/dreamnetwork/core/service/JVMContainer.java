@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.service.IContainer;
 import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.bundle.BundleData;
+import be.alexandre01.dreamnetwork.api.utils.optional.Facultative;
 import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
@@ -11,6 +12,7 @@ import lombok.Synchronized;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -45,6 +47,9 @@ public class JVMContainer implements IContainer {
         return jvmExecutors.stream().filter(ijvmExecutor -> {
             boolean found = false;
             if(ijvmExecutor.getCustomName().isPresent()) {
+               // System.out.println("> to "+ijvmExecutor.getCustomName().get());
+               // System.out.println(">  from "+processName);
+               // System.out.println("Value = "+ ijvmExecutor.getCustomName().get().equals(processName));
                 found = ijvmExecutor.getCustomName().get().equals(processName);
             }
             if(!found){
@@ -56,7 +61,7 @@ public class JVMContainer implements IContainer {
 
     @Override
     public Optional<IExecutor> findExecutor(String processName) {
-        return Optional.empty().map(object -> {
+        return Facultative.map(IExecutor.class,() -> {
             if(processName.contains("/")){
                 String[] split = processName.split("/");
                 StringBuilder bundle = new StringBuilder();
@@ -71,6 +76,7 @@ public class JVMContainer implements IContainer {
                 }
             }
             IExecutor[] jvmExecutors = getExecutorsFromName(processName);
+        //    System.out.println("Found >" +Arrays.toString(jvmExecutors));
             if(jvmExecutors.length == 0){
                 return null;
             }
@@ -82,6 +88,7 @@ public class JVMContainer implements IContainer {
                 }
                 return null;
             }
+          //  System.out.println("J'ai identifié l'executeur ! " + jvmExecutors[0]);
             return jvmExecutors[0];
         });
     }
@@ -94,7 +101,7 @@ public class JVMContainer implements IContainer {
             id = Integer.parseInt(split[1]);
         }catch (Exception e){
             System.out.println(Colors.RED+"The id is not a number");
-            return Optional.empty();
+            throw new RuntimeException("The id is not a number");
         }
         return findService(split[0],id);
     }
@@ -102,16 +109,16 @@ public class JVMContainer implements IContainer {
     public Optional<IService> findService(String processName, int id){
         return findExecutor(processName)
                 .flatMap(iExecutor -> Optional.ofNullable(iExecutor.getService(id)));
+
     }
 
 
-    @Override
     public ArrayList<IExecutor> getExecutors() {
         return jvmExecutors;
     }
 
 
-    @Override
+
     public IExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData) {
      //   System.out.println(System.getProperty("user.dir") + "/bundles/" + pathName + "/" + name + "/network.yml");
         try {

@@ -21,7 +21,6 @@ import java.util.ArrayList;
 @Getter @Setter
 public class Screen extends Thread implements IScreen {
     IService service;
-    FixedSizeRingBuffer<String> history;
     ArrayList<UniversalConnection> devToolsReading = new ArrayList<>();
     IScreenStream screenStream;
     volatile Integer screenId;
@@ -43,8 +42,8 @@ public class Screen extends Thread implements IScreen {
             }
         }
         this.service = service;
-        int historySize = DNUtils.get().getConfigManager().getGlobalSettings().getHistorySize();
-        this.history = new FixedSizeRingBuffer<String>(new String[historySize]);
+
+
         ScreenManager screenManager = ScreenManager.instance;
         screenId = getService().getIndexingId();
         screenName = getService().getFullIndexedName();//service.getJvmExecutor().getBundleData().getName()+"/"+service.getJvmExecutor().getName()+"-"+screenId;
@@ -98,10 +97,7 @@ public class Screen extends Thread implements IScreen {
         return service;
     }
 
-    @Override
-    public FixedSizeRingBuffer<String> getHistory() {
-        return history;
-    }
+  
 
     @Override
     public IScreenStream getScreenStream() {
