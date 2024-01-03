@@ -110,6 +110,11 @@
       "version": "1.0.4",
       "url": "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
     },
+    {
+        "path": "io/projectreactor/reactor-core",
+        "version": "3.6.1",
+        "url": "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.1/reactor-core-3.6.1.jar",
+    },
 
     {
       "path": "com/fasterxml/jackson/core/jackson-databind",
