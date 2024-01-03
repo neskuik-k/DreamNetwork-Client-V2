@@ -67,8 +67,8 @@
     },
     {
       "path": "com/google/guava/guava",
-      "version": "32.1.2-jre",
-      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/32.1.2-jre/guava-32.1.2-jre.jar"
+      "version": "33.0.0-jre",
+      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar"
     },
     {
       "path": "com/konghq/unirest-java",
@@ -126,6 +126,22 @@
       "path": "org/json/json",
       "version": "20231013",
       "url": "https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar"
+    },
+    {
+      "path": "io/projectreactor/netty/reactor-netty",
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty/1.1.14/reactor-netty-1.1.14.jar"
+    },
+
+    {
+      "path": "io/netty/netty-codec-dns",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.104.Final/netty-codec-dns-4.1.104.Final.jar"
+    },
+    {
+      "path": "at/favre/lib/bcrypt",
+      "version": "0.10.2",
+      "url": "https://repo1.maven.org/maven2/at/favre/lib/bcrypt/0.10.2/bcrypt-0.10.2.jar"
     }
   ]
 }
