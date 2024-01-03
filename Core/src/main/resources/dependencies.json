@@ -32,7 +32,7 @@
     },
     {
       "path": "io/netty/netty-resolver-dns",
-        "version": "4.1.104.Final",
+      "version": "4.1.104.Final",
       "url": "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.104.Final/netty-resolver-dns-4.1.104.Final.jar"
     },
     {
@@ -111,11 +111,10 @@
       "url": "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
     },
     {
-        "path": "io/projectreactor/reactor-core",
-        "version": "3.6.1",
-        "url": "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.1/reactor-core-3.6.1.jar",
+      "path": "io/projectreactor/reactor-core",
+      "version": "3.6.1",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.1/reactor-core-3.6.1.jar"
     },
-
     {
       "path": "com/fasterxml/jackson/core/jackson-databind",
       "version": "2.15.2",
@@ -131,7 +130,6 @@
       "version": "2.15.2",
       "url": " https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar"
     },
-
     {
       "path": "org/json/json",
       "version": "20231013",
@@ -143,18 +141,15 @@
       "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty/1.1.14/reactor-netty-1.1.14.jar"
     },
     {
-        "path": "io/projectreactor/netty/reactor-netty-http",
-        "version": "1.1.14",
-        "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-http/1.1.14/reactor-netty-http-1.1.14.jar"
+      "path": "io/projectreactor/netty/reactor-netty-http",
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-http/1.1.14/reactor-netty-http-1.1.14.jar"
     },
-
     {
       "path": "io/projectreactor/reactor-netty-core",
-        "version": "1.1.14",
-        "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.1.14/reactor-netty-core-1.1.14.jar"
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.1.14/reactor-netty-core-1.1.14.jar"
     },
-
-
     {
       "path": "io/netty/netty-codec-dns",
       "version": "4.1.104.Final",
