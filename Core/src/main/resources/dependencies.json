@@ -48,7 +48,7 @@
     {
       "path": "io/netty/netty-transport-native-unix-common",
       "version": "4.1.104.Final",
-      "url": "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.104.Final/netty-transport-native-unix-common-4.1.104.Final.jar",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.104.Final/netty-transport-native-unix-common-4.1.104.Final.jar"
     },
     {
       "path": "com/google/code/gson",
