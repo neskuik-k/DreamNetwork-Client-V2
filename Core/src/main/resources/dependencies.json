@@ -41,6 +41,11 @@
       "url": "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.97.Final/netty-common-4.1.97.Final.jar"
     },
     {
+      "path": "io/netty/netty-codec-http2",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.104.Final/netty-codec-http2-4.1.104.Final.jar"
+    },
+    {
       "path": "com/google/code/gson",
       "version": "2.10.1",
       "url": "https://repo1.maven.org/maven2/com/google/code/gson/gson/2.10.1/gson-2.10.1.jar"
