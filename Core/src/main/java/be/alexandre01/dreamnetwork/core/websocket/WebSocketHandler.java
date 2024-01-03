@@ -40,7 +40,7 @@ public class WebSocketHandler extends ChannelInboundHandlerAdapter  {
                     //  System.out.println("Message is not null");
                     //System.out.println("Message : " + webMessage);
                     webSession.getMessageListeners().forEach(messageListener -> messageListener.onRead(webMessage));
-                    webSession.send(webMessage);
+                    //webSession.send(webMessage);
                     return;
                 }
                 System.out.println(((TextWebSocketFrame) msg).text());

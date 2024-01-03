@@ -3,7 +3,10 @@ package be.alexandre01.dreamnetwork.core.websocket.sessions;
 import lombok.AccessLevel;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
@@ -13,7 +16,8 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     WebSession session;
     String frameName;
     @Getter(AccessLevel.NONE) FrameTester frameTester = null;
-    ScheduledExecutorService executorService;
+    List<ScheduledExecutorService> executorServices = new ArrayList<>();
+
 
 
     public FrameAbstraction(WebSession session, String frameName) {
@@ -39,8 +43,8 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     public void onEnter(){}
 
     public void execLeave(){
-        if (executorService != null) {
-            executorService.shutdown();
+        if (executorServices != null && !executorServices.isEmpty()) {
+            executorServices.forEach(ExecutorService::shutdown);
         }
         getFrameTester().ifPresent(FrameTester::testLeave);
         onLeave();
@@ -53,13 +57,15 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     public void onLeave(){}
 
     public void setRefreshRate(long refreshRate){
-        if(executorService != null){
-            executorService.shutdown();
-        }
+        runTask(this::refresh, refreshRate);
+    }
 
-        executorService = Executors.newSingleThreadScheduledExecutor();
+    public void runTask(Runnable runnable,long refreshRate){
+        ScheduledExecutorService scheduledExecutorService = Executors.newSingleThreadScheduledExecutor();
 
-        executorService.scheduleAtFixedRate(this::refresh, 0, refreshRate, java.util.concurrent.TimeUnit.MILLISECONDS);
+        executorServices.add(scheduledExecutorService);
+        scheduledExecutorService.scheduleAtFixedRate(runnable, 0, refreshRate, java.util.concurrent.TimeUnit.MILLISECONDS);
+
     }
 
     public void refresh(){}
