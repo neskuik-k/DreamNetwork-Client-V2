@@ -32,7 +32,7 @@ public class WebSocketServerInitializer implements Runnable {
         this.host = host;
         this.dreamRestAPI = new DreamRestAPI();
         dreamRestAPI.create();
-        String refreshSocket = dreamRestAPI.checkup("", String.valueOf(getPort()));
+        String refreshSocket = dreamRestAPI.checkup(token, String.valueOf(getPort()));
 
     }
 
