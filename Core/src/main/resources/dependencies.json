@@ -132,6 +132,18 @@
       "version": "1.1.14",
       "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty/1.1.14/reactor-netty-1.1.14.jar"
     },
+    {
+        "path": "io/projectreactor/netty/reactor-netty-http",
+        "version": "1.1.14",
+        "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-http/1.1.14/reactor-netty-http-1.1.14.jar"
+    },
+
+    {
+      "path": "io/projectreactor/reactor-netty-core",
+        "version": "1.1.14",
+        "url": "https://repo1.maven.org/maven2/io/projectreactor/reactor-netty-core/1.1.14/reactor-netty-core-1.1.14.jar"
+    },
+
 
     {
       "path": "io/netty/netty-codec-dns",
