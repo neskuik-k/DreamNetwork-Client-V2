@@ -9,9 +9,11 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
+import io.netty.handler.ssl.util.SelfSignedCertificate;
 
 import javax.net.ssl.SSLException;
 import java.io.File;
+import java.security.cert.CertificateException;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -21,14 +23,22 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
     WebSocketServerInitializer initializer;
     String prefix = "wss://";
     SslContext sslContext = null;
-    public HTTPInitializer(WebSocketServerInitializer initializer) {
+    public HTTPInitializer(WebSocketServerInitializer initializer) throws CertificateException {
         this.initializer = initializer;
         File certChainFile = new File("data/certs/certfile.crt");
         File keyFile = new File("data/certs/private-key.pem");
         String prefix = "wss://";
         SslContext sslContext = null;
+
+       
         if(!certChainFile.exists() || !keyFile.exists()){
-            initializer.setPrefix("ws://");
+            //initializer.setPrefix("ws://");
+            SelfSignedCertificate ssc = new SelfSignedCertificate();
+            try {
+                sslContext = SslContextBuilder.forServer(ssc.certificate(), ssc.privateKey()).build();
+            } catch (SSLException e) {
+                throw new RuntimeException(e);
+            }
         }else {
             System.out.println("Cert file exist");
             try {

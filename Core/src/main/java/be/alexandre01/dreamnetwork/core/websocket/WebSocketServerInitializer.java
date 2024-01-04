@@ -12,6 +12,8 @@ import io.netty.handler.logging.LoggingHandler;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.security.cert.CertificateException;
+
 /*
  ↬   Made by Alexandre01Dev 😎
  ↬   done on 20/11/2023 at 10:31
@@ -50,7 +52,9 @@ public class WebSocketServerInitializer implements Runnable {
         ch.closeFuture().sync();
         } catch (InterruptedException e) {
             Console.bug(e);
-        }finally {
+        } catch (CertificateException e) {
+            throw new RuntimeException(e);
+        } finally {
             bossGroup.shutdownGracefully();
             workerGroup.shutdownGracefully();
         }
