@@ -39,7 +39,7 @@ public class DreamRestAPI {
 
     }
     public String checkup(String token,String port){
-        String response = httpClient.post().uri("http://devnode.dreamnetwork.cloud:8080/checkup")
+        String response = httpClient.post().uri("https://devnode.dreamnetwork.cloud:8080/checkup")
          .send((httpClientRequest, outbound) -> {
             ObjectMapper objectMapper = new ObjectMapper();
             ObjectNode jsonNode = objectMapper.createObjectNode();

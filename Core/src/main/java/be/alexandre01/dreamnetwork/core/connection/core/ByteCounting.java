@@ -62,6 +62,14 @@ public class ByteCounting {
         long time = System.currentTimeMillis();
         if (time - timeLastForMinute >= 1000 * 60) {
             //System.out.println("time : " + time + " timeLastForMinute : " + timeLastForMinute);
+                long i = ((time-timeLastForMinute) / (1000 * 60))-1;
+                if(i > 60){
+                    i = 60;
+                }
+                for (int j = 0; j < i; j++) {
+                    bytesReadPerMinTables.fill(0L);
+                    bytesWritePerMinTables.fill(0L);
+                }
                 bytesReadPerMinTables.fill(bytesReadPerMin);
                 if(!listeners.isEmpty()){
                     ByteCountingData data = new ByteCountingData(type, bytesReadPerMin, Time.MINUTE);
@@ -76,6 +84,14 @@ public class ByteCounting {
         }
         if (time - timeLastForSeconds >= 1000) {
            // System.out.println("time : " + time + " timeLastForSeconds : " + (time-timeLastForSeconds));
+                long i = ((time-timeLastForSeconds) / 1000)-1;
+                if(i > 60){
+                    i = 60;
+                }
+                for (int j = 0; j < i; j++) {
+                    bytesReadPerSecTables.fill(0L);
+                    bytesWritePerSecTables.fill(0L);
+                }
                 bytesReadPerSecTables.fill(bytesReadPerSec);
                 if(!listeners.isEmpty()){
                     ByteCountingData data = new ByteCountingData(type, bytesReadPerSec, Time.SECONDS);

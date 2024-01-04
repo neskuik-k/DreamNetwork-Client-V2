@@ -47,8 +47,11 @@ public class WebSession {
     }
 
     public void close(){
-        channelHandlerContext.close();
+        if(channelHandlerContext.channel().isOpen())
+            channelHandlerContext.channel().close();
+
         WebSessionManager.getInstance().unregisterSession(this);
+        getCloseListeners().forEach(CloseListener::onClose);
     }
 
     public interface MessageListener{

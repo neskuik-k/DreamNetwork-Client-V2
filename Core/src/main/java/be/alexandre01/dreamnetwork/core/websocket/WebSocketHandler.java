@@ -78,4 +78,11 @@ public class WebSocketHandler extends ChannelInboundHandlerAdapter  {
         }
     }
 
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        super.channelInactive(ctx);
+
+        System.out.println("WebSocketHandler channelInactive");
+        webSession.close();
+    }
 }

@@ -9,6 +9,14 @@ public class FrameListener implements WebSession.MessageListener {
 
     public FrameListener(WebSession session) {
         this.session = session;
+        session.onClose(() -> {
+            session.getFrameManager().getFrames().forEach((s, frame) -> {
+                if(frame instanceof FrameAbstraction){
+                    FrameAbstraction frameAbstraction = (FrameAbstraction) frame;
+                    frameAbstraction.execLeave();
+                }
+            });
+        });
     }
 
     @Override
