@@ -23,11 +23,7 @@ import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
-import org.shredzone.acme4j.Account;
-import org.shredzone.acme4j.AccountBuilder;
-import org.shredzone.acme4j.Session;
-import org.shredzone.acme4j.exception.AcmeException;
-import org.shredzone.acme4j.util.KeyPairUtils;
+
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -152,19 +148,5 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
         return new Tuple<>(cert, key);
     }
 
-    public void test(){
-        KeyPair accountKeyPair = KeyPairUtils.createKeyPair(2048);
-        Session session = new Session("acme://letsencrypt.org/staging");
-        try {
-            Account account = new AccountBuilder()
-                    .addContact("mailto:acme@example.com")
-                    .agreeToTermsOfService()
-                    .useKeyPair(accountKeyPair)
-                    .create(session);
-            URL accountLocationUrl = account.getLocation();
-        } catch (AcmeException e) {
-            throw new RuntimeException(e);
-        }
 
-    }
 }
