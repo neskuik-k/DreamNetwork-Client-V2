@@ -280,14 +280,18 @@
     </dependency>
 
     <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
-    <dependency>
-        <groupId>io.socket</groupId>
-        <artifactId>socket.io-client</artifactId>
-        <version>2.1.0</version>
-        <scope>provided</scope>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/io.socket/socket.io-server -->
+        <!-- https://mvnrepository.com/artifact/com.corundumstudio.socketio/netty-socketio -->
+        <dependency>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+            <version>2.0.6</version>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+
+
+
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
 
         <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
         <dependency>
@@ -363,27 +367,28 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <version>4.1.95.Final</version>
-        <scope>provided</scope>
+        <scope>compile</scope>
     </dependency>
+        <!-- https://mvnrepository.com/artifact/io.projectreactor.netty/reactor-netty -->
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
-            <version>1.1.12</version>
-            <scope>provided</scope>
+            <version>1.1.14</version>
         </dependency>
+
         <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-dns -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-dns</artifactId>
             <version>4.1.101.Final</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>33.0.0-jre</version>
-            <scope>provided</scope>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>at.favre.lib</groupId>
@@ -391,5 +396,36 @@
             <version>0.10.2</version>
             <scope>compile</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk15on -->
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcprov-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk18on</artifactId>
+            <version>1.77</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.bouncycastle/bcpkix-jdk18on -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcpkix-jdk18on</artifactId>
+            <version>1.77</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.shredzone.acme4j/acme4j-client -->
+        <dependency>
+            <groupId>org.shredzone.acme4j</groupId>
+            <artifactId>acme4j-client</artifactId>
+            <version>2.16</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.shredzone.acme4j/acme4j-utils -->
+        <dependency>
+            <groupId>org.shredzone.acme4j</groupId>
+            <artifactId>acme4j-utils</artifactId>
+            <version>2.16</version>
+        </dependency>
+
+
+
+
     </dependencies>
 </project>

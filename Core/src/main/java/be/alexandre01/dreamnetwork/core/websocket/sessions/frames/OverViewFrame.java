@@ -21,6 +21,27 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
 public class OverViewFrame extends FrameAbstraction {
+    public static void main(String[] args) {
+        OperatingSystemMXBean osBean = ManagementFactory.getPlatformMXBean(
+                OperatingSystemMXBean.class);
+        long freeMem = osBean.getFreePhysicalMemorySize();
+        long ramTotal = osBean.getTotalPhysicalMemorySize();
+
+        long usedMemory = ramTotal - freeMem;
+        // REMOVE cache memory
+        long fullRamUsage = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
+        MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
+        MemoryUsage heap = memBean.getHeapMemoryUsage();
+        MemoryUsage nonheap = memBean.getNonHeapMemoryUsage();
+        System.out.println("freeMem : " + freeMem/1024);
+        System.out.println("ramTotal : " + ramTotal/1024);
+        System.out.println("usedMemory : " + usedMemory/1024);
+        System.out.println("fullRamUsage : " + fullRamUsage/1024);
+        System.out.println("heap : " + heap);
+        System.out.println("nonheap : " + nonheap);
+        long cachedMemory = osBean.getCommittedVirtualMemorySize() - osBean.getFreePhysicalMemorySize();
+        System.out.println("cachedMemory : " + osBean.getCommittedVirtualMemorySize()/1024);
+    }
     boolean[] refreshs = new boolean[]{false,false,false,false};
     // 0 is IN SEC
     // 1 IS OUT SEC
@@ -55,6 +76,7 @@ public class OverViewFrame extends FrameAbstraction {
         System.out.println("Huh !");
         setTester(new OverViewTest(this));
         setRefreshRate(1000*5);
+
     }
 
     @Override
@@ -68,7 +90,9 @@ public class OverViewFrame extends FrameAbstraction {
                     .put("bytesOUTSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.OUTBOUND))
                     .put("bytesINMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.INBOUND))
                     .put("bytesOUTMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.OUTBOUND)));
-        },10000);
+        },1);
+
+
 
        // ByteCounting.registerConsumer(newLong);
 
@@ -100,6 +124,8 @@ public class OverViewFrame extends FrameAbstraction {
         long ramTotal = osBean.getTotalPhysicalMemorySize();
 
         long usedMemory = ramTotal - freeMem;
+        // REMOVE cache memory
+        usedMemory = usedMemory - (osBean.getTotalPhysicalMemorySize() - osBean.getTotalSwapSpaceSize());
         long fullRamUsage = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
         MemoryMXBean memBean = ManagementFactory.getMemoryMXBean();
         MemoryUsage heap = memBean.getHeapMemoryUsage();

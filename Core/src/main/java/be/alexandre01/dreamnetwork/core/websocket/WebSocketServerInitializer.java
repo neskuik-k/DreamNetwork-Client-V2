@@ -52,7 +52,7 @@ public class WebSocketServerInitializer implements Runnable {
         ch.closeFuture().sync();
         } catch (InterruptedException e) {
             Console.bug(e);
-        } catch (CertificateException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         } finally {
             bossGroup.shutdownGracefully();
