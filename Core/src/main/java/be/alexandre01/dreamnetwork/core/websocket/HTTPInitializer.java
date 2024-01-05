@@ -130,17 +130,25 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
                     new X500Name("CN=CA Cert"),
                     bcPk
             );
-
-            X509CertificateHolder certHolder = certGen
-                    .build(new JcaContentSignerBuilder("SHA1withRSA").build(keypair.getPrivate()));
-            //final X509CertificateHolder certHolder = builder.build(signer);
+            System.out.println("CERT GEN : "+certGen);
             BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
+            System.out.println("BASIC CONSTRAINTS : "+basicConstraints);
 
             certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints); // Basic Constraints is usually marked as critical.
+            X509CertificateHolder certHolder = certGen.build(new JcaContentSignerBuilder("SHA1withRSA").build(keypair.getPrivate()));
+            System.out.println("CERT HOLDER : "+certHolder);
+            //final X509CertificateHolder certHolder = builder.build(signer);
+
+            System.out.println("ADD EXTENSION");
             cert = new JcaX509CertificateConverter().setProvider(provider).getCertificate(certHolder);
+            System.out.println("->"+cert);
+
             cert.verify(keypair.getPublic());
-        } catch (Throwable t) {
-            System.out.println(t.getMessage());
+            System.out.println("Verify cert");
+        } catch (Exception t) {
+            System.out.println("Wut ? -> "+t.getMessage());
+            System.out.println("Wut ? -> "+t.getCause());
+            System.out.println("Wut ? -> "+t.getStackTrace());
             return null;
         }
         System.out.println("->"+cert);
