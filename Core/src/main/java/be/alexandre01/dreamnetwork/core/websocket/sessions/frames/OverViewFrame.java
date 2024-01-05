@@ -90,7 +90,7 @@ public class OverViewFrame extends FrameAbstraction {
                     .put("bytesOUTSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.OUTBOUND))
                     .put("bytesINMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.INBOUND))
                     .put("bytesOUTMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.OUTBOUND)));
-        },10000);
+        },1);
 
 
 
