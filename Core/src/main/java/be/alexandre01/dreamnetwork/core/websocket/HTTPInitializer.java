@@ -11,7 +11,12 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslContextBuilder;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import org.bouncycastle.asn1.ASN1ObjectIdentifier;
+import org.bouncycastle.asn1.x500.X500Name;
+import org.bouncycastle.asn1.x509.BasicConstraints;
+import org.bouncycastle.asn1.x509.SubjectPublicKeyInfo;
 import org.bouncycastle.cert.X509CertificateHolder;
+import org.bouncycastle.cert.X509v1CertificateBuilder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -23,7 +28,6 @@ import org.shredzone.acme4j.AccountBuilder;
 import org.shredzone.acme4j.Session;
 import org.shredzone.acme4j.exception.AcmeException;
 import org.shredzone.acme4j.util.KeyPairUtils;
-import sun.security.x509.X500Name;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -35,6 +39,7 @@ import java.net.URL;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Calendar;
 import java.util.Date;
 
 /*
@@ -94,7 +99,8 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
     }
     private Tuple<X509Certificate, PrivateKey> selfSignedCertificate(String fqdn) {
         Security.removeProvider("BC");
-        Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
+        BouncyCastleProvider provider = new BouncyCastleProvider();
+        Security.addProvider(provider);
         final SecureRandom random = new SecureRandom();
         final KeyPairGenerator keyGen;
         try {
@@ -103,18 +109,42 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
             System.out.println(e.getMessage());
             return null;
         }
-        keyGen.initialize(2048, random);
+        System.out.println("->"+keyGen);
+        //keyGen.initialize(2048, random);
+        keyGen.initialize(4096);
         final KeyPair keypair = keyGen.generateKeyPair();
         final PrivateKey key = keypair.getPrivate();
         final X509Certificate cert;
         try {
             final X500Name owner = new X500Name("CN=" + fqdn);
-            final X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(owner.asX500Principal(), new BigInteger(64, random), new Date(System.currentTimeMillis() - 86400000L * 365), new Date(253402300799000L), owner.asX500Principal(), keypair.getPublic());
-            final ContentSigner signer = new JcaContentSignerBuilder("SHA256WithRSAEncryption").build(key);
-            final X509CertificateHolder certHolder = builder.build(signer);
-            cert = new JcaX509CertificateConverter().setProvider(new BouncyCastleProvider()).getCertificate(certHolder);
+            //final X509v3CertificateBuilder builder = new JcaX509v3CertificateBuilder(owner.asX500Principal(), new BigInteger(64, random), new Date(System.currentTimeMillis() - 86400000L * 365), new Date(253402300799000L), owner.asX500Principal(), keypair.getPublic());
+
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.YEAR, 1);
+            byte[] pk = keypair.getPublic().getEncoded();
+            SubjectPublicKeyInfo bcPk = SubjectPublicKeyInfo.getInstance(pk);
+
+            JcaX509v3CertificateBuilder certGen = new JcaX509v3CertificateBuilder(
+                    new X500Name("CN=CA Cert"),
+                    BigInteger.ONE,
+                    new Date(),
+                    cal.getTime(),
+                    new X500Name("CN=CA Cert"),
+                    bcPk
+            );
+
+            X509CertificateHolder certHolder = certGen
+                    .build(new JcaContentSignerBuilder("SHA1withRSA").build(keypair.getPrivate()));
+            //final X509CertificateHolder certHolder = builder.build(signer);
+            BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
+
+            certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints); // Basic Constraints is usually marked as critical.
+            cert = new JcaX509CertificateConverter().setProvider(provider).getCertificate(certHolder);
             cert.verify(keypair.getPublic());
         } catch (Throwable t) {
+            System.out.println(t.getMessage());
             return null;
         }
         System.out.println("->"+cert);
