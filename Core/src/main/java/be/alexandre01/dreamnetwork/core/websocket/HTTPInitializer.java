@@ -55,11 +55,7 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
             //initializer.setPrefix("ws://");
             SelfSignedCertificate ssc = null;
             try {
-                SelfSignedCertificate selfSignedCertificate = new SelfSignedCertificate("164.132.202.41");
-                System.out.println("selfsigned cert test");
-                sslContext = SslContextBuilder.forServer(selfSignedCertificate.certificate(), selfSignedCertificate.privateKey()).build();
-            } catch (Exception e) {
-                Tuple<X509Certificate, PrivateKey> selfSignedCertificate = selfSignedCertificate("164.132.202.41");
+                Tuple<X509Certificate, PrivateKey> selfSignedCertificate = selfSignedCertificate("CA CERT");
                 System.out.println(selfSignedCertificate);
                 System.out.println("Cert file not exist");
                 try {
@@ -67,6 +63,8 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
                 } catch (SSLException sslException) {
                     throw new RuntimeException(sslException);
                 }
+            } catch (Exception e) {
+                throw new RuntimeException(e);
             }
 
         }else {
