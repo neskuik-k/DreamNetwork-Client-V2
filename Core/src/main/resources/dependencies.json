@@ -169,6 +169,16 @@
       "path": "at/favre/lib/bcrypt",
       "version": "0.10.2",
       "url": "https://repo1.maven.org/maven2/at/favre/lib/bcrypt/0.10.2/bcrypt-0.10.2.jar"
+    },
+    {
+      "path": "org/bouncycastle/bcprov-jdk18on",
+      "version": "1.77",
+      "url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar"
+    },
+    {
+      "path": "org/bouncycastle/bcpkix-jdk18on",
+      "version": "1.77",
+      "url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.jar"
     }
   ]
 }
