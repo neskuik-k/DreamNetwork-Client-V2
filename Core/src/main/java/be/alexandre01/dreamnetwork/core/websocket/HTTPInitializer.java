@@ -131,10 +131,10 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
                     bcPk
             );
             System.out.println("CERT GEN : "+certGen);
-           // BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
-           // System.out.println("BASIC CONSTRAINTS : "+basicConstraints);
+            BasicConstraints basicConstraints = new BasicConstraints(true); // <-- true for CA, false for EndEntity
+            System.out.println("BASIC CONSTRAINTS : "+basicConstraints);
 
-            //certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints); // Basic Constraints is usually marked as critical.
+            certGen.addExtension(new ASN1ObjectIdentifier("2.5.29.19"), true, basicConstraints); // Basic Constraints is usually marked as critical.
             X509CertificateHolder certHolder = certGen.build(new JcaContentSignerBuilder("SHA1withRSA").build(keypair.getPrivate()));
             System.out.println("CERT HOLDER : "+certHolder);
             //final X509CertificateHolder certHolder = builder.build(signer);
