@@ -36,7 +36,13 @@ public class Open extends SubCommand {
 
             String token = args[1];
 
-            new WebSocketServer(2352, "localhost",token).start();
+            int port = 2352;
+
+            if(args.length > 2){
+                port = Integer.parseInt(args[2]);
+            }
+
+            new WebSocketServer(port, "localhost",token).start();
             WebSessionManager.getInstance().onNewSession(session -> {
                 session.getFrameManager().addFrame("overview", new OverViewFrame(session));
             });

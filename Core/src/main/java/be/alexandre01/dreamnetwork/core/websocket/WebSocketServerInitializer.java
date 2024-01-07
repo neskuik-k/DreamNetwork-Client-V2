@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.security.cert.CertificateException;
+import java.util.HashSet;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -23,6 +24,7 @@ public class WebSocketServerInitializer implements Runnable {
     private final EventLoopGroup workerGroup;
     @Getter private DreamRestAPI dreamRestAPI;
     @Getter private final int port;
+    @Getter private final HashSet<String> whitelistRemote = new HashSet<>();
    @Getter @Setter
    private String prefix = "wss://";
     private final String host;

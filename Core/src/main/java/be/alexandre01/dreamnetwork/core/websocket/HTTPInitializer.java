@@ -83,6 +83,8 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
         if(sslContext != null){
             pipeline.addLast(sslContext.newHandler(socketChannel.alloc()));
         }
+        //add ip whitelist (on which ip the server can be accessed)
+        pipeline.addLast("filter", new HttpFilter(initializer.getWhitelistRemote()));
         ByteCounting byteCounting = new ByteCounting();
         ByteCountingInboundHandler byteCountingInboundHandler = new ByteCountingInboundHandler(byteCounting);
         ByteCountingOutboundHandler byteCountingOutboundHandler = new ByteCountingOutboundHandler(byteCounting);
