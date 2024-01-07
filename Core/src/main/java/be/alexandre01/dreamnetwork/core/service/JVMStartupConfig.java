@@ -28,7 +28,7 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
     @JsonIgnore boolean proxy = false;
     @JsonIgnore boolean fixedData = false;
     @JsonIgnore File fileRootDir;
-    String startup;
+   // String startup;
 
     public static ConfigBuilder builder(){
         return new ConfigBuilder();
@@ -65,39 +65,17 @@ public class JVMStartupConfig extends JVMConfig implements IStartupConfig{
             Console.printLang("service.startupConfig.updatingFile");
         }
 
-
-        try {
-            for (String line : Config.getGroupsLines(System.getProperty("user.dir")+"/bundles/"+pathName+"/"+name+"/network.yml")){
-                if(line.startsWith("startup:")){
-                    startup = line;
-                    startup = startup.replace("startup:","");
-                    while (startup.charAt(0) == ' '){
-                        startup = startup.substring(1);
-                    }
-                    startup =  startup.replaceAll("%xms%",xms);
-
-                    startup =  startup.replaceAll("%xmx%",xmx);
-                }
-                if(line.startsWith("executable:")){
-                    executable = line;
-                    executable = executable.replace("executable:","");
-                    while (executable.charAt(0) == ' '){
-                        executable = executable.substring(1);
-                    }
-                }
-                if(line.startsWith("java-version:")){
-                    javaVersion = line;
-                    javaVersion = javaVersion.replace("java-version:","");
-                    while (javaVersion.charAt(0) == ' '){
-                        this.javaVersion = javaVersion.substring(1);
-                    }
-                }
+        if(startup != null){
+            while (startup.charAt(0) == ' '){
+                startup = startup.substring(1);
             }
+            startup =  startup.replaceAll("%xms%",xms);
+
+            startup =  startup.replaceAll("%xmx%",xmx);
+        }
+
 
             isConfig = true;
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 
     public JVMStartupConfig(String pathName,String name,boolean isBuilded){

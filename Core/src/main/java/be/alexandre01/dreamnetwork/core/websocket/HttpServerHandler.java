@@ -1,10 +1,11 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
-import be.alexandre01.dreamnetwork.core.Core;
+import be.alexandre01.dreamnetwork.api.utils.messages.WebMessage;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
 import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
-import io.netty.channel.ChannelHandler;
+import be.alexandre01.dreamnetwork.core.websocket.sessions.WebSession;
+import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.HttpHeaderNames;
@@ -13,6 +14,12 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.websocketx.TextWebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshaker;
 import io.netty.handler.codec.http.websocketx.WebSocketServerHandshakerFactory;
+import io.netty.handler.ssl.SslContext;
+import io.netty.handler.ssl.SslContextBuilder;
+
+import javax.net.ssl.SSLException;
+import java.io.File;
+import java.util.Optional;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -23,6 +30,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
     WebSocketServerHandshaker handshaker;
     DreamRestAPI restAPI;
     WebSocketServerInitializer initializer;
+    Optional<WebSession> session = Optional.empty();
     public HttpServerHandler(DreamRestAPI restAPI,WebSocketServerInitializer initializer) {
         this.restAPI = restAPI;
         this.initializer = initializer;
@@ -36,6 +44,14 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
               ctx.close();
               return;
         };
+        if(msg instanceof ByteBuf){
+            ByteBuf byteBuf = (ByteBuf) msg;
+            byte[] bytes = new byte[byteBuf.readableBytes()];
+            byteBuf.readBytes(bytes);
+            System.out.println("ByteBuf : " + new String(bytes));
+            ctx.close();
+            return;
+        }
         if (msg instanceof HttpRequest) {
             HttpRequest httpRequest = (HttpRequest) msg;
 
@@ -72,7 +88,9 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                 if ("WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))) {
 
                     //Adding new handler to the existing pipeline to handle WebSocket Messages
-                    ctx.pipeline().replace(this, "websocketHandler", new WebSocketHandler());
+                    WebSocketHandler webSocketHandler = new WebSocketHandler(this,ctx);
+                    session = Optional.of(webSocketHandler.getWebSession());
+                    ctx.pipeline().replace(this, "websocketHandler", webSocketHandler);
 
                     System.out.println("WebSocketHandler added to the pipeline");
                     System.out.println("Opened Channel : " + ctx.channel());
@@ -81,14 +99,18 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                     handleHandshake(ctx, httpRequest,dreamSecure);
                     System.out.println("Handshake is done");
 
+
                     new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
                                 while (true){
-                                    Thread.sleep(1000);
-                                    System.out.println("Sending Pong from server");
-                                    ctx.channel().writeAndFlush(new TextWebSocketFrame("ping"));
+                                    Thread.sleep(5);
+                                    //System.out.println("Sending Pong from server");
+                                    if(!ctx.channel().isOpen()){
+                                        break;
+                                    }
+                                  //  ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
                                 }
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
@@ -103,6 +125,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
     }
     /* Do the handshaking for WebSocket request */
     protected void handleHandshake(ChannelHandlerContext ctx, HttpRequest req, String subprotocols) {
+
         WebSocketServerHandshakerFactory wsFactory =
                 new WebSocketServerHandshakerFactory(getWebSocketURL(req), subprotocols, true);
         handshaker = wsFactory.newHandshaker(req);
@@ -115,7 +138,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
     protected String getWebSocketURL(HttpRequest req) {
         System.out.println("Req URI : " + req.getUri());
-        String url =  "ws://" + req.headers().get("Host") + req.getUri() ;
+        String url =  initializer.getPrefix() + req.headers().get("Host") + req.getUri() ;
         System.out.println("Constructed URL : " + url);
         return url;
     }

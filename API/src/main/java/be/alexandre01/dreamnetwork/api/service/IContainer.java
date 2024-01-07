@@ -27,7 +27,7 @@ public interface IContainer {
         SERVER, PROXY
     }
 
-    public IExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData);
+    //  public IExecutor initIfPossible(String pathName, String name, boolean updateFile, BundleData bundleData);
 
     public void stop(String name,String pathName);
 }

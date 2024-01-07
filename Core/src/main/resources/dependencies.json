@@ -31,9 +31,24 @@
       "url": "https://repo1.maven.org/maven2/io/netty/netty-resolver/4.1.97.Final/netty-resolver-4.1.97.Final.jar"
     },
     {
+      "path": "io/netty/netty-resolver-dns",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-resolver-dns/4.1.104.Final/netty-resolver-dns-4.1.104.Final.jar"
+    },
+    {
       "path": "io/netty/netty-common",
       "version": "4.1.97.Final",
       "url": "https://repo1.maven.org/maven2/io/netty/netty-common/4.1.97.Final/netty-common-4.1.97.Final.jar"
+    },
+    {
+      "path": "io/netty/netty-codec-http2",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-codec-http2/4.1.104.Final/netty-codec-http2-4.1.104.Final.jar"
+    },
+    {
+      "path": "io/netty/netty-transport-native-unix-common",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-transport-native-unix-common/4.1.104.Final/netty-transport-native-unix-common-4.1.104.Final.jar"
     },
     {
       "path": "com/google/code/gson",
@@ -67,8 +82,8 @@
     },
     {
       "path": "com/google/guava/guava",
-      "version": "32.1.2-jre",
-      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/32.1.2-jre/guava-32.1.2-jre.jar"
+      "version": "33.0.0-jre",
+      "url": "https://repo1.maven.org/maven2/com/google/guava/guava/33.0.0-jre/guava-33.0.0-jre.jar"
     },
     {
       "path": "com/konghq/unirest-java",
@@ -105,7 +120,11 @@
       "version": "1.0.4",
       "url": "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
     },
-
+    {
+      "path": "io/projectreactor/reactor-core",
+      "version": "3.6.1",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/reactor-core/3.6.1/reactor-core-3.6.1.jar"
+    },
     {
       "path": "com/fasterxml/jackson/core/jackson-databind",
       "version": "2.15.2",
@@ -121,11 +140,50 @@
       "version": "2.15.2",
       "url": " https://repo1.maven.org/maven2/com/fasterxml/jackson/core/jackson-annotations/2.15.2/jackson-annotations-2.15.2.jar"
     },
-
     {
       "path": "org/json/json",
       "version": "20231013",
       "url": "https://repo1.maven.org/maven2/org/json/json/20231013/json-20231013.jar"
+    },
+    {
+      "path": "io/projectreactor/netty/reactor-netty",
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty/1.1.14/reactor-netty-1.1.14.jar"
+    },
+    {
+      "path": "io/projectreactor/netty/reactor-netty-http",
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-http/1.1.14/reactor-netty-http-1.1.14.jar"
+    },
+    {
+      "path": "io/projectreactor/reactor-netty-core",
+      "version": "1.1.14",
+      "url": "https://repo1.maven.org/maven2/io/projectreactor/netty/reactor-netty-core/1.1.14/reactor-netty-core-1.1.14.jar"
+    },
+    {
+      "path": "io/netty/netty-codec-dns",
+      "version": "4.1.104.Final",
+      "url": "https://repo1.maven.org/maven2/io/netty/netty-codec-dns/4.1.104.Final/netty-codec-dns-4.1.104.Final.jar"
+    },
+    {
+      "path": "at/favre/lib/bcrypt",
+      "version": "0.10.2",
+      "url": "https://repo1.maven.org/maven2/at/favre/lib/bcrypt/0.10.2/bcrypt-0.10.2.jar"
+    },
+    {
+      "path": "org/bouncycastle/bcprov-jdk18on",
+      "version": "1.77",
+      "url": "https://repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk18on/1.77/bcprov-jdk18on-1.77.jar"
+    },
+    {
+      "path": "org/bouncycastle/bcpkix-jdk18on",
+      "version": "1.77",
+      "url": "https://repo1.maven.org/maven2/org/bouncycastle/bcpkix-jdk18on/1.77/bcpkix-jdk18on-1.77.jar"
+    },
+    {
+      "path": "org/bouncycastle/bcutil-jdk18on",
+      "version": "1.77",
+      "url": "https://repo1.maven.org/maven2/org/bouncycastle/bcutil-jdk18on/1.77/bcutil-jdk18on-1.77.jar"
     }
   ]
 }

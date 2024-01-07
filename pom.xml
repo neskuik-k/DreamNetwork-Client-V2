@@ -68,6 +68,7 @@
                     <groupId>com.konghq</groupId>
                     <artifactId>unirest-java</artifactId>
                     <version>4.0.0-RC2</version>
+                    <scope>compile</scope>
                 </dependency>
                 <dependency>
                     <groupId>org.yaml</groupId>
@@ -79,6 +80,7 @@
                     <groupId>org.asynchttpclient</groupId>
                     <artifactId>async-http-client</artifactId>
                     <version>2.12.3</version>
+                    <scope>compile</scope>
                 </dependency>
 
                 <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
@@ -89,23 +91,13 @@
                     <scope>compile</scope>
                 </dependency>
 
-                <!-- https://mvnrepository.com/artifact/com.monitorjbl/json-view -->
-                <dependency>
-                    <groupId>com.monitorjbl</groupId>
-                    <artifactId>json-view</artifactId>
-                    <version>1.1.0</version>
-                </dependency>
+
 
 
                 <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
 
 
-                <dependency>
-                    <groupId>ch.qos.logback</groupId>
-                    <artifactId>logback-classic</artifactId>
-                    <version>1.4.11</version>
-                    <scope>compile</scope>
-                </dependency>
+
                 <!-- https://mvnrepository.com/artifact/log4j/log4j -->
 
                 <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
@@ -117,23 +109,21 @@
                     <scope>compile</scope>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/com.monitorjbl/json-view -->
-                <dependency>
-                    <groupId>com.monitorjbl</groupId>
-                    <artifactId>json-view</artifactId>
-                    <version>1.1.0</version>
-                </dependency>
+
 
                 <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
                 <dependency>
                     <groupId>org.apache.httpcomponents.client5</groupId>
                     <artifactId>httpclient5</artifactId>
                     <version>5.3-alpha1</version>
+                    <scope>compile</scope>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
                 <dependency>
                     <groupId>com.github.docker-java</groupId>
                     <artifactId>docker-java-transport-httpclient5</artifactId>
                     <version>3.3.3</version>
+                    <scope>compile</scope>
                 </dependency>
 
                 <dependency>
@@ -168,11 +158,13 @@
                     <groupId>io.projectreactor.netty</groupId>
                     <artifactId>reactor-netty</artifactId>
                     <version>1.1.12</version>
+                    <scope>compile</scope>
                 </dependency>
                 <dependency>
                     <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-databind</artifactId>
                     <version>2.15.3</version>
+                    <scope>compile</scope>
                 </dependency>
             </dependencies>
         </profile>
@@ -249,129 +241,161 @@
     </properties>
 
     <dependencies>
-    <dependency>
-        <groupId>commons-io</groupId>
-        <artifactId>commons-io</artifactId>
-        <version>2.14.0</version>
-        <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
-    <dependency>
-        <groupId>com.konghq</groupId>
-        <artifactId>unirest-java</artifactId>
-        <version>4.0.0-RC2</version>
-        <scope>provided</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.yaml</groupId>
-        <artifactId>snakeyaml</artifactId>
-        <version>2.2</version>
-        <scope>provided</scope>
-    </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
-    <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
-    <dependency>
-        <groupId>org.asynchttpclient</groupId>
-        <artifactId>async-http-client</artifactId>
-        <version>2.12.3</version>
-        <scope>compile</scope>
-    </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.14.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.mashape.unirest/unirest-java -->
+        <dependency>
+            <groupId>com.konghq</groupId>
+            <artifactId>unirest-java</artifactId>
+            <version>4.0.0-RC2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>2.2</version>
+            <scope>compile</scope>
+        </dependency><!-- https://mvnrepository.com/artifact/com.diogonunes/JColor -->
+        <!-- https://mvnrepository.com/artifact/org.asynchttpclient/async-http-client -->
 
-    <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.10.1</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
-    <dependency>
-        <groupId>io.socket</groupId>
-        <artifactId>socket.io-client</artifactId>
-        <version>2.1.0</version>
-        <scope>provided</scope>
-    </dependency>
-
-    <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+        <!-- https://mvnrepository.com/artifact/net.java.dev.jna/jna -->
+        <dependency>
+            <groupId>net.java.dev.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>5.14.0</version>
+            <scope>provided</scope>
+        </dependency>
 
 
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.4.11</version>
-        <scope>compile</scope>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.10.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.socket/socket.io-client -->
+        <dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>socket.io-client</artifactId>
+            <version>2.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-handler -->
+
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.15.3</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- https://mvnrepository.com/artifact/log4j/log4j -->
 
-    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
-    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
-    <dependency>
-        <groupId>com.github.docker-java</groupId>
-        <artifactId>docker-java</artifactId>
-        <version>3.3.3</version>
-        <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
-    <dependency>
-        <groupId>org.apache.httpcomponents.client5</groupId>
-        <artifactId>httpclient5</artifactId>
-        <version>5.3-alpha1</version>
-        <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
-    <dependency>
-        <groupId>com.github.docker-java</groupId>
-        <artifactId>docker-java-transport-httpclient5</artifactId>
-        <version>3.3.3</version>
-        <scope>provided</scope>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-netty -->
+        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java -->
+        <dependency>
+            <groupId>com.github.docker-java</groupId>
+            <artifactId>docker-java</artifactId>
+            <version>3.3.3</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.apache.httpcomponents.client5/httpclient5 -->
+        <dependency>
+            <groupId>org.apache.httpcomponents.client5</groupId>
+            <artifactId>httpclient5</artifactId>
+            <version>5.3-alpha1</version>
+            <scope>provided</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/com.github.docker-java/docker-java-transport-httpclient5 -->
+        <dependency>
+            <groupId>com.github.docker-java</groupId>
+            <artifactId>docker-java-transport-httpclient5</artifactId>
+            <version>3.3.3</version>
+            <scope>provided</scope>
+        </dependency>
 
-    <dependency>
-        <groupId>org.projectlombok</groupId>
-        <artifactId>lombok</artifactId>
-        <version>1.18.30</version>
-        <scope>provided</scope>
-    </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency><!-- https://mvnrepository.com/artifact/org.fusesource.jansi/jansi -->
+        <!-- https://mvnrepository.com/artifact/org.json/json -->
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20231013</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <dependency>
-        <groupId>org.fusesource.jansi</groupId>
-        <artifactId>jansi</artifactId>
-        <version>2.4.1</version>
-        <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.jline/jline -->
-    <dependency>
-        <groupId>org.jline</groupId>
-        <artifactId>jline</artifactId>
-        <version>3.23.0</version>
-        <scope>provided</scope>
-    </dependency>
+        <dependency>
+            <groupId>org.fusesource.jansi</groupId>
+            <artifactId>jansi</artifactId>
+            <version>2.4.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/org.jline/jline -->
+        <dependency>
+            <groupId>org.jline</groupId>
+            <artifactId>jline</artifactId>
+            <version>3.23.0</version>
+            <scope>compile</scope>
+        </dependency>
 
-    <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
-    <dependency>
-        <groupId>io.netty</groupId>
-        <artifactId>netty-all</artifactId>
-        <version>4.1.95.Final</version>
-        <scope>provided</scope>
-    </dependency>
+        <!-- https://mvnrepository.com/artifact/io.netty/netty-all -->
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.95.Final</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>io.projectreactor.netty</groupId>
             <artifactId>reactor-netty</artifactId>
             <version>1.1.12</version>
+            <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/io.netty/netty-codec-dns -->
         <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-codec-dns</artifactId>
             <version>4.1.101.Final</version>
+            <scope>provided</scope>
         </dependency>
-
+        <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.0.0-jre</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>at.favre.lib</groupId>
+            <artifactId>bcrypt</artifactId>
+            <version>0.10.2</version>
+            <scope>compile</scope>
+        </dependency>
+         <dependency>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+            <version>2.0.6</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 </project>

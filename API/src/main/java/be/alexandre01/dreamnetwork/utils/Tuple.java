@@ -1,8 +1,10 @@
 package be.alexandre01.dreamnetwork.utils;
 
+
+
 public class Tuple<A, B> {
-    private A a;
-    private B b;
+    private final A a;
+    private final B b;
 
     public Tuple(A var1, B var2) {
         this.a = var1;

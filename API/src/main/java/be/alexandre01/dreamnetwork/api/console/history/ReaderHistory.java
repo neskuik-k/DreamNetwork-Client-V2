@@ -109,7 +109,6 @@ public class ReaderHistory {
                         }
                        lines.put(key,h);
                     }
-
                 }
             return k;
         }

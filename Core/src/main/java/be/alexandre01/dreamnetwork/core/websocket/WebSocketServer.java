@@ -16,9 +16,10 @@ public class WebSocketServer extends Thread{
    private String secretKey;
 
     // using netty
-    public WebSocketServer(int port, String host) {
+    public WebSocketServer(int port, String host,String token) {
         this.port = port;
         this.host = host;
+        this.secretKey = token;
     }
 
     @Override
@@ -26,7 +27,7 @@ public class WebSocketServer extends Thread{
         EventLoopGroup bossGroup = new NioEventLoopGroup(1);
         EventLoopGroup workerGroup = new NioEventLoopGroup(1);
         try {
-            new WebSocketServerInitializer(bossGroup, workerGroup, port, host).run();
+            new WebSocketServerInitializer(bossGroup, workerGroup, port, host,secretKey).run();
         } catch (Exception e) {
             e.printStackTrace();
         }

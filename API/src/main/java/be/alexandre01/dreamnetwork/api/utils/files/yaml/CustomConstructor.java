@@ -28,12 +28,13 @@ class CustomConstructor extends Constructor {
         protected Object constructJavaBean2ndStep(MappingNode node, Object object) {
 
             if (!ignorePatch) {
-                Class type = node.getType();
+               // Class type = node.getType();
+
 
                // System.out.println("Construct object " + node.getNodeId().name());
 
                 for (NodeTuple n : node.getValue()) {
-                 //   System.out.println("Construct object " + n.getKeyNode());
+                    //System.out.println("Construct object " + n.getKeyNode());
                     if (n.getKeyNode() instanceof ScalarNode) {
 
                         ScalarNode scalarNode = (ScalarNode) n.getKeyNode();

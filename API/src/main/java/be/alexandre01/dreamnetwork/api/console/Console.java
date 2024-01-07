@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.api.console.formatter.IFormatter;
 import be.alexandre01.dreamnetwork.api.console.history.ReaderHistory;
 import be.alexandre01.dreamnetwork.api.console.language.ILanguageManager;
+import be.alexandre01.dreamnetwork.api.utils.buffers.FixedSizeRingBuffer;
 import lombok.Getter;
 import lombok.Setter;
 import org.jline.builtins.Completers;
@@ -17,10 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -127,8 +125,8 @@ public class Console {
         //reload();
     }
 
-    private final ArrayList<ConsoleMessage> history;
-    private int historySize;
+    private final FixedSizeRingBuffer<ConsoleMessage> history;
+    //private int historySize;
     public static String defaultConsole;
     public boolean isDebug = false;
     public static String actualConsole;
@@ -198,7 +196,7 @@ public class Console {
             console.defaultPrint.println(Console.getFromLang("console.changed", console.getName()+"/"+ConsoleThread.instance)+Colors.RESET);
         if(!console.history.isEmpty()){
             if(console.defaultPrint != null){
-                List<ConsoleMessage> h = new ArrayList<>(console.history);
+                ConsoleMessage[] h = console.history.getTable();
                 //  stashLine();
                 for (ConsoleMessage s : h){
                     if(s.level == null){
@@ -497,7 +495,8 @@ public class Console {
         return iConsole;
     }
     public Console(String name){
-        this.history = new ArrayList<>();
+        int historySize = DNUtils.get().getConfigManager().getGlobalSettings().getHistorySize();
+        this.history = new FixedSizeRingBuffer<ConsoleMessage>(new ConsoleMessage[historySize]);
         this.name = name;
         //a faire attention
         if(DNCoreAPI.getInstance() != null)
@@ -601,7 +600,7 @@ public class Console {
         }*/
         return IConsoleReader.getReader().readLine();
     }
-    public ArrayList<ConsoleMessage> getHistory() {
+    public FixedSizeRingBuffer<ConsoleMessage> getHistory() {
         return history;
     }
     public void refreshHistory(String data,Level lvl){
@@ -609,24 +608,16 @@ public class Console {
         if(lvl.equals(Level.FINE) && !DNUtils.get().getConfigManager().isDebug()){
             return;
         }
-        if(historySize >= configManager.getGlobalSettings().getHistorySize()){
-            history.remove(0);
-            historySize--;
-        }
         //debugPrint("history >> "+data);
 
-        history.add(new ConsoleMessage(data,lvl));
-        historySize += data.length();
+        history.fill(new ConsoleMessage(data,lvl));
+       // historySize += data.length();
     }
     public void refreshHistory(String data){
         IConfigManager configManager = DNUtils.get().getConfigManager();
-        if(historySize >= configManager.getGlobalSettings().getHistorySize()){
-            history.remove(0);
-            historySize--;
-        }
         // debugPrint("history >> "+data);
-        history.add(new ConsoleMessage(data));
-        historySize += data.length();
+        history.fill(new ConsoleMessage(data));
+      //  historySize += data.length();
     }
     public String readLineTimeout(BufferedReader reader, long timeout) throws TimeoutException, IOException {
         long start = System.currentTimeMillis();

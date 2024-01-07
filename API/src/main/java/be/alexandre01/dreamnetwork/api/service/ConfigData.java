@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.api.service;
 
 
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.CanBeNull;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.Ignore;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.SkipInitCheck;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.Optional;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ConfigData implements Serializable {
-    protected String defaultName = null;
+    @CanBeNull protected String defaultName = null;
     @Ignore
     protected String name;
     @Ignore protected String bundleName;
