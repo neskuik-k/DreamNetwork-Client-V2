@@ -4,14 +4,18 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.commands.sub.SubCommand;
 import be.alexandre01.dreamnetwork.api.commands.sub.types.CustomType;
+import be.alexandre01.dreamnetwork.api.config.WSSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketRun;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketServer;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.WebSessionManager;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.frames.OverViewFrame;
 import lombok.NonNull;
+
+import java.util.Optional;
 
 import static be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder.create;
 
@@ -40,6 +44,11 @@ public class Open extends SubCommand {
 
             if(args.length > 2){
                 port = Integer.parseInt(args[2]);
+            }else {
+                Optional<WSSettings> settings = YamlFileUtils.getStaticFile(WSSettings.class);
+                if(settings.isPresent()){
+                    port = settings.get().getPort();
+                }
             }
 
             new WebSocketServer(port, "localhost",token).start();

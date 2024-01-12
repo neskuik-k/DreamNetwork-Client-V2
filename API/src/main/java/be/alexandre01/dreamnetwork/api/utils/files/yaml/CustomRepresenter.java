@@ -4,6 +4,8 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import lombok.Getter;
 import lombok.Setter;
 import org.yaml.snakeyaml.DumperOptions;
+import org.yaml.snakeyaml.introspector.FieldProperty;
+import org.yaml.snakeyaml.introspector.GenericProperty;
 import org.yaml.snakeyaml.introspector.Property;
 import org.yaml.snakeyaml.nodes.NodeTuple;
 import org.yaml.snakeyaml.nodes.Tag;
@@ -86,11 +88,28 @@ public class CustomRepresenter extends Representer {
                 isFinded = true;
                 break;
             }
+            // check if boolean
+            System.out.println(property.getType() + " " + field.getType() + "> " + property.getName() + " " + field.getName());
+            if(property.getType().equals(boolean.class) || property.getType().equals(Boolean.class)){
+                //System.out.println("Finded field "+field.getName()+" because it's equals to "+property.getName());
+                String name = property.getName();
+                name = name.substring(0, 1).toUpperCase() + name.substring(1);
+                name = "is"+name;
+                System.out.println("Finded field "+field.getName()+" because it's equals to "+name +" ?");
+                System.out.println(property.getClass());
+
+                if (field.getName().equals(name)) {
+                    //System.out.println("Finded field "+field.getName()+" because it's equals to "+property.getName());
+                    isFinded = true;
+                    property = new CustomFieldProperty(field,name);
+                    break;
+                }
+            }
             //break;
         }
 
         if (!isFinded) {
-            Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), "classname"));
+            Console.fine(Console.getFromLang("core.utils.yaml.ignoreFieldNotFound", property.getName(), CustomRepresenter.class.getName()));
             return null;
         }
         if (obj.getClass().equals(property.getType())) {

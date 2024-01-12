@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
+import be.alexandre01.dreamnetwork.api.config.WSSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.core.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.service.IExecutor;
@@ -96,6 +97,7 @@ public class Main {
         }
 
 
+
         languageManager = new LanguageManager();
         if(!languageManager.load()){
             // Fetch fail, can't use messages
@@ -163,7 +165,11 @@ public class Main {
             }
 
         }
-
+        Optional<WSSettings> wsSettings = WSSettings.load();
+        if(!wsSettings.isPresent()){
+            System.out.println("Can't load websocket settings");
+            System.exit(1);
+        }
         cdnFiles = new CDNFiles();
         cdnFiles.start();
 

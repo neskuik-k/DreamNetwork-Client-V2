@@ -26,6 +26,15 @@ public class YamlFileUtils<T> {
     final transient private List<String> annotations = new ArrayList<>();
     transient private Class<T> clazz;
     @Setter transient private Class toLoad;
+    static HashMap<Class<?>,Object> staticFiles = new HashMap<>();
+    public static <T> Optional<T> getStaticFile(Class<T> clazz){
+        return Optional.ofNullable((T) staticFiles.get(clazz));
+    }
+
+    public static <T> T setStatic(Class<T> clazz, T fileUtils){
+        staticFiles.put(clazz,fileUtils);
+        return fileUtils;
+    }
 
     transient private T obj;
     transient @Getter File file;
@@ -151,6 +160,9 @@ public class YamlFileUtils<T> {
                     // is static
                     if(Modifier.isStatic(field.getModifiers())) continue;
 
+                    if(skipNull && !field.isAnnotationPresent(CannotBeNull.class)) continue;
+
+
 
                     //  System.out.println(field.getName());
                    // System.out.println(c.getSettedFields());
@@ -217,8 +229,18 @@ public class YamlFileUtils<T> {
         }
     }
 
-    public Optional<T> init(File file, boolean skipNull){
+    public Optional<T> init(File file, boolean skipNull ){
         return init(file,skipNull,false);
+    }
+
+    public Optional<T> initStatic(File file,boolean skipNull, boolean ignorePatch){
+         Optional<T> loaded = init(file,skipNull,ignorePatch);
+         loaded.ifPresent(t -> setStatic(clazz,t));
+         return loaded;
+    }
+
+    public Optional<T> initStatic(File file,boolean skipNull){
+         return initStatic(file,skipNull,false);
     }
 
 

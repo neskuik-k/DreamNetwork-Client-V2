@@ -19,10 +19,8 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
+import java.util.concurrent.*;
+import java.util.function.Consumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.LogRecord;
@@ -50,6 +48,18 @@ public class Console {
     }
     public static String getEmoji(String emoji, String ifNot){
         return DNUtils.get().getConfigManager().getLanguageManager().getEmojiManager().getEmoji(emoji,ifNot);
+    }
+
+    public static CompletableFuture<String[]> getFutureInput(){
+        CompletableFuture<String[]> completableFuture = new CompletableFuture<>();
+        Console.getCurrent().addOverlay(new Overlay() {
+            @Override
+            public void on(String data) {
+                completableFuture.complete(data.split(" "));
+                disable();
+            }
+        });
+        return completableFuture;
     }
     public static String getEmoji(String emoji){
         return getEmoji(emoji,"");
@@ -285,8 +295,6 @@ public class Console {
     }
 
     public static void print(Object s, Level level){
-        LineReader consoleReader  = DNUtils.get().getConsoleManager().getConsoleReader().getSReader();
-
 
         if(!instances.containsKey("m:default")){
             LineReader lineReader = DNUtils.get().getConsoleManager().getConsoleReader().getSReader();

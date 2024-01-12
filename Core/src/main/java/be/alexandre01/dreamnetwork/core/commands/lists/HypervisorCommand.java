@@ -2,10 +2,7 @@ package be.alexandre01.dreamnetwork.core.commands.lists;
 
 import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor.Connect;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor.Open;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor.Reload;
-import be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor.Set;
+import be.alexandre01.dreamnetwork.core.commands.lists.sub.hypervisor.*;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 
 
@@ -18,6 +15,7 @@ public class HypervisorCommand extends Command {
         addSubCommand("set",new Set(this));
         addSubCommand("connect",new Connect(this));
         addSubCommand("open",new Open(this));
+        addSubCommand("ssl",new Ssl(this));
     }
     @Override
     public String getBaseColor() {

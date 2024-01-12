@@ -22,7 +22,7 @@ public class HttpFilter extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-        String remoteAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostName();
+        String remoteAddress = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
         if (whitelist.contains(remoteAddress)) {
             // IP is whitelisted, proceed with the connection*
             System.out.println("IP whitelisted : " + remoteAddress);
@@ -30,6 +30,8 @@ public class HttpFilter extends ChannelInboundHandlerAdapter {
         } else {
             // IP is not whitelisted, close the connection
             System.out.println("IP not whitelisted : " + remoteAddress);
+            System.out.println(((InetSocketAddress) ctx.channel().remoteAddress()).getHostString());
+            System.out.println(((InetSocketAddress) ctx.channel().remoteAddress()).getHostName());
             super.channelActive(ctx);
             //ctx.close();
         }
