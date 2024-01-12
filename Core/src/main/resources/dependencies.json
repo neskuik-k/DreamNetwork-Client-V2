@@ -71,11 +71,6 @@
       "url": "https://repo1.maven.org/maven2/org/yaml/snakeyaml/2.2/snakeyaml-2.2.jar"
     },
     {
-      "path": "ch/qos/logback/logback-classic",
-      "version": "1.3.14",
-      "url": "https://repo1.maven.org/maven2/ch/qos/logback/logback-classic/1.3.14/logback-classic-1.3.14.jar"
-    },
-    {
       "path": "org/jline/jline",
       "version": "3.21.0",
       "url": "https://repo1.maven.org/maven2/org/jline/jline/3.21.0/jline-3.21.0.jar"
@@ -109,6 +104,11 @@
       "path": "org/slf4j/slf4j-api",
       "version": "2.0.11",
       "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.11/slf4j-api-2.0.11.jar"
+    },
+    {
+      "path": "org/slf4j/slf4j-nop",
+      "version": "2.0.11",
+      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/2.0.11/slf4j-nop-2.0.11.jar"
     },
     {
       "path": "org/reactivestreams/reactive-streams",
