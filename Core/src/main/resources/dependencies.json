@@ -111,11 +111,6 @@
       "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-api/2.0.11/slf4j-api-2.0.11.jar"
     },
     {
-      "path": "org/slf4j/slf4j-nop",
-      "version": "2.0.11",
-      "url": "https://repo1.maven.org/maven2/org/slf4j/slf4j-nop/2.0.11/slf4j-nop-2.0.11.jar"
-    },
-    {
       "path": "org/reactivestreams/reactive-streams",
       "version": "1.0.4",
       "url": "https://repo1.maven.org/maven2/org/reactivestreams/reactive-streams/1.0.4/reactive-streams-1.0.4.jar"
