@@ -256,12 +256,6 @@ public class Main {
                         }
                         isReady = true;
 
-                        if(getGlobalSettings().isSIG_IGN_Handler()){
-                            if(!Config.isWindows()){
-                                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
-                                Runtime.getRuntime().exec(defSIGKILL);
-                            }
-                        }
 
                         Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
                         outputStream.println(Console.getFromLang("main.shutdown"));

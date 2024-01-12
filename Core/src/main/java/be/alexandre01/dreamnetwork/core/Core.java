@@ -305,7 +305,16 @@ public class Core {
 
 
 
-
+        if(Main.getGlobalSettings().isSIG_IGN_Handler()){
+            if(!Config.isWindows()){
+                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                try {
+                    Runtime.getRuntime().exec(defSIGKILL);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
         ConsoleThread.resetAndRun();
     }
 
