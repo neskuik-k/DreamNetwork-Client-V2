@@ -51,7 +51,13 @@ public class HTTPInitializer extends ChannelInitializer<SocketChannel> {
     SslContext sslContext = null;
     public HTTPInitializer(WebSocketServerInitializer initializer)   {
         this.initializer = initializer;
-        Optional<AutoReadSSL> currentSSL = AutoReadSSL.getCurrentSSL();
+        Optional<AutoReadSSL> currentSSL = Optional.empty();
+        try {
+           currentSSL = AutoReadSSL.getCurrentSSL();
+        }catch (Exception e){
+            // ignore
+        }
+
         if(currentSSL.isPresent()){
            try {
                sslContext = currentSSL.get().read();

@@ -197,9 +197,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                     coreHandler.getResponses().add(new BaseReceiver());
                     coreHandler.getResponses().add(new PacketRequestConverter());
                     coreHandler.getResponses().add(new PlayerReceiver());
-                    if(newClient == null){
-                        return;
-                    }
+
                     if (newClient.getJvmType() == null) {
                         Console.printLang("connection.core.communication.unrecognizedClient", newClient.getInfo());
                         return;
@@ -210,7 +208,6 @@ public class AuthentificationReceiver extends CoreReceiver {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
-
                                         Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
@@ -238,7 +235,8 @@ public class AuthentificationReceiver extends CoreReceiver {
                             String server = newClient.getJvmService().getFullName();
                             devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
                         }
-                       coreHandler.getAllowedCTX().add(ctx);
+                        sendNewServerToAll(newClient,null);
+                        coreHandler.getAllowedCTX().add(ctx);
                     }
                     if (newClient.getJvmType().equals(JVMContainer.JVMType.SERVER)) {
                         newClient.getRequestManager().sendRequest(RequestType.SERVER_HANDSHAKE_SUCCESS);
@@ -267,33 +265,8 @@ public class AuthentificationReceiver extends CoreReceiver {
                         List<String> servers = new ArrayList<>();
 
 
+                        sendNewServerToAll(newClient,servers);
 
-                        for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getExecutors()) {
-                            String type = jvmExecutor.isProxy() ? "p" : "s";
-
-                            //services démarrés
-                            if (!jvmExecutor.getServices().isEmpty()) {
-                                for (IService service : jvmExecutor.getServices()) {
-
-                                    if (service.getClient() != null) {
-                                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getFullIndexedName()+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
-                                        //System.out.println(service.);
-
-                                        // add servers (if not proxy)
-                                        if(!jvmExecutor.isProxy()){
-                                            service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
-                                        }
-
-                                        servers.add(service.getFullName() +";"+ newClient.getJvmService().getFullIndexedName() +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
-                                    }
-                                }
-                            } else {
-                                //services non démarrés
-                                if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
-                                    servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getFullIndexedName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
-                                }
-                            }
-                        }
                         for (ExternalClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
                             String server = newClient.getJvmService().getFullName();
                             if (devtools != null)
@@ -325,6 +298,37 @@ public class AuthentificationReceiver extends CoreReceiver {
                     devToolsCheck(requestInfo, message, ctx, ctxs);
                 }
             }
+    }
+
+    public void sendNewServerToAll(ServiceClient newClient, List<String> servers){
+        for (IExecutor jvmExecutor : Core.getInstance().getJvmContainer().getExecutors()) {
+            String type = jvmExecutor.isProxy() ? "p" : "s";
+
+            //services démarrés
+            if (!jvmExecutor.getServices().isEmpty()) {
+                for (IService service : jvmExecutor.getServices()) {
+
+                    if (service.getClient() != null) {
+                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getFullIndexedName()+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
+                        //System.out.println(service.);
+
+                        // add servers (if not proxy)
+                        if(!jvmExecutor.isProxy()){
+                            service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
+                        }
+                        if(servers != null)
+                            servers.add(service.getFullName() +";"+ newClient.getJvmService().getFullIndexedName() +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
+                    }
+                }
+            } else {
+                //services non démarrés
+                if(servers != null){
+                    if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
+                        servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getFullIndexedName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
+                    }
+                }
+            }
+        }
     }
 
     public void devToolsCheck(RequestInfo requestInfo, Message message, ChannelHandlerContext ctx, ArrayList<ChannelHandlerContext> ctxs){
