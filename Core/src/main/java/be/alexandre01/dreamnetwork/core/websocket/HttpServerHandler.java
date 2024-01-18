@@ -63,6 +63,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("Content-Length : " + headers.get("Content-Length"));
             System.out.println(headers.toString());
             if(!headers.contains("Sec-WebSocket-Protocol")){
+                System.out.println("Close");
                 ctx.close();
                 return;
             }

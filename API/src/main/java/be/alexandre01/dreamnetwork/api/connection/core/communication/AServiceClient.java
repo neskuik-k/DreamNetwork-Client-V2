@@ -27,7 +27,7 @@ public abstract class AServiceClient extends UniversalConnection {
 
     public abstract ICoreHandler getCoreHandler();
 
-    public abstract IService getJvmService();
+    public abstract IService getService();
 
     public abstract IClientManager getClientManager();
 

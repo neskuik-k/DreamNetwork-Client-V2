@@ -13,13 +13,20 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
+import lombok.Getter;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public interface IExecutor {
+
+
+    ExecutorCallbacks getGlobalCallbacks();
 
 
     //LINUX ONLY
@@ -88,6 +95,7 @@ public interface IExecutor {
     public ExecutorCallbacks startServers(int i, IConfig jvmConfig);
     public ExecutorCallbacks startServers(int i, String profile);
     public default void removeService(IService service){
+        service.getStopsCallbacks().forEach(Runnable::run);
         service.getExecutorCallbacks().ifPresent(executorCallbacks -> {
             if(!service.isConnected()){
                 if(executorCallbacks.onFail != null){
@@ -150,9 +158,43 @@ public interface IExecutor {
 
     public boolean hasExecutable();
 
+    default void onNewServiceStart(ExecutorCallbacks.ICallbackStart callback){
+        getGlobalCallbacks().whenStart(callback);
+    }
+
+    default void onServiceStop(ExecutorCallbacks.ICallbackStop callback){
+        getGlobalCallbacks().whenStop(callback);
+    }
+
+    default void onServiceConnect(ExecutorCallbacks.ICallbackConnect callback){
+        getGlobalCallbacks().whenConnect(callback);
+    }
+
+    default void onServiceFail(ExecutorCallbacks.ICallbackFail callback){
+        getGlobalCallbacks().whenFail(callback);
+    }
+
+    default void removeCallback(Object... callbacks){
+        for (Object callback : callbacks) {
+            if(callback instanceof ExecutorCallbacks.ICallbackStart){
+                getGlobalCallbacks().onStart.remove(callback);
+            }else if(callback instanceof ExecutorCallbacks.ICallbackStop){
+                getGlobalCallbacks().onStop.remove(callback);
+            }else if(callback instanceof ExecutorCallbacks.ICallbackConnect){
+                getGlobalCallbacks().onConnect.remove(callback);
+            }else if(callback instanceof ExecutorCallbacks.ICallbackFail){
+                getGlobalCallbacks().onFail.remove(callback);
+            }
+        }
+    }
+
+
+
+
     @JsonIgnore public BundleData getBundleData();
 
     @JsonIgnore public String getFullName();
+
 
 
 

@@ -7,7 +7,6 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import org.jline.builtins.Completers;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 public class ScreensNode extends CustomType {
@@ -20,10 +19,10 @@ public class ScreensNode extends CustomType {
             values = screens.stream().map(iScreen -> {
                 IService service = iScreen.getService();
                 String color;
-                if(service == null || service.getJvmExecutor() == null){
+                if(service == null || service.getExecutor() == null){
                     return iScreen.getScreenName();
                 }
-                if(service.getJvmExecutor().isProxy()){
+                if(service.getExecutor().isProxy()){
                     color = Colors.RED;
                 }else {
                     color = Colors.CYAN;

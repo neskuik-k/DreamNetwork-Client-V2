@@ -37,15 +37,14 @@ import lombok.Setter;
 import lombok.Synchronized;
 import org.apache.commons.lang3.RandomStringUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -55,6 +54,7 @@ import java.util.stream.Collectors;
 @Getter()
 @Setter
 public class JVMExecutor extends JVMStartupConfig implements IExecutor {
+    @Getter final ExecutorCallbacks globalCallbacks = new ExecutorCallbacks();
     @JsonIgnore
     @Getter
     private static ArrayList<String> startServerList = new ArrayList<>();
@@ -100,6 +100,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     @JsonIgnore
     @Getter(AccessLevel.NONE)
     JVMProfiles jvmProfiles = new JVMProfiles();
+
+
 
     public JVMExecutor(String pathName, String name, Mods type, String xms, String xmx, int port, boolean proxy, boolean updateFile, BundleData bundleData,String customName) {
         super(pathName, name, type, xms, xmx, port, proxy, updateFile,customName);
@@ -277,6 +279,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
                     if (callbacks.onFail != null)
                         callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                 }
+                if(getGlobalCallbacks().onFail != null)
+                    getGlobalCallbacks().onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                 if (!queue.isEmpty()) {
                     //get first insered of linkedhashmap
                     Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
@@ -388,6 +392,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
                                     if (callbacks.onFail != null)
                                         callbacks.onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                                 }
+                                if(getGlobalCallbacks().onFail != null)
+                                    getGlobalCallbacks().onFail.forEach(ExecutorCallbacks.ICallbackFail::whenFail);
                                 if (!queue.isEmpty()) {
                                     Tuple<IConfig, ExecutorCallbacks> renew = queue.get(0);
                                     startJVM(renew);
@@ -717,7 +723,7 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
 
             JVMService.JVMServiceBuilder builder = JVMService.builder()
                     .process(proc)
-                    .jvmExecutor(this)
+                    .executor(this)
                     .id(servers)
                     .port(port)
                     .xms(jvmConfig.getXms())
@@ -753,6 +759,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
                 }
                 callbacks.setJvmService(jvmService);
             }
+            if(getGlobalCallbacks().onStart != null)
+                getGlobalCallbacks().onStart.forEach(iCallbackStart -> iCallbackStart.whenStart(jvmService));
 
 
             jvmServices.put(servers, jvmService);
@@ -807,6 +815,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
 
     @Override
     public void removeService(IService jvmService) {
+        if(getGlobalCallbacks().onStop != null)
+            getGlobalCallbacks().onStop.forEach(iCallbackStop -> iCallbackStop.whenStop(jvmService));
         Core.getInstance().getServicesIndexing().unregisterService(jvmService);
 
         if (jvmService.isConnected() && jvmService.getProcess().isAlive()) {
@@ -825,7 +835,7 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
             jvmService.getProcess().destroy();
         }
 
-        if(jvmService.getJvmExecutor().isProxy()){
+        if(jvmService.getExecutor().isProxy()){
             Core.getInstance().getServicePlayersManager().getPlayersMap().clear();
         }
 
@@ -910,6 +920,7 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     public IStartupConfig getStartupConfig() {
         return this;
     }
+
 
     @Override
     public String getFullName() {

@@ -78,7 +78,7 @@ public class ProcessScreenStream implements IScreenStream {
         if(screen.getService() instanceof JVMService){
             reader = new BufferedInputStream(screen.getService().getProcess().getInputStream());
             screenInReader = new ProcessScreenInReader(console,screen.getService(),reader,screen);
-            screen.getService().getJvmExecutor().getExecType().ifPresent(execType -> {
+            screen.getService().getExecutor().getExecType().ifPresent(execType -> {
                 if(execType == ExecType.BUNGEECORD){
                     screenInReader.getReaderLines().add(new BungeeCordReader());
                 }

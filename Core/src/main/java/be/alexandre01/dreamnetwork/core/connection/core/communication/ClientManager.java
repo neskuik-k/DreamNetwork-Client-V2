@@ -52,7 +52,7 @@ public class ClientManager implements IClientManager {
             }
             clientByPort.put(client.getPort(),client);
         }else {
-            jvmService = client.getJvmService();
+            jvmService = client.getService();
             if(jvmService == null){
                 Console.print("A external service tried to connect but there is a problem",Level.SEVERE);
                 client.getChannelHandlerContext().channel().close();
@@ -66,7 +66,7 @@ public class ClientManager implements IClientManager {
         serviceClients.put(jvmService.getFullName(),client);
         clientsByConnection.put(client.getChannelHandlerContext(),client);
         if(client instanceof ServiceClient){
-            ((ServiceClient) client).setJvmService(jvmService);
+            ((ServiceClient) client).setService(jvmService);
         }
         jvmService.setClient(client);
         client.setClientManager(this);

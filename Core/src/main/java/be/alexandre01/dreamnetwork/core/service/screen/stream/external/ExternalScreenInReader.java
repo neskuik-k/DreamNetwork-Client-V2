@@ -57,14 +57,14 @@ public class ExternalScreenInReader implements IScreenInReader {
     @Override
     public void run() {
         VirtualService virtualService = (VirtualService) server;
-        VirtualExecutor virtualExecutor = (VirtualExecutor) server.getJvmExecutor();
+        VirtualExecutor virtualExecutor = (VirtualExecutor) server.getExecutor();
 
 
         DNCallback.single(virtualExecutor.getExternalCore().getRequestManager().getRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE, virtualService.getTrueFullName()), new TaskHandler() {
             @Override
             public void onAccepted() {
                 console.fPrint("The request to view the console has been accepted", Level.INFO);
-                virtualService.getJvmExecutor().getExternalCore().getCoreHandler().getResponses().add(coreReceiver);
+                virtualService.getExecutor().getExternalCore().getCoreHandler().getResponses().add(coreReceiver);
             }
 
             @Override
@@ -77,7 +77,7 @@ public class ExternalScreenInReader implements IScreenInReader {
     @Override
     public void stopReader() {
         VirtualService virtualService = (VirtualService) server;
-        VirtualExecutor virtualExecutor = (VirtualExecutor) server.getJvmExecutor();
+        VirtualExecutor virtualExecutor = (VirtualExecutor) server.getExecutor();
         DNCallback.single(virtualExecutor.getExternalCore().getRequestManager().getRequest(RequestType.DEV_TOOLS_VIEW_CONSOLE_MESSAGE, virtualService.getTrueFullName()), new TaskHandler() {
             @Override
             public void onAccepted() {
@@ -89,6 +89,6 @@ public class ExternalScreenInReader implements IScreenInReader {
                 Console.debugPrint("The request to stop to read the console has been rejected");
             }
         }).send();
-        virtualService.getJvmExecutor().getExternalCore().getCoreHandler().getResponses().remove(coreReceiver);
+        virtualService.getExecutor().getExternalCore().getCoreHandler().getResponses().remove(coreReceiver);
     }
 }

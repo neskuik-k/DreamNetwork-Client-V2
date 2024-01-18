@@ -12,7 +12,7 @@ import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketRun;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketServer;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.WebSessionManager;
-import be.alexandre01.dreamnetwork.core.websocket.sessions.frames.OverViewFrame;
+import be.alexandre01.dreamnetwork.core.websocket.sessions.frames.*;
 import lombok.NonNull;
 
 import java.util.Optional;
@@ -54,6 +54,16 @@ public class Open extends SubCommand {
             new WebSocketServer(port, "localhost",token).start();
             WebSessionManager.getInstance().onNewSession(session -> {
                 session.getFrameManager().addFrame("overview", new OverViewFrame(session));
+                session.getFrameManager().addFrame("players", new PlayersFrame(session));
+                session.getFrameManager().addFrame("executors", new ExecutorsFrame(session));
+                session.getFrameManager().addFrame("services", new ServicesFrame(session));
+                session.getFrameManager().addFrame("innerService", new InnerServiceFrame(session));
+                session.onRead(message -> {
+
+                    System.out.println("New message read !");
+                    System.out.println("Are you sure ?");
+                    session.getFrameManager().handleCurrentFrame(message);
+                });
             });
 
             return true;

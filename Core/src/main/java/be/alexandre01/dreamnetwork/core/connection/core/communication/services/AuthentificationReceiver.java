@@ -24,6 +24,7 @@ import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualExecutor;
 import be.alexandre01.dreamnetwork.core.connection.external.service.VirtualService;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
+import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.screen.Screen;
 import be.alexandre01.dreamnetwork.api.utils.messages.Message;
@@ -176,11 +177,18 @@ public class AuthentificationReceiver extends CoreReceiver {
                                 virtualService.setId(id);
                                 virtualService.setPort(p);
                                 virtualService.setClient((AServiceClient) client);
-                                newClient.setJvmService(virtualService);
+                                newClient.setService(virtualService);
                                 virtualService.getExecutorCallbacks().ifPresent(executorCallbacks -> {
                                     if(executorCallbacks.onConnect != null)
                                         executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(virtualService, newClient));
                                 });
+                                if(virtualExecutor.getGlobalCallbacks().onConnect != null)
+                                    virtualExecutor.getGlobalCallbacks().onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
+                                // to do next
+                                /*if(virtualExecutor instanceof JVMExecutor){
+                                    JVMExecutor jvmExecutor = (JVMExecutor) newClient.getService().getExecutor();
+                                    jvmExecutor.getOnConnect().forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
+                                }*/
                             }else {
                                 System.out.println("No bundle found");
                                 ctx.close();
@@ -208,32 +216,34 @@ public class AuthentificationReceiver extends CoreReceiver {
                             if (!service.getServices().isEmpty()) {
                                 for (IService jvmService : service.getServices()) {
                                     if (jvmService.getClient() != null) {
-                                        Console.printLang("connection.core.communication.recoveringClient", jvmService.getJvmExecutor().getName(), jvmService.getId());
+                                        Console.printLang("connection.core.communication.recoveringClient", jvmService.getExecutor().getName(), jvmService.getId());
                                         String[] remoteAdress = jvmService.getClient().getChannelHandlerContext().channel().remoteAddress().toString().split(":");
                                         newClient.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
                                                 jvmService.getFullName(),
                                                 jvmService.getFullIndexedName(),
                                                 remoteAdress[0].replaceAll("/", ""),
-                                                jvmService.getPort(),jvmService.getJvmExecutor().getType().name());
+                                                jvmService.getPort(),jvmService.getExecutor().getType().name());
                                     }
                                 }
                             }
                         }
-                        Console.printLang("connection.core.communication.proxyLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                        Console.printLang("connection.core.communication.proxyLinked", newClient.getService().getExecutor().getFullName(), newClient.getService().getId());
+                        newClient.getService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
                             if(executorCallbacks.onConnect != null)
-                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getJvmService(), newClient));
+                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
                         });
+                        if(newClient.getService().getExecutor().getGlobalCallbacks().onConnect != null)
+                            newClient.getService().getExecutor().getGlobalCallbacks().onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
 
-                        if(newClient.getJvmService().getScreen() == null){
-                            new Screen(newClient.getJvmService());
-                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService());
+                        if(newClient.getService().getScreen() == null){
+                            new Screen(newClient.getService());
+                            Console.printLang("commands.service.screen.backupingService", newClient.getService().getExecutor().getFullName(), newClient.getService());
                         }
-                        this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
+                        this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getService()));
 
                         for (ExternalClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
-                            String server = newClient.getJvmService().getFullName();
-                            devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
+                            String server = newClient.getService().getFullName();
+                            devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getService().getExecutor().getType() + ";" + newClient.getService().getExecutor().isProxy() + ";true");
                         }
                         sendNewServerToAll(newClient,null);
                         coreHandler.getAllowedCTX().add(ctx);
@@ -245,22 +255,24 @@ public class AuthentificationReceiver extends CoreReceiver {
 
                         if(proxy != null){
                             proxy.getRequestManager().sendRequest(RequestType.PROXY_REGISTER_SERVER,
-                                    newClient.getJvmService().getFullName(),
-                                    newClient.getJvmService().getFullIndexedName(),
+                                    newClient.getService().getFullName(),
+                                    newClient.getService().getFullIndexedName(),
                                     remoteAdress[0].replaceAll("/", ""),
-                                    newClient.getPort(),newClient.getJvmService().getJvmExecutor().getType().name());
+                                    newClient.getPort(),newClient.getService().getExecutor().getType().name());
                         }
 
-                        Console.printLang("connection.core.communication.serverLinked", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
-                        newClient.getJvmService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
+                        Console.printLang("connection.core.communication.serverLinked", newClient.getService().getExecutor().getFullName(), newClient.getService().getId());
+                        newClient.getService().getExecutorCallbacks().ifPresent(executorCallbacks -> {
                             if(executorCallbacks.onConnect != null)
-                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getJvmService(), newClient));
+                                executorCallbacks.onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
                         });
-                        if(newClient.getJvmService().getScreen() == null){
-                            new Screen(newClient.getJvmService());
-                            Console.printLang("commands.service.screen.backupingService", newClient.getJvmService().getJvmExecutor().getFullName(), newClient.getJvmService().getId());
+                        if(newClient.getService().getExecutor().getGlobalCallbacks().onConnect != null)
+                            newClient.getService().getExecutor().getGlobalCallbacks().onConnect.forEach(iCallbackConnect -> iCallbackConnect.whenConnect(newClient.getService(), newClient));
+                        if(newClient.getService().getScreen() == null){
+                            new Screen(newClient.getService());
+                            Console.printLang("commands.service.screen.backupingService", newClient.getService().getExecutor().getFullName(), newClient.getService().getId());
                         }
-                        this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getJvmService()));
+                        this.core.getEventsFactory().callEvent(new CoreServiceLinkedEvent(this.core.getDnCoreAPI(), newClient, newClient.getService()));
 
                         List<String> servers = new ArrayList<>();
 
@@ -268,9 +280,9 @@ public class AuthentificationReceiver extends CoreReceiver {
                         sendNewServerToAll(newClient,servers);
 
                         for (ExternalClient devtools : Core.getInstance().getClientManager().getExternalTools().values()) {
-                            String server = newClient.getJvmService().getFullName();
+                            String server = newClient.getService().getFullName();
                             if (devtools != null)
-                                devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getJvmService().getJvmExecutor().getType() + ";" + newClient.getJvmService().getJvmExecutor().isProxy() + ";true");
+                                devtools.getRequestManager().sendRequest(RequestType.DEV_TOOLS_NEW_SERVERS, server + ";" + newClient.getService().getExecutor().getType() + ";" + newClient.getService().getExecutor().isProxy() + ";true");
                         }
 
                           /*  for(JVMExecutor jvmExecutor : Client.getInstance().getJvmContainer().jvmExecutorsProxy.values()){
@@ -281,7 +293,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                                 }
                             }*/
 
-                        newClient.getJvmService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, (Object[]) servers.toArray(new String[0]));
+                        newClient.getService().getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, (Object[]) servers.toArray(new String[0]));
                         // adding channels to the new service
                         DNCoreAPI.getInstance().getChannelManager().sendAllChannels(newClient);
                        coreHandler.getAllowedCTX().add(ctx);
@@ -309,7 +321,7 @@ public class AuthentificationReceiver extends CoreReceiver {
                 for (IService service : jvmExecutor.getServices()) {
 
                     if (service.getClient() != null) {
-                        String server = newClient.getJvmService().getFullName() + ";" + newClient.getJvmService().getFullIndexedName()+";"+ newClient.getJvmService().getJvmExecutor().getType().name().charAt(0) + ";t;"+type;
+                        String server = newClient.getService().getFullName() + ";" + newClient.getService().getFullIndexedName()+";"+ newClient.getService().getExecutor().getType().name().charAt(0) + ";t;"+type;
                         //System.out.println(service.);
 
                         // add servers (if not proxy)
@@ -317,14 +329,14 @@ public class AuthentificationReceiver extends CoreReceiver {
                             service.getClient().getRequestManager().sendRequest(RequestType.SERVER_NEW_SERVERS, server);
                         }
                         if(servers != null)
-                            servers.add(service.getFullName() +";"+ newClient.getJvmService().getFullIndexedName() +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
+                            servers.add(service.getFullName() +";"+ newClient.getService().getFullIndexedName() +";" + jvmExecutor.getType().name().charAt(0) + ";t;"+ type);
                     }
                 }
             } else {
                 //services non démarrés
                 if(servers != null){
                     if(jvmExecutor.isConfig() && jvmExecutor.getType() != null){
-                        servers.add(jvmExecutor.getFullName() + ";"+ newClient.getJvmService().getFullIndexedName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
+                        servers.add(jvmExecutor.getFullName() + ";"+ newClient.getService().getFullIndexedName() + ";" + jvmExecutor.getType().name().charAt(0) + ";f;"+type);
                     }
                 }
             }

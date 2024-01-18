@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.service;
 
-import at.favre.lib.crypto.bcrypt.BCrypt;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.request.DNCallback;
 import be.alexandre01.dreamnetwork.api.connection.core.request.TaskHandler;
@@ -15,6 +14,8 @@ import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import be.alexandre01.dreamnetwork.api.service.IService;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
@@ -22,10 +23,12 @@ import java.util.concurrent.ScheduledExecutorService;
 
 @Getter @Setter @Builder
 public class JVMService implements IService {
+    @Getter private final List<Runnable> stopsCallbacks = new ArrayList<>();
+    private final long startTime = System.currentTimeMillis();
     private int id;
     private int port;
     private ServiceClient client;
-    private JVMExecutor jvmExecutor;
+    private JVMExecutor executor;
     private Process process;
 
     private IExecutor.Mods type;
@@ -36,7 +39,7 @@ public class JVMService implements IService {
     private String uniqueCharactersID;
     private String customName;
     private long processID;
-    private IScreen screen = null;
+    private IScreen screen;
     private int indexingId;
     private String fullIndexedName;
 
@@ -74,7 +77,7 @@ public class JVMService implements IService {
 
     @Override
     public String getFullName() {
-        return getJvmExecutor().getFullName()+"-"+getId();
+        return getExecutor().getFullName()+"-"+getId();
     }
 
 
@@ -83,12 +86,12 @@ public class JVMService implements IService {
         if(withBundlePath){
             return getFullName();
         }
-        return getJvmExecutor().getName()+"-"+getId();
+        return getExecutor().getName()+"-"+getId();
     }
 
     @Override
     public String getName(){
-        return customName != null ? customName : getJvmExecutor().getName();
+        return customName != null ? customName : getExecutor().getName();
     }
 
 
@@ -165,7 +168,7 @@ public class JVMService implements IService {
     @Override
     public CompletableFuture<RestartResult> restart(){
         if(usedConfig == null){
-            return restart(jvmExecutor.getConfig());
+            return restart(executor.getConfig());
         }
         return restart(usedConfig);
     }
@@ -179,7 +182,7 @@ public class JVMService implements IService {
         stop().whenComplete((aBoolean, throwable) -> {
                 if(aBoolean){
                     System.out.println("Stop succeed");
-                    ExecutorCallbacks c = getJvmExecutor().startService(iConfig);
+                    ExecutorCallbacks c = getExecutor().startService(iConfig);
                     c.whenStart(new ExecutorCallbacks.ICallbackStart() {
                         @Override
                         public void whenStart(IService service) {
@@ -197,7 +200,7 @@ public class JVMService implements IService {
 
     @Override
     public synchronized void removeService() {
-        jvmExecutor.removeService(this);
+        executor.removeService(this);
     }
 
     @Override
@@ -209,4 +212,7 @@ public class JVMService implements IService {
     public Optional<ExecutorCallbacks> getExecutorCallbacks() {
         return Optional.ofNullable(executorCallbacks);
     }
+
+
+
 }

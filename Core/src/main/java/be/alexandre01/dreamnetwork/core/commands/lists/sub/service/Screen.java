@@ -80,7 +80,7 @@ public class Screen extends SubCommandCompletor implements SubCommandExecutor {
         }
         screenManager.getScreens().forEach((s, screen) -> {
 
-            if(screen.getService().getJvmExecutor().isProxy()){
+            if(screen.getService().getExecutor().isProxy()){
                 sb.append(Colors.GREEN_BOLD);
             }else {
                 sb.append(Colors.CYAN_BOLD);

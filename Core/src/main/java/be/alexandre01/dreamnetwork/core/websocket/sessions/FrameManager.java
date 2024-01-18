@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.core.commands.lists.sub.addon.List;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -14,7 +15,7 @@ import java.util.Optional;
 public class FrameManager {
     WebSession session;
     Multimap<String,Frame> frames = ArrayListMultimap.create();
-    private String currentFrame = "overview";
+    @Setter @Getter private String currentFrame = "overview";
     public FrameManager(WebSession session){
         this.session = session;
     }
@@ -33,12 +34,15 @@ public class FrameManager {
     }
 
     public void handle(String frameName,WebMessage webMessage){
+        System.out.println("Handling frame : " + frameName);
         if(frames.containsKey(frameName)){
+            System.out.println("Frame found");
             frames.get(frameName).forEach(frame -> frame.handle(webMessage));
         }
     }
 
     public void handleCurrentFrame(WebMessage webMessage){
+        System.out.println("Hmm :c");
         handle(currentFrame,webMessage);
     }
 

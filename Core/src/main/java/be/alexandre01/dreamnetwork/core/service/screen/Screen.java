@@ -1,6 +1,5 @@
 package be.alexandre01.dreamnetwork.core.service.screen;
 
-import be.alexandre01.dreamnetwork.api.DNUtils;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.events.list.screens.CoreScreenCreateEvent;
@@ -9,7 +8,6 @@ import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import be.alexandre01.dreamnetwork.api.service.screen.IScreenStream;
 import be.alexandre01.dreamnetwork.core.Core;
-import be.alexandre01.dreamnetwork.api.utils.buffers.FixedSizeRingBuffer;
 import be.alexandre01.dreamnetwork.core.service.screen.stream.internal.ProcessScreenStream;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -74,8 +72,11 @@ public class Screen extends Thread implements IScreen {
         if(Console.actualConsole.equals("s:"+screenName)){
             Console.setActualConsole("m:default");
             Console.getConsole("s:"+screenName).destroy();
-            System.out.println("The PROCESS "+service.getJvmExecutor().getName()+" has just killed himself.");
+            System.out.println("The PROCESS "+service.getExecutor().getName()+" has just killed himself.");
         }
+
+
+
         ScreenManager.instance.remScreen(this);
         //if(viewing)
         // screenStream.exit();

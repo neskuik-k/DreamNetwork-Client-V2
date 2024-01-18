@@ -18,7 +18,7 @@ public class ScreenManager implements be.alexandre01.dreamnetwork.api.service.sc
     @Getter private final ArrayList<Integer> screenIds;
     @Getter private final ArrayList<Integer> availableScreenIds;
 
-    public static ScreenManager instance;
+    @Getter  public static ScreenManager instance;
 
     public ScreenManager(){
         screens = new HashMap<>();

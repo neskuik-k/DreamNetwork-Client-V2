@@ -11,7 +11,7 @@ public class DefaultProxyRequest extends RequestBuilder {
     public DefaultProxyRequest() {
         requestData.put(RequestType.PROXY_HANDSHAKE_SUCCESS,(message, client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", ((AServiceClient)client).getJvmService().getFullName());
+            message.set("PROCESSNAME", ((AServiceClient)client).getService().getFullName());
             return message;
         });
         requestData.put(RequestType.PROXY_REGISTER_SERVER,(message,client, args) -> {

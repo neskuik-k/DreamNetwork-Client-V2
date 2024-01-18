@@ -32,7 +32,7 @@ public class WebSession {
     }
 
     public void send(WebMessage message){
-       // System.out.println("Send message : " + message.toString());
+        System.out.println("Send message : " + message.toString());
         //System.out.println("Channel : " + channelHandlerContext.channel());
         //System.out.println("Channel is open : " + channelHandlerContext.channel().isOpen());
         channelHandlerContext.channel().writeAndFlush(new TextWebSocketFrame(message.toString()));

@@ -15,7 +15,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
         Core c = Core.getInstance();
         requestData.put(RequestType.SERVER_HANDSHAKE_SUCCESS,(message,client, args) -> {
             message.set("STATUS","SUCCESS");
-            message.set("PROCESSNAME", ((AServiceClient) client).getJvmService().getFullName());
+            message.set("PROCESSNAME", ((AServiceClient) client).getService().getFullName());
             return message;
         });
         requestData.put(RequestType.SERVER_EXECUTE_COMMAND,(message,client, args) -> {
@@ -38,10 +38,10 @@ public class DefaultSpigotRequest extends RequestBuilder {
             for(Object o : args){
                 if(o instanceof Player){
                     Player p = (Player) o;
-                    if(p.getServer() == null || p.getServer().getJvmService() == null){
+                    if(p.getServer() == null || p.getServer().getService() == null){
                         continue;
                     }
-                    IService service = p.getServer().getJvmService();
+                    IService service = p.getServer().getService();
                     StringBuilder sb = new StringBuilder();
                     sb.append(p.getId()).append(";");
                     String name = service.getFullName();
@@ -67,7 +67,7 @@ public class DefaultSpigotRequest extends RequestBuilder {
 
 
         requestData.put(RequestType.SERVER_UNREGISTER_PLAYERS,(message, client, args) -> {
-            ArrayList<Integer> s = new ArrayList<>();
+            ArrayList<Long> s = new ArrayList<>();
 
             for(Object o : args){
                 if(o instanceof Player){

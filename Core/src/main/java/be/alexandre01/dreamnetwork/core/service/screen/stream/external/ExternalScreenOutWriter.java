@@ -73,7 +73,7 @@ public class ExternalScreenOutWriter implements IScreenOutWriter {
     public void writeOnConsole(String data) throws IOException {
         if(screen.getService() instanceof VirtualService){
             VirtualService virtualService = (VirtualService) screen.getService();
-            ExternalClient externalExecutor = virtualService.getJvmExecutor().getExternalCore();
+            ExternalClient externalExecutor = virtualService.getExecutor().getExternalCore();
             externalExecutor.getRequestManager().getRequest(RequestType.DEV_TOOLS_SEND_COMMAND, virtualService.getTrueFullName(),data).dispatch();
         }
     }

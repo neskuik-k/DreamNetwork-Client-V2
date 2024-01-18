@@ -33,6 +33,7 @@ public class FrameListener implements WebSession.MessageListener {
                         if (frame instanceof FrameAbstraction) {
                             System.out.println("Frame is instanceof FrameAbstraction !");
                             FrameAbstraction frameAbstraction = (FrameAbstraction) frame;
+                            session.getFrameManager().setCurrentFrame(frameName);
                             frameAbstraction.execEnter();
                         }
                     }));
@@ -41,6 +42,7 @@ public class FrameListener implements WebSession.MessageListener {
                     session.getFrameManager().getFrame(frameName).ifPresent(frames -> frames.forEach(frame -> {
                         if (frame instanceof FrameAbstraction) {
                             FrameAbstraction frameAbstraction = (FrameAbstraction) frame;
+                            session.getFrameManager().setCurrentFrame(null);
                             frameAbstraction.execLeave();
                         }
                     }));

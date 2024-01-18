@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.*;
 
 public class VirtualExecutor  implements IExecutor {
+    @Getter final ExecutorCallbacks globalCallbacks = new ExecutorCallbacks();
     ConfigData configData;
     BundleData bundleData;
     HashMap<Integer,IService> serviceList = new HashMap<>();

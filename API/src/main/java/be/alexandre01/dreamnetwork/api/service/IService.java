@@ -5,6 +5,7 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
@@ -25,7 +26,7 @@ public interface IService {
     IExecutor.Mods getType();
     AServiceClient getClient();
     boolean isConnected();
-    IExecutor getJvmExecutor();
+    IExecutor getExecutor();
 
     String getFullName();
     String getFullName(boolean withBundlePath);
@@ -45,6 +46,20 @@ public interface IService {
 
     void setClient(AServiceClient client);
     Optional<ExecutorCallbacks> getExecutorCallbacks();
+
+    long getStartTime();
+    default long getElapsedTime(){
+        return System.currentTimeMillis() - getStartTime();
+    }
+
+    List<Runnable> getStopsCallbacks();
+    default void onStop(Runnable callbackStop){
+        getStopsCallbacks().add(callbackStop);
+    }
+
+    default void removeStopCallback(Runnable callbackStop){
+        getStopsCallbacks().remove(callbackStop);
+    }
 
 
     @AllArgsConstructor

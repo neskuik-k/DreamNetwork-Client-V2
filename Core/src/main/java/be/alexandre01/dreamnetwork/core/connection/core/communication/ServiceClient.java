@@ -39,7 +39,7 @@ public class ServiceClient extends AServiceClient {
 
     private final ClientRequestManager requestManager;
     @Getter private ICoreHandler coreHandler;
-    private IService jvmService;
+    private IService service;
     private IClientManager clientManager;
     private ArrayList<String> accessChannels = new ArrayList<>();
 
@@ -100,9 +100,9 @@ public class ServiceClient extends AServiceClient {
             requestManager.getRequestBuilder().addRequestBuilder(new DefaultDevToolRequest());
         }
     }
-    public void setJvmService(IService iService){
+    public void setService(IService iService){
         this.name = "ServiceClient="+ iService.getFullName();
-        this.jvmService = iService;
+        this.service = iService;
     }
 
     @Override

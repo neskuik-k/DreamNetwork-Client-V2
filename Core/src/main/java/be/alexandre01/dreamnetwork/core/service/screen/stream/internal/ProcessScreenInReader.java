@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.core.service.screen.stream.internal;
 
 
 import be.alexandre01.dreamnetwork.api.config.Config;
-import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.UniversalConnection;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
@@ -55,7 +54,7 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
 
         if(Main.getGlobalSettings().isLoggingService()){
             try {
-                File file = new File(Config.getPath("logs/"+server.getJvmExecutor().getFullName()));
+                File file = new File(Config.getPath("logs/"+server.getExecutor().getFullName()));
                 if(!file.exists()){
                     file.mkdirs();
                 }
@@ -99,7 +98,7 @@ public class ProcessScreenInReader extends Thread implements IScreenInReader {
                     name += "-"+screen.getService().getUniqueCharactersID().get();
                 }
                 //System.out.println(Config.getPath("logs/"+server.getFullName()+"/"+name+".log"));
-                fileHandler = new FileHandler(Config.getPath("logs/"+server.getJvmExecutor().getFullName()+"/"+name+".log"));
+                fileHandler = new FileHandler(Config.getPath("logs/"+server.getExecutor().getFullName()+"/"+name+".log"));
                 fileHandler.setLevel(Level.ALL);
                 fileHandler.setFormatter(new SimpleFormatter());
             }catch (Exception e){

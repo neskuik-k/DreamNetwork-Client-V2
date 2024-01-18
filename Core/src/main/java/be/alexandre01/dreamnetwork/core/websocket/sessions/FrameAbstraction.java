@@ -20,6 +20,7 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
 
 
 
+
     public FrameAbstraction(WebSession session, String frameName) {
         this.session = session;
         this.frameName = frameName;
@@ -56,7 +57,7 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
 
     public void onLeave(){}
 
-    public void setRefreshRate(long refreshRate){
+    public void setUpdateRate(long refreshRate){
         runTask(this::refresh, refreshRate);
     }
 
@@ -65,7 +66,6 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
 
         executorServices.add(scheduledExecutorService);
         scheduledExecutorService.scheduleAtFixedRate(runnable, 0, refreshRate, java.util.concurrent.TimeUnit.MILLISECONDS);
-
     }
 
     public void refresh(){}

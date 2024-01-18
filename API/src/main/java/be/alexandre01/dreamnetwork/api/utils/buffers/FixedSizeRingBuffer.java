@@ -116,6 +116,26 @@ public class FixedSizeRingBuffer<T> implements Iterable<T>, Cloneable {
         return Optional.ofNullable(table[index-1]);
     }
 
+    public void replaceLast(T value){
+        if(isFullFilled){
+            table[index-2] = value;
+        }else {
+            table[index-1] = value;
+        }
+    }
+
+    public void replaceFirst(T value){
+        if(isFullFilled){
+            table[0] = value;
+        }else {
+            table[index-1] = value;
+        }
+    }
+
+    public void replace(T value, int index){
+        table[index] = value;
+    }
+
     public static void main(String[] args) {
         //test with auto size
         System.out.println("Test with auto size");

@@ -4,8 +4,11 @@ import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.NonNull;
 
+import javax.annotation.Nullable;
 import java.util.LinkedHashMap;
+import java.util.Objects;
 
 /*
  ↬   Made by Alexandre01Dev 😎
@@ -18,7 +21,7 @@ public class WebMessage extends LinkedHashMap<String, Object> {
         this.jacksonMapper = new ObjectMapper();
     }
 
-    @Override
+    @Override @NonNull
     public WebMessage put(String key, Object value) {
         super.put(key, value);
         return this;

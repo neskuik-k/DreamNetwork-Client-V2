@@ -17,7 +17,7 @@ public class LocalHostSSL extends AutoReadSSL {
         InputStream crt = getClass().getClassLoader().getResourceAsStream("ssl/localhost.crt");
         InputStream key = getClass().getClassLoader().getResourceAsStream("ssl/localhost.key");
         try {
-            return SslContextBuilder.forServer(crt,key).build();
+            return SslContextBuilder.forServer(key,crt).build();
         } catch (SSLException e) {
             throw new RuntimeException(e);
         }

@@ -63,6 +63,7 @@ public class JVMProfiles extends YamlFileUtils<ProfilesData> implements IProfile
 
     @Override
     public HashMap<String, IConfig> getProfiles() {
+        if(profilesData == null) return null;
         return profilesData.profiles;
     }
 

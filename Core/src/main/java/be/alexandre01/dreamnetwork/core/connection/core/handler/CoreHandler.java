@@ -173,8 +173,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                     return;
                 }
 
-                if(client instanceof AServiceClient && ((AServiceClient) client).getJvmService() != null){
-                    fine(Colors.YELLOW+"Received message from " +Colors.CYAN_BOLD+ ((AServiceClient)client).getJvmService().getFullName() + " : " +Colors.RESET+ message.toString());
+                if(client instanceof AServiceClient && ((AServiceClient) client).getService() != null){
+                    fine(Colors.YELLOW+"Received message from " +Colors.CYAN_BOLD+ ((AServiceClient)client).getService().getFullName() + " : " +Colors.RESET+ message.toString());
                 }else {
                     fine(Colors.YELLOW+"Received message from an "+Colors.CYAN_BOLD+"NON-SERVICE-CLIENT -> " + client.getName()+"/"+ctx.channel().remoteAddress().toString().split(":")[0] + " : " + Colors.RESET+message.toString());
                 }
@@ -187,8 +187,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                             Console.print("Receiver "+ message.getReceiver()+" is unknown");
                             return;
                         }
-                        if(provider.getJvmService() != null){
-                            message.setProvider(provider.getJvmService().getFullName());
+                        if(provider.getService() != null){
+                            message.setProvider(provider.getService().getFullName());
                            // System.out.println("Provider : "+message.getProvider());
                         }
                         receiver.writeAndFlush(message);
@@ -247,7 +247,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 UniversalConnection client = clientByConnection.get(ctx);
                 if(client instanceof AServiceClient){
                     AServiceClient serviceClient = (AServiceClient) clientByConnection.get(ctx);
-                    IService jvmService = serviceClient.getJvmService();
+                    IService jvmService = serviceClient.getService();
                     name = null;
                     if (jvmService != null) {
                         name = jvmService.getFullName();
@@ -275,7 +275,7 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
 
             if (client instanceof AServiceClient) {
                 AServiceClient serviceClient = (AServiceClient) client;
-                String server = serviceClient.getJvmService().getFullName();
+                String server = serviceClient.getService().getFullName();
                 for (AServiceClient c : Core.getInstance().getClientManager().getServiceClients().values()) {
                     if (c.getJvmType() == JVMContainer.JVMType.SERVER) {
                         c.getRequestManager().sendRequest(RequestType.SERVER_REMOVE_SERVERS, server);
@@ -292,9 +292,9 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
                 //UNREGISTER PLAYER LISTENERS
                 Core.getInstance().getServicePlayersManager().removeUpdatingClient(serviceClient);
                 //REMOVE SERVICES
-                if (client != null && serviceClient.getJvmService() != null && !serviceClient.getJvmService().getScreen().isViewing()) {
+                if (client != null && serviceClient.getService() != null && !serviceClient.getService().getScreen().isViewing()) {
                     System.out.println("Removing service by handler");
-                    serviceClient.getJvmService().getJvmExecutor().removeService(serviceClient.getJvmService());
+                    serviceClient.getService().getExecutor().removeService(serviceClient.getService());
                 }
             }else {
                 // IF CLIENT IS EXTERNAL
@@ -341,8 +341,8 @@ public class CoreHandler extends ChannelInboundHandlerAdapter implements ICoreHa
     public void writeAndFlush(Message msg, GenericFutureListener<? extends Future<? super Void>> listener, UniversalConnection client) {
         if(client instanceof AServiceClient){
             AServiceClient serviceClient = (AServiceClient) client;
-            if (serviceClient.getJvmService() != null) {
-                fine(Colors.YELLOW + "WRITE AND FLUSH for " + serviceClient.getJvmService().getFullName() + ">> " + Colors.RESET + msg);
+            if (serviceClient.getService() != null) {
+                fine(Colors.YELLOW + "WRITE AND FLUSH for " + serviceClient.getService().getFullName() + ">> " + Colors.RESET + msg);
             } else {
                 fine(Colors.YELLOW + "WRITE AND FLUSH for UNKNOWN>> " + Colors.RESET + msg);
             }

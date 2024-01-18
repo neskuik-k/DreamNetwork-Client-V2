@@ -1,11 +1,11 @@
 package be.alexandre01.dreamnetwork.core.connection.core.players;
 
 import be.alexandre01.dreamnetwork.api.connection.core.communication.AServiceClient;
+import be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager;
 import be.alexandre01.dreamnetwork.api.connection.core.players.Player;
+import be.alexandre01.dreamnetwork.api.connection.core.players.PlayerHistory;
 import be.alexandre01.dreamnetwork.api.connection.core.players.ServicePlayersObject;
 import be.alexandre01.dreamnetwork.api.console.Console;
-import be.alexandre01.dreamnetwork.api.service.IExecutor;
-import be.alexandre01.dreamnetwork.api.service.IService;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.api.connection.core.request.RequestType;
 import com.google.common.collect.ArrayListMultimap;
@@ -15,16 +15,23 @@ import lombok.Getter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Optional;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
-public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.connection.core.players.IServicePlayersManager {
+public class ServicePlayersManager implements IServicePlayersManager {
     @Getter final HashMap<AServiceClient, ServicePlayersObject> objects = new HashMap<>();
-    @Getter final HashMap<Integer, Player> playersMap = new HashMap<>();
+    @Getter final HashMap<Long, Player> playersMap = new HashMap<>();
     @Getter final ArrayList<ServicePlayersObject> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ServicePlayersObject,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
+    @Getter final PlayerHistory minutedHistory = new PlayerHistory(new Integer[60],60000);
+    @Getter final PlayerHistory hourHistory = new PlayerHistory(new Integer[24],3600000);
+    @Getter final List<Consumer<Player>> playerJoinListeners = new ArrayList<>();
+    @Getter final List<Consumer<Player>> playerUpdateListeners = new ArrayList<>();
+    @Getter final List<Consumer<Player>> playerQuitListeners = new ArrayList<>();
+
 
     @Getter Multimap<Player, AServiceClient> isRegistered = ArrayListMultimap.create();
     Multimap<AServiceClient, Player> services = ArrayListMultimap.create();
@@ -35,9 +42,58 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     @Override
     public void registerPlayer(Player player){
         playersMap.put(player.getId(),player);
+        minutedHistory.fill(totalCount);
+        hourHistory.fill(totalCount);
+        playerJoinListeners.forEach(playerConsumer -> playerConsumer.accept(player));
         totalCount++;
     }
 
+    public void addPlayerJoinListener(Consumer<Player> consumer){
+        playerJoinListeners.add(consumer);
+    }
+
+    public void addPlayerQuitListener(Consumer<Player> consumer){
+        playerQuitListeners.add(consumer);
+    }
+
+    public void addPlayerUpdateListener(Consumer<Player> consumer){
+        playerUpdateListeners.add(consumer);
+    }
+
+    public void removePlayerJoinListener(Consumer<Player> consumer){
+        playerJoinListeners.remove(consumer);
+    }
+
+    public void removePlayerQuitListener(Consumer<Player> consumer){
+        playerQuitListeners.remove(consumer);
+    }
+
+    public void removePlayerUpdateListener(Consumer<Player> consumer){
+        playerUpdateListeners.remove(consumer);
+    }
+
+    @Override
+    public void unregisterPlayer(long id){
+        Player player = getPlayer(id);
+        if(player == null) return;
+        AServiceClient oldClient = player.getServer();
+        if(oldClient != null){
+            count.put(oldClient,count.get(oldClient)-1);
+            services.remove(oldClient,player);
+        }
+        playersMap.remove(id);
+        totalCount--;
+        minutedHistory.fill(totalCount);
+        hourHistory.fill(totalCount);
+        playerQuitListeners.forEach(playerConsumer -> playerConsumer.accept(player));
+        services.remove(player.getServer(),player);
+        for(ServicePlayersObject c : wantToBeDirectlyInformed){
+            c.getClient().getRequestManager().sendRequest(RequestType.SERVER_UNREGISTER_PLAYERS,player);
+        }
+        for(ServicePlayersObject c : wantToBeInformed.keySet()){
+            toRemove.put(c.getClient(),player);
+        }
+    }
     @Override
     public void removeUpdatingClient(AServiceClient client){
         ServicePlayersObject s = getObject(client);
@@ -77,7 +133,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
             service.scheduleAtFixedRate(() -> {
                     StringBuilder sb = new StringBuilder();
                     for(AServiceClient c : count.keySet()){
-                        sb.append(c.getJvmService().getJvmExecutor().getName()).append("-").append(c.getJvmService().getId());
+                        sb.append(c.getService().getExecutor().getName()).append("-").append(c.getService().getId());
                         sb.append(";");
                         sb.append(count.get(client));
                         a.add(sb.toString());
@@ -89,7 +145,7 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
     }
 
     @Override
-    public void udpatePlayerServer(int id, String server){
+    public void udpatePlayerServer(long id, String server){
         Player player = getPlayer(id);
 
         Core.getInstance().getServicesIndexing().getService(server).ifPresent(service -> {
@@ -104,6 +160,9 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
 
 
                 player.setServer(client);
+
+                playerUpdateListeners.forEach(playerConsumer -> playerConsumer.accept(player));
+
 
                 if(services.containsKey(client)){
                     if(!services.get(client).contains(player)){
@@ -137,26 +196,9 @@ public class ServicePlayersManager implements be.alexandre01.dreamnetwork.api.co
 
 
     @Override
-    public Player getPlayer(int id){
+    public Player getPlayer(long id){
         return playersMap.get(id);
     }
 
-    @Override
-    public void unregisterPlayer(int id){
-        Player player = getPlayer(id);
-        if(player == null) return;
-        AServiceClient oldClient = player.getServer();
-        if(oldClient != null){
-            count.put(oldClient,count.get(oldClient)-1);
-            services.remove(oldClient,player);
-        }
-        playersMap.remove(id);
-        services.remove(player.getServer(),player);
-        for(ServicePlayersObject c : wantToBeDirectlyInformed){
-            c.getClient().getRequestManager().sendRequest(RequestType.SERVER_UNREGISTER_PLAYERS,player);
-        }
-        for(ServicePlayersObject c : wantToBeInformed.keySet()){
-            toRemove.put(c.getClient(),player);
-        }
-    }
+
 }

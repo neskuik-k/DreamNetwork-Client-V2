@@ -8,22 +8,26 @@ import java.util.UUID;
 
 @Getter
 public class Player {
-    private final int id;
+    private final long id;
     @Setter private AServiceClient server;
     private final String name;
     private final UUID uuid;
+    private final long firstJoin = System.currentTimeMillis();
 
-
-    public Player(int id, String name, UUID uuid) {
+    public Player(long id, String name, UUID uuid) {
         this.id = id;
 
         this.name = name;
         this.uuid = uuid;
     }
-    public Player(int id, String name) {
+    public Player(long id, String name) {
         this.id = id;
 
         this.name = name;
         this.uuid = null;
+    }
+
+    public long getTimePlayed(){
+        return System.currentTimeMillis() - firstJoin;
     }
 }

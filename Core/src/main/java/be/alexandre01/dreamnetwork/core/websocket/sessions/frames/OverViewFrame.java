@@ -1,7 +1,9 @@
 package be.alexandre01.dreamnetwork.core.websocket.sessions.frames;
 
+import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.config.Config;
 import be.alexandre01.dreamnetwork.api.utils.messages.WebMessage;
+import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.connection.core.ByteCounting;
 import be.alexandre01.dreamnetwork.core.connection.core.ByteCountingInboundHandler;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.FrameAbstraction;
@@ -17,6 +19,7 @@ import java.nio.file.FileStore;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Objects;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.function.Consumer;
 
@@ -75,21 +78,29 @@ public class OverViewFrame extends FrameAbstraction {
         super(session, "overview");
         System.out.println("Huh !");
         setTester(new OverViewTest(this));
-        setRefreshRate(1000*5);
+
 
     }
 
     @Override
     public void onEnter() {
+        setUpdateRate(1000*5);
         System.out.println("Enter !");
         // Nothing to do here
         sendCurrentNodeStatistics();
         // sending bytes
         runTask(() -> {
-            getSession().send(new WebMessage().put("bytesINSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.INBOUND))
-                    .put("bytesOUTSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.OUTBOUND))
-                    .put("bytesINMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.INBOUND))
-                    .put("bytesOUTMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.OUTBOUND)));
+            getSession().send(Objects.requireNonNull(new WebMessage()
+                            // network
+                            .put("bytesINSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.INBOUND))
+                            .put("bytesOUTSec", ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.OUTBOUND))
+                            .put("bytesINMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.INBOUND))
+                            .put("bytesOUTMin", ByteCounting.getTotalBytesPerMinute(ByteCounting.Type.OUTBOUND))
+                            // players
+                            .put("playersMin", Core.getInstance().getServicePlayersManager().getMinutedHistory().getTable())
+                            .put("playersHour", Core.getInstance().getServicePlayersManager().getHourHistory().getTable()))
+            );
+
         },10000);
 
 
@@ -194,6 +205,8 @@ public class OverViewFrame extends FrameAbstraction {
 
         System.out.println("Sending overview frame");
         System.out.println(getSession() + " yey");
+        System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isOpen());
+        System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isActive());
         getSession().send(webMessage);
     }
 

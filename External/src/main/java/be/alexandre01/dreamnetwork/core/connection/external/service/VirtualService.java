@@ -10,10 +10,14 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class VirtualService implements IService {
+    @Getter List<Runnable> stopsCallbacks = new ArrayList<>();
+    @Getter long startTime = System.currentTimeMillis();
     @Setter int id = -1;
     @Setter int port = 0;
     AServiceClient client;
@@ -107,7 +111,7 @@ public class VirtualService implements IService {
     }
 
     @Override
-    public VirtualExecutor getJvmExecutor() {
+    public VirtualExecutor getExecutor() {
         return virtualExecutor;
     }
 
@@ -169,7 +173,7 @@ public class VirtualService implements IService {
         CompletableFuture<RestartResult> completableFuture = new CompletableFuture<>();
         stop().whenComplete((aBoolean, throwable) -> {
             if(aBoolean){
-                ExecutorCallbacks c = getJvmExecutor().startService();
+                ExecutorCallbacks c = getExecutor().startService();
                 c.whenStart(new ExecutorCallbacks.ICallbackStart() {
                     @Override
                     public void whenStart(IService service) {
@@ -220,6 +224,7 @@ public class VirtualService implements IService {
     public Optional<ExecutorCallbacks> getExecutorCallbacks() {
         return Optional.ofNullable(executorCallbacks);
     }
+
 
     public String getTrueFullName() {
         return virtualExecutor.getTrueFullName() + "-" + id;
