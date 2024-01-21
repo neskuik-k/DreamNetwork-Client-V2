@@ -34,8 +34,10 @@ public class EventsFactory {
             try {
                 method.invoke(listeners.get(method), event);
             } catch (IllegalAccessException e) {
+                System.out.println("Error while calling event "+event.getClass().getSimpleName() + " on "+ method.getDeclaringClass());
                 Console.bug(e);
             } catch (InvocationTargetException e) {
+                System.out.println("Error while calling event "+event.getClass().getSimpleName() + " on "+ method.getDeclaringClass());
                 Console.bug(e);
             }
         });
