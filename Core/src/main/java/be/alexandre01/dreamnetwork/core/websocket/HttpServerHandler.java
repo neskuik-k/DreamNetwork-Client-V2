@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
 import at.favre.lib.crypto.bcrypt.BCrypt;
+import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.utils.messages.WebMessage;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
 import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
@@ -74,52 +75,59 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
 
             System.out.println("Current Socket : " + currentSocket);
             currentSocket = currentSocket.split(";")[0];
-            BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
-            System.out.println("Result : " + result.verified);
-            if(!result.verified && !dreamSecure.equals("Test")){
-                System.out.println(dreamSecure);
-                System.out.println("Socket not valid");
-                ctx.close();
-                return;
-            }
-            String refreshSocket = restAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));
-            System.out.println(headers.get(HttpHeaderNames.CONNECTION));
-            System.out.println(headers.get(HttpHeaderNames.UPGRADE));
-            if(headers.get(HttpHeaderNames.CONNECTION).toLowerCase().contains("upgrade")){
-                if ("WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))) {
-
-                    //Adding new handler to the existing pipeline to handle WebSocket Messages
-                    WebSocketHandler webSocketHandler = new WebSocketHandler(this,ctx);
-                    session = Optional.of(webSocketHandler.getWebSession());
-                    ctx.pipeline().replace(this, "websocketHandler", webSocketHandler);
-
-                    System.out.println("WebSocketHandler added to the pipeline");
-                    System.out.println("Opened Channel : " + ctx.channel());
-                    System.out.println("Handshaking....");
-                    //Do the Handshake to upgrade connection from HTTP to WebSocket protocol
-                    handleHandshake(ctx, httpRequest,dreamSecure);
-                    System.out.println("Handshake is done");
-
-
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                while (true){
-                                    Thread.sleep(5);
-                                    //System.out.println("Sending Pong from server");
-                                    if(!ctx.channel().isOpen()){
-                                        break;
-                                    }
-                                  //  ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
-                                }
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    }).start();
+            try {
+                BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
+                System.out.println("Result : " + result.verified);
+                if(!result.verified && !dreamSecure.equals("Test")){
+                    System.out.println(dreamSecure);
+                    System.out.println("Socket not valid");
+                    ctx.close();
+                    return;
                 }
+                System.out.println("Hmm");
+                String refreshSocket = restAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));
+                System.out.println(headers.get(HttpHeaderNames.CONNECTION));
+                System.out.println(headers.get(HttpHeaderNames.UPGRADE));
+                System.out.println(headers.get(HttpHeaderNames.CONNECTION).toLowerCase());
+                if(headers.get(HttpHeaderNames.CONNECTION).toLowerCase().contains("upgrade")){
+                    if ("WebSocket".equalsIgnoreCase(headers.get(HttpHeaderNames.UPGRADE))) {
+
+                        //Adding new handler to the existing pipeline to handle WebSocket Messages
+                        WebSocketHandler webSocketHandler = new WebSocketHandler(this,ctx);
+                        session = Optional.of(webSocketHandler.getWebSession());
+                        ctx.pipeline().replace(this, "websocketHandler", webSocketHandler);
+
+                        System.out.println("WebSocketHandler added to the pipeline");
+                        System.out.println("Opened Channel : " + ctx.channel());
+                        System.out.println("Handshaking....");
+                        //Do the Handshake to upgrade connection from HTTP to WebSocket protocol
+                        handleHandshake(ctx, httpRequest,dreamSecure);
+                        System.out.println("Handshake is done");
+
+
+                        new Thread(new Runnable() {
+                            @Override
+                            public void run() {
+                                try {
+                                    while (true){
+                                        Thread.sleep(5);
+                                        //System.out.println("Sending Pong from server");
+                                        if(!ctx.channel().isOpen()){
+                                            break;
+                                        }
+                                        //  ctx.channel().writeAndFlush(new TextWebSocketFrame(new WebMessage().put("test","test").toString()));
+                                    }
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }).start();
+                    }
+                }
+            }catch (Exception e){
+                Console.bug(e);
             }
+
         } else {
             System.out.println("Incoming request is unknown => "+ msg + " => " + msg.getClass());
         }
