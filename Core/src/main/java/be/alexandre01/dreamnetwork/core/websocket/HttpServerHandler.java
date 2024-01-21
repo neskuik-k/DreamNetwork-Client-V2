@@ -121,7 +121,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                 }
             }
         } else {
-            System.out.println("Incoming request is unknown");
+            System.out.println("Incoming request is unknown => "+ msg + " => " + msg.getClass());
         }
     }
     /* Do the handshaking for WebSocket request */
