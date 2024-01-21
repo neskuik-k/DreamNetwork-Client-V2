@@ -74,16 +74,31 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             String currentSocket = restAPI.getCurrentKey();
 
             System.out.println("Current Socket : " + currentSocket);
-            currentSocket = currentSocket.split(";")[0];
+            System.out.println("Ok..");
+
+
             try {
-                BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
-                System.out.println("Result : " + result.verified);
-                if(!result.verified && !dreamSecure.equals("Test")){
-                    System.out.println(dreamSecure);
-                    System.out.println("Socket not valid");
-                    ctx.close();
-                    return;
+
+                if(currentSocket.contains(";")){
+                    currentSocket = currentSocket.split(";")[0];
+                    System.out.println("try to split");
+                    BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
+                    System.out.println("Result : " + result.verified);
+                    if(!result.verified && !dreamSecure.equals("Test")){
+                        System.out.println(dreamSecure);
+                        System.out.println("Socket not valid");
+                        ctx.close();
+                        return;
+                    }
+                }else {
+                    if(!dreamSecure.equals("Test")){
+                        System.out.println(dreamSecure);
+                        System.out.println("Socket not valid");
+                        ctx.close();
+                        return;
+                    }
                 }
+
                 System.out.println("Hmm");
                 String refreshSocket = restAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));
                 System.out.println(headers.get(HttpHeaderNames.CONNECTION));
