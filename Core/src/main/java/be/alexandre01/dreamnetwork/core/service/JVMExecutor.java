@@ -44,7 +44,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 
@@ -209,12 +208,12 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i) {
-        return startServers(i, this);
+    public ExecutorCallbacks startServices(int i) {
+        return startServices(i, this);
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
+    public ExecutorCallbacks startServices(int i, IConfig jvmConfig) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
             startService(jvmConfig, c);
@@ -223,7 +222,7 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i, String profile) {
+    public ExecutorCallbacks startServices(int i, String profile) {
         ExecutorCallbacks c = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
             startService(profile, c);

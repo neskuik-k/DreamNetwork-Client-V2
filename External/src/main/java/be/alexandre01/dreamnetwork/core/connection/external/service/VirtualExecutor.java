@@ -131,12 +131,12 @@ public class VirtualExecutor  implements IExecutor {
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i) {
-        return startServers(i, ":this:");
+    public ExecutorCallbacks startServices(int i) {
+        return startServices(i, ":this:");
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i, IConfig jvmConfig) {
+    public ExecutorCallbacks startServices(int i, IConfig jvmConfig) {
         ExecutorCallbacks callbacks = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
             startService(jvmConfig,callbacks);
@@ -145,7 +145,7 @@ public class VirtualExecutor  implements IExecutor {
     }
 
     @Override
-    public ExecutorCallbacks startServers(int i, String profile) {
+    public ExecutorCallbacks startServices(int i, String profile) {
         ExecutorCallbacks callbacks = new ExecutorCallbacks();
         for (int j = 0; j < i; j++) {
             startService(profile,callbacks);

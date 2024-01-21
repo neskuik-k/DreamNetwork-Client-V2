@@ -21,7 +21,6 @@ public class ExecutorsFrame extends FrameAbstraction {
 
     @Override
     public void handle(WebMessage webMessage) {
-
     }
 
     @Override

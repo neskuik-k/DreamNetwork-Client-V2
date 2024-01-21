@@ -37,6 +37,21 @@ public class InnerServiceFrame extends FrameAbstraction {
     public void handle(WebMessage webMessage) {
         System.out.println("Handling ServicesFrame : " + webMessage);
         if(webMessage.containsKey("service")) {
+            if(webMessage.containsKey("instruction")){
+                if(webMessage.getString("instruction").equals("stop")){
+                    currentService.stop().whenComplete((aBoolean, throwable) -> {
+                        if(aBoolean){
+                            System.out.println("Stop succeed");
+                            /*getSession().send(new WebMessage()
+                                    .put("instruction","remove")
+                            );*/
+                        }else{
+                            System.out.println("Stop failed");
+                        }
+                    });
+                    return;
+                }
+            }
             System.out.println("Service : " + webMessage.getString("service"));
             IService service = Core.getInstance().getJvmContainer().findService(webMessage.getString("service")).orElse(null);
             if(service != null){

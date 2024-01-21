@@ -13,15 +13,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sun.jna.Pointer;
 import com.sun.jna.platform.win32.Kernel32;
 import com.sun.jna.platform.win32.WinNT;
-import lombok.Getter;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 public interface IExecutor {
 
@@ -90,10 +86,10 @@ public interface IExecutor {
 
     public ExecutorCallbacks startService(IConfig jvmConfig, ExecutorCallbacks callbacks);
 
-    public ExecutorCallbacks startServers(int i);
+    public ExecutorCallbacks startServices(int i);
 
-    public ExecutorCallbacks startServers(int i, IConfig jvmConfig);
-    public ExecutorCallbacks startServers(int i, String profile);
+    public ExecutorCallbacks startServices(int i, IConfig jvmConfig);
+    public ExecutorCallbacks startServices(int i, String profile);
     public default void removeService(IService service){
         service.getStopsCallbacks().forEach(Runnable::run);
         service.getExecutorCallbacks().ifPresent(executorCallbacks -> {
