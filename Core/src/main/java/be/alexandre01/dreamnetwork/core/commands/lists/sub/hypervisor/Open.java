@@ -8,6 +8,7 @@ import be.alexandre01.dreamnetwork.api.config.WSSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.IConsoleReader;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
+import be.alexandre01.dreamnetwork.core.Main;
 import be.alexandre01.dreamnetwork.core.connection.external.ExternalCore;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketRun;
 import be.alexandre01.dreamnetwork.core.websocket.WebSocketServer;
@@ -30,15 +31,15 @@ public class Open extends SubCommand {
 
     @Override
     public boolean onSubCommand(@NonNull String[] args) {
-
-
         boolean b = when(sArgs -> {
+            String token;
             if(sArgs.length == 1){
-                Console.printLang("commands.hypervisor.specifyModule");
-                return true;
+                token = Main.getSecretFile().getSecret();
+            }else {
+                token = sArgs[1];
             }
 
-            String token = args[1];
+
 
             int port = 2352;
 
@@ -50,22 +51,7 @@ public class Open extends SubCommand {
                     port = settings.get().getPort();
                 }
             }
-
-            new WebSocketServer(port, "localhost",token).start();
-            WebSessionManager.getInstance().onNewSession(session -> {
-                session.getFrameManager().addFrame("overview", new OverViewFrame(session));
-                session.getFrameManager().addFrame("players", new PlayersFrame(session));
-                session.getFrameManager().addFrame("executors", new ExecutorsFrame(session));
-                session.getFrameManager().addFrame("services", new ServicesFrame(session));
-                session.getFrameManager().addFrame("innerService", new InnerServiceFrame(session));
-                session.onRead(message -> {
-
-                    System.out.println("New message read !");
-                    System.out.println("Are you sure ?");
-                    session.getFrameManager().handleCurrentFrame(message);
-                });
-            });
-
+            WebSocketServer.start(port,token);
             return true;
         }, args,"open","[ip]");
         return b;

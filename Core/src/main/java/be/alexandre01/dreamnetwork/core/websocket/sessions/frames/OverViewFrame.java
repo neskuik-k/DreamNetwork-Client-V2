@@ -54,7 +54,7 @@ public class OverViewFrame extends FrameAbstraction {
         @Override
         public void accept(ByteCounting.ByteCountingData data) {
 
-            System.out.println("new bytes");
+         //   System.out.println("new bytes");
             String time = data.getTime().equals(ByteCounting.Time.SECONDS) ? "seconds" : "minutes";
             String type = data.getType().equals(ByteCounting.Type.INBOUND) ? "in" : "out";
             if(data.getTime().equals(ByteCounting.Time.SECONDS)){
@@ -76,7 +76,6 @@ public class OverViewFrame extends FrameAbstraction {
     };
     public OverViewFrame(WebSession session) {
         super(session, "overview");
-        System.out.println("Huh !");
         setTester(new OverViewTest(this));
 
 
@@ -85,7 +84,6 @@ public class OverViewFrame extends FrameAbstraction {
     @Override
     public void onEnter() {
         setUpdateRate(1000*5);
-        System.out.println("Enter !");
         // Nothing to do here
         sendCurrentNodeStatistics();
         // sending bytes
@@ -129,7 +127,6 @@ public class OverViewFrame extends FrameAbstraction {
         // calculate cpu usage
 
         // What % CPU load this current JVM is taking, from 0.0-1.0
-        System.out.println(osBean.getProcessCpuLoad());
         cpuUsage = osBean.getSystemCpuLoad();
         long freeMem = osBean.getFreePhysicalMemorySize();
         long ramTotal = osBean.getTotalPhysicalMemorySize();
@@ -172,7 +169,6 @@ public class OverViewFrame extends FrameAbstraction {
         long networkUsagePerSecondIn = ByteCounting.getLatestTotalBytesPerSecond(ByteCounting.Type.INBOUND);
         long networkUsagePerMinuteIn = ByteCounting.getLatestTotalBytesPerMinute(ByteCounting.Type.INBOUND);
 
-        System.out.println("networkUsagePerSecondIn : " + networkUsagePerSecondIn);
 
        // System.out.println(Arrays.toString(ByteCounting.getTotalBytesPerSecond(ByteCounting.Type.OUTBOUND)));
 
@@ -203,10 +199,10 @@ public class OverViewFrame extends FrameAbstraction {
 
 
 
-        System.out.println("Sending overview frame");
-        System.out.println(getSession() + " yey");
-        System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isOpen());
-        System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isActive());
+        //System.out.println("Sending overview frame");
+        //System.out.println(getSession() + " yey");
+        //System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isOpen());
+        //System.out.println("Is open ? " + getSession().getChannelHandlerContext().channel().isActive());
         getSession().send(webMessage);
     }
 

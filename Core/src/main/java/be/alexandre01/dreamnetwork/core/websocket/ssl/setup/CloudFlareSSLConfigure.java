@@ -18,10 +18,13 @@ public class CloudFlareSSLConfigure extends AutoConfigureSSL {
             WSSettings.getYml().saveFile();
             if(o.length > 2){
                 boolean isAutoSigned = (boolean) o[1];
-                settings.setMethod(WSSettings.Method.CLOUDFLARE_AND_AUTO_SELF_SIGNED);
+                settings.setSigned(isAutoSigned);
+                settings.setMethod(WSSettings.Method.CLOUDFLARE);
             }else {
-                settings.setMethod(WSSettings.Method.CLOUDLFARE_NORMAL);
+                settings.setSigned(true);
+                settings.setMethod(WSSettings.Method.CLOUDFLARE);
             }
+            WSSettings.getYml().saveFile();
         });
 
     }

@@ -3,7 +3,6 @@ package be.alexandre01.dreamnetwork.api.config;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import lombok.Getter;
 import lombok.Setter;
-import org.shredzone.acme4j.provider.letsencrypt.LetsEncryptAcmeProvider;
 
 import java.io.File;
 import java.util.Optional;
@@ -15,10 +14,9 @@ import java.util.Optional;
 @Getter @Setter
 public class WSSettings {
     private int port = 2352;
-    private boolean wsEnabled = true;
-    private boolean autoSigned = true;
+    private boolean wsEnabled = false;
+    private boolean signed = true;
     private boolean localHostOnly = false;
-    private boolean tunnelEnabled = false;
     private String cryptMethod = "none";
     private String[] allowedHosts = new String[]{"*"};
     private String letsEncryptLocation = null;
@@ -49,11 +47,11 @@ public class WSSettings {
     public enum Method{
         NONE,
         LETSENCRYPT,
-        CLOUDFLARE_AND_AUTO_SELF_SIGNED,
-        CLOUDLFARE_NORMAL,
+        CLOUDFLARE,
         CUSTOM,
         LOCALHOST,
-        AUTO_SELF_SIGNED;
+        AUTO_SELF_SIGNED,
+        TUNNEL;
 
 
         private Class<?> clazz;
@@ -78,9 +76,8 @@ public class WSSettings {
     public void clear(){
         this.port = 2352;
         this.wsEnabled = true;
-        this.autoSigned = true;
+        this.signed = true;
         this.localHostOnly = false;
-        this.tunnelEnabled = false;
         this.cryptMethod = "none";
         this.allowedHosts = new String[]{"*"};
         this.letsEncryptLocation = null;

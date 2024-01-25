@@ -17,9 +17,9 @@ public class PlayerReceiver extends CoreReceiver {
     public PlayerReceiver(){
         core = Core.getInstance();
         addRequestInterceptor(CORE_UPDATE_PLAYER, (message, ctx, c) -> {
-
+            System.out.println("CORE_UPDATE_PLAYER");
             IServicePlayersManager s = this.core.getServicePlayersManager();
-            int id = message.getInt("ID");
+            long id = message.getLong("ID");
             if (!s.getPlayersMap().containsKey(id)) {
                 if (message.contains("P")) {
                     Player player;
@@ -40,9 +40,9 @@ public class PlayerReceiver extends CoreReceiver {
         });
         addRequestInterceptor(CORE_REMOVE_PLAYER,(message, ctx, c) -> {
             IServicePlayersManager s;
-            int id;
+            long id;
             s = this.core.getServicePlayersManager();
-            id = message.getInt("ID");
+            id = message.getLong("ID");
 
             s.unregisterPlayer(id);
         });

@@ -78,7 +78,7 @@ public class Main {
 
     @Getter private static ProcessHistory processHistory;
 
-
+   @Getter private static SecretFile secretFile;
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
 
@@ -151,6 +151,8 @@ public class Main {
             consoleReader.sReader.runMacro("en_EN");
             String data;
             consoleReader.reloadCompleter();
+
+            System.out.println("Language ?");
 
             while((data = consoleReader.sReader.readLine(Colors.WHITE_BOLD_BRIGHT+"What is your language ? "+Colors.YELLOW+languages +" "+Colors.CYAN_BOLD_BRIGHT+"> ")) != null){
                 if(data.length() == 0) continue;
@@ -284,7 +286,7 @@ public class Main {
         boolean l = false;
         String keys = System.getProperty("keys");
 
-        SecretFile secretFile = null;
+        secretFile = null;
         try {
             secretFile = new SecretFile();
             if(keys == null ){

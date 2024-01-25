@@ -18,19 +18,17 @@ public abstract class AutoReadSSL {
         Optional<WSSettings> settings = YamlFileUtils.getStaticFile(WSSettings.class);
         if(settings.isPresent()){
             switch (settings.get().getMethod()){
-                case NONE:
-                case CLOUDLFARE_NORMAL:
-                    return Optional.empty();
                 case LETSENCRYPT:
                     return Optional.of(new LetsEncryptSecure());
                 case CUSTOM:
                     return Optional.of(new CustomSSL());
                 case LOCALHOST:
                     return Optional.of(new LocalHostSSL());
-                case AUTO_SELF_SIGNED:
-                case CLOUDFLARE_AND_AUTO_SELF_SIGNED:
-                    return Optional.of(new AutoSelfSignedSSL());
             }
+            if (settings.get().isSigned()){
+                return Optional.of(new AutoSelfSignedSSL());
+            }
+            return Optional.empty();
         }
         throw new RuntimeException("No settings found");
     }

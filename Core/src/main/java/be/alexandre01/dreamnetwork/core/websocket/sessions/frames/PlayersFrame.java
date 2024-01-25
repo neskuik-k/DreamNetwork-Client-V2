@@ -48,7 +48,7 @@ public class PlayersFrame extends FrameAbstraction {
 
     @Override
     public void onEnter() {
-        System.out.println("Enter PlayersFrame");
+
         for (Player player : Core.getInstance().getServicePlayersManager().getPlayersMap().values()) {
             getSession().send(
                     new WebMessage().put("player", player.getName())
@@ -64,7 +64,7 @@ public class PlayersFrame extends FrameAbstraction {
 
     @Override
     public void onLeave() {
-        System.out.println("Leave PlayersFrame");
+
         Core.getInstance().getServicePlayersManager().removePlayerUpdateListener(playerJoin);
         Core.getInstance().getServicePlayersManager().removePlayerQuitListener(playerQuit);
     }

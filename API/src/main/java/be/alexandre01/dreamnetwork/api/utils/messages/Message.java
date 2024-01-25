@@ -444,6 +444,8 @@ public class Message extends LinkedHashMap<String, Object> {
     }
 
     public long getLong(String key) {
+        if(get(key) instanceof Integer)
+            return (int) get(key);
         return (long) get(key);
         //return (long) Long.parseLong(getString(key));
     }

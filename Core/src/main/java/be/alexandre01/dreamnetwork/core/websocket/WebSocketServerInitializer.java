@@ -1,6 +1,7 @@
 package be.alexandre01.dreamnetwork.core.websocket;
 
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.console.colors.Colors;
 import be.alexandre01.dreamnetwork.core.rest.DreamRestAPI;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -28,6 +29,8 @@ public class WebSocketServerInitializer implements Runnable {
    @Getter @Setter
    private String prefix = "wss://";
     private final String host;
+    @Getter private Channel channel;
+
 
     public WebSocketServerInitializer(EventLoopGroup bossGroup, EventLoopGroup workerGroup, int port, String host,String token) {
         this.bossGroup = bossGroup;
@@ -38,10 +41,15 @@ public class WebSocketServerInitializer implements Runnable {
         dreamRestAPI.create();
         String refreshSocket = dreamRestAPI.checkup(token, String.valueOf(getPort()));
 
+
     }
 
     @Override
     public void run() {
+        if(dreamRestAPI.getCurrentKey() == null){
+            Console.print(Colors.RED + "Error : " + Colors.RESET + "The secretKey for WS is null");
+            return;
+        }
         try {
             System.out.println("Starting websocket server on port "+port);
         ServerBootstrap b = new ServerBootstrap();
@@ -50,8 +58,8 @@ public class WebSocketServerInitializer implements Runnable {
                 .channel(NioServerSocketChannel.class)
                 .handler(new LoggingHandler(LogLevel.INFO))
                 .childHandler(new HTTPInitializer(this));
-        Channel ch = b.bind(port).sync().channel();
-        ch.closeFuture().sync();
+        channel = b.bind(port).sync().channel();
+        channel.closeFuture().sync();
         } catch (InterruptedException e) {
             Console.bug(e);
         } catch (Exception e) {

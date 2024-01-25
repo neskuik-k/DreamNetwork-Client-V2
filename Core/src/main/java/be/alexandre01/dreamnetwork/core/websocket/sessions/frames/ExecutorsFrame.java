@@ -7,6 +7,7 @@ import be.alexandre01.dreamnetwork.api.utils.messages.WebMessage;
 import be.alexandre01.dreamnetwork.core.Core;
 import be.alexandre01.dreamnetwork.core.service.JVMExecutor;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.FrameAbstraction;
+import be.alexandre01.dreamnetwork.core.websocket.sessions.WebComposerUtils;
 import be.alexandre01.dreamnetwork.core.websocket.sessions.WebSession;
 
 import java.util.ArrayList;
@@ -25,17 +26,17 @@ public class ExecutorsFrame extends FrameAbstraction {
 
     @Override
     public void onEnter() {
-        System.out.println("Enter ExecutorsFrame");
-        System.out.println("Executors : " + Core.getInstance().getJvmContainer().getExecutors().size());
+       // System.out.println("Enter ExecutorsFrame");
+       // System.out.println("Executors : " + Core.getInstance().getJvmContainer().getExecutors().size());
         for (IExecutor executor : Core.getInstance().getJvmContainer().getExecutors()){
-            System.out.println("Executor : " + executor.getName());
+           // System.out.println("Executor : " + executor.getName());
             /*int players = 0; Dev player API in CORE
             for (IService service : executor.getServices()){
                 players += Core.getInstance().getServicePlayersManager().
             }*/
             ArrayList<String> profiles = new ArrayList<>();
             executor.getJvmProfiles().ifPresent(iProfiles -> {
-                System.out.println("present !");
+             //   System.out.println("present !");
                 if (iProfiles.getProfiles() != null) {
                     iProfiles.getProfiles().forEach((string, iConfig) -> {
                         profiles.add(string);
@@ -43,30 +44,18 @@ public class ExecutorsFrame extends FrameAbstraction {
                 }
 
             });
-            System.out.println("Profiles : " + profiles);
+         //   System.out.println("Profiles : " + profiles);
 
 
-            getSession().send(new WebMessage()
-                    .put("bundle", executor.getBundleData().getName())
-                    .put("name", executor.getName())
-                    .put("type", executor.getType().name())
-                    .put("instances", executor.getServices().size())
-                    .put("xmx", executor.getXmx())
-                    .put("xms", executor.getXms())
-                    .put("startup", executor.getStartup())
-                    .put("customName", executor.getCustomName())
-                    .put("port", executor.getPort())
-                    .put("jvmType",executor.getBundleData().getJvmType())
-                    .put("profiles", profiles)
-            );
+            getSession().send(WebComposerUtils.composeExecutor(executor));
 
-            System.out.println("Sended message");
+       //     System.out.println("Sended message");
 
         }
     }
 
     @Override
     public void onLeave() {
-        System.out.println("Leave ExecutorsFrame");
+       // System.out.println("Leave ExecutorsFrame");
     }
 }

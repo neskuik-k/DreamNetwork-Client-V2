@@ -6,11 +6,11 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class FixedSizeRingBuffer<T> implements Iterable<T>, Cloneable {
-    T[] table;
+    protected T[] table;
     Class<T> type;
 
-    int index = 0;
-    boolean isFullFilled = false;
+    protected int index = 0;
+    protected boolean isFullFilled = false;
 
     @Deprecated
     public FixedSizeRingBuffer(T[] table, Class<T> type) {
@@ -104,16 +104,30 @@ public class FixedSizeRingBuffer<T> implements Iterable<T>, Cloneable {
     public Optional<T> getFirst(){
         if(isFullFilled)
             return Optional.ofNullable(table[0]);
-        return Optional.ofNullable(table[index-1]);
+        return Optional.ofNullable(table[decrementIndexPos(1)]);
     }
     public Optional<T> getLast(){
         if(isFullFilled){
-            return Optional.ofNullable(table[index-2]);
+            return Optional.ofNullable(table[decrementIndexPos(2)]);
         }
         if(index == 0){
             return Optional.ofNullable(table[0]);
         }
-        return Optional.ofNullable(table[index-1]);
+        return Optional.ofNullable(table[decrementIndexPos(1)]);
+    }
+
+    public int decrementIndexPos(int i){
+        if(index-i < 0){
+            return table.length - (i-index);
+        }
+        return i;
+    }
+
+    public int incrementIndexPos(int i){
+        if(index+i > table.length){
+            return index+i - table.length;
+        }
+        return i;
     }
 
     public void replaceLast(T value){

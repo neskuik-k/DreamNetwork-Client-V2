@@ -661,6 +661,10 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
         } else {
             customArgs += "-DNHost=" + "this:" + Core.getInstance().getPort();
         }
+
+        if(isProxy() && getInstallLink().isPresent() && getInstallLink().get().getExecType() == ExecType.BUNGEECORD){
+            customArgs += " -Djline.terminal=jline.UnsupportedTerminal";
+        }
         if (preProcessEvent.getCustomArguments() != null) {
             customArgs += " " + preProcessEvent.getCustomArguments();
         }

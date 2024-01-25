@@ -63,7 +63,7 @@ public abstract class AutoConfigureSSL {
     public static void tunnel(){
         YamlFileUtils.getStaticFile(WSSettings.class).ifPresent(settings -> {
             settings.clear();
-            settings.setTunnelEnabled(true);
+            settings.setMethod(WSSettings.Method.TUNNEL);
             WSSettings.getYml().saveFile();
         });
     }

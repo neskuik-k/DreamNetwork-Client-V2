@@ -34,15 +34,12 @@ public class FrameManager {
     }
 
     public void handle(String frameName,WebMessage webMessage){
-        System.out.println("Handling frame : " + frameName);
         if(frames.containsKey(frameName)){
-            System.out.println("Frame found");
             frames.get(frameName).forEach(frame -> frame.handle(webMessage));
         }
     }
 
     public void handleCurrentFrame(WebMessage webMessage){
-        System.out.println("Hmm :c");
         handle(currentFrame,webMessage);
     }
 

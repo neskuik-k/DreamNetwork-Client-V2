@@ -27,7 +27,7 @@ public class ServicePlayersManager implements IServicePlayersManager {
     @Getter final ArrayList<ServicePlayersObject> wantToBeDirectlyInformed = new ArrayList<>();
     @Getter HashMap<ServicePlayersObject,ScheduledExecutorService> wantToBeInformed = new HashMap<>();
     @Getter final PlayerHistory minutedHistory = new PlayerHistory(new Integer[60],60000);
-    @Getter final PlayerHistory hourHistory = new PlayerHistory(new Integer[24],3600000);
+    @Getter final PlayerHistory hourHistory = new PlayerHistory(new Integer[24],60000*60);
     @Getter final List<Consumer<Player>> playerJoinListeners = new ArrayList<>();
     @Getter final List<Consumer<Player>> playerUpdateListeners = new ArrayList<>();
     @Getter final List<Consumer<Player>> playerQuitListeners = new ArrayList<>();
@@ -42,10 +42,11 @@ public class ServicePlayersManager implements IServicePlayersManager {
     @Override
     public void registerPlayer(Player player){
         playersMap.put(player.getId(),player);
-        minutedHistory.fill(totalCount);
-        hourHistory.fill(totalCount);
+
         playerJoinListeners.forEach(playerConsumer -> playerConsumer.accept(player));
         totalCount++;
+        minutedHistory.fill(totalCount);
+        hourHistory.fill(totalCount);
     }
 
     public void addPlayerJoinListener(Consumer<Player> consumer){
@@ -147,7 +148,8 @@ public class ServicePlayersManager implements IServicePlayersManager {
     @Override
     public void udpatePlayerServer(long id, String server){
         Player player = getPlayer(id);
-
+        System.out.println("Update player server");
+        System.out.println(Core.getInstance().getServicesIndexing().index);
         Core.getInstance().getServicesIndexing().getService(server).ifPresent(service -> {
                 AServiceClient client = service.getClient();
                 AServiceClient oldClient = player.getServer();

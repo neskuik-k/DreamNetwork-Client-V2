@@ -4,6 +4,7 @@ package be.alexandre01.dreamnetwork.core;
 import be.alexandre01.dreamnetwork.api.DNCoreAPI;
 import be.alexandre01.dreamnetwork.api.addons.Addon;
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
+import be.alexandre01.dreamnetwork.api.config.WSSettings;
 import be.alexandre01.dreamnetwork.api.connection.core.channels.IDNChannelManager;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.CoreReceiver;
 import be.alexandre01.dreamnetwork.api.connection.core.communication.packets.PacketHandlingFactory;
@@ -11,6 +12,7 @@ import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
+import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
 import be.alexandre01.dreamnetwork.api.utils.optional.Facultative;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
@@ -39,6 +41,7 @@ import be.alexandre01.dreamnetwork.core.service.tasks.GlobalTasks;
 import be.alexandre01.dreamnetwork.api.utils.ASCIIART;
 import be.alexandre01.dreamnetwork.api.utils.process.ProcessUtils;
 import be.alexandre01.dreamnetwork.core.service.screen.ScreenManager;
+import be.alexandre01.dreamnetwork.core.websocket.WebSocketServer;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -315,6 +318,12 @@ public class Core {
                 }
             }
         }
+
+        YamlFileUtils.getStaticFile(WSSettings.class).ifPresent(wsSettings -> {
+            if(wsSettings.isWsEnabled()){
+                WebSocketServer.start(wsSettings.getPort(),Main.getSecretFile().getSecret());
+            }
+        });
         ConsoleThread.resetAndRun();
     }
 

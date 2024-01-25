@@ -73,14 +73,18 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             System.out.println("Sec-WebSocket-Protocol : " + dreamSecure);
             String currentSocket = restAPI.getCurrentKey();
 
-            System.out.println("Current Socket : " + currentSocket);
-            System.out.println("Ok..");
-
 
             try {
 
                 if(currentSocket.contains(";")){
+
                     currentSocket = currentSocket.split(";")[0];
+                    String uuid = currentSocket.split(";")[1];
+                    if(!uuid.equals(restAPI.getUuid().toString())){
+                        System.out.println("UUID not valid");
+                        ctx.close();
+                        return;
+                    }
                     System.out.println("try to split");
                     BCrypt.Result result = BCrypt.verifyer().verify(dreamSecure.toCharArray(),currentSocket.toCharArray());
                     System.out.println("Result : " + result.verified);
@@ -100,7 +104,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                 }
 
                 System.out.println("Hmm");
-                String refreshSocket = restAPI.checkup("eyJzZWNyZXQiOiJpdElLeHNlTGlDcm1scnB1bzZMWWV4R2c5dktCZUk0TDdOaGdoSmcxR0lSTndMamk2MGFnY0VqODR1Z1dBa29LQVVNa2ZVUVI5R1RpeURJZzVpMmhJeVdkMDBZOWFyT09nUWNXT3BFMFNBRlVMakJxMTR6dENybVBoa3hDUDV4N1U2aExQWUd6NkVQd3NVa0xJbUhvTVR2VjVSQXZMSVpyaHdndWdCWGFDdGxqdlN1NXFEcmtsc3AwdWNPb3VrMWc2bXd6N1RoOEx4NW80MWdDb3EydzdhRmtzcXBSSEtwYmNhZlVmQTB4bmdBd3NPQ1ZQREtVdzlacnJ1T0w5MWlmIiwidXVpZCI6ImY5YjRiMDA4LTJhOGQtNDJmNi05MDA5LThjOTgxZTcxMzIwZiJ9", String.valueOf(initializer.getPort()));
+                String refreshSocket = restAPI.checkup(restAPI.getToken(), String.valueOf(initializer.getPort()));
                 System.out.println(headers.get(HttpHeaderNames.CONNECTION));
                 System.out.println(headers.get(HttpHeaderNames.UPGRADE));
                 System.out.println(headers.get(HttpHeaderNames.CONNECTION).toLowerCase());

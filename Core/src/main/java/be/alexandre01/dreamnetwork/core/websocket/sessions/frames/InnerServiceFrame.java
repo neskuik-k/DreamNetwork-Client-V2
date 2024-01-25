@@ -16,7 +16,7 @@ import java.io.IOException;
 public class InnerServiceFrame extends FrameAbstraction {
     IService currentService;
     IScreenInReader.ReaderLine readerLine = line -> {
-        System.out.println("Instruction : " + line);
+       // System.out.println("Instruction : " + line);
         getSession().send(new WebMessage()
                 .put("instruction","console")
                 .put("line", line)
@@ -35,7 +35,7 @@ public class InnerServiceFrame extends FrameAbstraction {
     };
     @Override
     public void handle(WebMessage webMessage) {
-        System.out.println("Handling ServicesFrame : " + webMessage);
+
         if(webMessage.containsKey("service")) {
             if(webMessage.containsKey("instruction")){
                 if(webMessage.getString("instruction").equals("stop")){
@@ -55,12 +55,12 @@ public class InnerServiceFrame extends FrameAbstraction {
             System.out.println("Service : " + webMessage.getString("service"));
             IService service = Core.getInstance().getJvmContainer().findService(webMessage.getString("service")).orElse(null);
             if(service != null){
-                System.out.println("Yey service found !");
+               //System.out.println("Yey service found !");
                 currentService = service;
                 handlingConsole();
-                System.out.println("Screen : " + service.getScreen());
+              //  System.out.println("Screen : " + service.getScreen());
                 service.onStop(stopHandler);
-                System.out.println("Stop handler added");
+               // System.out.println("Stop handler added");
 
             }
         }
@@ -78,7 +78,7 @@ public class InnerServiceFrame extends FrameAbstraction {
 
     public void handlingConsole(){
         IScreen screen = currentService.getScreen();
-        System.out.println("Screen : " + screen);
+       // System.out.println("Screen : " + screen);
         if(screen == null || !screen.isViewing()) {
             System.out.println("Bouhouhou no screen");
             getSession().send(new WebMessage()
@@ -86,7 +86,6 @@ public class InnerServiceFrame extends FrameAbstraction {
             );
             return;
         }
-        System.out.println("Handling console");
         // sending history
         try {
             screen.getScreenStream().getConsole().getHistory().forEach(s -> {
@@ -101,7 +100,7 @@ public class InnerServiceFrame extends FrameAbstraction {
             System.out.println("Error while sending history");
             e.printStackTrace();
         }
-        System.out.println("Add screen reader");
+
         screen.getScreenStream().getScreenInReader().getReaderLines().add(readerLine);
     }
     @Override
@@ -111,7 +110,7 @@ public class InnerServiceFrame extends FrameAbstraction {
 
     @Override
     public void onLeave() {
-        System.out.println("Leave ServicesFrame");
+        //System.out.println("Leave ServicesFrame");
         if(currentService == null) return;
         currentService.removeStopCallback(stopHandler);
         if(currentService.getScreen() == null) return;
