@@ -14,7 +14,6 @@ public class WebComposerUtils {
     public static WebMessage composeExecutor(IExecutor executor){
         ArrayList<String> profiles = new ArrayList<>();
         executor.getJvmProfiles().ifPresent(iProfiles -> {
-            System.out.println("present !");
             if (iProfiles.getProfiles() != null) {
                 iProfiles.getProfiles().forEach((string, iConfig) -> {
                     profiles.add(string);

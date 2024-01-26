@@ -27,7 +27,7 @@ public class FrameListener implements WebSession.MessageListener {
                 String type = message.getString("type");
 
                 if (type.equalsIgnoreCase("enter")) {
-                    System.out.println(session.getFrameManager().getFrame(frameName).map(Collection::size).orElse(0));
+                    //  System.out.println(session.getFrameManager().getFrame(frameName).map(Collection::size).orElse(0));
                     session.getFrameManager().getFrame(frameName).ifPresent(frames -> frames.forEach(frame -> {
 
                         if (frame instanceof FrameAbstraction) {

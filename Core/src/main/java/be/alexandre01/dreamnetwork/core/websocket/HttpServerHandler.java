@@ -56,13 +56,13 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
         if (msg instanceof HttpRequest) {
             HttpRequest httpRequest = (HttpRequest) msg;
 
-            System.out.println("Http Request Received");
+//            System.out.println("Http Request Received");
 
             HttpHeaders headers = httpRequest.headers();
-            System.out.println("Connection : " +headers.get("Connection"));
+            /*System.out.println("Connection : " +headers.get("Connection"));
             System.out.println("Upgrade : " + headers.get("Upgrade"));
             System.out.println("Content-Length : " + headers.get("Content-Length"));
-            System.out.println(headers.toString());
+            System.out.println(headers.toString());*/
             if(!headers.contains("Sec-WebSocket-Protocol")){
                 System.out.println("Close");
                 ctx.close();
