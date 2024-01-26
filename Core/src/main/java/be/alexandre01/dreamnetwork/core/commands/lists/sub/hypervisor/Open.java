@@ -34,7 +34,7 @@ public class Open extends SubCommand {
         boolean b = when(sArgs -> {
             String token;
             if(sArgs.length == 1){
-                token = Main.getSecretFile().getSecret();
+                token = Main.getSecretFile().getEncoded();
             }else {
                 token = sArgs[1];
             }

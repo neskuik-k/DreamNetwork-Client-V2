@@ -321,7 +321,11 @@ public class Core {
 
         YamlFileUtils.getStaticFile(WSSettings.class).ifPresent(wsSettings -> {
             if(wsSettings.isWsEnabled()){
-                WebSocketServer.start(wsSettings.getPort(),Main.getSecretFile().getSecret());
+                if(Main.getSecretFile().getSecret() == null){
+                    Console.printLang("core.websocket.noSecret");
+                    return;
+                }
+                WebSocketServer.start(wsSettings.getPort(),Main.getSecretFile().getEncoded());
             }
         });
         ConsoleThread.resetAndRun();

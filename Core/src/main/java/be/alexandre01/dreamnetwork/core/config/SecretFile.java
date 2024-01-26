@@ -21,6 +21,8 @@ import java.util.Base64;
 public class SecretFile {
     private String secret;
     private String uuid;
+
+    private String encoded;
     private Console console;
 
     public static void main(String[] args){
@@ -34,6 +36,7 @@ public class SecretFile {
 
     public void init(String keys){
         try {
+            encoded = keys;
             String decoded = new String(Base64.getDecoder().decode(keys));
 
             JSONObject json = new JSONObject(decoded);
@@ -77,6 +80,7 @@ public class SecretFile {
 
         while ((line = file.readLine()) != null) {
             try {
+                encoded = line;
                 String decoded = new String(Base64.getDecoder().decode(line));
                 
                 JSONObject json = new JSONObject(decoded);
