@@ -53,7 +53,14 @@ public interface IExecutor {
                 Field f = p.getClass().getDeclaredField("handle");
                 f.setAccessible(true);
                 long handl = f.getLong(p);
-                Kernel32 kernel = Kernel32.INSTANCE;
+                Kernel32 kernel = null;
+                try {
+                     Class.forName("com.sun.jna.platform.win32.Kernel32");
+                     kernel = Kernel32.INSTANCE;
+                }catch (Exception e){
+                    return -1;
+                }
+
                 WinNT.HANDLE hand = new WinNT.HANDLE();
                 hand.setPointer(Pointer.createConstant(handl));
                 result = kernel.GetProcessId(hand);
@@ -67,6 +74,7 @@ public interface IExecutor {
                 f.setAccessible(false);
             }
         } catch (Exception ex) {
+            System.out.println("Erreur");
             if(ex.getClass().getSimpleName().equals("InaccessibleObjectException")){
                 System.out.println(Colors.RED+"Please set up the jvm with the flag --add-opens java.base/java.lang=ALL-UNNAMED");
             }

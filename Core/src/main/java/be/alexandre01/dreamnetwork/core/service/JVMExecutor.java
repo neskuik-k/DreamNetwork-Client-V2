@@ -719,6 +719,8 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
             }
         }
 
+        System.out.println("Process started");
+
         try {
             long processID = IExecutor.getProcessID(proc);
             Console.fine("PROCESS ID >" + processID);
