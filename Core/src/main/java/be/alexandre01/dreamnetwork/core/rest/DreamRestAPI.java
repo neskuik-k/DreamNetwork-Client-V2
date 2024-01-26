@@ -68,9 +68,10 @@ public class DreamRestAPI {
                      connectIP.set(prefix+wsSettings.getForceURL()+":"+wsSettings.getPort());
                  }
 
-                 if(wsSettings.getMethod().equals(WSSettings.Method.TUNNEL) && wsSettings.getForceURL() != null){
+                 if(wsSettings.getMethod().equals(WSSettings.Method.TUNNEL) && wsSettings.getForceURL() == null){
                      connectIP.set("wss://tunnel.dreamnetwork.cloud/websocket?target_ip=%current%");
                  }
+
              });
             jsonNode.put("connectIP", connectIP.get());
             // json
