@@ -103,7 +103,7 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
                     }
                 }
 
-                System.out.println("Hmm");
+
                 String refreshSocket = restAPI.checkup(restAPI.getToken(), String.valueOf(initializer.getPort()));
                 System.out.println(headers.get(HttpHeaderNames.CONNECTION));
                 System.out.println(headers.get(HttpHeaderNames.UPGRADE));

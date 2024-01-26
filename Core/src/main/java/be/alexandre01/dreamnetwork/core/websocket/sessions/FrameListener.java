@@ -29,9 +29,9 @@ public class FrameListener implements WebSession.MessageListener {
                 if (type.equalsIgnoreCase("enter")) {
                     System.out.println(session.getFrameManager().getFrame(frameName).map(Collection::size).orElse(0));
                     session.getFrameManager().getFrame(frameName).ifPresent(frames -> frames.forEach(frame -> {
-                        System.out.println("Found frame !");
+
                         if (frame instanceof FrameAbstraction) {
-                            System.out.println("Frame is instanceof FrameAbstraction !");
+
                             FrameAbstraction frameAbstraction = (FrameAbstraction) frame;
                             session.getFrameManager().setCurrentFrame(frameName);
                             frameAbstraction.execEnter();

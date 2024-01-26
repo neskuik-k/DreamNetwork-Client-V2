@@ -33,9 +33,9 @@ public class PlayerHistory extends FixedSizeRingBuffer<Integer> {
         int minus = hasToUpdateData || lastData != null ? 1 : 0;
         long iterations = (calc / updateInterval);
         if(calc > updateInterval){
-            System.out.println("calc = " + calc);
+           /* System.out.println("calc = " + calc);
             System.out.println("updateInterval = " + updateInterval);
-            System.out.println("iterations = " + iterations);
+            System.out.println("iterations = " + iterations);*/
             Facultative.ifPresentOrElse(getLast(),integer -> {
                 for (int i = 0; i < (iterations-minus); i++) {
                     super.fill(integer);

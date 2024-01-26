@@ -37,7 +37,7 @@ public abstract class FrameAbstraction implements FrameManager.Frame {
     }
 
     public void execEnter(){
-        System.out.println("Exec enter !");
+
         getFrameTester().ifPresent(FrameTester::testEnter);
         onEnter();
     }
