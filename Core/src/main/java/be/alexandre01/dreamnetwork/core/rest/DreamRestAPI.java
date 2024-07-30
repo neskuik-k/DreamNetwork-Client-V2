@@ -60,7 +60,7 @@ public class DreamRestAPI {
                      connectIP.set("wss://localhost.direct:"+wsSettings.getPort());
                  }
 
-                 if(wsSettings.getMethod().equals(WSSettings.Method.NONE)){
+                 if(wsSettings.getMethod().equals(WSSettings.Method.NONE) && wsSettings.getForceURL() == null){
                      connectIP.set(prefix+"%current%"+":"+wsSettings.getPort());
                  }
 
@@ -70,6 +70,10 @@ public class DreamRestAPI {
 
                  if(wsSettings.getMethod().equals(WSSettings.Method.TUNNEL) && wsSettings.getForceURL() == null){
                      connectIP.set("wss://tunnel.dreamnetwork.cloud/websocket?target_ip=%current%");
+                 }
+
+                 if(wsSettings.getForceURL() != null){
+                     connectIP.set(prefix+wsSettings.getForceURL()+":"+wsSettings.getPort());
                  }
 
              });

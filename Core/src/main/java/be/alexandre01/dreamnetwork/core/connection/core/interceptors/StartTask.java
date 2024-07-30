@@ -47,7 +47,7 @@ public class StartTask {
                     public void whenStart(IService service) {
                         Console.debugPrint("STARTED");
                         Message msg = new Message().set("name",service.getFullName());
-                        service.getCustomName().ifPresent(s -> msg.set("customName",s));
+                        service.getCustomName().ifPresent(s -> msg.set("customName",s+"-"+service.getId()));
                         callback.mergeAndSend(msg, "STARTED");
                     }
                 });

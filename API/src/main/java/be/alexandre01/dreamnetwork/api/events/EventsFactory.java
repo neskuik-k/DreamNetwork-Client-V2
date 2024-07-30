@@ -15,7 +15,7 @@ public class EventsFactory {
     @Getter
     private Multimap<Class<?>, Tuple<Method,EventCatcher>> methods = ArrayListMultimap.create();
 
-    private HashMap<Method,Listener> listeners = new HashMap<>();
+    private final HashMap<Method,Listener> listeners = new HashMap<>();
 
 
     public void callEvent(Event event) {
@@ -39,6 +39,7 @@ public class EventsFactory {
             } catch (InvocationTargetException e) {
                 System.out.println("Error while calling event "+event.getClass().getSimpleName() + " on "+ method.getDeclaringClass());
                 Console.bug(e);
+                e.printStackTrace(Console.getCurrent().defaultPrint);
             }
         });
     }
