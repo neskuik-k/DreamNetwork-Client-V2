@@ -30,14 +30,12 @@ public abstract class AutoConfigureSSL {
             System.out.println("You need to approve the terms of service of lets encrypt");
             return;
         }
-        new LetsEncryptSSLConfigure().configure(new Object[]{isStaging, new String[]{domain}});
     }
     public static void letsEncrypt(int port,String[] domains, boolean isStaging, boolean approved){
         if(!approved){
             System.out.println("You need to approve the terms of service of lets encrypt");
             return;
         }
-        new LetsEncryptSSLConfigure().configure(new Object[]{isStaging, domains});
     }
 
     /*public static void customSSL(String key, String cert){

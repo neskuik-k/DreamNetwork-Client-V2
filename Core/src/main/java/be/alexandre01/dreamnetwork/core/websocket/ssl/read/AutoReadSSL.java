@@ -18,8 +18,6 @@ public abstract class AutoReadSSL {
         Optional<WSSettings> settings = YamlFileUtils.getStaticFile(WSSettings.class);
         if(settings.isPresent()){
             switch (settings.get().getMethod()){
-                case LETSENCRYPT:
-                    return Optional.of(new LetsEncryptSecure());
                 case CUSTOM:
                     return Optional.of(new CustomSSL());
                 case LOCALHOST:

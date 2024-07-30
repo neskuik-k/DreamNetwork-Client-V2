@@ -90,6 +90,24 @@
                     <version>2.10.1</version>
                     <scope>compile</scope>
                 </dependency>
+                <!-- https://mvnrepository.com/artifact/org.shredzone.acme4j/acme4j-client -->
+                <dependency>
+                    <groupId>org.shredzone.acme4j</groupId>
+                    <artifactId>acme4j-client</artifactId>
+                    <version>3.3.1</version>
+                </dependency>
+                <!-- https://mvnrepository.com/artifact/org.shredzone.acme4j/acme4j -->
+                <dependency>
+                    <groupId>org.shredzone.acme4j</groupId>
+                    <artifactId>acme4j</artifactId>
+                    <version>3.3.1</version>
+                    <type>pom</type>
+                </dependency>
+
+
+
+                <!--org.shredzone.acme4j  -->
+
 
 
 
