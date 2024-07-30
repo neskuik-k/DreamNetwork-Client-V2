@@ -46,6 +46,4 @@ public class ConfigManager implements IConfigManager {
     public IFileCopyAsync getFileCopyAsync(){
         return Main.getFileCopyAsync();
     }
-
-
 }

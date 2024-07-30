@@ -74,7 +74,6 @@ public interface IExecutor {
                 f.setAccessible(false);
             }
         } catch (Exception ex) {
-            System.out.println("Erreur");
             if(ex.getClass().getSimpleName().equals("InaccessibleObjectException")){
                 System.out.println(Colors.RED+"Please set up the jvm with the flag --add-opens java.base/java.lang=ALL-UNNAMED");
             }

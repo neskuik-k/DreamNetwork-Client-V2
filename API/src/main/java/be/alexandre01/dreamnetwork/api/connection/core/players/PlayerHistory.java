@@ -83,4 +83,5 @@ public class PlayerHistory extends FixedSizeRingBuffer<Integer> {
             table[this.table.length+1] = lastData;
         return table;
     }
+
 }

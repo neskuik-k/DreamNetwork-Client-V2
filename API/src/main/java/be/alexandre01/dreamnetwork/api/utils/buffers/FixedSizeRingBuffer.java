@@ -6,6 +6,10 @@ import java.util.*;
 import java.util.function.Consumer;
 
 public class FixedSizeRingBuffer<T> implements Iterable<T>, Cloneable {
+    // Cette classe permet de gérer des données dans un ordre précis ->
+    /// la liste est tt le temps trié, et a une taille fixe (donc ex: la taille = 5 et on a 4 donnée [5,4,6,4] on rajoute 3 [5,4,6,4,3]
+    // on rajoute 1 -> [ 4,6,4,3,1 ]
+    // le add (O(1)) -> le remove (O(1)) -> le getFirst getLast (O(1)) -> getTableTrié (O(n)) -> get(int index) (O(n))
     protected T[] table;
     Class<T> type;
 
@@ -154,6 +158,7 @@ public class FixedSizeRingBuffer<T> implements Iterable<T>, Cloneable {
         //test with auto size
         System.out.println("Test with auto size");
         FixedSizeRingBuffer<Long> tableSimpleStats1 = new FixedSizeRingBuffer<Long>(new Long[10]);
+
         System.out.println("J'ai un tableau de " + tableSimpleStats1.getTable().length + " de long");
         System.out.println("Le but est de remplir le tableau de 0 à 7");
         System.out.println("Il est censé remplir le tableau de 0 à 7 et de retourner un tableau de taille 8");

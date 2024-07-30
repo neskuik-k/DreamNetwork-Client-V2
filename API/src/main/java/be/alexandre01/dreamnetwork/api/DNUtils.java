@@ -12,6 +12,8 @@ import be.alexandre01.dreamnetwork.api.service.screen.IScreen;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 /*
  ↬   Made by Alexandre01Dev 😎
  ↬   done on 02/09/2023 at 19:29
@@ -24,15 +26,12 @@ public abstract class DNUtils {
     public static DNUtils get(){
         return instance;
     }
-
     @Getter @Setter
     public ColorsData colorsData;
-
     public abstract AccessibilityMenu createAccessibilityMenu();
     public abstract IScreen createScreen(IService service);
     public abstract ICallbackManager createCallbackManager();
     public abstract IRequestManager createClientRequestManager(UniversalConnection client);
     public abstract IConfigManager getConfigManager();
     public abstract IConsoleManager getConsoleManager();
-
 }

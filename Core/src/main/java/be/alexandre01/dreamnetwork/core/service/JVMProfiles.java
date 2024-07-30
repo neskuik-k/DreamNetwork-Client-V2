@@ -14,13 +14,10 @@ import java.util.HashMap;
 
 public class JVMProfiles extends YamlFileUtils<ProfilesData> implements IProfiles {
     ProfilesData profilesData = null;
-
-
     public JVMProfiles() {
         super(ProfilesData.class);
         addTag(JVMProfiles.class,Tag.MAP);
         addTag(ConfigData.class,Tag.MAP);
-
 
         representer = new CustomRepresenter(true,JVMProfiles.class,ConfigData.class);
         representer.addClassTag(JVMProfiles.class, Tag.MAP);

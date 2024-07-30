@@ -175,10 +175,7 @@ public class JVMService implements IService {
     @Override
     public CompletableFuture<RestartResult> restart(IConfig iConfig){
         CompletableFuture<RestartResult> completableFuture = new CompletableFuture<>();
-        if(screen != null){
-            Console.fine("Restart screen");
-            screen.destroy(true);
-        }
+
         stop().whenComplete((aBoolean, throwable) -> {
                 if(aBoolean){
                     System.out.println("Stop succeed");
