@@ -41,7 +41,7 @@ public class ExternalScreenInReader implements IScreenInReader {
     }
 
     public void receive(String message){
-        console.printNL(message);
+        //console.printNL(message);
     }
 
     @Override

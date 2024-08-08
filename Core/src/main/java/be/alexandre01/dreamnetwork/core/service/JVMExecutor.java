@@ -201,7 +201,6 @@ public class JVMExecutor extends JVMStartupConfig implements IExecutor {
         Tuple<IConfig, ExecutorCallbacks> tuple = new Tuple<>(jvmConfig, c);
         queue.add(tuple);
         if (!b) {
-            System.out.println("Queue is not empty");
             return c;
         }
         startJVM(tuple);

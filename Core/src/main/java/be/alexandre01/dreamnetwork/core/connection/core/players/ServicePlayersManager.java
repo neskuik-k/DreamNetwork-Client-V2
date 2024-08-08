@@ -149,7 +149,7 @@ public class ServicePlayersManager implements IServicePlayersManager {
     public void udpatePlayerServer(long id, String server){
         Player player = getPlayer(id);
         System.out.println("Update player server");
-        System.out.println(Core.getInstance().getServicesIndexing().index);
+       // System.out.println(Core.getInstance().getServicesIndexing().index);
         Core.getInstance().getServicesIndexing().getService(server).ifPresent(service -> {
                 AServiceClient client = service.getClient();
                 AServiceClient oldClient = player.getServer();
