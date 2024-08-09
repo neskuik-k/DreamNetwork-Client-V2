@@ -17,7 +17,6 @@ public class PlayerReceiver extends CoreReceiver {
     public PlayerReceiver(){
         core = Core.getInstance();
         addRequestInterceptor(CORE_UPDATE_PLAYER, (message, ctx, c) -> {
-            System.out.println("CORE_UPDATE_PLAYER");
             IServicePlayersManager s = this.core.getServicePlayersManager();
             long id = message.getLong("ID");
             if (!s.getPlayersMap().containsKey(id)) {
