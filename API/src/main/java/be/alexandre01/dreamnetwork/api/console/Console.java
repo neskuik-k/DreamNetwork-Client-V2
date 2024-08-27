@@ -120,13 +120,7 @@ public class Console {
         if(blockConsole){
         //    System.out.println("Stopping console");
             if(thread != null){
-                //thread.interrupt();
                 ConsoleThread.stopCurrent();// tell the thread to stop
-                /*try {
-                    thread.join(); // wait for the thread to stop
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }*/
             }
         }else {
            // System.out.println("Rerun console");
@@ -159,7 +153,8 @@ public class Console {
             try {
                 while ((data = reader.readLine(Console.getFromLang("console.askExit"))) != null){
                     if(data.equalsIgnoreCase("y") || data.equalsIgnoreCase("yes")){
-                        System.exit(0);
+                       // System.exit(0);
+                        DNUtils.get().stop();
                         return false;
                     }else {
                         Console.debugPrint(Console.getFromLang("cancelled"));
@@ -572,7 +567,8 @@ public class Console {
     public static void SIG_IGN(){
         if(!DNUtils.get().getConfigManager().getGlobalSettings().isSIG_IGN_Handler()){
             Console.debugPrint(Console.getFromLang("console.closed"));
-            System.exit(0);
+            //System.exit(0);
+            DNUtils.get().stop();
         }
 
         try {
@@ -656,6 +652,7 @@ public class Console {
                         DNUtils.get().getConsoleManager().getFormatter().getDefaultStream().write(stringToBytesASCII(str));
                         scheduler.shutdown();
                     }
+
 
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -13,7 +13,6 @@ import be.alexandre01.dreamnetwork.api.console.ConsoleThread;
 import be.alexandre01.dreamnetwork.api.events.EventsFactory;
 import be.alexandre01.dreamnetwork.api.events.list.CoreInitEvent;
 import be.alexandre01.dreamnetwork.api.utils.files.yaml.YamlFileUtils;
-import be.alexandre01.dreamnetwork.api.utils.optional.Facultative;
 import be.alexandre01.dreamnetwork.core.connection.core.NettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.ReactorNettyServer;
 import be.alexandre01.dreamnetwork.core.connection.core.communication.RateLimiter;
@@ -31,7 +30,7 @@ import be.alexandre01.dreamnetwork.core.connection.core.handler.CoreHandler;
 import be.alexandre01.dreamnetwork.core.connection.core.players.ServicePlayersManager;
 import be.alexandre01.dreamnetwork.core.console.formatter.ConciseFormatter;
 import be.alexandre01.dreamnetwork.core.console.formatter.Formatter;
-import be.alexandre01.dreamnetwork.core.installer.InstallerManager;
+import be.alexandre01.dreamnetwork.core.files.InstallerManager;
 import be.alexandre01.dreamnetwork.core.service.JVMContainer;
 import be.alexandre01.dreamnetwork.core.service.bundle.BundleManager;
 import be.alexandre01.dreamnetwork.core.service.jvm.JavaIndex;
@@ -50,7 +49,6 @@ import lombok.Setter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
@@ -310,7 +308,7 @@ public class Core {
 
         if(Main.getGlobalSettings().isSIG_IGN_Handler()){
             if(!Config.isWindows()){
-                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                String[] defSIGKILL = {"/bin/sh","-c","stty intr undef </dev/tty"};
                 try {
                     Runtime.getRuntime().exec(defSIGKILL);
                 } catch (IOException e) {

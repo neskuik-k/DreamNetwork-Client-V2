@@ -30,7 +30,6 @@ public class JVMService implements IService {
     private ServiceClient client;
     private JVMExecutor executor;
     private Process process;
-
     private IExecutor.Mods type;
 
     private String xmx;
@@ -45,10 +44,7 @@ public class JVMService implements IService {
 
     public IConfig usedConfig;
     @Getter(AccessLevel.NONE) public ExecutorCallbacks executorCallbacks;
-
     CompletableFuture<Boolean> stopFuture = new CompletableFuture<>();
-
-
 
     @Override
     public int getIndexingId() {
@@ -79,7 +75,6 @@ public class JVMService implements IService {
     public String getFullName() {
         return getExecutor().getFullName()+"-"+getId();
     }
-
 
     @Override
     public String getFullName(boolean withBundlePath) {

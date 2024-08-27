@@ -80,4 +80,9 @@ public class UtilsAPI extends DNUtils {
     public IConsoleManager getConsoleManager(){
         return consoleManager;
     }
+
+    @Override
+    public void stop() {
+        Main.stop();
+    }
 }

@@ -2,6 +2,7 @@ package be.alexandre01.dreamnetwork.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -13,6 +14,8 @@ import java.util.logging.Logger;
 import be.alexandre01.dreamnetwork.api.addons.DreamExtension;
 import be.alexandre01.dreamnetwork.api.config.WSSettings;
 import be.alexandre01.dreamnetwork.api.console.Console;
+import be.alexandre01.dreamnetwork.api.service.IContainer;
+import be.alexandre01.dreamnetwork.api.utils.messages.Message;
 import be.alexandre01.dreamnetwork.core.commands.CommandReader;
 import be.alexandre01.dreamnetwork.api.service.IExecutor;
 import be.alexandre01.dreamnetwork.api.service.IService;
@@ -79,6 +82,7 @@ public class Main {
     @Getter private static ProcessHistory processHistory;
 
    @Getter private static SecretFile secretFile;
+   private static ReaderHistory readerHistory;
 
     public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
 
@@ -134,7 +138,7 @@ public class Main {
         consoleReader = new ConsoleReader();
         consoleReader.init();
 
-        ReaderHistory readerHistory = new ReaderHistory();
+        readerHistory = new ReaderHistory();
         readerHistory.init();
 
         taskOperation = new TaskOperation();
@@ -217,69 +221,71 @@ public class Main {
 
         Runtime.getRuntime().addShutdownHook(new Thread() {
             public void run() {
-                try {
-                    disabling = true;
-                    if(instance != null){
-                        boolean isReady = false;
-                        for(IExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
-                            if(!jvmExecutor.getServices().isEmpty()){
-                                ArrayList<Long> pIDs = new ArrayList<>();
-                                for(IService service : new ArrayList<>(jvmExecutor.getServices())){
-                                    if(!service.isConnected()){
-                                        service.kill();
-                                    }
-                                    if(service.getProcessID() != -1){
-                                        if(!service.isConnected())
-                                            ProcessUtils.killProcess(service.getProcessID());
-                                        pIDs.add(service.getProcessID());
-                                    }
-                                }
-                                getProcessHistory().getProcessHistoryIndex().put("TMPProcess", Base64.getEncoder().encodeToString(ProcessHistory.convert(pIDs).getBytes(StandardCharsets.UTF_8)));
-                                getProcessHistory().getProcessHistoryIndex().refreshFile();
-                            }
-
-                        }
-
-
-                        if(consoleReader.sReader != null){
-                            for (String key : ReaderHistory.getLines().keySet()) {
-                               /* History h = ConsoleReader.sReader.getHistory();
-                                ArrayList<String> l = new ArrayList<>();
-                                for (int j = 0; j < h.size()-1; j++) {
-                                    l.add(h.get(j));
-                                }*/
-                                ArrayList<String> l = new ArrayList<>(ReaderHistory.getLines().get(key));
-
-                                List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
-                                readerHistory.getReaderHistoryIndex().put(key, Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
-                                readerHistory.getReaderHistoryIndex().refreshFile();
-
-                            }
-                        }
-                        isReady = true;
-
-
-                        Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
-                        outputStream.println(Console.getFromLang("main.shutdown"));
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }else {
-                        outputStream.println(Console.getFromLang("main.shutdown"));
-                        try {
-                            Thread.sleep(2000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-
-                }catch (Exception e){
-                    System.out.println(e.getMessage());
-                    e.printStackTrace();
-                }
+                if(!disabling)
+                    Main.stop();
+//                try {
+//                    disabling = true;
+//                    if(instance != null){
+//                        boolean isReady = false;
+//                        for(IExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
+//                            if(!jvmExecutor.getServices().isEmpty()){
+//                                ArrayList<Long> pIDs = new ArrayList<>();
+//                                for(IService service : new ArrayList<>(jvmExecutor.getServices())){
+//                                    if(!service.isConnected()){
+//                                        service.kill();
+//                                    }
+//                                    if(service.getProcessID() != -1){
+//                                        if(!service.isConnected())
+//                                            ProcessUtils.killProcess(service.getProcessID());
+//                                        pIDs.add(service.getProcessID());
+//                                    }
+//                                }
+//                                getProcessHistory().getProcessHistoryIndex().put("TMPProcess", Base64.getEncoder().encodeToString(ProcessHistory.convert(pIDs).getBytes(StandardCharsets.UTF_8)));
+//                                getProcessHistory().getProcessHistoryIndex().refreshFile();
+//                            }
+//
+//                        }
+//
+//
+//                        if(consoleReader.sReader != null){
+//                            for (String key : ReaderHistory.getLines().keySet()) {
+//                               /* History h = ConsoleReader.sReader.getHistory();
+//                                ArrayList<String> l = new ArrayList<>();
+//                                for (int j = 0; j < h.size()-1; j++) {
+//                                    l.add(h.get(j));
+//                                }*/
+//                                ArrayList<String> l = new ArrayList<>(ReaderHistory.getLines().get(key));
+//
+//                                List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
+//                                readerHistory.getReaderHistoryIndex().put(key, Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
+//                                readerHistory.getReaderHistoryIndex().refreshFile();
+//
+//                            }
+//                        }
+//                        isReady = true;
+//
+//
+//                        Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
+//                        outputStream.println(Console.getFromLang("main.shutdown"));
+//                        try {
+//                            Thread.sleep(2000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }else {
+//                        outputStream.println(Console.getFromLang("main.shutdown"));
+//                        try {
+//                            Thread.sleep(2000);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }
+//
+//
+//                }catch (Exception e){
+//                    System.out.println(e.getMessage());
+//                    e.printStackTrace();
+//                }
 
             }
         });
@@ -313,7 +319,6 @@ public class Main {
         }
 
 
-
         loadClient();
     }
 
@@ -332,5 +337,83 @@ public class Main {
         new BundlesLoading();
         Core.getInstance().init();
 
+    }
+
+    public static void stop(){
+        try {
+            disabling = true;
+            if(!Config.isWindows()){
+                String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
+                try {
+                    Runtime.getRuntime().exec(defSIGKILL);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            if(instance != null){
+                boolean isReady = false;
+                for(IExecutor jvmExecutor : instance.getJvmContainer().jvmExecutors){
+                    if(!jvmExecutor.getServices().isEmpty()){
+                        ArrayList<Long> pIDs = new ArrayList<>();
+                        for(IService service : new ArrayList<>(jvmExecutor.getServices())){
+                            if(!service.isConnected()){
+                                service.kill();
+                            }
+                            if(service.getProcessID() != -1){
+                                if(!service.isConnected())
+                                    ProcessUtils.killProcess(service.getProcessID());
+                                pIDs.add(service.getProcessID());
+                            }
+                        }
+                        getProcessHistory().getProcessHistoryIndex().put("TMPProcess", Base64.getEncoder().encodeToString(ProcessHistory.convert(pIDs).getBytes(StandardCharsets.UTF_8)));
+                        getProcessHistory().getProcessHistoryIndex().refreshFile();
+                    }
+
+                }
+
+
+                if(consoleReader.sReader != null){
+                    for (String key : ReaderHistory.getLines().keySet()) {
+                               /* History h = ConsoleReader.sReader.getHistory();
+                                ArrayList<String> l = new ArrayList<>();
+                                for (int j = 0; j < h.size()-1; j++) {
+                                    l.add(h.get(j));
+                                }*/
+                        ArrayList<String> l = new ArrayList<>(ReaderHistory.getLines().get(key));
+
+                        List<String> tail = l.subList(Math.max(l.size() - 15, 0), l.size());
+                        readerHistory.getReaderHistoryIndex().put(key, Base64.getEncoder().encodeToString(ReaderHistory.convert(tail).getBytes(StandardCharsets.UTF_8)));
+                        readerHistory.getReaderHistoryIndex().refreshFile();
+
+                    }
+                }
+                isReady = true;
+
+
+                Core.getInstance().getAddonsManager().getAddons().values().forEach(DreamExtension::stop);
+                PrintStream outputStream = Console.getFormatter().getDefaultStream();
+                outputStream.println(Console.getFromLang("main.shutdown"));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                PrintStream outputStream = Console.getFormatter().getDefaultStream();
+                outputStream.println(Console.getFromLang("main.shutdown"));
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+
+        }catch (Exception e){
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        System.exit(0);
     }
 }

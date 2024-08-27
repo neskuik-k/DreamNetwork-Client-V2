@@ -86,8 +86,11 @@ public class Screen extends Thread implements IScreen {
         }*/
 
         //If not executed by service => Stop
-        if(!fromService)
+
+        if(!fromService){
             service.stop();
+        }
+
 
         Core core = Core.getInstance();
         core.getEventsFactory().callEvent(new CoreScreenDestroyEvent(core.getDnCoreAPI(),this));

@@ -77,7 +77,6 @@ public class HttpServerHandler extends ChannelInboundHandlerAdapter {
             try {
 
                 if(currentSocket.contains(";")){
-
                     currentSocket = currentSocket.split(";")[0];
                     String uuid = currentSocket.split(";")[1];
                     if(!uuid.equals(restAPI.getUuid().toString())){

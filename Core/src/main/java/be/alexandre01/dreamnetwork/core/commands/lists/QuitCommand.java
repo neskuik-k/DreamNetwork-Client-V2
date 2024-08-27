@@ -4,6 +4,7 @@ import be.alexandre01.dreamnetwork.api.commands.Command;
 import be.alexandre01.dreamnetwork.api.commands.sub.NodeBuilder;
 import be.alexandre01.dreamnetwork.api.console.Console;
 import be.alexandre01.dreamnetwork.api.console.colors.Colors;
+import be.alexandre01.dreamnetwork.core.Main;
 
 import static be.alexandre01.dreamnetwork.api.console.jline.completors.CustomTreeCompleter.node;
 
@@ -18,7 +19,7 @@ public class QuitCommand extends Command {
         commandExecutor = new CommandExecutor() {
             @Override
             public boolean execute(String[] args) {
-                System.exit(0);
+                Main.stop();
                 return true;
             }
         };
