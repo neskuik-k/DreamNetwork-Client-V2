@@ -1,6 +1,0 @@
-# This is the global settings of the server | I'm a artichoke
-allowedHosts:
-- '*'
-method: NONE
-port: 2352
-wsEnabled: true
