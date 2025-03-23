@@ -342,6 +342,7 @@ public class Main {
     public static void stop(){
         try {
             disabling = true;
+            Thread.sleep(2000);
             if(!Config.isWindows()){
                 String[] defSIGKILL = {"/bin/sh","-c","stty intr ^C </dev/tty"};
                 try {
