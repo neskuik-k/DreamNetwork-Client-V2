@@ -50,6 +50,7 @@ public class CommandReader implements ICommandReader {
         commands.addCommands(new HypervisorCommand("hypervisor"));
         commands.addCommands(new AddonCommand("addon"));
         commands.addCommands(new DeployCommand("deploy"));
+        commands.addCommands(new UserCommand("user"));
         IConsoleReader.reloadCompleters();
     }
 

@@ -91,6 +91,14 @@
                     <scope>compile</scope>
                 </dependency>
                 <!-- https://mvnrepository.com/artifact/org.shredzone.acme4j/acme4j-client -->
+
+                <dependency>
+                    <groupId>org.yaml</groupId>
+                    <artifactId>snakeyaml</artifactId>
+                    <version>1.30</version>
+                </dependency>
+
+
                 <dependency>
                     <groupId>org.shredzone.acme4j</groupId>
                     <artifactId>acme4j-client</artifactId>
