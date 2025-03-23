@@ -25,8 +25,9 @@ public class Remove extends SubCommandCompletor implements SubCommandExecutor {
             if (args.length >= 3) {
                 if (args[1].equalsIgnoreCase("server") || args[1].equalsIgnoreCase("proxy")) {
                     String name = args[2];
-                    if (Config.contains("bundles/" + args[1].toLowerCase() + "/" + name)) {
-                        Config.removeDir("bundles/" + args[1].toLowerCase() + "/" + name);
+                    String path = "bundles/" + args[1].toLowerCase() + "/" + name;
+                    if (Config.contains(path)) {
+                        Config.removeDir(path);
                         Console.printLang("commands.service.remove.deleted");
                         Console.printLang("commands.service.remove.folderDeleted");
                     } else {
