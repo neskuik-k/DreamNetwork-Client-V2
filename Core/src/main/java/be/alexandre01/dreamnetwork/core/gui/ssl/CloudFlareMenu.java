@@ -31,8 +31,8 @@ public class CloudFlareMenu extends CoreAccessibilityMenu {
         addValueInput(PromptText.create("port"), new ValueInput() {
             @Override
             public void onTransition(ShowInfos infos) {
-                infos.onEnter("To use CloudFlare proxy you need to use a port between theses ports: (80, 443, 2052, 2082, 2083, 2086, 2087, 2095, 2096)");
-                infos.writing("Enter the port you want to use:");
+                infos.onEnter("Pour utiliser CloudFlare, tu dois choisir entre ces ports : (80, 443, 2052, 2082, 2083, 2086, 2087, 2095, 2096)");
+                infos.writing("Entre le port que tu veux choisir :");
                 setArgumentsBuilder(NodeBuilder.create("80", "443", "2052", "2082", "2083", "2086", "2087", "2095", "2096"));
             }
 
@@ -48,7 +48,7 @@ public class CloudFlareMenu extends CoreAccessibilityMenu {
         addValueInput(PromptText.create("domain"), new ValueInput() {
             @Override
             public void onTransition(ShowInfos infos) {
-                infos.onEnter("Enter the domain you want to use: (example: mydomain.org)");
+                infos.onEnter("Entre le domaine que tu veux utiliser : (exemple : mondomaine.org)");
             }
 
             @Override
