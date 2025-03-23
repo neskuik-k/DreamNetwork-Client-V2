@@ -13,7 +13,7 @@ public class ServiceCommand extends Command {
         addSubCommand("create",new Create(this));
         addSubCommand("stop",new Stop(this));
         addSubCommand("restart",new Restart(this));
-       // addSubCommand("remove",new Remove(this));
+        addSubCommand("remove",new Remove(this));
         addSubCommand("start",new Start(this));
         addSubCommand("install",new Install(this));
         addSubCommand("screen",new Screen(this));
