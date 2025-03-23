@@ -1,3 +1,2 @@
-# This is the V2 of the DreamNetwork Client.
-### This version is archived and the V3 (NEO) is currently in development...
-### See you soon !
+# This is a fork of DreamNetwork V2 (originally created by Alexandre01)
+### This version is updated by me and is archived in the original repository.
